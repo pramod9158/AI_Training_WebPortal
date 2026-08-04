@@ -15,6 +15,12 @@ h1, h2, h3, h4, h5, h6 {
 
 body {
   font-family: var(--font-body), sans-serif;
+  background-color: #F8FAFC;
+  color: #0F172A;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+html.dark body {
   background-color: #0B0F19;
   color: #F1F5F9;
 }
@@ -25,6 +31,12 @@ body {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html:not(.dark) .glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .glass-panel-glow {
@@ -42,10 +54,88 @@ body {
 ::-webkit-scrollbar-track {
   background: #070A12;
 }
+html:not(.dark) ::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #1E293B;
   border-radius: 4px;
 }
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: #06B6D4;
+}
+
+/* Crisp Light Mode Overrides */
+html:not(.dark) {
+  .bg-\[\#0B0F19\],
+  .bg-\[\#0D121F\],
+  .bg-\[\#070A12\],
+  .bg-\[\#05070D\],
+  .bg-slate-950,
+  .bg-slate-900,
+  .bg-slate-900\/60,
+  .bg-slate-900\/80,
+  .bg-slate-900\/40,
+  .bg-slate-900\/90,
+  .bg-slate-900\/50 {
+    background-color: #FFFFFF !important;
+    border-color: #E2E8F0 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .border-slate-800,
+  .border-slate-800\/80,
+  .border-slate-800\/60,
+  .border-slate-700,
+  .border-slate-700\/80,
+  .border-slate-700\/60,
+  .border-slate-700\/50 {
+    border-color: #E2E8F0 !important;
+  }
+
+  .text-white,
+  .text-slate-100,
+  .text-slate-200 {
+    color: #0F172A !important;
+  }
+
+  .text-slate-300,
+  .text-slate-400 {
+    color: #475569 !important;
+  }
+
+  .bg-slate-800,
+  .bg-slate-800\/80,
+  .bg-slate-800\/60,
+  .bg-slate-800\/40 {
+    background-color: #F1F5F9 !important;
+  }
+
+  header {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-color: #E2E8F0 !important;
+  }
+
+  footer {
+    background-color: #F8FAFC !important;
+    border-color: #E2E8F0 !important;
+  }
+
+  input, textarea, select {
+    background-color: #F8FAFC !important;
+    color: #0F172A !important;
+    border-color: #CBD5E1 !important;
+  }
+
+  /* Code block formatting in light mode */
+  .prose-code {
+    background-color: #F1F5F9 !important;
+    color: #0284C7 !important;
+    border-color: #E2E8F0 !important;
+  }
 }

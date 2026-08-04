@@ -31,8 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${spaceGrotesk.variable} ${inter.variable}`}>
-      <body className="bg-[#0B0F19] text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
+    <html lang="en" className={`dark ${spaceGrotesk.variable} ${inter.variable}`} suppressHydrationWarning>
+      <body className="font-sans antialiased min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
         <ClientAppWrapper>{children}</ClientAppWrapper>
       </body>
     </html>
