@@ -193,7 +193,7 @@ Return response in JSON format with keys: "vulnerability", "severity", and "refa
     slug: 'advanced-techniques',
     title: '7. Advanced Techniques',
     description: 'Zero-shot, Few-shot learning, and Chain-of-Thought (CoT) prompting.',
-    videoUrl: 'https://www.youtube.com/embed/dOxUroR57xs',
+    videoUrl: 'https://www.youtube.com/embed/WATJKhKpZRs',
     videoProvider: 'youtube',
     orderIndex: 7,
     estimatedMinutes: 20,
