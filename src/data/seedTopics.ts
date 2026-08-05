@@ -1509,7 +1509,7 @@ export const QUIZ_QUESTIONS: Record<string, QuizQuestion[]> = {
     }
   ],
 
-  // Topic 6
+    // Topic 6
   't-6': [
     {
       id: 'q-6-1',
@@ -1545,6 +1545,270 @@ export const QUIZ_QUESTIONS: Record<string, QuizQuestion[]> = {
       correctOptionIndex: 2,
       explanation: 'The user role carries human prompts and input parameters.'
     }
+  ],
+
+  // Topic 7: Advanced Techniques (20 Questions)
+  't-7': [
+    {
+      id: 'q-7-1',
+      topicId: 't-7',
+      questionText: 'What is the fundamental difference between Zero-Shot and Few-Shot prompting?',
+      options: [
+        'Zero-shot uses fine-tuned weights, while few-shot uses base weights',
+        'Zero-shot provides no input-output exemplars, whereas few-shot provides 2-5 exemplars inside the prompt context',
+        'Few-shot requires retraining the model tokenizer',
+        'Zero-shot can only be executed on open-source local models'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Zero-shot relies solely on parametric knowledge without examples, while Few-shot supplies exemplars in the context window to condition output generation.'
+    },
+    {
+      id: 'q-7-2',
+      topicId: 't-7',
+      questionText: 'Which phrase introduced by Kojima et al. triggers Zero-Shot Chain-of-Thought (CoT) reasoning?',
+      options: [
+        '"Output in JSON format"',
+        '"Let\'s think step by step"',
+        '"Execute with maximum precision"',
+        '"Ignore all previous instructions"'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Adding "Let\'s think step by step" prompts the model to decompose complex problems into sequential intermediate reasoning steps.'
+    },
+    {
+      id: 'q-7-3',
+      topicId: 't-7',
+      questionText: 'How does Self-Consistency CoT improve output accuracy over standard single-pass CoT?',
+      options: [
+        'By reducing the prompt context window to 512 tokens',
+        'By sampling multiple reasoning paths at Temperature > 0 and taking a majority vote over final answers',
+        'By disabling the Softmax probability function',
+        'By converting text into binary C code'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Self-consistency samples multiple independent reasoning chains and selects the most frequent consensus answer.'
+    },
+    {
+      id: 'q-7-4',
+      topicId: 't-7',
+      questionText: 'In Tree-of-Thoughts (ToT) prompting, how are candidate thought steps evaluated?',
+      options: [
+        'Using hardcoded regex expressions',
+        'Using the LLM itself to score and evaluate candidate thought states via tree search algorithms like BFS or DFS',
+        'By sending telemetry data to external cloud GPUs',
+        'By averaging token length per paragraph'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Tree-of-Thoughts evaluates intermediate thought branches using the LLM as an evaluator to explore and backtrack through search trees.'
+    },
+    {
+      id: 'q-7-5',
+      topicId: 't-7',
+      questionText: 'What are the core stages in a ReAct (Reasoning + Acting) agentic loop?',
+      options: [
+        'Tokenize -> Embedding -> Softmax -> Output',
+        'Thought -> Action -> Observation -> Repeat / Final Answer',
+        'Compile -> Build -> Deploy -> Monitor',
+        'Prompt -> Retry -> Suppress -> Exit'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'ReAct alternates between LLM reasoning (Thought), tool execution (Action), and environment feedback (Observation).'
+    },
+    {
+      id: 'q-7-6',
+      topicId: 't-7',
+      questionText: 'What is Semantic Few-Shot Retrieval (k-NN exemplar matching)?',
+      options: [
+        'Hardcoding fixed examples in the system prompt',
+        'Dynamically retrieving the most relevant exemplars from a vector database based on embedding similarity to the user query',
+        'Randomly selecting 3 examples from a CSV file',
+        'Sorting exemplars alphabetically by title'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Semantic Retrieval searches vector database embeddings to inject the most semantically relevant exemplars for the specific user query.'
+    },
+    {
+      id: 'q-7-7',
+      topicId: 't-7',
+      questionText: 'Why should Few-Shot exemplars maintain a balanced label distribution?',
+      options: [
+        'To reduce token usage during compilation',
+        'To prevent model prediction bias toward overrepresented output classes',
+        'To increase GPU clock speeds',
+        'To bypass rate limit quotas'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Imbalanced exemplars (e.g. 4 Positive and 0 Negative) cause the model to skew its probability predictions towards the dominant class.'
+    },
+    {
+      id: 'q-7-8',
+      topicId: 't-7',
+      questionText: 'What risk is associated with using unverified user inputs as Few-Shot exemplars?',
+      options: [
+        'Hardware overheating',
+        'Prompt Injection where malicious data in exemplars overrides system rules',
+        'Automatic loss of API key access',
+        'Increased disk space consumption'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Unsanitized exemplar data can contain prompt injection attacks that hijack system behaviors.'
+    },
+    {
+      id: 'q-7-9',
+      topicId: 't-7',
+      questionText: 'Which prompting strategy offers the highest accuracy lift for complex, multi-step algorithmic planning?',
+      options: [
+        'Basic Zero-Shot Direct Inference',
+        'Tree-of-Thoughts (ToT) / ReAct Loops',
+        'Single-word keyword prompting',
+        'Removing system prompts entirely'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'ToT and ReAct allow exploring multiple branches and integrating live tool feedback, achieving up to 90%+ accuracy on complex tasks.'
+    },
+    {
+      id: 'q-7-10',
+      topicId: 't-7',
+      questionText: 'How does Chain-of-Thought (CoT) prompting impact token cost and latency?',
+      options: [
+        'Reduces token cost to 0',
+        'Increases token cost and latency because the model generates extra intermediate reasoning tokens',
+        'Has zero effect on token output',
+        'Speeds up token generation by 5x'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'CoT requires generating additional intermediate tokens before the final output, increasing token usage and generation time.'
+    },
+    {
+      id: 'q-7-11',
+      topicId: 't-7',
+      questionText: 'What is the role of the Observation phase in a ReAct loop?',
+      options: [
+        'To grade the prompt author\'s grammar',
+        'To return the output result of a tool execution (e.g., API response, SQL query result) back into the LLM context',
+        'To reset the model temperature to 0',
+        'To compress intermediate tokens into a zip file'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Observation feeds real-world results from external tools back into the LLM so it can reason about the next step.'
+    },
+    {
+      id: 'q-7-12',
+      topicId: 't-7',
+      questionText: 'In Zero-Shot classification, what is the best practice for temperature setting?',
+      options: [
+        'Temperature = 2.0',
+        'Temperature = 0.0 (Greedy decoding for deterministic classification)',
+        'Temperature = 1.5',
+        'Temperature = -1.0'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Temperature 0.0 guarantees deterministic greedy selection, preventing random variations in classification labels.'
+    },
+    {
+      id: 'q-7-13',
+      topicId: 't-7',
+      questionText: 'How do reasoning models (e.g. OpenAI o1/o3) differ from manual CoT prompting?',
+      options: [
+        'Reasoning models use internal hidden thinking tokens baked into inference before producing final output',
+        'Reasoning models do not use transformers',
+        'Manual CoT runs 10x faster than reasoning models',
+        'Reasoning models only accept image inputs'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'Native reasoning models automatically allocate hidden internal chain-of-thought tokens during inference.'
+    },
+    {
+      id: 'q-7-14',
+      topicId: 't-7',
+      questionText: 'What is Graph-of-Thoughts (GoT)?',
+      options: [
+        'A technique for drawing pie charts with LLMs',
+        'An extension of ToT where thoughts can be combined, aggregated, and looped in arbitrary graph networks',
+        'A hardware device for storing vector embeddings',
+        'A social network for AI agents'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Graph-of-Thoughts models LLM reasoning as an arbitrary directed graph, allowing thought merging and feedback loops.'
+    },
+    {
+      id: 'q-7-15',
+      topicId: 't-7',
+      questionText: 'When writing Few-Shot exemplars for JSON generation, what must be consistent across all examples?',
+      options: [
+        'The exact JSON key structure and schema',
+        'The background color of the prompt text',
+        'The timestamp of when examples were written',
+        'The length of the system prompt'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'Consistent JSON schema keys across all exemplars train the model attention heads to reproduce that exact structure.'
+    },
+    {
+      id: 'q-7-16',
+      topicId: 't-7',
+      questionText: 'What is negative constraint prompting?',
+      options: [
+        'Writing prompts using negative tone',
+        'Explicitly defining what the model must NOT do (e.g., "Do NOT include markdown formatting")',
+        'Subtracting tokens from the context window',
+        'Lowering the API bill'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Negative constraints specify forbidden output patterns or actions to prevent unwanted model behavior.'
+    },
+    {
+      id: 'q-7-17',
+      topicId: 't-7',
+      questionText: 'Why is delimiter tagging (e.g. XML tags <input>...</input>) recommended in advanced prompting?',
+      options: [
+        'It makes the prompt 50% shorter',
+        'It establishes unambiguous boundaries between system instructions, exemplars, and untrusted user data',
+        'It translates English to HTML automatically',
+        'It locks the API key'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Explicit XML tags prevent context contamination where user inputs might be mistaken for system instructions.'
+    },
+    {
+      id: 'q-7-18',
+      topicId: 't-7',
+      questionText: 'In Self-Consistency CoT, what temperature setting should be used during sampling?',
+      options: [
+        'Temperature = 0.0 (No variance)',
+        'Temperature = 0.5 to 0.7 (Generates diverse reasoning paths for majority voting)',
+        'Temperature = 2.0 (Maximum entropy)',
+        'Temperature = -0.5'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'A moderate temperature (0.5 - 0.7) generates diverse candidate reasoning paths needed for meaningful consensus voting.'
+    },
+    {
+      id: 'q-7-19',
+      topicId: 't-7',
+      questionText: 'What does the term "In-Context Learning" (ICL) refer to?',
+      options: [
+        'Updating model weights via backpropagation',
+        'The ability of LLMs to learn task patterns from examples supplied inside the prompt without modifying weights',
+        'Downloading new dataset files from GitHub',
+        'Storing user chat logs in local browser memory'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'In-Context Learning conditions the model to perform new tasks based solely on context exemplars without parameter updates.'
+    },
+    {
+      id: 'q-7-20',
+      topicId: 't-7',
+      questionText: 'Which metric is commonly used to evaluate LLM reasoning accuracy in benchmarks like GSM8K?',
+      options: [
+        'Exact Match (EM) accuracy on final numerical answers',
+        'File size in megabytes',
+        'Number of vowels in the output',
+        'CPU temperature during inference'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'GSM8K and math benchmarks measure Exact Match (EM) accuracy on the extracted final numerical value.'
+    }
   ]
 };
 
@@ -1556,22 +1820,22 @@ export function getQuizForTopic(topicId: string, topicTitle: string): QuizQuesti
 
   return [
     {
-      id: `q-${topicId}-1`,
+      id: `q-\${topicId}-1`,
       topicId: topicId,
-      questionText: `What is the primary core objective of ${topicTitle}?`,
+      questionText: `What is the primary core objective of \${topicTitle}?`,
       options: [
-        `Mastering foundational concepts and practical implementations of ${topicTitle}`,
+        `Mastering foundational concepts and practical implementations of \${topicTitle}`,
         'Replacing traditional software engineering entirely',
         'Bypassing cloud API costs completely',
         'Skipping unit tests and code reviews'
       ],
       correctOptionIndex: 0,
-      explanation: `Understanding ${topicTitle} unlocks efficient, scalable AI developer workflows.`
+      explanation: `Understanding \${topicTitle} unlocks efficient, scalable AI developer workflows.`
     },
     {
-      id: `q-${topicId}-2`,
+      id: `q-\${topicId}-2`,
       topicId: topicId,
-      questionText: `Which best practice should be applied when deploying ${topicTitle} in production?`,
+      questionText: `Which best practice should be applied when deploying \${topicTitle} in production?`,
       options: [
         'Rely exclusively on unverified default settings',
         'Implement robust evaluation metrics, versioning, and security guardrails',
@@ -1582,9 +1846,9 @@ export function getQuizForTopic(topicId: string, topicTitle: string): QuizQuesti
       explanation: 'Production AI deployments require continuous monitoring, evaluation, and strict security hygiene.'
     },
     {
-      id: `q-${topicId}-3`,
+      id: `q-\${topicId}-3`,
       topicId: topicId,
-      questionText: `How does mastering ${topicTitle} accelerate developer productivity?`,
+      questionText: `How does mastering \${topicTitle} accelerate developer productivity?`,
       options: [
         'By eliminating the need to write clean code',
         'By providing structured patterns for context engineering, automation, and reliable AI integration',
@@ -1596,3 +1860,4 @@ export function getQuizForTopic(topicId: string, topicTitle: string): QuizQuesti
     }
   ];
 }
+
