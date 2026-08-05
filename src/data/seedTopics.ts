@@ -2002,6 +2002,270 @@ export const QUIZ_QUESTIONS: Record<string, QuizQuestion[]> = {
       correctOptionIndex: 0,
       explanation: 'GSM8K and math benchmarks measure Exact Match (EM) accuracy on the extracted final numerical value.'
     }
+  ],
+
+  // Topic 55: Grounding & Evaluation (20 Questions)
+  't-55': [
+    {
+      id: 'q-55-1',
+      topicId: 't-55',
+      questionText: 'What are the three core pillars of the RAG Triad evaluation framework?',
+      options: [
+        'Latency, Cost, Memory usage',
+        'Faithfulness, Answer Relevance, Context Precision / Relevance',
+        'Tokenizer speed, Quantization, GPU temperature',
+        'API rate limit, Disk I/O, Network bandwidth'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'The RAG Triad measures Faithfulness (Answer ↔ Context), Answer Relevance (Answer ↔ Question), and Context Precision (Context ↔ Question).'
+    },
+    {
+      id: 'q-55-2',
+      topicId: 't-55',
+      questionText: 'What does the Faithfulness metric measure in RAGAS evaluation?',
+      options: [
+        'Whether the answer is written in fluent English',
+        'Whether every claim in the generated answer is strictly supported by retrieved context documents',
+        'How fast the API responds in milliseconds',
+        'The number of tokens inside the prompt'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Faithfulness evaluates grounding accuracy by measuring the percentage of generated claims supported by retrieved context.'
+    },
+    {
+      id: 'q-55-3',
+      topicId: 't-55',
+      questionText: 'If a RAG system returns a factually correct answer that is completely unrelated to the user question, which metric is low?',
+      options: [
+        'Faithfulness',
+        'Answer Relevance',
+        'GPU Usage',
+        'Storage Capacity'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Answer Relevance measures how directly the generated answer addresses the original user query.'
+    },
+    {
+      id: 'q-55-4',
+      topicId: 't-55',
+      questionText: 'What does Context Precision measure?',
+      options: [
+        'The ratio of relevant signal chunks vs. irrelevant noise chunks inside retrieved documents',
+        'The CPU clock frequency during vector search',
+        'The number of characters in the user prompt',
+        'The cost of OpenAI API tokens'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'Context Precision measures signal-to-noise quality by evaluating whether relevant chunks appear at the top of retrieved results.'
+    },
+    {
+      id: 'q-55-5',
+      topicId: 't-55',
+      questionText: 'What does Context Recall measure?',
+      options: [
+        'The percentage of ground-truth facts successfully retrieved in context documents',
+        'How quickly the server reboots after a crash',
+        'The font size of PDF citations',
+        'The network latency of PostgreSQL queries'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'Context Recall evaluates whether all necessary ground-truth facts were retrieved from the vector database.'
+    },
+    {
+      id: 'q-55-6',
+      topicId: 't-55',
+      questionText: 'What is a Synthetic Golden Dataset in RAG evaluation?',
+      options: [
+        'A collection of fake user email passwords',
+        'A curated dataset of (Question, Context, Answer, Ground Truth) tuples generated automatically from raw documentation using LLMs',
+        'A hard drive formatted with gold-plated connectors',
+        'A dataset containing only image thumbnails'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Synthetic Golden Datasets use LLMs to generate high-coverage test queries and gold-standard answers directly from document chunks.'
+    },
+    {
+      id: 'q-55-7',
+      topicId: 't-55',
+      questionText: 'Why are explicit inline citations (e.g. [Doc ID]) critical for production RAG systems?',
+      options: [
+        'They double the token cost',
+        'They allow human users and automated guardrails to verify the exact source of generated claims',
+        'They compress text into GZIP archives',
+        'They disable search engines'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Inline citations make RAG outputs auditably transparent and verifiable by pointing directly to source context chunks.'
+    },
+    {
+      id: 'q-55-8',
+      topicId: 't-55',
+      questionText: 'What is "LLM-as-a-Judge" evaluation?',
+      options: [
+        'Using an automated physical robot to grade code',
+        'Using a frontier LLM (e.g. GPT-4o) with structured evaluation prompts to score outputs against defined rubric criteria',
+        'Paying human lawyers to review every prompt',
+        'Running python unit tests without AI'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'LLM-as-a-Judge uses a high-capacity model to score outputs, reasoning, and grounding with high correlation to human benchmarks.'
+    },
+    {
+      id: 'q-55-9',
+      topicId: 't-55',
+      questionText: 'Which technique best improves low Context Precision in a RAG pipeline?',
+      options: [
+        'Increasing chunk size to 10,000 tokens',
+        'Implementing Cross-Encoder Re-Ranking to filter out noisy chunks before LLM generation',
+        'Removing system prompts',
+        'Disabling vector embeddings'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Cross-Encoder Re-Ranking ranks candidate chunks by relevance, discarding noisy chunks to maximize Context Precision.'
+    },
+    {
+      id: 'q-55-10',
+      topicId: 't-55',
+      questionText: 'How can a system mitigate hallucinations when retrieved context does NOT contain the answer?',
+      options: [
+        'Instructing the LLM to guess randomly',
+        'Setting strict system guardrails instructing the model to say "I cannot answer based on the provided context"',
+        'Increasing temperature to 2.0',
+        'Hiding the output from the user'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'Negative fallback constraints instruct the model to gracefully decline answering when grounding information is missing.'
+    },
+    {
+      id: 'q-55-11',
+      topicId: 't-55',
+      questionText: 'What is RAGAS?',
+      options: [
+        'A relational database management system',
+        'An open-source framework for automated evaluation of RAG pipelines using quantitative metrics',
+        'A browser extension for blocking ads',
+        'A Python compiler for microcontrollers'
+      ],
+      correctOptionIndex: 1,
+      explanation: 'RAGAS (RAG Automated Evaluation) provides open-source metrics to evaluate RAG component quality.'
+    },
+    {
+      id: 'q-55-12',
+      topicId: 't-55',
+      questionText: 'In TruLens evaluation, what does the RAG Triad score aim to eliminate?',
+      options: [
+        'Hallucinations, Irrelevance, and Retrieval Noise',
+        'CSS styling bugs',
+        'SQL injection attacks on login screens',
+        'Git branch merge conflicts'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'The RAG Triad directly targets hallucinations, off-topic responses, and irrelevant context retrieval.'
+    },
+    {
+      id: 'q-55-13',
+      topicId: 't-55',
+      questionText: 'What is a Citation Precision Guardrail?',
+      options: [
+        'A secondary check that verifies every cited Document ID actually supports the sentence referencing it',
+        'A tool for deleting PDF files',
+        'A setting for controlling screen brightness',
+        'A script for renaming files in alphabetical order'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'Citation Precision Guardrails check whether cited source documents logically validate the claims tied to them.'
+    },
+    {
+      id: 'q-55-14',
+      topicId: 't-55',
+      questionText: 'Why should RAG evaluation be integrated into GitHub Actions CI/CD workflows?',
+      options: [
+        'To automatically block code merges that degrade RAG accuracy metrics below defined thresholds',
+        'To increase server billing costs',
+        'To delete unused git branches',
+        'To convert TypeScript files to Java'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'CI/CD evaluation catches regression bugs in prompt templates, chunking, or retrieval settings before reaching production.'
+    },
+    {
+      id: 'q-55-15',
+      topicId: 't-55',
+      questionText: 'What is the primary danger of having low Faithfulness in enterprise RAG systems?',
+      options: [
+        'Legal liability and user trust loss caused by incorrect hallucinated answers',
+        'Slow internet download speed',
+        'High RAM usage on mobile phones',
+        'Unsaved git commits'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'Low Faithfulness means the model generates ungrounded claims, exposing enterprises to misinformation and liability risks.'
+    },
+    {
+      id: 'q-55-16',
+      topicId: 't-55',
+      questionText: 'How is Context Precision calculated in RAGAS?',
+      options: [
+        'By checking the average position of relevant chunks in the top-k retrieved list',
+        'By counting total words in the database',
+        'By measuring GPU fan speed',
+        'By summing the HTTP status codes'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'Context Precision uses Mean Average Precision (MAP) to reward pipelines that place relevant chunks higher in the retrieval list.'
+    },
+    {
+      id: 'q-55-17',
+      topicId: 't-55',
+      questionText: 'What is a Multi-Hop query in RAG evaluation datasets?',
+      options: [
+        'A query that requires synthesizing information across multiple separate document chunks',
+        'A query sent over Bluetooth',
+        'A query containing 100 exclamation marks',
+        'A database command written in C++'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'Multi-hop queries test complex reasoning where the complete answer requires combining facts from multiple chunks.'
+    },
+    {
+      id: 'q-55-18',
+      topicId: 't-55',
+      questionText: 'What is the recommended temperature when running LLM-as-a-Judge evaluation scripts?',
+      options: [
+        'Temperature = 0.0 (Deterministic scoring)',
+        'Temperature = 1.8 (Maximum variance)',
+        'Temperature = 0.9',
+        'Temperature = -2.0'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'Evaluating metrics requires zero variance (Temperature 0.0) so scoring remains consistent across runs.'
+    },
+    {
+      id: 'q-55-19',
+      topicId: 't-55',
+      questionText: 'What does "Signal-to-Noise Ratio" mean in RAG retrieval?',
+      options: [
+        'The proportion of highly relevant information vs. filler/irrelevant text inside retrieved chunks',
+        'Audio volume level of speech-to-text models',
+        'Number of wifi routers in the room',
+        'Microphone background noise cancellation'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'High signal-to-noise means retrieved chunks contain dense, relevant facts without excessive filler text.'
+    },
+    {
+      id: 'q-55-20',
+      topicId: 't-55',
+      questionText: 'Which metric measures if all statements in a ground-truth reference answer were retrieved?',
+      options: [
+        'Context Recall',
+        'Token Latency',
+        'Disk Throughput',
+        'Batch Size'
+      ],
+      correctOptionIndex: 0,
+      explanation: 'Context Recall measures the proportion of gold-standard statements successfully captured in retrieved context.'
+    }
   ]
 };
 
@@ -2013,22 +2277,22 @@ export function getQuizForTopic(topicId: string, topicTitle: string): QuizQuesti
 
   return [
     {
-      id: `q-\${topicId}-1`,
+      id: `q-${topicId}-1`,
       topicId: topicId,
-      questionText: `What is the primary core objective of \${topicTitle}?`,
+      questionText: `What is the primary core objective of ${topicTitle}?`,
       options: [
-        `Mastering foundational concepts and practical implementations of \${topicTitle}`,
+        `Mastering foundational concepts and practical implementations of ${topicTitle}`,
         'Replacing traditional software engineering entirely',
         'Bypassing cloud API costs completely',
         'Skipping unit tests and code reviews'
       ],
       correctOptionIndex: 0,
-      explanation: `Understanding \${topicTitle} unlocks efficient, scalable AI developer workflows.`
+      explanation: `Understanding ${topicTitle} unlocks efficient, scalable AI developer workflows.`
     },
     {
-      id: `q-\${topicId}-2`,
+      id: `q-${topicId}-2`,
       topicId: topicId,
-      questionText: `Which best practice should be applied when deploying \${topicTitle} in production?`,
+      questionText: `Which best practice should be applied when deploying ${topicTitle} in production?`,
       options: [
         'Rely exclusively on unverified default settings',
         'Implement robust evaluation metrics, versioning, and security guardrails',
@@ -2039,9 +2303,9 @@ export function getQuizForTopic(topicId: string, topicTitle: string): QuizQuesti
       explanation: 'Production AI deployments require continuous monitoring, evaluation, and strict security hygiene.'
     },
     {
-      id: `q-\${topicId}-3`,
+      id: `q-${topicId}-3`,
       topicId: topicId,
-      questionText: `How does mastering \${topicTitle} accelerate developer productivity?`,
+      questionText: `How does mastering ${topicTitle} accelerate developer productivity?`,
       options: [
         'By eliminating the need to write clean code',
         'By providing structured patterns for context engineering, automation, and reliable AI integration',
@@ -2053,4 +2317,3 @@ export function getQuizForTopic(topicId: string, topicTitle: string): QuizQuesti
     }
   ];
 }
-
