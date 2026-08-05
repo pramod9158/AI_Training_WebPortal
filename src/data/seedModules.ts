@@ -44,36 +44,36 @@ export const LEARNING_PATHS: LearningPath[] = [
     id: 'path-a',
     slug: 'path-a',
     title: 'New to AI Development',
-    description: 'Foundational sequence covering Python, Git, LLM principles, Prompt Engineering, Model APIs, and AI-powered IDEs.',
-    moduleSlugs: ['python-basics', 'git-fundamentals', 'llms', 'prompt-engineering', 'model-providers', 'ai-ides']
+    description: 'Foundational sequence covering Python, Git, Model APIs, Prompt Engineering, LLMs, and AI-powered IDEs.',
+    moduleSlugs: ['python-basics', 'git-fundamentals', 'model-providers', 'prompt-engineering', 'llms', 'ai-ides']
   },
   {
     id: 'path-b',
     slug: 'path-b',
     title: 'Building Production AI Systems',
-    description: 'Advanced track focused on local runtimes, MCP protocol, high-scale Vector Databases, and complex RAG systems.',
-    moduleSlugs: ['local-ai', 'mcp-foundations', 'vector-databases', 'rag-systems']
+    description: 'Advanced track focused on Vector Databases, RAG systems, MCP protocol, and local runtimes.',
+    moduleSlugs: ['vector-databases', 'rag-systems', 'mcp-foundations', 'local-ai']
   }
 ];
 
 export const MODULES: Module[] = [
   {
-    id: '11111111-1111-4111-a111-111111111111',
-    slug: 'llms',
-    title: 'LLMs',
-    description: 'Understand how Large Language Models process data, transformer architecture, inference parameters, and selection strategies.',
-    difficulty: 'Intermediate',
+    id: '66666666-6666-4666-a666-666666666666',
+    slug: 'python-basics',
+    title: 'Python',
+    description: 'Master Python fundamentals, data structures, OOP, file handling, exception safety, and modern dev tools.',
+    difficulty: 'Beginner',
     orderIndex: 1,
-    iconName: 'Brain'
+    iconName: 'Terminal'
   },
   {
-    id: '22222222-2222-4222-a222-222222222222',
-    slug: 'prompt-engineering',
-    title: 'Prompt Engineering',
-    description: 'Master prompt construction, advanced Chain-of-Thought techniques, provider nuances, and security safeguards.',
-    difficulty: 'Intermediate',
+    id: '77777777-7777-4777-a777-777777777777',
+    slug: 'git-fundamentals',
+    title: 'Git',
+    description: 'Learn Git architecture, repository management, branching, merging, conflict resolution, and remote collaboration.',
+    difficulty: 'Beginner',
     orderIndex: 2,
-    iconName: 'Sparkles'
+    iconName: 'GitBranch'
   },
   {
     id: '33333333-3333-4333-a333-333333333333',
@@ -85,49 +85,31 @@ export const MODULES: Module[] = [
     iconName: 'Cpu'
   },
   {
+    id: '22222222-2222-4222-a222-222222222222',
+    slug: 'prompt-engineering',
+    title: 'Prompt Engineering',
+    description: 'Master prompt construction, advanced Chain-of-Thought techniques, provider nuances, and security safeguards.',
+    difficulty: 'Intermediate',
+    orderIndex: 4,
+    iconName: 'Sparkles'
+  },
+  {
+    id: '11111111-1111-4111-a111-111111111111',
+    slug: 'llms',
+    title: 'LLMs',
+    description: 'Understand how Large Language Models process data, transformer architecture, inference parameters, and selection strategies.',
+    difficulty: 'Intermediate',
+    orderIndex: 5,
+    iconName: 'Brain'
+  },
+  {
     id: '44444444-4444-4444-a444-444444444444',
     slug: 'ai-ides',
     title: 'AI-Powered IDEs & Editors',
     description: 'Harness Cursor, Copilot, Antigravity, and Claude IDE for inline editing, context engineering, and automation.',
     difficulty: 'Intermediate',
-    orderIndex: 4,
-    iconName: 'Code2'
-  },
-  {
-    id: '55555555-5555-4555-a555-555555555555',
-    slug: 'local-ai',
-    title: 'Local AI Deployment',
-    description: 'Deploy offline runtimes with Ollama, LM Studio, llama.cpp, quantization trade-offs, local RAG, and GPU containerization.',
-    difficulty: 'Advanced',
-    orderIndex: 5,
-    iconName: 'Server'
-  },
-  {
-    id: '66666666-6666-4666-a666-666666666666',
-    slug: 'python-basics',
-    title: 'Python',
-    description: 'Master Python fundamentals, data structures, OOP, file handling, exception safety, and modern dev tools.',
-    difficulty: 'Beginner',
     orderIndex: 6,
-    iconName: 'Terminal'
-  },
-  {
-    id: '77777777-7777-4777-a777-777777777777',
-    slug: 'git-fundamentals',
-    title: 'Git',
-    description: 'Learn Git architecture, repository management, branching, merging, conflict resolution, and remote collaboration.',
-    difficulty: 'Beginner',
-    orderIndex: 7,
-    iconName: 'GitBranch'
-  },
-  {
-    id: '88888888-8888-4888-a888-888888888888',
-    slug: 'mcp-foundations',
-    title: 'Prompt & MCP Foundations',
-    description: 'Explore Model Context Protocol architecture, stdio/HTTP transports, tools, resources, security, and client integrations.',
-    difficulty: 'Advanced',
-    orderIndex: 8,
-    iconName: 'Layers'
+    iconName: 'Code2'
   },
   {
     id: '99999999-9999-4999-a999-999999999999',
@@ -135,7 +117,7 @@ export const MODULES: Module[] = [
     title: 'Vector Databases',
     description: 'Dive into dense/sparse embeddings, chunking strategies, ANN indexing, hybrid search, and vector storage platforms.',
     difficulty: 'Advanced',
-    orderIndex: 9,
+    orderIndex: 7,
     iconName: 'Database'
   },
   {
@@ -144,7 +126,25 @@ export const MODULES: Module[] = [
     title: 'Retrieval-Augmented Generation (RAG)',
     description: 'Build end-to-end RAG pipelines: document ingestion, hybrid ranking, Graph & Agentic RAG, evaluation, and CI/CD.',
     difficulty: 'Advanced',
-    orderIndex: 10,
+    orderIndex: 8,
     iconName: 'Workflow'
+  },
+  {
+    id: '88888888-8888-4888-a888-888888888888',
+    slug: 'mcp-foundations',
+    title: 'Prompt & MCP Foundations',
+    description: 'Explore Model Context Protocol architecture, stdio/HTTP transports, tools, resources, security, and client integrations.',
+    difficulty: 'Advanced',
+    orderIndex: 9,
+    iconName: 'Layers'
+  },
+  {
+    id: '55555555-5555-4555-a555-555555555555',
+    slug: 'local-ai',
+    title: 'Local AI Deployment',
+    description: 'Deploy offline runtimes with Ollama, LM Studio, llama.cpp, quantization trade-offs, local RAG, and GPU containerization.',
+    difficulty: 'Advanced',
+    orderIndex: 10,
+    iconName: 'Server'
   }
 ];
