@@ -1396,7 +1396,7 @@ Combine sparse keyword search (BM25) with dense semantic search (Vector Cosine) 
     slug: 'grounding-and-evaluation',
     title: 'Grounding & Evaluation',
     description: 'Reducing hallucination via citations, RAGAS, and golden datasets.',
-    videoUrl: 'https://www.youtube.com/embed/5-9jK9qK6G0',
+    videoUrl: 'https://www.youtube.com/embed/xV_xYa8iNxA',
     videoProvider: 'youtube',
     orderIndex: 55,
     estimatedMinutes: 20,
