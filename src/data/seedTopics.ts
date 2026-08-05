@@ -1400,13 +1400,206 @@ Combine sparse keyword search (BM25) with dense semantic search (Vector Cosine) 
     videoProvider: 'youtube',
     orderIndex: 55,
     estimatedMinutes: 20,
-    textContent: `# Evaluating RAG Performance (RAGAS Framework)
+    textContent: `# 🧠 Masterclass: RAG Grounding, Evaluation & RAGAS Framework
 
-Measure RAG systems across 4 key dimensions:
-1. **Faithfulness**: Are facts in the generated answer strictly grounded in retrieved contexts?
-2. **Answer Relevance**: Does the answer directly address the user query?
-3. **Context Recall**: Were all relevant gold-standard facts successfully retrieved?
-4. **Context Precision**: Signal-to-noise ratio of retrieved chunks.
+> [!IMPORTANT]
+> **Executive Summary**: Building a Retrieval-Augmented Generation (RAG) prototype takes hours; bringing it to **enterprise production quality** requires rigorous evaluation. Ungrounded RAG systems hallucinate, cite irrelevant passages, and erode user trust. By adopting the **RAG Triad** framework and **RAGAS (RAG Automated Evaluation System)**, developers can systematically measure and optimize retrieval precision, answer faithfulness, and response relevance.
+
+---
+
+## 🗺️ Architectural Mind Map: The RAG Evaluation Triad Spectrum
+
+\`\`\`text
+                               ┌────────────────────────────────────────┐
+                               │           THE RAG TRIAD EVALUATION     │
+                               └───────────────────┬────────────────────┘
+                                                   │
+                ┌──────────────────────────────────┼──────────────────────────────────┐
+                │                                  │                                  │
+     ┌──────────▼──────────┐            ┌──────────▼──────────┐            ┌──────────▼──────────┐
+     │    FAITHFULNESS     │            │  ANSWER RELEVANCE   │            │  CONTEXT PRECISION  │
+     │  Is answer grounded │            │ Does response match │            │ Signal vs. Noise in │
+     │  in retrieved docs? │            │ human query intent? │            │  retrieved chunks?  │
+     └──────────┬──────────┘            └──────────┬──────────┘            └──────────┬──────────┘
+                │                                  │                                  │
+          Prevents                      Eliminates                        Optimizes
+       Hallucinations                  Off-Topic Answers                Vector Retrieval
+\`\`\`
+
+---
+
+## 📖 Chapter 1: The Core RAG Evaluation Metrics (RAGAS Framework)
+
+### 1.1 Faithfulness (Grounding Score)
+Faithfulness measures whether the claims made in the generated output are strictly derived from the retrieved context passages.
+
+$$\text{Faithfulness} = \frac{\text{Number of Output Claims Supported by Context}}{\text{Total Number of Output Claims}}$$
+
+\`\`\`python
+# Conceptual Verification
+claims = ["Python was created by Guido van Rossum", "Python was released in 1999"]
+context = "Guido van Rossum developed Python, which was first released in 1991."
+# Claim 1: Supported ✅
+# Claim 2: Contradicted ❌
+# Faithfulness = 1 / 2 = 0.50 (50%)
+\`\`\`
+
+### 1.2 Answer Relevance
+Answer Relevance evaluates how directly the generated response addresses the user prompt, regardless of whether facts are true.
+
+\`\`\`text
+User Query: "How do I set up environment variables in Next.js?"
+Low Relevance Answer: "Next.js is a React framework created by Vercel in 2016." (Off-topic)
+High Relevance Answer: "Create a .env.local file in your root folder and add NEXT_PUBLIC_ keys." (Direct)
+\`\`\`
+
+### 1.3 Context Precision & Context Recall
+- **Context Precision**: The proportion of retrieved chunks that are actually relevant to answering the query (Higher = Less Noise).
+- **Context Recall**: The proportion of gold-standard ground truth statements present in the retrieved chunks (Higher = Complete Information).
+
+---
+
+## ⚡ Chapter 2: Explicit Citation & Inline Grounding Architecture
+
+To make RAG responses verifiable, systems must emit explicit document citations \`[Doc 1, Section 2.3]\`.
+
+\`\`\`xml
+<system_instruction>
+You are an enterprise knowledge assistant. Answer questions strictly using the provided <retrieved_context>.
+For every claim you make, append an inline citation referencing the source document ID.
+If the answer cannot be found in <retrieved_context>, state: "I cannot answer based on the provided documents."
+</system_instruction>
+
+<retrieved_context>
+[Doc 101]: "Waynautic Academy offers 10 structured AI development modules."
+[Doc 102]: "Students earn verifiable PDF certificates upon completing learning paths."
+</retrieved_context>
+
+<user_query>
+"What credentials do students earn at Waynautic Academy?"
+</user_query>
+
+<assistant_response>
+Students earn verifiable PDF certificates upon completing learning paths [Doc 102].
+</assistant_response>
+\`\`\`
+
+> [!TIP]
+> **Citation Verification Guardrail**: Use a secondary fast LLM judge to verify that every \`[Doc ID]\` tag actually supports the preceding sentence before sending the response to the user.
+
+---
+
+## 🌲 Chapter 3: Generating Synthetic Golden Datasets
+
+Evaluating RAG without a dataset is impossible. Modern AI engineering generates **Synthetic Golden Datasets** from raw documents using LLM query generation:
+
+\`\`\`text
+               ┌────────────────────────────────────────────────────────┐
+               │              RAW DOCUMENTATION CHUNKS                   │
+               └───────────────────────────┬────────────────────────────┘
+                                           │
+                                  [LLM Generator]
+                                           │
+                ┌──────────────────────────┴──────────────────────────┐
+                │                                                     │
+     ┌──────────▼──────────┐                               ┌──────────▼──────────┐
+     │  Generated Queries  │                               │ Ground Truth Answer │
+     │  (Simple, Multi-    │                               │ Synthesized from    │
+     │   hop, Reasoning)   │                               │    Chunk Context    │
+     └──────────┬──────────┘                               └──────────┬──────────┘
+                │                                                     │
+                └──────────────────────────┬──────────────────────────┘
+                                           │
+                                ┌──────────▼──────────┐
+                                │ GOLDEN DATASET (CSV)│
+                                └─────────────────────┘
+\`\`\`
+
+---
+
+## 💻 Chapter 4: Automated RAGAS Python Evaluation Script
+
+\`\`\`python
+import os
+from ragas import evaluate
+from ragas.metrics import (
+    faithfulness,
+    answer_relevance,
+    context_precision,
+    context_recall
+)
+from datasets import Dataset
+
+# Prepare evaluation data payload
+eval_samples = {
+    'question': [
+        "What is Chain-of-Thought prompting?",
+        "What vector metrics are used for similarity search?"
+    ],
+    'contexts': [
+        ["CoT forces LLMs to write intermediate reasoning steps before giving the answer."],
+        ["Cosine similarity, Euclidean distance, and Dot Product measure vector proximity."]
+    ],
+    'answer': [
+        "Chain-of-Thought prompting forces models to output intermediate reasoning steps.",
+        "Common vector metrics include Cosine similarity, Euclidean distance, and Dot Product."
+    ],
+    'ground_truth': [
+        "Chain-of-Thought forces LLMs to output intermediate reasoning steps before final answers.",
+        "Vector similarity search uses Cosine, Euclidean, and Dot Product metrics."
+    ]
+}
+
+# Convert to HuggingFace Dataset
+dataset = Dataset.from_dict(eval_samples)
+
+# Run RAGAS Automated Evaluation
+results = evaluate(
+    dataset=dataset,
+    metrics=[faithfulness, answer_relevance, context_precision, context_recall]
+)
+
+print("RAGAS Scorecard Results:")
+print(results)
+\`\`\`
+
+---
+
+## 📊 Chapter 5: RAG Evaluation Metrics Comparison Matrix
+
+| Metric | Target Metric | Evaluated Relationship | Primary Danger if Low | Optimization Strategy |
+| :--- | :--- | :--- | :--- | :--- |
+| **Faithfulness** | > 0.90 | Answer ↔ Context | Hallucinations & False Claims | Strict XML System Constraints |
+| **Answer Relevance** | > 0.85 | Answer ↔ Question | Off-topic or Rambling Answers | Query Rewriting & Prompt Tuning |
+| **Context Precision** | > 0.80 | Context ↔ Question | High Latency & Token Waste | Cross-Encoder Re-Ranking |
+| **Context Recall** | > 0.85 | Context ↔ Ground Truth | Incomplete or Missing Answers | Larger Chunk Size & Hybrid Search |
+
+---
+
+## 🛡️ Chapter 6: Continuous Integration & CI/CD Regression Guardrails
+
+\`\`\`yaml
+# GitHub Actions RAG Evaluation Workflow (.github/workflows/rag_eval.yml)
+name: RAG Evaluation Regression Test
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  evaluate_rag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Run RAGAS Golden Evaluation
+        run: |
+          pip install ragas datasets openai
+          python scripts/evaluate_rag.py --threshold 0.85
+\`\`\`
 `
   },
   {
