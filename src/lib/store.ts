@@ -53,17 +53,31 @@ export async function saveProfile(profile: Partial<UserProfileState>) {
   window.dispatchEvent(new Event('waynautic_storage_change'));
 
   if (isSupabaseConfigured) {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      await supabase.from('user_profiles').upsert({
-        id: session.user.id,
-        display_name: updated.displayName,
-        avatar_url: updated.avatarUrl,
-        selected_path: updated.selectedPath,
-        last_accessed_topic_id: updated.lastAccessedTopicId,
-        last_accessed_at: updated.lastAccessedAt || new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      });
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const payload: Record<string, string | undefined> = {
+          id: session.user.id,
+          display_name: updated.displayName,
+          avatar_url: updated.avatarUrl,
+          selected_path: updated.selectedPath,
+          updated_at: new Date().toISOString()
+        };
+
+        if (updated.lastAccessedTopicId !== undefined) {
+          payload.last_accessed_topic_id = updated.lastAccessedTopicId;
+        }
+        if (updated.lastAccessedAt !== undefined) {
+          payload.last_accessed_at = updated.lastAccessedAt;
+        }
+
+        const { error } = await supabase.from('user_profiles').upsert(payload);
+        if (error) {
+          console.warn('Supabase user_profiles upsert note:', error.message);
+        }
+      }
+    } catch (err) {
+      console.warn('Error updating profile in Supabase:', err);
     }
   }
 }
