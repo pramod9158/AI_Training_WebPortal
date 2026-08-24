@@ -17,8 +17,7 @@ import {
   CheckCircle2, 
   ArrowLeft, 
   ArrowRight,
-  Clock,
-  Sparkles
+  Clock
 } from 'lucide-react';
 
 export default function TopicWorkspacePage() {
@@ -34,12 +33,14 @@ export default function TopicWorkspacePage() {
   const topic = TOPICS.find((t) => t.moduleSlug === moduleSlug && t.slug === topicSlug);
   const moduleData = MODULES.find((m) => m.slug === moduleSlug);
 
+  const topicId = topic?.id;
+
   // Record last accessed topic for Resume Learning
   React.useEffect(() => {
-    if (topic) {
-      saveLastAccessedTopic(topic.id);
+    if (topicId) {
+      saveLastAccessedTopic(topicId);
     }
-  }, [topic?.id]);
+  }, [topicId, saveLastAccessedTopic]);
 
   if (!topic || !moduleData) {
     return notFound();

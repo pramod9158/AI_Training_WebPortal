@@ -97,8 +97,8 @@ export async function saveProgress(topicId: string, status: 'in_progress' | 'com
   const current = loadProgress();
   const prev = current[topicId];
   
-  const updatedStatus = status === 'completed' || prev?.status === 'completed' ? 'completed' : status;
-  const updatedCompletedAt = status === 'completed' ? new Date().toISOString() : prev?.completedAt;
+  const updatedStatus = status;
+  const updatedCompletedAt = status === 'completed' ? (prev?.completedAt || new Date().toISOString()) : undefined;
   const updatedScore = score !== undefined ? Math.max(score, prev?.score || 0) : prev?.score;
 
   current[topicId] = {
@@ -115,21 +115,23 @@ export async function saveProgress(topicId: string, status: 'in_progress' | 'com
   window.dispatchEvent(new Event('waynautic_storage_change'));
 
   if (isSupabaseConfigured) {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      // Find UUID for this topic slug/id if mapped
-      const { data: dbTopic } = await supabase.from('topics').select('id').eq('slug', topicId).single();
-      const dbTopicId = dbTopic?.id;
-
-      if (dbTopicId) {
-        await supabase.from('user_progress').upsert({
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { error } = await supabase.from('user_progress').upsert({
           user_id: session.user.id,
-          topic_id: dbTopicId,
+          topic_id: topicId,
           status: updatedStatus,
           completed_at: updatedCompletedAt,
           updated_at: new Date().toISOString()
         }, { onConflict: 'user_id,topic_id' });
+
+        if (error) {
+          console.error('Supabase user_progress upsert error:', error);
+        }
       }
+    } catch (err) {
+      console.error('Error saving progress to Supabase:', err);
     }
   }
 }
@@ -144,17 +146,13 @@ export async function saveQuizAttempt(topicId: string, score: number, totalQuest
   if (isSupabaseConfigured) {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {
-      const { data: dbTopic } = await supabase.from('topics').select('id').eq('slug', topicId).single();
-      const dbTopicId = dbTopic?.id;
-      if (dbTopicId) {
-        await supabase.from('user_quiz_attempts').insert({
-          user_id: session.user.id,
-          topic_id: dbTopicId,
-          score,
-          total_questions: totalQuestions,
-          attempted_at: new Date().toISOString()
-        });
-      }
+      await supabase.from('user_quiz_attempts').insert({
+        user_id: session.user.id,
+        topic_id: topicId,
+        score,
+        total_questions: totalQuestions,
+        attempted_at: new Date().toISOString()
+      });
     }
   }
 }
@@ -237,14 +235,10 @@ export async function toggleBookmark(topicId: string): Promise<boolean> {
   if (isSupabaseConfigured) {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {
-      const { data: dbTopic } = await supabase.from('topics').select('id').eq('slug', topicId).single();
-      const dbTopicId = dbTopic?.id;
-      if (dbTopicId) {
-        if (exists) {
-          await supabase.from('user_bookmarks').delete().eq('user_id', session.user.id).eq('topic_id', dbTopicId);
-        } else {
-          await supabase.from('user_bookmarks').insert({ user_id: session.user.id, topic_id: dbTopicId });
-        }
+      if (exists) {
+        await supabase.from('user_bookmarks').delete().eq('user_id', session.user.id).eq('topic_id', topicId);
+      } else {
+        await supabase.from('user_bookmarks').insert({ user_id: session.user.id, topic_id: topicId });
       }
     }
   }
@@ -370,15 +364,15 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
     // 2. Fetch User Progress from DB
     const { data: dbProgress } = await supabase
       .from('user_progress')
-      .select('topic_id, status, completed_at, topics(slug)')
+      .select('topic_id, status, completed_at')
       .eq('user_id', user.id);
 
     if (dbProgress && dbProgress.length > 0) {
       const localProgress = loadProgress();
       const updatedProgress = { ...localProgress };
 
-      dbProgress.forEach((item: { topic_id: string; status: 'not_started' | 'in_progress' | 'completed'; completed_at?: string; topics?: { slug: string } | null }) => {
-        const topicSlug = item.topics?.slug || item.topic_id;
+      dbProgress.forEach((item: { topic_id: string; status: 'not_started' | 'in_progress' | 'completed'; completed_at?: string }) => {
+        const topicSlug = item.topic_id;
         if (topicSlug) {
           updatedProgress[topicSlug] = {
             topicId: topicSlug,
@@ -394,12 +388,12 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
     // 3. Fetch User Bookmarks from DB
     const { data: dbBookmarks } = await supabase
       .from('user_bookmarks')
-      .select('topic_id, topics(slug)')
+      .select('topic_id')
       .eq('user_id', user.id);
 
     if (dbBookmarks && dbBookmarks.length > 0) {
       const fetchedBookmarkSlugs = dbBookmarks
-        .map((b: { topic_id: string; topics?: { slug: string } | null }) => b.topics?.slug || b.topic_id)
+        .map((b: { topic_id: string }) => b.topic_id)
         .filter(Boolean);
       localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(fetchedBookmarkSlugs));
     }

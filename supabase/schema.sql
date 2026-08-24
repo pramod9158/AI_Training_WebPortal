@@ -57,7 +57,7 @@ create table if not exists public.user_profiles (
 create table if not exists public.user_progress (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
-  topic_id uuid not null references public.topics(id) on delete cascade,
+  topic_id text not null,
   status text not null check (status in ('not_started', 'in_progress', 'completed')),
   completed_at timestamptz,
   updated_at timestamptz default now(),
@@ -68,7 +68,7 @@ create table if not exists public.user_progress (
 create table if not exists public.user_quiz_attempts (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
-  topic_id uuid not null references public.topics(id) on delete cascade,
+  topic_id text not null,
   score integer not null,
   total_questions integer not null,
   attempted_at timestamptz default now()
@@ -96,7 +96,7 @@ create table if not exists public.learning_paths (
 create table if not exists public.user_bookmarks (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
-  topic_id uuid not null references public.topics(id) on delete cascade,
+  topic_id text not null,
   created_at timestamptz default now(),
   unique(user_id, topic_id)
 );

@@ -45,10 +45,13 @@ export async function signUpWithEmail(email: string, password: string, displayNa
     return { data: { user: { id: 'demo-user-id', email } }, error: null };
   }
 
+  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined;
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
+      emailRedirectTo: redirectTo,
       data: {
         full_name: displayName || email.split('@')[0],
       },
