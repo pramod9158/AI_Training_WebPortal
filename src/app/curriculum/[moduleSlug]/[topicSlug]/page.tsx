@@ -107,13 +107,13 @@ export default function TopicWorkspacePage() {
           {/* Mark Complete Button */}
           <button
             onClick={() => markTopicProgress(topic.id, isCompleted ? 'in_progress' : 'completed')}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border text-xs font-bold transition-all ${
+            className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg border text-xs font-bold transition-all shadow-md active:scale-95 ${
               isCompleted
-                ? 'bg-emerald-950 text-emerald-400 border-emerald-500/40'
-                : 'bg-slate-900 text-slate-300 border-slate-700 hover:border-cyan-500/50'
+                ? 'bg-emerald-950 text-emerald-300 border-emerald-500/60 shadow-emerald-500/20'
+                : 'bg-slate-900 text-slate-300 border-slate-700 hover:border-cyan-500/50 hover:text-white'
             }`}
           >
-            <CheckCircle2 className="w-3.5 h-3.5" />
+            <CheckCircle2 className={`w-3.5 h-3.5 ${isCompleted ? 'text-emerald-400 fill-emerald-400/20' : 'text-slate-400'}`} />
             <span>{isCompleted ? 'Completed ✓' : 'Mark as Complete'}</span>
           </button>
 

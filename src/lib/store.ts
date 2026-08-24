@@ -441,6 +441,12 @@ export function useWaynauticStore() {
       }
     });
 
+    const handleStorage = () => reloadData();
+    window.addEventListener('waynautic_storage_change', handleStorage);
+    window.addEventListener('storage', handleStorage);
+
+    let authUnsubscribe: (() => void) | undefined;
+
     // Sync with Supabase on mount if logged in
     if (isSupabaseConfigured) {
       supabase.auth.getSession().then(({ data: { session } }) => {
@@ -458,15 +464,13 @@ export function useWaynauticStore() {
         }
       });
 
-      return () => {
+      authUnsubscribe = () => {
         authListener.subscription.unsubscribe();
       };
     }
 
-    const handleStorage = () => reloadData();
-    window.addEventListener('waynautic_storage_change', handleStorage);
-    window.addEventListener('storage', handleStorage);
     return () => {
+      if (authUnsubscribe) authUnsubscribe();
       window.removeEventListener('waynautic_storage_change', handleStorage);
       window.removeEventListener('storage', handleStorage);
     };
