@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, XCircle, HelpCircle, Award, RotateCcw, ArrowRight, Sparkles } from 'lucide-react';
+import { CheckCircle2, HelpCircle, Award, RotateCcw, ArrowRight } from 'lucide-react';
 import { QuizQuestion } from '@/data/seedModules';
 
 interface QuizEngineProps {

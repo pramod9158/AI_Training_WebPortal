@@ -9,13 +9,11 @@ import {
   Flame, 
   Award, 
   Bookmark, 
-  CheckCircle2, 
   Play, 
   Trophy, 
   Zap, 
   Sparkles, 
-  ArrowRight,
-  BookOpen
+  ArrowRight
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -28,8 +26,8 @@ export default function DashboardPage() {
   const overallPercent = Math.round((completedTopicsCount / totalTopicsCount) * 100);
 
   // Resume last active topic or default to topic 1
-  const lastCompletedId = completedTopicIds[completedTopicIds.length - 1] || 't-1';
-  const continueTopic = TOPICS.find(t => t.id === lastCompletedId) || TOPICS[0];
+  const resumeTopicId = profile.lastAccessedTopicId || completedTopicIds[completedTopicIds.length - 1] || 't-1';
+  const continueTopic = TOPICS.find(t => t.id === resumeTopicId || t.slug === resumeTopicId) || TOPICS[0];
 
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">

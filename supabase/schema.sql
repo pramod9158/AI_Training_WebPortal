@@ -47,6 +47,8 @@ create table if not exists public.user_profiles (
   display_name text,
   avatar_url text,
   selected_path text default 'path-a',
+  last_accessed_topic_id text,
+  last_accessed_at timestamptz,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );

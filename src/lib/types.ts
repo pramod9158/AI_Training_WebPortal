@@ -23,9 +23,14 @@ export interface UserStreak {
 }
 
 export interface UserProfileState {
+  userId?: string;
+  email?: string;
   displayName: string;
   avatarUrl: string;
   selectedPath: string; // 'path-a' | 'path-b' | 'free'
   hasCompletedOnboarding: boolean;
   theme: Theme;
+  lastAccessedTopicId?: string;
+  lastAccessedAt?: string;
+  lastActivityTimestamp?: number;
 }

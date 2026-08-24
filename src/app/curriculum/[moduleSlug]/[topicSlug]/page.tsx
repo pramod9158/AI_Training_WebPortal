@@ -29,10 +29,17 @@ export default function TopicWorkspacePage() {
   const moduleSlug = params?.moduleSlug as string;
   const topicSlug = params?.topicSlug as string;
 
-  const { progress, bookmarks, markTopicProgress, toggleBookmarkTopic } = useWaynauticStore();
+  const { progress, bookmarks, markTopicProgress, saveQuizAttempt, saveLastAccessedTopic, toggleBookmarkTopic } = useWaynauticStore();
 
   const topic = TOPICS.find((t) => t.moduleSlug === moduleSlug && t.slug === topicSlug);
   const moduleData = MODULES.find((m) => m.slug === moduleSlug);
+
+  // Record last accessed topic for Resume Learning
+  React.useEffect(() => {
+    if (topic) {
+      saveLastAccessedTopic(topic.id);
+    }
+  }, [topic?.id]);
 
   if (!topic || !moduleData) {
     return notFound();
@@ -59,6 +66,7 @@ export default function TopicWorkspacePage() {
   };
 
   const handleQuizComplete = (scorePercent: number) => {
+    saveQuizAttempt(topic.id, Math.round((scorePercent / 100) * quizQuestions.length), quizQuestions.length);
     if (scorePercent >= 70) {
       markTopicProgress(topic.id, 'completed', scorePercent);
     } else {

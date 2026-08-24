@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { Award, Download, X, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
+import React, { useRef, useState, useMemo } from 'react';
+import { Award, Download, X, ShieldCheck, Sparkles } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -22,6 +22,10 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
 }) => {
   const certRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const verificationId = useMemo(() => {
+    const hash = userName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 100000);
+    return (hash * 157) % 899999 + 100000;
+  }, [userName]);
 
   if (!isOpen) return null;
 
@@ -110,7 +114,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
 
               <div className="flex items-center space-x-2 text-emerald-400 text-xs font-mono">
                 <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                <span>Verification ID: WAC-{Math.floor(100000 + Math.random() * 900000)}</span>
+                <span>Verification ID: WAC-{verificationId}</span>
               </div>
 
               <div className="text-right">

@@ -32,7 +32,7 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({ content }) => {
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
-            code({ node, inline, className, children, ...props }: any) {
+            code({ inline, children, ...props }: React.ComponentPropsWithoutRef<'code'> & { inline?: boolean }) {
               const codeString = String(children).replace(/\n$/, '');
               if (inline) {
                 return (

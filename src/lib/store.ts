@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { UserProgress, UserBadge, UserStreak, UserProfileState } from './types';
 import { MODULES } from '../data/seedModules';
 import { TOPICS } from '../data/seedTopics';
+import { supabase, isSupabaseConfigured } from './supabaseClient';
+import { checkAndHandleInactivityTimeout, recordUserActivity, signOutUser } from './supabaseAuth';
 
 const PROGRESS_KEY = 'waynautic_user_progress';
 const BADGES_KEY = 'waynautic_user_badges';
@@ -42,12 +44,38 @@ export function loadProfile(): UserProfileState {
   };
 }
 
-export function saveProfile(profile: Partial<UserProfileState>) {
+export async function saveProfile(profile: Partial<UserProfileState>) {
   if (typeof window === 'undefined') return;
+  recordUserActivity();
   const current = loadProfile();
   const updated = { ...current, ...profile };
   localStorage.setItem(PROFILE_KEY, JSON.stringify(updated));
   window.dispatchEvent(new Event('waynautic_storage_change'));
+
+  if (isSupabaseConfigured) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      await supabase.from('user_profiles').upsert({
+        id: session.user.id,
+        display_name: updated.displayName,
+        avatar_url: updated.avatarUrl,
+        selected_path: updated.selectedPath,
+        last_accessed_topic_id: updated.lastAccessedTopicId,
+        last_accessed_at: updated.lastAccessedAt || new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+    }
+  }
+}
+
+export function saveLastAccessedTopic(topicId: string) {
+  if (typeof window === 'undefined') return;
+  recordUserActivity();
+  const now = new Date().toISOString();
+  saveProfile({
+    lastAccessedTopicId: topicId,
+    lastAccessedAt: now
+  });
 }
 
 export function loadProgress(): Record<string, UserProgress> {
@@ -63,23 +91,72 @@ export function loadProgress(): Record<string, UserProgress> {
   return {};
 }
 
-export function saveProgress(topicId: string, status: 'in_progress' | 'completed', score?: number) {
+export async function saveProgress(topicId: string, status: 'in_progress' | 'completed', score?: number) {
   if (typeof window === 'undefined') return;
+  recordUserActivity();
   const current = loadProgress();
   const prev = current[topicId];
   
-  // Update topic status
+  const updatedStatus = status === 'completed' || prev?.status === 'completed' ? 'completed' : status;
+  const updatedCompletedAt = status === 'completed' ? new Date().toISOString() : prev?.completedAt;
+  const updatedScore = score !== undefined ? Math.max(score, prev?.score || 0) : prev?.score;
+
   current[topicId] = {
     topicId,
-    status: status === 'completed' || prev?.status === 'completed' ? 'completed' : status,
-    completedAt: status === 'completed' ? new Date().toISOString() : prev?.completedAt,
-    score: score !== undefined ? Math.max(score, prev?.score || 0) : prev?.score
+    status: updatedStatus,
+    completedAt: updatedCompletedAt,
+    score: updatedScore
   };
 
   localStorage.setItem(PROGRESS_KEY, JSON.stringify(current));
   recordActivity();
   checkAndAwardBadges(current);
+  saveLastAccessedTopic(topicId);
   window.dispatchEvent(new Event('waynautic_storage_change'));
+
+  if (isSupabaseConfigured) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      // Find UUID for this topic slug/id if mapped
+      const { data: dbTopic } = await supabase.from('topics').select('id').eq('slug', topicId).single();
+      const dbTopicId = dbTopic?.id;
+
+      if (dbTopicId) {
+        await supabase.from('user_progress').upsert({
+          user_id: session.user.id,
+          topic_id: dbTopicId,
+          status: updatedStatus,
+          completed_at: updatedCompletedAt,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id,topic_id' });
+      }
+    }
+  }
+}
+
+export async function saveQuizAttempt(topicId: string, score: number, totalQuestions: number) {
+  if (typeof window === 'undefined') return;
+  recordUserActivity();
+  
+  // Save progress score locally
+  await saveProgress(topicId, 'completed', Math.round((score / totalQuestions) * 100));
+
+  if (isSupabaseConfigured) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      const { data: dbTopic } = await supabase.from('topics').select('id').eq('slug', topicId).single();
+      const dbTopicId = dbTopic?.id;
+      if (dbTopicId) {
+        await supabase.from('user_quiz_attempts').insert({
+          user_id: session.user.id,
+          topic_id: dbTopicId,
+          score,
+          total_questions: totalQuestions,
+          attempted_at: new Date().toISOString()
+        });
+      }
+    }
+  }
 }
 
 export function loadStreak(): UserStreak {
@@ -98,7 +175,6 @@ export function loadStreak(): UserStreak {
       } else if (data.lastActiveDate === yesterday) {
         return data;
       } else {
-        // Streak broken if missing a day
         return { currentStreak: 0, longestStreak: data.longestStreak, lastActiveDate: data.lastActiveDate };
       }
     } catch (e) {
@@ -144,8 +220,9 @@ export function loadBookmarks(): string[] {
   return [];
 }
 
-export function toggleBookmark(topicId: string): boolean {
+export async function toggleBookmark(topicId: string): Promise<boolean> {
   if (typeof window === 'undefined') return false;
+  recordUserActivity();
   const current = loadBookmarks();
   const exists = current.includes(topicId);
   let updated: string[];
@@ -156,6 +233,22 @@ export function toggleBookmark(topicId: string): boolean {
   }
   localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(updated));
   window.dispatchEvent(new Event('waynautic_storage_change'));
+
+  if (isSupabaseConfigured) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      const { data: dbTopic } = await supabase.from('topics').select('id').eq('slug', topicId).single();
+      const dbTopicId = dbTopic?.id;
+      if (dbTopicId) {
+        if (exists) {
+          await supabase.from('user_bookmarks').delete().eq('user_id', session.user.id).eq('topic_id', dbTopicId);
+        } else {
+          await supabase.from('user_bookmarks').insert({ user_id: session.user.id, topic_id: dbTopicId });
+        }
+      }
+    }
+  }
+
   return !exists;
 }
 
@@ -172,7 +265,7 @@ export function loadBadges(): UserBadge[] {
   return [];
 }
 
-export function checkAndAwardBadges(progressMap: Record<string, UserProgress>) {
+export async function checkAndAwardBadges(progressMap: Record<string, UserProgress>) {
   const currentBadges = loadBadges();
   const earnedTypes = new Set(currentBadges.map(b => b.badgeType));
   const newBadges: UserBadge[] = [...currentBadges];
@@ -223,15 +316,106 @@ export function checkAndAwardBadges(progressMap: Record<string, UserProgress>) {
 
   if (newBadges.length > currentBadges.length) {
     localStorage.setItem(BADGES_KEY, JSON.stringify(newBadges));
+    
+    if (isSupabaseConfigured) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        for (const b of newBadges) {
+          await supabase.from('user_badges').upsert({
+            user_id: session.user.id,
+            badge_type: b.badgeType,
+            earned_at: b.earnedAt
+          }, { onConflict: 'user_id,badge_type' });
+        }
+      }
+    }
+  }
+}
+
+export async function fetchAndSyncCloudUser(user: { id: string; email?: string }) {
+  if (typeof window === 'undefined' || !isSupabaseConfigured) return;
+
+  try {
+    // 1. Fetch User Profile
+    const { data: profileData } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (profileData) {
+      saveProfile({
+        userId: user.id,
+        email: user.email,
+        displayName: profileData.display_name || user.email?.split('@')[0] || 'Developer',
+        avatarUrl: profileData.avatar_url || '',
+        selectedPath: profileData.selected_path || 'path-a',
+        lastAccessedTopicId: profileData.last_accessed_topic_id || undefined,
+        lastAccessedAt: profileData.last_accessed_at || undefined
+      });
+    } else {
+      // Initialize profile if not present
+      await supabase.from('user_profiles').upsert({
+        id: user.id,
+        display_name: user.email?.split('@')[0] || 'Developer',
+        selected_path: 'path-a'
+      });
+      saveProfile({
+        userId: user.id,
+        email: user.email,
+        displayName: user.email?.split('@')[0] || 'Developer'
+      });
+    }
+
+    // 2. Fetch User Progress from DB
+    const { data: dbProgress } = await supabase
+      .from('user_progress')
+      .select('topic_id, status, completed_at, topics(slug)')
+      .eq('user_id', user.id);
+
+    if (dbProgress && dbProgress.length > 0) {
+      const localProgress = loadProgress();
+      const updatedProgress = { ...localProgress };
+
+      dbProgress.forEach((item: { topic_id: string; status: 'not_started' | 'in_progress' | 'completed'; completed_at?: string; topics?: { slug: string } | null }) => {
+        const topicSlug = item.topics?.slug || item.topic_id;
+        if (topicSlug) {
+          updatedProgress[topicSlug] = {
+            topicId: topicSlug,
+            status: item.status,
+            completedAt: item.completed_at
+          };
+        }
+      });
+
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(updatedProgress));
+    }
+
+    // 3. Fetch User Bookmarks from DB
+    const { data: dbBookmarks } = await supabase
+      .from('user_bookmarks')
+      .select('topic_id, topics(slug)')
+      .eq('user_id', user.id);
+
+    if (dbBookmarks && dbBookmarks.length > 0) {
+      const fetchedBookmarkSlugs = dbBookmarks
+        .map((b: { topic_id: string; topics?: { slug: string } | null }) => b.topics?.slug || b.topic_id)
+        .filter(Boolean);
+      localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(fetchedBookmarkSlugs));
+    }
+
+    window.dispatchEvent(new Event('waynautic_storage_change'));
+  } catch (err) {
+    console.error('Error syncing cloud user data:', err);
   }
 }
 
 export function useWaynauticStore() {
-  const [profile, setProfileState] = useState<UserProfileState>(loadProfile());
-  const [progress, setProgressState] = useState<Record<string, UserProgress>>({});
-  const [streak, setStreakState] = useState<UserStreak>({ currentStreak: 1, longestStreak: 1, lastActiveDate: getTodayDateString() });
-  const [bookmarks, setBookmarksState] = useState<string[]>([]);
-  const [badges, setBadgesState] = useState<UserBadge[]>([]);
+  const [profile, setProfileState] = useState<UserProfileState>(() => loadProfile());
+  const [progress, setProgressState] = useState<Record<string, UserProgress>>(() => loadProgress());
+  const [streak, setStreakState] = useState<UserStreak>(() => loadStreak());
+  const [bookmarks, setBookmarksState] = useState<string[]>(() => loadBookmarks());
+  const [badges, setBadgesState] = useState<UserBadge[]>(() => loadBadges());
 
   const reloadData = () => {
     setProfileState(loadProfile());
@@ -242,7 +426,35 @@ export function useWaynauticStore() {
   };
 
   useEffect(() => {
-    reloadData();
+    // Check session expiration on mount
+    checkAndHandleInactivityTimeout().then((expired) => {
+      if (expired) {
+        reloadData();
+      }
+    });
+
+    // Sync with Supabase on mount if logged in
+    if (isSupabaseConfigured) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          fetchAndSyncCloudUser(session.user);
+        }
+      });
+
+      const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+        if (session?.user) {
+          fetchAndSyncCloudUser(session.user);
+        } else if (event === 'SIGNED_OUT') {
+          saveProfile({ userId: undefined, email: undefined });
+          reloadData();
+        }
+      });
+
+      return () => {
+        authListener.subscription.unsubscribe();
+      };
+    }
+
     const handleStorage = () => reloadData();
     window.addEventListener('waynautic_storage_change', handleStorage);
     window.addEventListener('storage', handleStorage);
@@ -260,7 +472,10 @@ export function useWaynauticStore() {
     badges,
     updateProfile: saveProfile,
     markTopicProgress: saveProgress,
+    saveQuizAttempt,
+    saveLastAccessedTopic,
     toggleBookmarkTopic: toggleBookmark,
+    signOut: signOutUser,
     refresh: reloadData
   };
 }
