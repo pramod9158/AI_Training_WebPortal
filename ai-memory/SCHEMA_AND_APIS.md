@@ -26,17 +26,17 @@ erDiagram
 
 ### Table Definitions & Purposes
 
-| Table Name | Primary Key | Foreign Keys | Purpose |
+| Table Name | Primary Key | Foreign Keys / Types | Purpose |
 | :--- | :--- | :--- | :--- |
 | `public.modules` | `id (UUID)` | None | Defines the 10 curriculum modules, ordered sequence, slugs, descriptions, difficulty (`Beginner`, `Intermediate`, `Advanced`), and icon identifiers. |
 | `public.topics` | `id (UUID)` | `module_id` &rarr; `public.modules(id)` [ON DELETE CASCADE] | Stores individual lesson topics (56 total), video stream URLs, provider type, order index, rich markdown content, and estimated completion minutes. |
 | `public.quiz_questions` | `id (UUID)` | `topic_id` &rarr; `public.topics(id)` [ON DELETE CASCADE] | Multi-question quiz banks per topic. Stores question text, `options (JSONB)` string array, `correct_option_index`, and technical explanations. |
-| `public.user_profiles` | `id (UUID)` | `id` &rarr; `auth.users(id)` [ON DELETE CASCADE] | User profile metadata (display name, avatar URL, selected learning path `path-a` / `path-b`, timestamps). |
-| `public.user_progress` | `id (UUID)` | `user_id` &rarr; `auth.users(id)`, `topic_id` &rarr; `public.topics(id)` | Tracks completion state per user per topic (`not_started`, `in_progress`, `completed`), completion timestamp. Unique on `(user_id, topic_id)`. |
-| `public.user_quiz_attempts` | `id (UUID)` | `user_id` &rarr; `auth.users(id)`, `topic_id` &rarr; `public.topics(id)` | Records historical quiz submissions, user score, total questions, and attempt timestamp. |
+| `public.user_profiles` | `id (UUID)` | `id` &rarr; `auth.users(id)` [ON DELETE CASCADE] | User profile metadata (display name, avatar URL, selected learning path `path-a` / `path-b`, `last_accessed_topic_id (text)`, `last_accessed_at (timestamptz)`). |
+| `public.user_progress` | `id (UUID)` | `user_id` &rarr; `auth.users(id)`, `topic_id (text)` | Tracks completion state per user per topic (`not_started`, `in_progress`, `completed`), completion timestamp. Unique on `(user_id, topic_id)`. |
+| `public.user_quiz_attempts` | `id (UUID)` | `user_id` &rarr; `auth.users(id)`, `topic_id (text)` | Records historical quiz submissions, user score, total questions, and attempt timestamp. |
 | `public.user_badges` | `id (UUID)` | `user_id` &rarr; `auth.users(id)` [ON DELETE CASCADE] | Records earned achievements (`first_step`, `quiz_master`, `module_[slug]`). Unique on `(user_id, badge_type)`. |
 | `public.learning_paths` | `id (UUID)` | None | Curated learning tracks (`path-a`, `path-b`) with title, description, and an ordered array of module slugs in `module_order (JSONB)`. |
-| `public.user_bookmarks` | `id (UUID)` | `user_id` &rarr; `auth.users(id)`, `topic_id` &rarr; `public.topics(id)` | Saved topics for fast learner reference. Unique on `(user_id, topic_id)`. |
+| `public.user_bookmarks` | `id (UUID)` | `user_id` &rarr; `auth.users(id)`, `topic_id (text)` | Saved topics for fast learner reference. Unique on `(user_id, topic_id)`. |
 
 ---
 

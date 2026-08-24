@@ -100,3 +100,29 @@ This document logs all key architectural, technical, and structural decisions ma
 * **Why**: Standard browser `storage` events only fire across separate browser tabs, not within the same window. The custom event ensures instantaneous UI updates across navigation bars, dashboards, and topic cards without requiring a heavy global state library.
 * **Alternatives Considered**:
   - *React Context Provider*: Requires wrapping the entire DOM tree in providers and can trigger unnecessary re-renders across unaffected child components.
+
+---
+
+### ADR-009: Direct String Topic ID Persistence for Supabase Progress Tables
+* **Date**: 2026-08-24
+* **Status**: Accepted / Implemented
+* **Decision**: Store string topic identifiers (`'t-1'`, `'t-2'`, etc.) directly as `text` in `user_progress`, `user_bookmarks`, and `user_quiz_attempts` rather than attempting foreign key `UUID` lookups against an unseeded `public.topics` database table.
+* **Why**: Eliminates multi-step table lookup latency, prevents `PGRST204` schema cache errors and `22P02` UUID syntax exceptions, and enables instant 1-step `upsert` queries directly from `src/lib/store.ts`.
+* **Alternatives Considered**:
+  - *Foreign key UUID lookup on `public.topics` table*: Required populating 56 static topics into PostgreSQL beforehand and performing dynamic `select('id').eq('slug')` queries before every single user progress insert.
+
+---
+
+### ADR-010: 8-Hour Inactivity Session Timeout
+* **Date**: 2026-08-24
+* **Status**: Accepted / Implemented
+* **Decision**: Track student interaction timestamp in `localStorage` under `waynautic_last_activity_time`. If `Date.now() - timestamp > 8 hours` (28,800,000 ms), automatically invalidate local state, execute `signOutUser()`, and redirect the student to `/login`.
+* **Why**: Meets strict security requirements for shared/educational devices while keeping sessions active during ordinary continuous study sessions.
+
+---
+
+### ADR-011: Unconditional Registration of Storage Event Listeners in `useWaynauticStore`
+* **Date**: 2026-08-24
+* **Status**: Accepted / Implemented
+* **Decision**: Ensure `window.addEventListener('waynautic_storage_change')` is registered unconditionally inside `useWaynauticStore()`'s `useEffect`, regardless of whether `isSupabaseConfigured` evaluates to `true` or `false`.
+* **Why**: An early return inside the Supabase subscription block previously bypassed the custom event listener when Supabase credentials were active, preventing instant UI state transitions (e.g. **Mark as Complete** &harr; **Completed ✓**) from reflecting visually in the current component.

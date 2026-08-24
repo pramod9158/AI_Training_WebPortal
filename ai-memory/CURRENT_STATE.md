@@ -80,21 +80,21 @@
 ## 4. Known Bugs, Fragile Areas & Recent Patches
 
 ### Recent Patches & Workarounds (from Git History)
-1. **t-55 Quiz Key Binding Fix (`commit 7742b2e`)**:
+1. **Direct Topic String ID Database Persistence (`commit 3aaab42`)**:
+   - *Issue*: `user_progress.topic_id` was previously defined as `UUID references public.topics(id)`. Because `public.topics` table in Supabase was unseeded and frontend topic IDs are strings (`'t-1'`, `'t-2'`), Postgres rejected inserts with `invalid input syntax for type uuid: "t-1"`, causing `user_progress` table to stay empty.
+   - *Fix*: Changed `topic_id` column type in `user_progress`, `user_bookmarks`, and `user_quiz_attempts` to `text not null`, allowing direct 1-step upsert/insert of string topic IDs (`'t-1'`, `'t-2'`).
+2. **Instant Visual Button State Synchronization (`commit a2c7b31`)**:
+   - *Issue*: Clicking "Mark as Complete" updated Supabase DB, but the visual button text and color did not update instantly because an early return inside `useEffect` in `useWaynauticStore` prevented `window.addEventListener('waynautic_storage_change')` from registering when `isSupabaseConfigured` was true. Also, `updatedStatus` forced completed topics permanently into `completed` status.
+   - *Fix*: Re-architected `useEffect` in `useWaynauticStore` to register storage listeners unconditionally and set `updatedStatus = status` directly to allow instant UI button transformations (**Mark as Complete** &harr; **Completed ✓**).
+3. **Safe Profile Payload Construction (`commit 2f47463`)**:
+   - *Issue*: `saveProfile()` sent `last_accessed_topic_id` and `last_accessed_at` in all Supabase upserts, throwing PostgREST `400 Bad Request (PGRST204)` if the columns were not yet created in Supabase DB.
+   - *Fix*: Dynamically constructed profile payloads and wrapped Supabase upserts in `try/catch` blocks so UI and local state never fail or stall.
+4. **t-55 Quiz Key Binding Fix (`commit 7742b2e`)**:
    - *Issue*: Quiz questions for topic `t-55` were previously keyed incorrectly or omitted from `QUIZ_QUESTIONS` map in `seedTopics.ts`.
    - *Fix*: Bound `t-55` explicitly to its 20-question Grounding & Evaluation question bank.
-2. **Fallback Title String Interpolation (`commit 7742b2e`)**:
-   - *Issue*: Lesson titles containing HTML entities or raw quotation marks caused escape string rendering anomalies in Next.js JSX.
-   - *Fix*: Sanitized title strings and ensured standard unescaped template literals in dynamic topic routes.
-3. **SkillTree Grid Layout Transformation (`commit b9361ad`)**:
+5. **SkillTree Grid Layout Transformation (`commit b9361ad`)**:
    - *Issue*: The original vertical timeline layout caused extreme vertical scrolling on mobile and desktop viewports with 10 modules.
    - *Fix*: Transformed `SkillTree.tsx` into a modern 3-column responsive card grid layout with visual step counters.
-4. **Vercel Serverless Function Route Tracing Workaround (`commit 451bfc2`)**:
-   - *Issue*: Vercel builds threw 404 or tracing warnings during dynamic route generation for nested `[moduleSlug]/[topicSlug]` paths.
-   - *Fix*: Verified static params and ensured SSR/client wrapper boundaries are cleanly separated.
-5. **Tailwind CSS Cross-Platform Build Fix (`commit fbbac85`)**:
-   - *Issue*: PostCSS / Tailwind CSS build failures on Linux/Vercel environments caused by case-sensitive path imports.
-   - *Fix*: Normalized `postcss.config.mjs` and `tailwind.config.ts` paths.
 
 ### Fragile Areas to Watch
 - **LocalStorage / SSR Hydration**: Any new component reading `loadProfile()` or `loadProgress()` during initial render must either use `useEffect` or check `typeof window !== 'undefined'` to avoid Next.js hydration mismatch errors (`Text content does not match server-rendered HTML`).

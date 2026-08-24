@@ -6,11 +6,11 @@ This document tracks prioritized development items categorized by execution time
 
 ## 1. NOW (Immediate Priority — Current Sprint)
 
-| Task | Description | Why It Matters | Complexity |
-| :--- | :--- | :--- | :---: |
-| **Supabase Cloud Sync Layer** | Connect `src/lib/store.ts` mutations (`saveProgress`, `saveProfile`, `saveBadges`, `saveBookmarks`) to automatically push/pull from Supabase tables when a user is authenticated. | Ensures student progress persists across devices and browser cache clears. | **Medium** |
-| **Topic Quiz Expansion** | Populate rich 10–20 question technical quiz banks with detailed explanations for remaining topics across Python, Git, Model Providers, LLMs, AI IDEs, Vector DBs, and Local AI. | Solidifies learning retention, tests deep developer competency, and delivers high educational value. | **Medium** |
-| **Split `seedTopics.ts` into Modular Files** | Refactor the 2,300+ line `src/data/seedTopics.ts` into individual per-module files under `src/data/topics/` and aggregate them in an index file. | Improves developer productivity, prevents merge conflicts, and maintains fast IDE autocomplete. | **Small** |
+| Task | Description | Status / Priority | Complexity |
+| :--- | :--- | :---: | :---: |
+| **Supabase Cloud Sync Layer** | Connect `src/lib/store.ts` mutations (`saveProgress`, `saveProfile`, `saveBadges`, `saveBookmarks`) to automatically push/pull from Supabase tables when a user is authenticated. | **Completed ✓** | **Medium** |
+| **Topic Quiz Expansion** | Populate rich 10–20 question technical quiz banks with detailed explanations for remaining topics across Python, Git, Model Providers, LLMs, AI IDEs, Vector DBs, and Local AI. | **Immediate (NOW)** | **Medium** |
+| **Split `seedTopics.ts` into Modular Files** | Refactor the 2,300+ line `src/data/seedTopics.ts` into individual per-module files under `src/data/topics/` and aggregate them in an index file. | **Immediate (NOW)** | **Small** |
 
 ---
 
