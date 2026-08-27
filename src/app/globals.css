@@ -15,8 +15,8 @@ h1, h2, h3, h4, h5, h6 {
 
 body {
   font-family: var(--font-body), sans-serif;
-  background-color: #F8FAFC;
-  color: #0F172A;
+  background-color: #FFFFFF;
+  color: #4B4B4B;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -33,12 +33,6 @@ html.dark body {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-html:not(.dark) .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-}
-
 .glass-panel-glow {
   background: rgba(13, 18, 31, 0.8);
   backdrop-filter: blur(16px);
@@ -52,42 +46,340 @@ html:not(.dark) .glass-panel {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #070A12;
+  background: #F7F7F7;
 }
-html:not(.dark) ::-webkit-scrollbar-track {
-  background: #F1F5F9;
+html.dark ::-webkit-scrollbar-track {
+  background: #070A12;
 }
 
 ::-webkit-scrollbar-thumb {
+  background: #E5E5E5;
+  border-radius: 6px;
+}
+html.dark ::-webkit-scrollbar-thumb {
   background: #1E293B;
   border-radius: 4px;
 }
-html:not(.dark) ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-}
 
 ::-webkit-scrollbar-thumb:hover {
+  background: #58CC02;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
   background: #06B6D4;
 }
 
-/* Crisp Light Mode Overrides */
+/* ==========================================================================
+   DUOLINGO LIGHT THEME ENGINE (html:not(.dark))
+   Exact Duolingo Color System:
+   - Feather Green (Primary CTA / Success): #58CC02 (border: #58A700 / #46A302)
+   - Macaw Blue (Secondary Action / Selected / Info): #1CB0F6 (border: #1899D6)
+   - Fox Orange (Streak / Fire / Urgent): #FF9600 (border: #E58500)
+   - Bee Yellow (XP / Trophy / Star): #FFC800 (border: #E5A400)
+   - Cardinal Red (Danger / Heart): #FF4B4B (border: #EA2B2B)
+   - Amethyst Purple (Mastery / Deep AI): #CE82FF / #A435F0 (border: #8F23D6)
+   - Canvas Background: #FFFFFF / #F7F7F7
+   - Cards: #FFFFFF with 2px solid #E5E5E5 and bottom 3D elevation
+   - Typography: #4B4B4B (Duolingo Charcoal) & #777777 (Subtitles)
+   ========================================================================== */
+
 html:not(.dark) {
+  /* Page Canvas */
+  body {
+    background-color: #FFFFFF !important;
+    color: #4B4B4B !important;
+  }
+
+  /* Ambient Glow in Light Mode */
+  .blur-\[120px\],
+  .blur-3xl {
+    opacity: 0.15 !important;
+    background: radial-gradient(circle, rgba(88, 204, 2, 0.25) 0%, rgba(28, 176, 246, 0.25) 100%) !important;
+  }
+
+  /* Card and Container Backgrounds -> Duolingo Crisp White Card */
   .bg-\[\#0B0F19\],
   .bg-\[\#0D121F\],
   .bg-\[\#070A12\],
   .bg-\[\#05070D\],
   .bg-slate-950,
   .bg-slate-900,
-  .bg-slate-900\/60,
-  .bg-slate-900\/80,
-  .bg-slate-900\/40,
+  .bg-slate-900\/95,
   .bg-slate-900\/90,
-  .bg-slate-900\/50 {
+  .bg-slate-900\/80,
+  .bg-slate-900\/60,
+  .bg-slate-900\/50,
+  .bg-slate-900\/40,
+  .glass-panel,
+  .glass-panel-glow {
     background-color: #FFFFFF !important;
-    border-color: #E2E8F0 !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    border-color: #E5E5E5 !important;
+    box-shadow: 0 2px 0 0 #E5E5E5, 0 4px 16px rgba(0, 0, 0, 0.03) !important;
   }
 
+  /* Secondary Inner Surfaces -> Duolingo Soft Grey #F7F7F7 */
+  .bg-slate-800,
+  .bg-slate-800\/90,
+  .bg-slate-800\/80,
+  .bg-slate-800\/60,
+  .bg-slate-800\/50,
+  .bg-slate-800\/40 {
+    background-color: #F7F7F7 !important;
+    border-color: #E5E5E5 !important;
+  }
+
+  /* Base Text Color System -> Duolingo Charcoal & Grays */
+  h1, h2, h3, h4, h5, h6 {
+    color: #4B4B4B !important;
+  }
+
+  .text-white,
+  .text-slate-100,
+  .text-slate-200,
+  .text-slate-300 {
+    color: #4B4B4B !important;
+  }
+
+  .text-slate-400 {
+    color: #777777 !important;
+  }
+
+  .text-slate-500,
+  .text-slate-600 {
+    color: #AFAFAF !important;
+  }
+
+  /* Duolingo Brand Gradients (Headers / Accents) */
+  .bg-clip-text {
+    background: linear-gradient(135deg, #58CC02 0%, #1CB0F6 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+
+  /* Duolingo Primary Action Buttons (Feather Green with 3D bottom bevel) */
+  .bg-gradient-to-r.from-cyan-500.via-blue-600.to-violet-600,
+  .bg-gradient-to-r.from-cyan-500.to-blue-600,
+  .bg-gradient-to-r.from-cyan-500.to-violet-600,
+  button.bg-gradient-to-r,
+  a.bg-gradient-to-r {
+    background: #58CC02 !important;
+    border: 2px solid #58A700 !important;
+    border-bottom: 4px solid #58A700 !important;
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    box-shadow: 0 4px 0 0 #58A700 !important;
+    transition: all 0.1s ease-in-out !important;
+  }
+
+  .bg-gradient-to-r.from-cyan-500.via-blue-600.to-violet-600:hover,
+  .bg-gradient-to-r.from-cyan-500.to-blue-600:hover,
+  .bg-gradient-to-r.from-cyan-500.to-violet-600:hover,
+  button.bg-gradient-to-r:hover,
+  a.bg-gradient-to-r:hover {
+    background: #61E002 !important;
+    filter: none !important;
+  }
+
+  .bg-gradient-to-r.from-cyan-500.via-blue-600.to-violet-600:active,
+  .bg-gradient-to-r.from-cyan-500.to-blue-600:active,
+  .bg-gradient-to-r.from-cyan-500.to-violet-600:active,
+  button.bg-gradient-to-r:active,
+  a.bg-gradient-to-r:active {
+    transform: translateY(2px) !important;
+    box-shadow: 0 1px 0 0 #58A700 !important;
+    border-bottom-width: 2px !important;
+  }
+
+  .bg-gradient-to-r.from-cyan-500.via-blue-600.to-violet-600 *,
+  .bg-gradient-to-r.from-cyan-500.to-blue-600 *,
+  .bg-gradient-to-r.from-cyan-500.to-violet-600 *,
+  button.bg-gradient-to-r *,
+  a.bg-gradient-to-r * {
+    color: #FFFFFF !important;
+    fill: #FFFFFF !important;
+  }
+
+  /* Duolingo Secondary / Outlined Button */
+  a.bg-slate-900\/80,
+  button.bg-slate-900\/80,
+  a.bg-slate-900,
+  button.bg-slate-900 {
+    background-color: #FFFFFF !important;
+    border: 2px solid #E5E5E5 !important;
+    border-bottom: 4px solid #E5E5E5 !important;
+    color: #1CB0F6 !important;
+    font-weight: 800 !important;
+    box-shadow: 0 2px 0 0 #E5E5E5 !important;
+    transition: all 0.1s ease-in-out !important;
+  }
+
+  a.bg-slate-900\/80:hover,
+  button.bg-slate-900\/80:hover,
+  a.bg-slate-900:hover,
+  button.bg-slate-900:hover {
+    background-color: #F7F7F7 !important;
+    border-color: #E5E5E5 !important;
+    color: #1899D6 !important;
+  }
+
+  a.bg-slate-900\/80:active,
+  button.bg-slate-900\/80:active,
+  a.bg-slate-900:active,
+  button.bg-slate-900:active {
+    transform: translateY(2px) !important;
+    box-shadow: none !important;
+    border-bottom-width: 2px !important;
+  }
+
+  /* Duolingo Cyan / Macaw Blue Badges & Containers */
+  .bg-cyan-950,
+  .bg-cyan-950\/80,
+  .bg-cyan-950\/60,
+  .bg-cyan-950\/50,
+  .bg-cyan-950\/40,
+  .bg-cyan-950\/20,
+  .bg-cyan-500\/10,
+  .bg-cyan-500\/20 {
+    background-color: #DDF4FF !important;
+    border-color: #84D8FF !important;
+    color: #1899D6 !important;
+  }
+
+  .text-cyan-400,
+  .text-cyan-300,
+  .text-cyan-200,
+  .text-cyan-500 {
+    color: #1899D6 !important;
+  }
+
+  .fill-cyan-400,
+  .fill-cyan-300 {
+    fill: #1899D6 !important;
+  }
+
+  .border-cyan-500,
+  .border-cyan-500\/60,
+  .border-cyan-500\/40,
+  .border-cyan-500\/30,
+  .border-cyan-800,
+  .border-cyan-800\/50,
+  .border-cyan-800\/40 {
+    border-color: #84D8FF !important;
+  }
+
+  /* Duolingo Emerald / Feather Green Badges */
+  .bg-emerald-950,
+  .bg-emerald-950\/80,
+  .bg-emerald-950\/60,
+  .bg-emerald-950\/40,
+  .bg-emerald-950\/20,
+  .bg-emerald-500\/10,
+  .bg-emerald-500\/20 {
+    background-color: #D7FFB8 !important;
+    border-color: #A3E766 !important;
+    color: #3D7D00 !important;
+  }
+
+  .text-emerald-400,
+  .text-emerald-300,
+  .text-emerald-500 {
+    color: #3D7D00 !important;
+  }
+
+  .fill-emerald-400 {
+    fill: #3D7D00 !important;
+  }
+
+  .border-emerald-500,
+  .border-emerald-500\/60,
+  .border-emerald-500\/30,
+  .border-emerald-800 {
+    border-color: #A3E766 !important;
+  }
+
+  /* Duolingo Fox Orange Badges & Metrics */
+  .bg-amber-950,
+  .bg-amber-950\/80,
+  .bg-amber-950\/60,
+  .bg-amber-950\/40,
+  .bg-amber-950\/20,
+  .bg-amber-500\/10,
+  .bg-amber-500\/20 {
+    background-color: #FFF0D4 !important;
+    border-color: #FFD285 !important;
+    color: #D97706 !important;
+  }
+
+  .text-amber-400,
+  .text-amber-300,
+  .text-amber-500 {
+    color: #D97706 !important;
+  }
+
+  .fill-amber-400 {
+    fill: #D97706 !important;
+  }
+
+  .border-amber-500,
+  .border-amber-500\/60,
+  .border-amber-500\/30,
+  .border-amber-800 {
+    border-color: #FFD285 !important;
+  }
+
+  /* Duolingo Amethyst Purple Badges */
+  .bg-violet-950,
+  .bg-violet-950\/80,
+  .bg-violet-950\/60,
+  .bg-violet-950\/40,
+  .bg-violet-950\/20,
+  .bg-violet-500\/10,
+  .bg-violet-500\/20 {
+    background-color: #F5E8FF !important;
+    border-color: #DDD6FE !important;
+    color: #9333EA !important;
+  }
+
+  .text-violet-400,
+  .text-violet-300,
+  .text-violet-500 {
+    color: #9333EA !important;
+  }
+
+  .border-violet-500,
+  .border-violet-500\/60,
+  .border-violet-500\/30,
+  .border-violet-800 {
+    border-color: #DDD6FE !important;
+  }
+
+  /* Duolingo Cardinal Red Badges & Signout */
+  .bg-rose-950,
+  .bg-rose-950\/80,
+  .bg-rose-950\/60,
+  .bg-rose-950\/40,
+  .bg-rose-950\/20,
+  .bg-rose-500\/10,
+  .bg-rose-500\/30 {
+    background-color: #FFE5E5 !important;
+    border-color: #FFB8B8 !important;
+    color: #EA2B2B !important;
+  }
+
+  .text-rose-400,
+  .text-rose-300,
+  .text-rose-500 {
+    color: #EA2B2B !important;
+  }
+
+  .border-rose-500,
+  .border-rose-500\/60,
+  .border-rose-500\/30 {
+    border-color: #FFB8B8 !important;
+  }
+
+  /* General Duolingo Crisp 2px Borders */
   .border-slate-800,
   .border-slate-800\/80,
   .border-slate-800\/60,
@@ -95,47 +387,196 @@ html:not(.dark) {
   .border-slate-700\/80,
   .border-slate-700\/60,
   .border-slate-700\/50 {
-    border-color: #E2E8F0 !important;
+    border-color: #E5E5E5 !important;
   }
 
-  .text-white,
-  .text-slate-100,
-  .text-slate-200 {
-    color: #0F172A !important;
-  }
-
-  .text-slate-300,
-  .text-slate-400 {
-    color: #475569 !important;
-  }
-
-  .bg-slate-800,
-  .bg-slate-800\/80,
-  .bg-slate-800\/60,
-  .bg-slate-800\/40 {
-    background-color: #F1F5F9 !important;
-  }
-
+  /* Duolingo Header / Navbar */
   header {
-    background-color: rgba(255, 255, 255, 0.9) !important;
-    border-color: #E2E8F0 !important;
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 2px solid #E5E5E5 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) !important;
   }
 
+  header a:hover {
+    color: #1CB0F6 !important;
+  }
+
+  header nav a {
+    border: 2px solid transparent !important;
+    font-weight: 700 !important;
+  }
+
+  header nav a:hover {
+    background-color: #F7F7F7 !important;
+    color: #4B4B4B !important;
+  }
+
+  /* Active Nav Link in Duolingo Light Style */
+  header nav a.bg-cyan-950\/40,
+  header nav a[class*="text-cyan-400"] {
+    background-color: #DDF4FF !important;
+    color: #1899D6 !important;
+    border: 2px solid #84D8FF !important;
+    box-shadow: 0 2px 0 0 #84D8FF !important;
+  }
+
+  /* Duolingo Footer */
   footer {
-    background-color: #F8FAFC !important;
-    border-color: #E2E8F0 !important;
+    background-color: #F7F7F7 !important;
+    border-top: 2px solid #E5E5E5 !important;
+    color: #777777 !important;
   }
 
+  footer h4 {
+    color: #4B4B4B !important;
+    font-weight: 800 !important;
+  }
+
+  footer a {
+    color: #777777 !important;
+    font-weight: 600 !important;
+  }
+
+  footer a:hover {
+    color: #1CB0F6 !important;
+  }
+
+  /* Form Elements: Input, Textarea, Select */
   input, textarea, select {
-    background-color: #F8FAFC !important;
-    color: #0F172A !important;
-    border-color: #CBD5E1 !important;
+    background-color: #F7F7F7 !important;
+    color: #4B4B4B !important;
+    border: 2px solid #E5E5E5 !important;
+    border-radius: 14px !important;
+    font-weight: 600 !important;
   }
 
-  /* Code block formatting in light mode */
-  .prose-code {
-    background-color: #F1F5F9 !important;
-    color: #0284C7 !important;
-    border-color: #E2E8F0 !important;
+  input:focus, textarea:focus, select:focus {
+    background-color: #FFFFFF !important;
+    border-color: #1CB0F6 !important;
+    box-shadow: 0 0 0 3px rgba(28, 176, 246, 0.2) !important;
+    outline: none !important;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #AFAFAF !important;
+  }
+
+  /* Tabs Switcher in Topic Workspace */
+  button.bg-cyan-500.text-black,
+  button[class*="bg-cyan-500"] {
+    background: #1CB0F6 !important;
+    border: 2px solid #1899D6 !important;
+    border-bottom: 4px solid #1899D6 !important;
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+    box-shadow: 0 3px 0 0 #1899D6 !important;
+  }
+
+  button.bg-cyan-500.text-black:hover,
+  button[class*="bg-cyan-500"]:hover {
+    background: #2BD0FF !important;
+  }
+
+  /* Quiz Engine Options */
+  .space-y-3 button {
+    background-color: #FFFFFF !important;
+    border: 2px solid #E5E5E5 !important;
+    border-bottom: 4px solid #E5E5E5 !important;
+    color: #4B4B4B !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 0 0 #E5E5E5 !important;
+  }
+
+  .space-y-3 button:hover {
+    background-color: #F7F7F7 !important;
+    border-color: #D4D4D4 !important;
+  }
+
+  .space-y-3 button.bg-cyan-950\/60,
+  .space-y-3 button[class*="border-cyan-500"] {
+    background-color: #DDF4FF !important;
+    border: 2px solid #1899D6 !important;
+    border-bottom: 4px solid #1899D6 !important;
+    color: #1899D6 !important;
+    box-shadow: 0 3px 0 0 #1899D6 !important;
+  }
+
+  /* Duolingo Progress Bars */
+  .bg-slate-900.h-2,
+  .bg-slate-950.rounded-full {
+    background-color: #E5E5E5 !important;
+  }
+
+  .bg-gradient-to-r.from-cyan-500.to-violet-600.h-full,
+  .bg-gradient-to-r.from-cyan-500.to-blue-600.h-full {
+    background: #58CC02 !important;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
+  }
+
+  /* Skill Tree Step Markers */
+  .rounded-full.border-2 {
+    background-color: #FFFFFF !important;
+    border-color: #E5E5E5 !important;
+    color: #777777 !important;
+  }
+
+  .rounded-full.border-2.bg-emerald-950 {
+    background-color: #58CC02 !important;
+    border-color: #58A700 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 3px 0 0 #58A700 !important;
+  }
+
+  .rounded-full.border-2.bg-cyan-950 {
+    background-color: #1CB0F6 !important;
+    border-color: #1899D6 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 3px 0 0 #1899D6 !important;
+  }
+
+  /* Markdown & Code Blocks */
+  .prose-headings\:text-white {
+    color: #4B4B4B !important;
+  }
+
+  .prose-p\:text-slate-300 {
+    color: #4B4B4B !important;
+  }
+
+  code {
+    background-color: #F7F7F7 !important;
+    color: #1899D6 !important;
+    border: 1px solid #E5E5E5 !important;
+    font-weight: 600 !important;
+  }
+
+  pre {
+    background-color: #F8FAFC !important;
+    border: 2px solid #E5E5E5 !important;
+    color: #1E293B !important;
+  }
+
+  pre code {
+    background-color: transparent !important;
+    border: none !important;
+    color: #1E293B !important;
+  }
+
+  /* Modals: Search, Onboarding, Certificate */
+  .fixed.inset-0 .bg-\[\#0D121F\],
+  .fixed.inset-0 .bg-\[\#0B0F19\] {
+    background-color: #FFFFFF !important;
+    border: 2px solid #E5E5E5 !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* Interactive Links on Hover */
+  a:hover {
+    text-decoration: none;
+  }
+
+  .group:hover .group-hover\:text-cyan-300,
+  .group:hover .group-hover\:text-cyan-400 {
+    color: #1899D6 !important;
   }
 }
