@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   Flame, 
@@ -65,18 +66,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center space-x-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-violet-600 p-[2px] shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all duration-300">
-            <div className="w-full h-full bg-[#0B0F19] rounded-[10px] flex items-center justify-center">
-              <Zap className="w-5 h-5 text-cyan-400 fill-cyan-400/20 group-hover:scale-110 transition-transform" />
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-bold text-lg tracking-tight text-white group-hover:text-cyan-300 transition-colors">
-              Waynautic <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-violet-400">Academy</span>
-            </span>
-            <span className="text-[10px] text-slate-400 font-mono tracking-wider uppercase -mt-1">AI / Dev Platform</span>
-          </div>
+        <Link href="/" className="flex items-center group py-1">
+          <Image
+            src="/waynautic-logo.png"
+            alt="Waynautic"
+            width={160}
+            height={36}
+            className="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105"
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation Links */}

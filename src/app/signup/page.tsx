@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Zap, Mail, Lock, User, ShieldCheck, Clock } from 'lucide-react';
+import { Mail, Lock, User, ShieldCheck, Clock } from 'lucide-react';
 import { signUpWithEmail } from '@/lib/supabaseAuth';
 import { fetchAndSyncCloudUser, useWaynauticStore } from '@/lib/store';
 
@@ -51,16 +52,17 @@ export default function SignupPage() {
     <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-[#0D121F] border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
         
-        <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center space-x-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-violet-600 p-[2px]">
-              <div className="w-full h-full bg-[#0B0F19] rounded-[10px] flex items-center justify-center">
-                <Zap className="w-5 h-5 text-cyan-400" />
-              </div>
-            </div>
-            <span className="font-bold text-lg text-white">Waynautic <span className="text-cyan-400">Academy</span></span>
+        <div className="text-center space-y-3">
+          <Link href="/" className="inline-block">
+            <Image
+              src="/waynautic-logo.png"
+              alt="Waynautic"
+              width={180}
+              height={40}
+              className="h-9 w-auto mx-auto object-contain"
+            />
           </Link>
-          <h2 className="text-2xl font-bold text-white pt-2">Create Student Account</h2>
+          <h2 className="text-2xl font-bold text-white pt-1">Create Student Account</h2>
           <p className="text-xs text-slate-400">Register with your email to save and resume your learning progress</p>
         </div>
 

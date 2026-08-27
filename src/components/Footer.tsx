@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Zap, Github, Twitter, Terminal, ShieldCheck, Heart } from 'lucide-react';
+import Image from 'next/image';
 
 export const Footer: React.FC = () => {
   return (
@@ -10,23 +10,18 @@ export const Footer: React.FC = () => {
           
           {/* Col 1: Platform Brand */}
           <div className="space-y-4 md:col-span-1">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-violet-600 p-[2px]">
-                <div className="w-full h-full bg-[#0B0F19] rounded-[6px] flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-cyan-400" />
-                </div>
-              </div>
-              <span className="font-bold text-white tracking-tight">Waynautic <span className="text-cyan-400">Academy</span></span>
+            <Link href="/" className="inline-block">
+              <Image
+                src="/waynautic-logo.png"
+                alt="Waynautic"
+                width={150}
+                height={34}
+                className="h-7 w-auto object-contain"
+              />
             </Link>
             <p className="text-xs text-slate-400 leading-relaxed">
               Empowering modern software developers with production-grade AI, Prompt Engineering, RAG, and Vector Database skills.
             </p>
-            <div className="flex items-center space-x-3 pt-2">
-              <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950/60 text-cyan-400 border border-cyan-800/50">
-                <Terminal className="w-3 h-3" />
-                <span>Next.js 15 & Supabase</span>
-              </span>
-            </div>
           </div>
 
           {/* Col 2: Learning Modules */}
@@ -69,10 +64,6 @@ export const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 space-y-3 sm:space-y-0">
           <p>© {new Date().getFullYear()} Waynautic Academy. All rights reserved.</p>
-          <div className="flex items-center space-x-1">
-            <span>Built for AI Developers with</span>
-            <Heart className="w-3.5 h-3.5 text-rose-500 inline fill-rose-500" />
-          </div>
         </div>
       </div>
     </footer>
