@@ -24,13 +24,17 @@ export function loadProfile(): UserProfileState {
       avatarUrl: '',
       selectedPath: 'path-a',
       hasCompletedOnboarding: false,
-      theme: 'dark'
+      theme: 'light'
     };
   }
   const saved = localStorage.getItem(PROFILE_KEY);
   if (saved) {
     try {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      return {
+        ...parsed,
+        theme: parsed.theme || 'light'
+      };
     } catch (e) {
       console.error('Failed to parse profile', e);
     }
@@ -40,7 +44,7 @@ export function loadProfile(): UserProfileState {
     avatarUrl: '',
     selectedPath: 'path-a',
     hasCompletedOnboarding: false,
-    theme: 'dark'
+    theme: 'light'
   };
 }
 
