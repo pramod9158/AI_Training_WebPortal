@@ -70,33 +70,32 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 
 /* ==========================================================================
    DUOLINGO LIGHT THEME ENGINE (html:not(.dark))
-   Exact Duolingo Color System:
-   - Feather Green (Primary CTA / Success): #58CC02 (border: #58A700 / #46A302)
-   - Macaw Blue (Secondary Action / Selected / Info): #1CB0F6 (border: #1899D6)
-   - Fox Orange (Streak / Fire / Urgent): #FF9600 (border: #E58500)
-   - Bee Yellow (XP / Trophy / Star): #FFC800 (border: #E5A400)
-   - Cardinal Red (Danger / Heart): #FF4B4B (border: #EA2B2B)
-   - Amethyst Purple (Mastery / Deep AI): #CE82FF / #A435F0 (border: #8F23D6)
-   - Canvas Background: #FFFFFF / #F7F7F7
-   - Cards: #FFFFFF with 2px solid #E5E5E5 and bottom 3D elevation
-   - Typography: #4B4B4B (Duolingo Charcoal) & #777777 (Subtitles)
+   Guarantees:
+   1. All dark background boxes, cards, and gradients turn clean white (#FFFFFF)
+      or crisp Duolingo light surfaces (#F7F7F7, #DDF4FF).
+   2. All text colors are dark and sharp (#4B4B4B / #777777 / #1899D6) - NO
+      invisible white-on-light text anywhere.
+   3. Exact Duolingo 3D Button style (#58CC02 green, #1CB0F6 blue).
    ========================================================================== */
 
 html:not(.dark) {
-  /* Page Canvas */
+  /* Canvas Background */
   body {
     background-color: #FFFFFF !important;
     color: #4B4B4B !important;
   }
 
-  /* Ambient Glow in Light Mode */
+  /* Reset Ambient Orbs in Light Mode */
   .blur-\[120px\],
-  .blur-3xl {
-    opacity: 0.15 !important;
+  .blur-3xl,
+  .blur-2xl {
+    opacity: 0.12 !important;
     background: radial-gradient(circle, rgba(88, 204, 2, 0.25) 0%, rgba(28, 176, 246, 0.25) 100%) !important;
   }
 
-  /* Card and Container Backgrounds -> Duolingo Crisp White Card */
+  /* --------------------------------------------------------------------------
+     1. Universal Dark Card & Container Overrides -> Crisp White Surfaces
+     -------------------------------------------------------------------------- */
   .bg-\[\#0B0F19\],
   .bg-\[\#0D121F\],
   .bg-\[\#070A12\],
@@ -111,27 +110,130 @@ html:not(.dark) {
   .bg-slate-900\/40,
   .glass-panel,
   .glass-panel-glow {
+    background-image: none !important;
     background-color: #FFFFFF !important;
     border-color: #E5E5E5 !important;
-    box-shadow: 0 2px 0 0 #E5E5E5, 0 4px 16px rgba(0, 0, 0, 0.03) !important;
+    box-shadow: 0 2px 0 0 #E5E5E5, 0 4px 16px rgba(0, 0, 0, 0.04) !important;
   }
 
-  /* Secondary Inner Surfaces -> Duolingo Soft Grey #F7F7F7 */
+  /* Inner / Secondary Boxes */
   .bg-slate-800,
   .bg-slate-800\/90,
   .bg-slate-800\/80,
   .bg-slate-800\/60,
   .bg-slate-800\/50,
   .bg-slate-800\/40 {
+    background-image: none !important;
     background-color: #F7F7F7 !important;
     border-color: #E5E5E5 !important;
   }
 
-  /* Base Text Color System -> Duolingo Charcoal & Grays */
-  h1, h2, h3, h4, h5, h6 {
-    color: #4B4B4B !important;
+  /* --------------------------------------------------------------------------
+     2. Fix Specific Problematic Dark Gradient Banners & Cards
+     -------------------------------------------------------------------------- */
+  
+  /* Continue Where You Left Off Banners */
+  [class*="from-slate-900"][class*="to-slate-900"],
+  [class*="from-slate-900"][class*="via-cyan-950"],
+  a[class*="from-slate-900"],
+  div[class*="from-slate-900"] {
+    background-image: none !important;
+    background-color: #FFFFFF !important;
+    border: 2px solid #E5E5E5 !important;
+    border-bottom: 4px solid #E5E5E5 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
   }
 
+  /* Guided Learning Paths Cards (Paths Page) */
+  div[class*="from-cyan-950/50"][class*="via-slate-900"],
+  div[class*="from-cyan-950"][class*="to-slate-900"] {
+    background-image: none !important;
+    background-color: #DDF4FF !important;
+    border: 2px solid #84D8FF !important;
+    border-bottom: 4px solid #84D8FF !important;
+    box-shadow: 0 4px 0 0 #84D8FF !important;
+  }
+
+  div[class*="from-violet-950/50"][class*="via-slate-900"],
+  div[class*="from-violet-950"][class*="to-slate-900"] {
+    background-image: none !important;
+    background-color: #F5E8FF !important;
+    border: 2px solid #DDD6FE !important;
+    border-bottom: 4px solid #DDD6FE !important;
+    box-shadow: 0 4px 0 0 #DDD6FE !important;
+  }
+
+  /* Onboarding Tour Path Selection Buttons */
+  button[class*="from-cyan-950"][class*="to-slate-900"],
+  button[class*="from-cyan-950"] {
+    background-image: none !important;
+    background-color: #DDF4FF !important;
+    border: 2px solid #84D8FF !important;
+    border-bottom: 4px solid #84D8FF !important;
+    box-shadow: 0 3px 0 0 #84D8FF !important;
+  }
+
+  button[class*="from-violet-950"][class*="to-slate-900"],
+  button[class*="from-violet-950"] {
+    background-image: none !important;
+    background-color: #F5E8FF !important;
+    border: 2px solid #DDD6FE !important;
+    border-bottom: 4px solid #DDD6FE !important;
+    box-shadow: 0 3px 0 0 #DDD6FE !important;
+  }
+
+  /* Video Player Container */
+  .aspect-video,
+  .aspect-video > div,
+  .aspect-video .bg-\[\#05070D\],
+  .aspect-video [class*="from-slate-900"] {
+    background-image: none !important;
+    background-color: #F7F7F7 !important;
+    border-color: #E5E5E5 !important;
+  }
+
+  /* Video Play Center Trigger */
+  .aspect-video button {
+    background: #58CC02 !important;
+    border: 2px solid #58A700 !important;
+    box-shadow: 0 4px 0 0 #58A700 !important;
+  }
+  .aspect-video button .bg-\[\#0B0F19\] {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .aspect-video button svg {
+    color: #FFFFFF !important;
+    fill: #FFFFFF !important;
+  }
+
+  /* Certificate Canvas inside CertificateModal */
+  [class*="from-\[\#0B0F19\]"][class*="to-\[\#0D121F\]"],
+  div[ref*="certRef"],
+  .w-\[750px\],
+  .sm\:w-\[800px\] {
+    background-image: none !important;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%) !important;
+    border: 4px solid #58CC02 !important;
+    box-shadow: 0 10px 30px rgba(88, 204, 2, 0.12) !important;
+  }
+
+  /* Certificate Typography */
+  div[ref*="certRef"] h1,
+  .w-\[750px\] h1,
+  .sm\:w-\[800px\] h1 {
+    color: #58CC02 !important;
+    -webkit-text-fill-color: #58CC02 !important;
+    font-weight: 900 !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     3. Strict Typography & Dark Font System (NO INVISIBLE TEXT)
+     -------------------------------------------------------------------------- */
+  
+  /* All headings default to Duolingo Charcoal */
+  h1, h2, h3, h4, h5, h6,
   .text-white,
   .text-slate-100,
   .text-slate-200,
@@ -139,28 +241,88 @@ html:not(.dark) {
     color: #4B4B4B !important;
   }
 
+  /* Subtitles & meta */
   .text-slate-400 {
     color: #777777 !important;
   }
 
   .text-slate-500,
   .text-slate-600 {
-    color: #AFAFAF !important;
+    color: #9E9E9E !important;
   }
 
-  /* Duolingo Brand Gradients (Headers / Accents) */
+  /* Ensure text inside light blue / purple cards is dark and readable */
+  [class*="from-cyan-950"] .text-white,
+  [class*="from-cyan-950"] .font-bold,
+  [class*="from-violet-950"] .text-white,
+  [class*="from-violet-950"] .font-bold,
+  button[class*="from-cyan-950"] .text-white,
+  button[class*="from-violet-950"] .text-white {
+    color: #4B4B4B !important;
+  }
+
+  [class*="from-cyan-950"] .text-slate-400,
+  button[class*="from-cyan-950"] .text-slate-400 {
+    color: #1899D6 !important;
+    font-weight: 600;
+  }
+
+  [class*="from-violet-950"] .text-slate-400,
+  button[class*="from-violet-950"] .text-slate-400 {
+    color: #9333EA !important;
+    font-weight: 600;
+  }
+
+  /* Brand Gradient Headings */
   .bg-clip-text {
     background: linear-gradient(135deg, #58CC02 0%, #1CB0F6 100%) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
   }
 
-  /* Duolingo Primary Action Buttons (Feather Green with 3D bottom bevel) */
+  /* Accent Text Colors */
+  .text-cyan-400,
+  .text-cyan-300,
+  .text-cyan-200,
+  .text-cyan-500 {
+    color: #1899D6 !important;
+  }
+
+  .text-emerald-400,
+  .text-emerald-300,
+  .text-emerald-500 {
+    color: #3D7D00 !important;
+  }
+
+  .text-amber-400,
+  .text-amber-300,
+  .text-amber-500 {
+    color: #D97706 !important;
+  }
+
+  .text-violet-400,
+  .text-violet-300,
+  .text-violet-500 {
+    color: #9333EA !important;
+  }
+
+  .text-rose-400,
+  .text-rose-300,
+  .text-rose-500 {
+    color: #EA2B2B !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     4. Duolingo Buttons (Feather Green Primary CTA & Crisp White Secondary CTA)
+     -------------------------------------------------------------------------- */
+  
+  /* Primary Action Buttons: Start Learning, Retake, Resume, Save, Submit */
+  button.bg-gradient-to-r,
+  a.bg-gradient-to-r:not([class*="from-slate-900"]),
+  button.bg-cyan-500,
   .bg-gradient-to-r.from-cyan-500.via-blue-600.to-violet-600,
   .bg-gradient-to-r.from-cyan-500.to-blue-600,
-  .bg-gradient-to-r.from-cyan-500.to-violet-600,
-  button.bg-gradient-to-r,
-  a.bg-gradient-to-r {
+  .bg-gradient-to-r.from-cyan-500.to-violet-600 {
     background: #58CC02 !important;
     border: 2px solid #58A700 !important;
     border-bottom: 4px solid #58A700 !important;
@@ -172,46 +334,43 @@ html:not(.dark) {
     transition: all 0.1s ease-in-out !important;
   }
 
-  .bg-gradient-to-r.from-cyan-500.via-blue-600.to-violet-600:hover,
-  .bg-gradient-to-r.from-cyan-500.to-blue-600:hover,
-  .bg-gradient-to-r.from-cyan-500.to-violet-600:hover,
   button.bg-gradient-to-r:hover,
-  a.bg-gradient-to-r:hover {
+  a.bg-gradient-to-r:not([class*="from-slate-900"]):hover,
+  button.bg-cyan-500:hover {
     background: #61E002 !important;
-    filter: none !important;
   }
 
-  .bg-gradient-to-r.from-cyan-500.via-blue-600.to-violet-600:active,
-  .bg-gradient-to-r.from-cyan-500.to-blue-600:active,
-  .bg-gradient-to-r.from-cyan-500.to-violet-600:active,
   button.bg-gradient-to-r:active,
-  a.bg-gradient-to-r:active {
+  a.bg-gradient-to-r:not([class*="from-slate-900"]):active,
+  button.bg-cyan-500:active {
     transform: translateY(2px) !important;
     box-shadow: 0 1px 0 0 #58A700 !important;
     border-bottom-width: 2px !important;
   }
 
-  .bg-gradient-to-r.from-cyan-500.via-blue-600.to-violet-600 *,
-  .bg-gradient-to-r.from-cyan-500.to-blue-600 *,
-  .bg-gradient-to-r.from-cyan-500.to-violet-600 *,
-  button.bg-gradient-to-r *,
-  a.bg-gradient-to-r * {
+  /* Icons and text inside solid primary green CTA buttons */
+  button.bg-gradient-to-r span,
+  button.bg-gradient-to-r svg,
+  a.bg-gradient-to-r:not([class*="from-slate-900"]) span,
+  a.bg-gradient-to-r:not([class*="from-slate-900"]) svg,
+  button.bg-cyan-500 span,
+  button.bg-cyan-500 svg {
     color: #FFFFFF !important;
     fill: #FFFFFF !important;
   }
 
-  /* Duolingo Secondary / Outlined Button */
+  /* Secondary / Outlined Button */
   a.bg-slate-900\/80,
   button.bg-slate-900\/80,
   a.bg-slate-900,
-  button.bg-slate-900 {
+  button.bg-slate-900:not(.aspect-video button) {
+    background-image: none !important;
     background-color: #FFFFFF !important;
     border: 2px solid #E5E5E5 !important;
     border-bottom: 4px solid #E5E5E5 !important;
     color: #1CB0F6 !important;
     font-weight: 800 !important;
     box-shadow: 0 2px 0 0 #E5E5E5 !important;
-    transition: all 0.1s ease-in-out !important;
   }
 
   a.bg-slate-900\/80:hover,
@@ -219,20 +378,24 @@ html:not(.dark) {
   a.bg-slate-900:hover,
   button.bg-slate-900:hover {
     background-color: #F7F7F7 !important;
-    border-color: #E5E5E5 !important;
     color: #1899D6 !important;
   }
 
-  a.bg-slate-900\/80:active,
-  button.bg-slate-900\/80:active,
-  a.bg-slate-900:active,
-  button.bg-slate-900:active {
-    transform: translateY(2px) !important;
-    box-shadow: none !important;
-    border-bottom-width: 2px !important;
+  /* Active Tabs (Watch Video / Read Notes / Take Quiz) */
+  button.bg-cyan-500.text-black,
+  button.bg-cyan-500 {
+    background: #1CB0F6 !important;
+    border: 2px solid #1899D6 !important;
+    border-bottom: 4px solid #1899D6 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 3px 0 0 #1899D6 !important;
   }
 
-  /* Duolingo Cyan / Macaw Blue Badges & Containers */
+  /* --------------------------------------------------------------------------
+     5. Badges & Pills (Crisp Duolingo Soft Tints)
+     -------------------------------------------------------------------------- */
+  
+  /* Cyan / Blue */
   .bg-cyan-950,
   .bg-cyan-950\/80,
   .bg-cyan-950\/60,
@@ -241,34 +404,13 @@ html:not(.dark) {
   .bg-cyan-950\/20,
   .bg-cyan-500\/10,
   .bg-cyan-500\/20 {
+    background-image: none !important;
     background-color: #DDF4FF !important;
     border-color: #84D8FF !important;
     color: #1899D6 !important;
   }
 
-  .text-cyan-400,
-  .text-cyan-300,
-  .text-cyan-200,
-  .text-cyan-500 {
-    color: #1899D6 !important;
-  }
-
-  .fill-cyan-400,
-  .fill-cyan-300 {
-    fill: #1899D6 !important;
-  }
-
-  .border-cyan-500,
-  .border-cyan-500\/60,
-  .border-cyan-500\/40,
-  .border-cyan-500\/30,
-  .border-cyan-800,
-  .border-cyan-800\/50,
-  .border-cyan-800\/40 {
-    border-color: #84D8FF !important;
-  }
-
-  /* Duolingo Emerald / Feather Green Badges */
+  /* Emerald / Green */
   .bg-emerald-950,
   .bg-emerald-950\/80,
   .bg-emerald-950\/60,
@@ -276,29 +418,13 @@ html:not(.dark) {
   .bg-emerald-950\/20,
   .bg-emerald-500\/10,
   .bg-emerald-500\/20 {
+    background-image: none !important;
     background-color: #D7FFB8 !important;
     border-color: #A3E766 !important;
     color: #3D7D00 !important;
   }
 
-  .text-emerald-400,
-  .text-emerald-300,
-  .text-emerald-500 {
-    color: #3D7D00 !important;
-  }
-
-  .fill-emerald-400 {
-    fill: #3D7D00 !important;
-  }
-
-  .border-emerald-500,
-  .border-emerald-500\/60,
-  .border-emerald-500\/30,
-  .border-emerald-800 {
-    border-color: #A3E766 !important;
-  }
-
-  /* Duolingo Fox Orange Badges & Metrics */
+  /* Amber / Orange */
   .bg-amber-950,
   .bg-amber-950\/80,
   .bg-amber-950\/60,
@@ -306,29 +432,13 @@ html:not(.dark) {
   .bg-amber-950\/20,
   .bg-amber-500\/10,
   .bg-amber-500\/20 {
+    background-image: none !important;
     background-color: #FFF0D4 !important;
     border-color: #FFD285 !important;
     color: #D97706 !important;
   }
 
-  .text-amber-400,
-  .text-amber-300,
-  .text-amber-500 {
-    color: #D97706 !important;
-  }
-
-  .fill-amber-400 {
-    fill: #D97706 !important;
-  }
-
-  .border-amber-500,
-  .border-amber-500\/60,
-  .border-amber-500\/30,
-  .border-amber-800 {
-    border-color: #FFD285 !important;
-  }
-
-  /* Duolingo Amethyst Purple Badges */
+  /* Violet / Purple */
   .bg-violet-950,
   .bg-violet-950\/80,
   .bg-violet-950\/60,
@@ -336,25 +446,13 @@ html:not(.dark) {
   .bg-violet-950\/20,
   .bg-violet-500\/10,
   .bg-violet-500\/20 {
+    background-image: none !important;
     background-color: #F5E8FF !important;
     border-color: #DDD6FE !important;
     color: #9333EA !important;
   }
 
-  .text-violet-400,
-  .text-violet-300,
-  .text-violet-500 {
-    color: #9333EA !important;
-  }
-
-  .border-violet-500,
-  .border-violet-500\/60,
-  .border-violet-500\/30,
-  .border-violet-800 {
-    border-color: #DDD6FE !important;
-  }
-
-  /* Duolingo Cardinal Red Badges & Signout */
+  /* Rose / Red */
   .bg-rose-950,
   .bg-rose-950\/80,
   .bg-rose-950\/60,
@@ -362,24 +460,16 @@ html:not(.dark) {
   .bg-rose-950\/20,
   .bg-rose-500\/10,
   .bg-rose-500\/30 {
+    background-image: none !important;
     background-color: #FFE5E5 !important;
     border-color: #FFB8B8 !important;
     color: #EA2B2B !important;
   }
 
-  .text-rose-400,
-  .text-rose-300,
-  .text-rose-500 {
-    color: #EA2B2B !important;
-  }
-
-  .border-rose-500,
-  .border-rose-500\/60,
-  .border-rose-500\/30 {
-    border-color: #FFB8B8 !important;
-  }
-
-  /* General Duolingo Crisp 2px Borders */
+  /* --------------------------------------------------------------------------
+     6. Borders, Header, Footer & Form Controls
+     -------------------------------------------------------------------------- */
+  
   .border-slate-800,
   .border-slate-800\/80,
   .border-slate-800\/60,
@@ -390,15 +480,9 @@ html:not(.dark) {
     border-color: #E5E5E5 !important;
   }
 
-  /* Duolingo Header / Navbar */
   header {
     background-color: rgba(255, 255, 255, 0.95) !important;
     border-bottom: 2px solid #E5E5E5 !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) !important;
-  }
-
-  header a:hover {
-    color: #1CB0F6 !important;
   }
 
   header nav a {
@@ -406,12 +490,6 @@ html:not(.dark) {
     font-weight: 700 !important;
   }
 
-  header nav a:hover {
-    background-color: #F7F7F7 !important;
-    color: #4B4B4B !important;
-  }
-
-  /* Active Nav Link in Duolingo Light Style */
   header nav a.bg-cyan-950\/40,
   header nav a[class*="text-cyan-400"] {
     background-color: #DDF4FF !important;
@@ -420,11 +498,9 @@ html:not(.dark) {
     box-shadow: 0 2px 0 0 #84D8FF !important;
   }
 
-  /* Duolingo Footer */
   footer {
     background-color: #F7F7F7 !important;
     border-top: 2px solid #E5E5E5 !important;
-    color: #777777 !important;
   }
 
   footer h4 {
@@ -434,14 +510,12 @@ html:not(.dark) {
 
   footer a {
     color: #777777 !important;
-    font-weight: 600 !important;
   }
 
   footer a:hover {
     color: #1CB0F6 !important;
   }
 
-  /* Form Elements: Input, Textarea, Select */
   input, textarea, select {
     background-color: #F7F7F7 !important;
     color: #4B4B4B !important;
@@ -461,122 +535,12 @@ html:not(.dark) {
     color: #AFAFAF !important;
   }
 
-  /* Tabs Switcher in Topic Workspace */
-  button.bg-cyan-500.text-black,
-  button[class*="bg-cyan-500"] {
-    background: #1CB0F6 !important;
-    border: 2px solid #1899D6 !important;
-    border-bottom: 4px solid #1899D6 !important;
-    color: #FFFFFF !important;
-    font-weight: 800 !important;
-    box-shadow: 0 3px 0 0 #1899D6 !important;
-  }
-
-  button.bg-cyan-500.text-black:hover,
-  button[class*="bg-cyan-500"]:hover {
-    background: #2BD0FF !important;
-  }
-
-  /* Quiz Engine Options */
-  .space-y-3 button {
-    background-color: #FFFFFF !important;
-    border: 2px solid #E5E5E5 !important;
-    border-bottom: 4px solid #E5E5E5 !important;
-    color: #4B4B4B !important;
-    font-weight: 700 !important;
-    box-shadow: 0 2px 0 0 #E5E5E5 !important;
-  }
-
-  .space-y-3 button:hover {
-    background-color: #F7F7F7 !important;
-    border-color: #D4D4D4 !important;
-  }
-
-  .space-y-3 button.bg-cyan-950\/60,
-  .space-y-3 button[class*="border-cyan-500"] {
-    background-color: #DDF4FF !important;
-    border: 2px solid #1899D6 !important;
-    border-bottom: 4px solid #1899D6 !important;
-    color: #1899D6 !important;
-    box-shadow: 0 3px 0 0 #1899D6 !important;
-  }
-
-  /* Duolingo Progress Bars */
-  .bg-slate-900.h-2,
-  .bg-slate-950.rounded-full {
-    background-color: #E5E5E5 !important;
-  }
-
-  .bg-gradient-to-r.from-cyan-500.to-violet-600.h-full,
-  .bg-gradient-to-r.from-cyan-500.to-blue-600.h-full {
-    background: #58CC02 !important;
-    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
-  }
-
-  /* Skill Tree Step Markers */
-  .rounded-full.border-2 {
-    background-color: #FFFFFF !important;
-    border-color: #E5E5E5 !important;
-    color: #777777 !important;
-  }
-
-  .rounded-full.border-2.bg-emerald-950 {
-    background-color: #58CC02 !important;
-    border-color: #58A700 !important;
-    color: #FFFFFF !important;
-    box-shadow: 0 3px 0 0 #58A700 !important;
-  }
-
-  .rounded-full.border-2.bg-cyan-950 {
-    background-color: #1CB0F6 !important;
-    border-color: #1899D6 !important;
-    color: #FFFFFF !important;
-    box-shadow: 0 3px 0 0 #1899D6 !important;
-  }
-
-  /* Markdown & Code Blocks */
-  .prose-headings\:text-white {
-    color: #4B4B4B !important;
-  }
-
-  .prose-p\:text-slate-300 {
-    color: #4B4B4B !important;
-  }
-
-  code {
-    background-color: #F7F7F7 !important;
-    color: #1899D6 !important;
-    border: 1px solid #E5E5E5 !important;
-    font-weight: 600 !important;
-  }
-
-  pre {
-    background-color: #F8FAFC !important;
-    border: 2px solid #E5E5E5 !important;
-    color: #1E293B !important;
-  }
-
-  pre code {
-    background-color: transparent !important;
-    border: none !important;
-    color: #1E293B !important;
-  }
-
   /* Modals: Search, Onboarding, Certificate */
   .fixed.inset-0 .bg-\[\#0D121F\],
   .fixed.inset-0 .bg-\[\#0B0F19\] {
+    background-image: none !important;
     background-color: #FFFFFF !important;
     border: 2px solid #E5E5E5 !important;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
-  }
-
-  /* Interactive Links on Hover */
-  a:hover {
-    text-decoration: none;
-  }
-
-  .group:hover .group-hover\:text-cyan-300,
-  .group:hover .group-hover\:text-cyan-400 {
-    color: #1899D6 !important;
   }
 }

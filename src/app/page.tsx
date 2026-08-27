@@ -96,24 +96,24 @@ export default function HomePage() {
           <div className="mt-12 max-w-3xl mx-auto">
             <Link
               href={`/curriculum/${continueTopic.moduleSlug}/${continueTopic.slug}`}
-              className="group block p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-cyan-950/40 to-slate-900 border border-cyan-500/30 hover:border-cyan-400/60 shadow-xl shadow-cyan-500/10 transition-all"
+              className="group block p-4 sm:p-5 rounded-2xl bg-white dark:bg-gradient-to-r dark:from-slate-900 dark:via-cyan-950/40 dark:to-slate-900 border-2 border-slate-200 dark:border-cyan-500/30 hover:border-sky-400 dark:hover:border-cyan-400/60 shadow-lg dark:shadow-cyan-500/10 transition-all"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
-                    <Play className="w-6 h-6 fill-cyan-400 ml-0.5" />
+                  <div className="w-12 h-12 rounded-xl bg-sky-100 dark:bg-cyan-500/10 border border-sky-300 dark:border-cyan-500/30 flex items-center justify-center text-sky-600 dark:text-cyan-400">
+                    <Play className="w-6 h-6 fill-sky-600 dark:fill-cyan-400 ml-0.5" />
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
-                      <span className="text-[11px] font-mono uppercase text-cyan-400 font-semibold">Continue Learning</span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                      <span className="text-[11px] font-mono uppercase text-sky-600 dark:text-cyan-400 font-bold">Continue Learning</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-cyan-400 animate-ping" />
                     </div>
-                    <div className="font-bold text-white group-hover:text-cyan-300 text-base sm:text-lg">
+                    <div className="font-extrabold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-cyan-300 text-base sm:text-lg">
                       {continueTopic.title}
                     </div>
                   </div>
                 </div>
-                <div className="hidden sm:flex items-center space-x-2 text-xs font-bold text-cyan-400 group-hover:translate-x-1 transition-transform">
+                <div className="hidden sm:flex items-center space-x-2 text-xs font-extrabold text-sky-600 dark:text-cyan-400 group-hover:translate-x-1 transition-transform">
                   <span>Resume Lesson</span>
                   <ArrowRight className="w-4 h-4" />
                 </div>

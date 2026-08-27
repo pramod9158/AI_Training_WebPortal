@@ -98,25 +98,25 @@ export default function DashboardPage() {
 
       {/* "Continue Where You Left Off" Prominent Card */}
       {continueTopic && (
-        <div className="p-6 rounded-3xl bg-gradient-to-r from-slate-900 via-cyan-950/50 to-slate-900 border border-cyan-500/40 shadow-2xl space-y-4">
+        <div className="p-6 rounded-3xl bg-white dark:bg-gradient-to-r dark:from-slate-900 dark:via-cyan-950/50 dark:to-slate-900 border-2 border-slate-200 dark:border-cyan-500/40 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono uppercase tracking-widest text-cyan-400 flex items-center space-x-1.5">
-              <Zap className="w-4 h-4 fill-cyan-400" />
+            <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold flex items-center space-x-1.5">
+              <Zap className="w-4 h-4 fill-sky-600 dark:fill-cyan-400" />
               <span>Continue Where You Left Off</span>
             </span>
-            <span className="text-xs font-mono text-slate-400">Module 0{MODULES.find(m => m.slug === continueTopic.moduleSlug)?.orderIndex}</span>
+            <span className="text-xs font-mono text-slate-500 dark:text-slate-400 font-medium">Module 0{MODULES.find(m => m.slug === continueTopic.moduleSlug)?.orderIndex}</span>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-white">{continueTopic.title}</h2>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1">{continueTopic.description}</p>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">{continueTopic.title}</h2>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 font-medium">{continueTopic.description}</p>
             </div>
             <Link
               href={`/curriculum/${continueTopic.moduleSlug}/${continueTopic.slug}?tab=watch`}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold text-sm hover:brightness-110 shadow-lg shadow-cyan-500/20 transition-all flex items-center space-x-2 shrink-0"
+              className="px-6 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-sm transition-all flex items-center space-x-2 shrink-0"
             >
-              <Play className="w-4 h-4 fill-black" />
+              <Play className="w-4 h-4 fill-white" />
               <span>Resume Topic</span>
             </Link>
           </div>
