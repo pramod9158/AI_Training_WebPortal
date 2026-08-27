@@ -14,7 +14,20 @@ const BOOKMARKS_KEY = 'waynautic_user_bookmarks';
 const PROFILE_KEY = 'waynautic_user_profile';
 
 export function getTodayDateString(): string {
-  return new Date().toISOString().split('T')[0];
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+export function getYesterdayDateString(): string {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 export function loadProfile(): UserProfileState {
@@ -65,23 +78,13 @@ export async function saveProfile(profile: Partial<UserProfileState>) {
           display_name: updated.displayName,
           avatar_url: updated.avatarUrl,
           selected_path: updated.selectedPath,
-          updated_at: new Date().toISOString()
+          last_accessed_topic_id: updated.lastAccessedTopicId,
+          last_accessed_at: updated.lastAccessedAt
         };
-
-        if (updated.lastAccessedTopicId !== undefined) {
-          payload.last_accessed_topic_id = updated.lastAccessedTopicId;
-        }
-        if (updated.lastAccessedAt !== undefined) {
-          payload.last_accessed_at = updated.lastAccessedAt;
-        }
-
-        const { error } = await supabase.from('user_profiles').upsert(payload);
-        if (error) {
-          console.warn('Supabase user_profiles upsert note:', error.message);
-        }
+        await supabase.from('user_profiles').upsert(payload);
       }
-    } catch (err) {
-      console.warn('Error updating profile in Supabase:', err);
+    } catch (e) {
+      console.error('Failed to sync profile to Supabase', e);
     }
   }
 }
@@ -103,13 +106,17 @@ export function loadProgress(): Record<string, UserProgress> {
     try {
       return JSON.parse(saved);
     } catch (e) {
-      console.error(e);
+      console.error('Failed to parse progress', e);
     }
   }
   return {};
 }
 
-export async function saveProgress(topicId: string, status: 'in_progress' | 'completed', score?: number) {
+export async function saveProgress(
+  topicId: string,
+  status: 'not_started' | 'in_progress' | 'completed',
+  score?: number
+) {
   if (typeof window === 'undefined') return;
   recordUserActivity();
   const current = loadProgress();
@@ -127,7 +134,7 @@ export async function saveProgress(topicId: string, status: 'in_progress' | 'com
   };
 
   localStorage.setItem(PROGRESS_KEY, JSON.stringify(current));
-  recordActivity();
+  await recordActivity();
   checkAndAwardBadges(current);
   saveLastAccessedTopic(topicId);
   window.dispatchEvent(new Event('waynautic_storage_change'));
@@ -180,47 +187,84 @@ export function loadStreak(): UserStreak {
     return { currentStreak: 1, longestStreak: 1, lastActiveDate: getTodayDateString() };
   }
   const saved = localStorage.getItem(STREAK_KEY);
+  const today = getTodayDateString();
+  const yesterday = getYesterdayDateString();
+
   if (saved) {
     try {
       const data: UserStreak = JSON.parse(saved);
-      const today = getTodayDateString();
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-      
       if (data.lastActiveDate === today) {
         return data;
       } else if (data.lastActiveDate === yesterday) {
         return data;
       } else {
-        return { currentStreak: 0, longestStreak: data.longestStreak, lastActiveDate: data.lastActiveDate };
+        // Inactive for more than 1 day: streak reset to 0 until next activity
+        return { 
+          currentStreak: 0, 
+          longestStreak: Math.max(data.longestStreak || 1, data.currentStreak || 1), 
+          lastActiveDate: data.lastActiveDate 
+        };
       }
     } catch (e) {
-      console.error(e);
+      console.error('Failed to parse streak', e);
     }
   }
-  return { currentStreak: 1, longestStreak: 1, lastActiveDate: getTodayDateString() };
+  const initial: UserStreak = { currentStreak: 1, longestStreak: 1, lastActiveDate: today };
+  localStorage.setItem(STREAK_KEY, JSON.stringify(initial));
+  return initial;
 }
 
-export function recordActivity() {
+export async function recordActivity() {
   if (typeof window === 'undefined') return;
   const today = getTodayDateString();
-  const streak = loadStreak();
-  
-  if (streak.lastActiveDate === today) return;
+  const yesterday = getYesterdayDateString();
+  const saved = localStorage.getItem(STREAK_KEY);
 
-  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-  let newCurrent = 1;
-  if (streak.lastActiveDate === yesterday) {
-    newCurrent = streak.currentStreak + 1;
+  let currentStreak = 1;
+  let longestStreak = 1;
+
+  if (saved) {
+    try {
+      const data: UserStreak = JSON.parse(saved);
+      longestStreak = data.longestStreak || 1;
+
+      if (data.lastActiveDate === today) {
+        return; // Already recorded streak for today
+      } else if (data.lastActiveDate === yesterday) {
+        // Consecutive day activity!
+        currentStreak = (data.currentStreak || 0) + 1;
+      } else {
+        // Streak broken, starting new streak of 1
+        currentStreak = 1;
+      }
+      longestStreak = Math.max(currentStreak, longestStreak);
+    } catch (e) {
+      console.error('Failed to record activity', e);
+    }
   }
-  
-  const newLongest = Math.max(newCurrent, streak.longestStreak);
+
   const updated: UserStreak = {
-    currentStreak: newCurrent,
-    longestStreak: newLongest,
+    currentStreak,
+    longestStreak,
     lastActiveDate: today
   };
-  
+
   localStorage.setItem(STREAK_KEY, JSON.stringify(updated));
+  window.dispatchEvent(new Event('waynautic_storage_change'));
+
+  if (isSupabaseConfigured) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.from('user_profiles').update({
+          streak_days: currentStreak,
+          last_active_at: new Date().toISOString()
+        }).eq('id', session.user.id);
+      }
+    } catch (err) {
+      console.error('Error syncing streak to Supabase:', err);
+    }
+  }
 }
 
 export function loadBookmarks(): string[] {
@@ -438,6 +482,11 @@ export function useWaynauticStore() {
   };
 
   useEffect(() => {
+    // Record daily activity & check streak progression
+    recordActivity().then(() => {
+      reloadData();
+    });
+
     // Check session expiration on mount
     checkAndHandleInactivityTimeout().then((expired) => {
       if (expired) {
