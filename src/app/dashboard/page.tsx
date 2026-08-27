@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { 
   Trophy, 
   Flame, 
@@ -11,15 +12,26 @@ import {
   CheckCircle2, 
   ArrowRight,
   Sparkles,
-  Zap
+  Zap,
+  Trash2,
+  BookOpen
 } from 'lucide-react';
 import { MODULES } from '@/data/seedModules';
 import { TOPICS } from '@/data/seedTopics';
 import { useWaynauticStore } from '@/lib/store';
 
-export default function DashboardPage() {
-  const { profile, progress, streak, bookmarks, badges } = useWaynauticStore();
+function DashboardContent() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get('tab');
+
+  const { profile, progress, streak, bookmarks, badges, toggleBookmarkTopic } = useWaynauticStore();
   const [activeTab, setActiveTab] = useState<'overview' | 'bookmarks' | 'badges'>('overview');
+
+  useEffect(() => {
+    if (tabParam === 'bookmarks' || tabParam === 'badges' || tabParam === 'overview') {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
 
   const totalTopicsCount = TOPICS.length;
   const completedTopicsCount = Object.keys(progress).filter(
@@ -88,14 +100,17 @@ export default function DashboardPage() {
         </div>
 
         {/* Metric 4: Bookmarks */}
-        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 space-y-1 sm:space-y-2 shadow-sm">
+        <button
+          onClick={() => setActiveTab('bookmarks')}
+          className="text-left p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 space-y-1 sm:space-y-2 shadow-sm hover:border-sky-400 transition-colors"
+        >
           <div className="flex items-center justify-between">
             <span className="text-[10px] sm:text-xs font-mono text-slate-500 dark:text-slate-400 uppercase font-bold truncate">Saved</span>
             <Bookmark className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600 dark:text-cyan-400 shrink-0" />
           </div>
           <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">{bookmarks.length} Topics</div>
-          <div className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium truncate">Revision List</div>
-        </div>
+          <div className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium truncate">Click to View List →</div>
+        </button>
 
       </div>
 
@@ -147,7 +162,7 @@ export default function DashboardPage() {
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
-          Bookmarks ({bookmarks.length})
+          Saved Topics ({bookmarks.length})
         </button>
 
         <button
@@ -200,30 +215,84 @@ export default function DashboardPage() {
 
       {/* Tab Panel 2: Saved / Bookmarked Topics */}
       {activeTab === 'bookmarks' && (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {bookmarks.length === 0 ? (
-            <div className="p-8 sm:p-12 text-center text-slate-500 dark:text-slate-400 text-sm bg-white dark:bg-slate-900/40 rounded-2xl sm:rounded-3xl border-2 border-slate-200 dark:border-slate-800 font-medium">
-              No saved topics yet! Click the star/bookmark icon on any topic page to save it for revision.
+            <div className="p-8 sm:p-14 text-center bg-white dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-800 space-y-4 shadow-sm">
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-sky-50 dark:bg-cyan-950/60 border-2 border-sky-200 dark:border-cyan-500/30 flex items-center justify-center text-sky-600 dark:text-cyan-400">
+                <Bookmark className="w-7 h-7" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
+                  No Saved Topics Yet
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto font-medium leading-relaxed">
+                  You haven&apos;t bookmarked any lessons yet. Click the bookmark (🔖) icon while studying any lesson or quiz to save it here for fast revision!
+                </p>
+              </div>
+              <div className="pt-2">
+                <Link
+                  href="/curriculum"
+                  className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs sm:text-sm transition-all"
+                >
+                  <BookOpen className="w-4 h-4 text-white" />
+                  <span>Browse Curriculum Syllabus</span>
+                </Link>
+              </div>
             </div>
           ) : (
-            bookmarks.map(topicId => {
-              const topic = TOPICS.find(t => t.id === topicId);
-              if (!topic) return null;
-              return (
-                <div key={topicId} className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
-                  <div>
-                    <h4 className="font-extrabold text-slate-900 dark:text-white text-base">{topic.title}</h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 font-medium">{topic.description}</p>
-                  </div>
-                  <Link
-                    href={`/curriculum/${topic.moduleSlug}/${topic.slug}?tab=watch`}
-                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-sky-50 dark:bg-cyan-950 text-sky-700 dark:text-cyan-400 border border-sky-300 dark:border-cyan-800 text-xs font-extrabold hover:bg-sky-100 transition-colors shrink-0 text-center"
+            <div className="grid grid-cols-1 gap-3 sm:gap-4">
+              {bookmarks.map((topicId) => {
+                const topic = TOPICS.find((t) => t.id === topicId || t.slug === topicId);
+                if (!topic) return null;
+                const mod = MODULES.find((m) => m.slug === topic.moduleSlug);
+                const isCompleted = progress[topic.id]?.status === 'completed';
+
+                return (
+                  <div
+                    key={topicId}
+                    className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm hover:border-sky-300 dark:hover:border-slate-700 transition-colors"
                   >
-                    Open Topic
-                  </Link>
-                </div>
-              );
-            })
+                    <div className="space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-[11px] font-mono font-bold text-sky-600 dark:text-cyan-400 bg-sky-50 dark:bg-cyan-950/60 border border-sky-200 dark:border-cyan-800 px-2 py-0.5 rounded-md">
+                          Module 0{mod?.orderIndex || 1}
+                        </span>
+                        {isCompleted && (
+                          <span className="inline-flex items-center space-x-1 text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-md">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                            <span>Completed</span>
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg">
+                        {topic.title}
+                      </h4>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1 font-medium">
+                        {topic.description}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center space-x-2 w-full sm:w-auto shrink-0 justify-end">
+                      <button
+                        onClick={() => toggleBookmarkTopic(topic.id)}
+                        className="p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                        title="Remove from saved topics"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+
+                      <Link
+                        href={`/curriculum/${topic.moduleSlug}/${topic.slug}?tab=watch`}
+                        className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs transition-all text-center flex items-center justify-center space-x-1.5 min-h-[42px]"
+                      >
+                        <Play className="w-3.5 h-3.5 fill-white" />
+                        <span>Open Lesson</span>
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       )}
@@ -251,5 +320,13 @@ export default function DashboardPage() {
       )}
 
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen p-8 text-center text-sm font-bold text-slate-500">Loading Dashboard...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }

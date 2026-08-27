@@ -224,6 +224,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           )}
 
           <Link
+            href="/dashboard?tab=bookmarks"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center justify-between px-3.5 py-3 rounded-xl text-base font-bold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 min-h-[44px]"
+          >
+            <div className="flex items-center space-x-3">
+              <Bookmark className="w-5 h-5 text-sky-600 dark:text-cyan-400" />
+              <span>Saved Topics</span>
+            </div>
+            {bookmarks.length > 0 && (
+              <span className="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-sky-100 dark:bg-cyan-950 text-sky-700 dark:text-cyan-400 border border-sky-300 dark:border-cyan-800">
+                {bookmarks.length}
+              </span>
+            )}
+          </Link>
+
+          <Link
             href="/onboarding"
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-base font-bold text-sky-600 dark:text-cyan-400 bg-sky-500/10 dark:bg-cyan-950/40 border border-sky-500/20 dark:border-cyan-500/30 min-h-[44px]"

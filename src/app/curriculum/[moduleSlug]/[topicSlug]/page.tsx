@@ -17,7 +17,8 @@ import {
   CheckCircle2, 
   ArrowLeft, 
   ArrowRight,
-  Clock
+  Clock,
+  Lock
 } from 'lucide-react';
 
 export default function TopicWorkspacePage() {
@@ -28,7 +29,8 @@ export default function TopicWorkspacePage() {
   const moduleSlug = params?.moduleSlug as string;
   const topicSlug = params?.topicSlug as string;
 
-  const { progress, bookmarks, markTopicProgress, saveQuizAttempt, saveLastAccessedTopic, toggleBookmarkTopic } = useWaynauticStore();
+  const { profile, progress, bookmarks, markTopicProgress, saveQuizAttempt, saveLastAccessedTopic, toggleBookmarkTopic } = useWaynauticStore();
+  const isLoggedIn = Boolean(profile.userId || profile.email);
 
   const topic = TOPICS.find((t) => t.moduleSlug === moduleSlug && t.slug === topicSlug);
   const moduleData = MODULES.find((m) => m.slug === moduleSlug);
@@ -37,13 +39,83 @@ export default function TopicWorkspacePage() {
 
   // Record last accessed topic for Resume Learning
   React.useEffect(() => {
-    if (topicId) {
+    if (topicId && isLoggedIn) {
       saveLastAccessedTopic(topicId);
     }
-  }, [topicId, saveLastAccessedTopic]);
+  }, [topicId, isLoggedIn, saveLastAccessedTopic]);
 
   if (!topic || !moduleData) {
     return notFound();
+  }
+
+  // If not logged in, enforce login requirement before starting learning
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center p-4">
+        <div className="w-full max-w-lg bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6 text-center animate-in fade-in duration-300">
+          
+          <div className="w-16 h-16 mx-auto rounded-3xl bg-sky-100 dark:bg-cyan-950/80 border-2 border-sky-300 dark:border-cyan-500/40 flex items-center justify-center text-sky-600 dark:text-cyan-400 shadow-md">
+            <Lock className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold">
+              Student Login Required
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+              Log In to Start Learning
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-md mx-auto">
+              You must be logged into your Waynautic Academy account to access <strong className="text-slate-900 dark:text-white">&quot;{topic.title}&quot;</strong>, stream video lectures, view code notes, and take quizzes.
+            </p>
+          </div>
+
+          {/* Benefits */}
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 text-left space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium">
+            <div className="flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              <span>Access to all 10 AI engineering modules & videos</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              <span>Real-time progress saving, daily streaks & bookmarks</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              <span>Official verified certificates upon completing paths</span>
+            </div>
+          </div>
+
+          {/* Action CTAs */}
+          <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+            <Link
+              href={`/login?redirectTo=/curriculum/${moduleSlug}/${topicSlug}`}
+              className="w-full sm:w-1/2 py-3.5 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px]"
+            >
+              <span>Log In to Account</span>
+              <ArrowRight className="w-4 h-4 text-white" />
+            </Link>
+
+            <Link
+              href={`/signup?redirectTo=/curriculum/${moduleSlug}/${topicSlug}`}
+              className="w-full sm:w-1/2 py-3.5 rounded-xl bg-sky-50 dark:bg-slate-900 hover:bg-sky-100 dark:hover:bg-slate-800 border-2 border-sky-300 dark:border-slate-700 text-sky-800 dark:text-white font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center min-h-[44px]"
+            >
+              <span>Create Free Account</span>
+            </Link>
+          </div>
+
+          <div className="pt-2">
+            <Link
+              href="/curriculum"
+              className="text-xs text-slate-500 dark:text-slate-400 hover:underline font-bold"
+            >
+              ← Back to Curriculum Syllabus
+            </Link>
+          </div>
+
+        </div>
+      </div>
+    );
   }
 
   // Active Tab from URL search params (defaults to 'watch')
