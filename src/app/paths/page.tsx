@@ -133,12 +133,12 @@ export default function PathsPage() {
           <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">{completedPathTopics.length} of {pathTopics.length} Topics Mastered ({pathPercent}%)</div>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="w-full sm:w-auto flex items-center justify-center sm:justify-end">
           <button
             onClick={() => setCertModalOpen(true)}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 text-black font-extrabold text-xs hover:brightness-110 shadow-lg shadow-amber-500/20 transition-all flex items-center space-x-2"
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs transition-all flex items-center justify-center space-x-2 min-h-[44px]"
           >
-            <Award className="w-4 h-4 fill-black" />
+            <Award className="w-4 h-4 fill-white" />
             <span>Download Certificate</span>
           </button>
         </div>
