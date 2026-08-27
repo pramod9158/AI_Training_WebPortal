@@ -148,6 +148,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             )}
           </Link>
 
+          {/* Guided Tour Trigger */}
+          <Link
+            href="/onboarding"
+            className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-sky-500/10 dark:bg-cyan-500/10 text-sky-600 dark:text-cyan-400 hover:bg-sky-500/20 dark:hover:bg-cyan-500/20 text-xs font-bold font-mono transition-colors"
+            title="Interactive Platform Tour"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Tour</span>
+          </Link>
+
           {/* Dark / Light Mode Toggle */}
           <button
             onClick={toggleTheme}
@@ -233,15 +243,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             </Link>
           )}
 
+          <Link
+            href="/onboarding"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-base font-medium text-sky-600 dark:text-cyan-400 bg-sky-500/10 dark:bg-cyan-950/40 border border-sky-500/20 dark:border-cyan-500/30"
+          >
+            <Sparkles className="w-5 h-5 text-sky-600 dark:text-cyan-400" />
+            <span>Interactive Guided Tour</span>
+          </Link>
+
           <div className="pt-2">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 if (onOpenSearch) onOpenSearch();
               }}
-              className="w-full flex items-center justify-center space-x-2 py-2.5 bg-slate-900 border border-slate-700/80 rounded-lg text-sm text-slate-300 font-medium"
+              className="w-full flex items-center justify-center space-x-2 py-2.5 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700/80 rounded-lg text-sm text-slate-700 dark:text-slate-300 font-medium"
             >
-              <Search className="w-4 h-4 text-cyan-400" />
+              <Search className="w-4 h-4 text-sky-600 dark:text-cyan-400" />
               <span>Search 56 Topics</span>
             </button>
           </div>
