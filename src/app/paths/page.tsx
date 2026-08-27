@@ -6,7 +6,7 @@ import { LEARNING_PATHS, MODULES } from '@/data/seedModules';
 import { TOPICS } from '@/data/seedTopics';
 import { useWaynauticStore } from '@/lib/store';
 import { SkillTree } from '@/components/SkillTree';
-import { Compass, CheckCircle2, ArrowRight, Zap, Trophy, Award } from 'lucide-react';
+import { Compass, CheckCircle2, ArrowRight, Zap, Trophy, Award, Lock } from 'lucide-react';
 import { CertificateModal } from '@/components/CertificateModal';
 
 export default function PathsPage() {
@@ -22,6 +22,8 @@ export default function PathsPage() {
   const completedPathTopics = pathTopics.filter(t => progress[t.id]?.status === 'completed');
   const pathPercent = Math.round((completedPathTopics.length / Math.max(pathTopics.length, 1)) * 100);
 
+  const isPathCompleted = completedPathTopics.length === pathTopics.length && pathTopics.length > 0;
+
   const handleSelectPath = (slug: string) => {
     setActivePathSlug(slug);
     updateProfile({ selectedPath: slug });
@@ -36,6 +38,9 @@ export default function PathsPage() {
         onClose={() => setCertModalOpen(false)}
         userName={profile.displayName || 'Developer'}
         pathTitle={selectedPathObj.title}
+        isUnlocked={isPathCompleted}
+        completedCount={completedPathTopics.length}
+        totalCount={pathTopics.length}
       />
 
       {/* Header */}
@@ -136,10 +141,23 @@ export default function PathsPage() {
         <div className="w-full sm:w-auto flex items-center justify-center sm:justify-end">
           <button
             onClick={() => setCertModalOpen(true)}
-            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs transition-all flex items-center justify-center space-x-2 min-h-[44px]"
+            className={`w-full sm:w-auto px-6 py-3 rounded-xl border-2 text-xs font-extrabold transition-all flex items-center justify-center space-x-2 min-h-[44px] ${
+              isPathCompleted
+                ? 'bg-[#58CC02] hover:bg-[#61E002] border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white'
+                : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
+            }`}
           >
-            <Award className="w-4 h-4 fill-white" />
-            <span>Download Certificate</span>
+            {isPathCompleted ? (
+              <>
+                <Award className="w-4 h-4 fill-white text-white" />
+                <span>Claim Certificate 🎓</span>
+              </>
+            ) : (
+              <>
+                <Lock className="w-4 h-4 text-amber-500" />
+                <span>Certificate Locked ({pathPercent}%)</span>
+              </>
+            )}
           </button>
         </div>
       </div>
