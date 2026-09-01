@@ -25,11 +25,25 @@ function DashboardContent() {
   const tabParam = searchParams.get('tab');
 
   const { profile, progress, streak, bookmarks, badges, toggleBookmarkTopic } = useWaynauticStore();
-  const [activeTab, setActiveTab] = useState<'overview' | 'bookmarks' | 'badges'>('overview');
+  const isLoggedIn = Boolean(profile.userId || profile.email);
+  const [activeTab, setActiveTab] = useState<'overview' | 'bookmarks' | 'badges'>(() => {
+    if (tabParam === 'bookmarks' || tabParam === 'badges' || tabParam === 'overview') {
+      return tabParam;
+    }
+    return 'overview';
+  });
 
   useEffect(() => {
     if (tabParam === 'bookmarks' || tabParam === 'badges' || tabParam === 'overview') {
       setActiveTab(tabParam);
+      if (tabParam === 'bookmarks') {
+        setTimeout(() => {
+          const el = document.getElementById('dashboard-tabs');
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      }
     }
   }, [tabParam]);
 
@@ -50,9 +64,11 @@ function DashboardContent() {
       {/* Student Welcome Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-800 pb-6">
         <div>
-          <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold">Student Dashboard</span>
+          <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold">
+            {isLoggedIn ? 'Student Dashboard' : 'Guest Dashboard'}
+          </span>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white pt-1">
-            Welcome back, {profile.displayName || 'Developer'} 👋
+            {isLoggedIn ? `Welcome back, ${profile.displayName || 'Developer'} 👋` : 'Welcome, Guest 👋'}
           </h1>
         </div>
 
@@ -65,6 +81,35 @@ function DashboardContent() {
           <span>Retake Guided Tour</span>
         </Link>
       </div>
+
+      {/* Guest Mode Banner if not logged in */}
+      {!isLoggedIn && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-sky-50 to-indigo-50 dark:from-cyan-950/40 dark:to-indigo-950/30 border-2 border-sky-200 dark:border-cyan-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2 text-xs font-mono font-bold text-sky-700 dark:text-cyan-400">
+              <Sparkles className="w-4 h-4" />
+              <span>Browsing in Guest Mode</span>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">
+              Log in or create a free account to save your learning progress permanently, track streaks, and earn verified credentials.
+            </p>
+          </div>
+          <div className="flex items-center space-x-3 shrink-0">
+            <Link
+              href="/login?redirectTo=/dashboard"
+              className="px-4 py-2 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border border-[#58A700] text-white text-xs font-extrabold shadow-sm transition-all"
+            >
+              Log In
+            </Link>
+            <Link
+              href="/signup?redirectTo=/dashboard"
+              className="px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-extrabold hover:border-sky-400 transition-all"
+            >
+              Sign Up Free
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Metrics Banner Grid (2x2 on mobile, 4x1 on desktop) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
@@ -142,7 +187,7 @@ function DashboardContent() {
       )}
 
       {/* Tabs Filter */}
-      <div className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none border-b-2 border-slate-200 dark:border-slate-800">
+      <div id="dashboard-tabs" className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none border-b-2 border-slate-200 dark:border-slate-800">
         <button
           onClick={() => setActiveTab('overview')}
           className={`px-4 py-2.5 rounded-xl text-xs font-extrabold font-mono uppercase transition-all shrink-0 ${

@@ -88,6 +88,23 @@ export async function signOutUser() {
   }
   if (typeof window !== 'undefined') {
     localStorage.removeItem(LAST_ACTIVITY_KEY);
+    const profileKey = 'waynautic_user_profile';
+    const saved = localStorage.getItem(profileKey);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        localStorage.setItem(profileKey, JSON.stringify({
+          ...parsed,
+          userId: undefined,
+          email: undefined,
+          displayName: 'Guest',
+          avatarUrl: ''
+        }));
+      } catch {
+        localStorage.removeItem(profileKey);
+      }
+    }
+    window.dispatchEvent(new Event('waynautic_storage_change'));
   }
 }
 

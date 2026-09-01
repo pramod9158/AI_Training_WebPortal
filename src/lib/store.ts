@@ -33,7 +33,7 @@ export function getYesterdayDateString(): string {
 export function loadProfile(): UserProfileState {
   if (typeof window === 'undefined') {
     return {
-      displayName: 'Developer',
+      displayName: 'Guest',
       avatarUrl: '',
       selectedPath: 'path-a',
       hasCompletedOnboarding: false,
@@ -44,8 +44,10 @@ export function loadProfile(): UserProfileState {
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
+      const isAuth = Boolean(parsed.userId || parsed.email);
       return {
         ...parsed,
+        displayName: isAuth ? (parsed.displayName || 'Developer') : 'Guest',
         theme: parsed.theme || 'light'
       };
     } catch (e) {
@@ -53,12 +55,28 @@ export function loadProfile(): UserProfileState {
     }
   }
   return {
-    displayName: 'Developer',
+    displayName: 'Guest',
     avatarUrl: '',
     selectedPath: 'path-a',
     hasCompletedOnboarding: false,
     theme: 'light'
   };
+}
+
+export function resetGuestProfile() {
+  if (typeof window === 'undefined') return;
+  const current = loadProfile();
+  const guest: UserProfileState = {
+    ...current,
+    userId: undefined,
+    email: undefined,
+    displayName: 'Guest',
+    avatarUrl: '',
+    lastAccessedTopicId: undefined,
+    lastAccessedAt: undefined
+  };
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(guest));
+  window.dispatchEvent(new Event('waynautic_storage_change'));
 }
 
 export async function saveProfile(profile: Partial<UserProfileState>) {
@@ -512,7 +530,7 @@ export function useWaynauticStore() {
         if (session?.user) {
           fetchAndSyncCloudUser(session.user);
         } else if (event === 'SIGNED_OUT') {
-          saveProfile({ userId: undefined, email: undefined });
+          resetGuestProfile();
           reloadData();
         }
       });

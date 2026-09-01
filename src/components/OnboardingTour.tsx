@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Sparkles, 
@@ -46,7 +46,7 @@ interface OnboardingTourProps {
 const TOUR_STAGES = [
   { id: 'welcome', label: 'Welcome', icon: Sparkles },
   { id: 'paths', label: 'Choose Path', icon: Compass },
-  { id: 'modules', label: '10 Modules', icon: BookOpen },
+  { id: 'modules', label: 'Curriculum', icon: BookOpen },
   { id: 'workspace', label: 'How to Learn', icon: Play },
   { id: 'gamification', label: 'Certificates', icon: Award },
   { id: 'tools', label: 'Search & Tools', icon: Search },
@@ -59,6 +59,8 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
   const [currentStageIndex, setCurrentStageIndex] = useState(0);
   const [selectedPath, setSelectedPath] = useState<string>(profile.selectedPath || 'path-a');
   const [selectedModuleIndex, setSelectedModuleIndex] = useState(0);
+  const [showAllModules, setShowAllModules] = useState(false);
+  const lastNavTimeRef = useRef<number>(0);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -66,9 +68,17 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
       if (e.key === 'Escape') {
         handleSkip();
       } else if (e.key === 'ArrowRight' && currentStageIndex < TOUR_STAGES.length - 1) {
-        setCurrentStageIndex(prev => prev + 1);
+        const now = Date.now();
+        if (now - lastNavTimeRef.current >= 250) {
+          lastNavTimeRef.current = now;
+          setCurrentStageIndex(prev => prev + 1);
+        }
       } else if (e.key === 'ArrowLeft' && currentStageIndex > 0) {
-        setCurrentStageIndex(prev => prev - 1);
+        const now = Date.now();
+        if (now - lastNavTimeRef.current >= 250) {
+          lastNavTimeRef.current = now;
+          setCurrentStageIndex(prev => prev - 1);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -80,17 +90,30 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
   const currentStage = TOUR_STAGES[currentStageIndex];
 
   const handleNext = () => {
+    const now = Date.now();
+    if (now - lastNavTimeRef.current < 250) {
+      return; // Throttle fast repetitive clicks
+    }
+    lastNavTimeRef.current = now;
+
     if (currentStageIndex < TOUR_STAGES.length - 1) {
       setCurrentStageIndex(prev => prev + 1);
-    } else {
-      handleComplete();
     }
   };
 
   const handlePrev = () => {
+    const now = Date.now();
+    if (now - lastNavTimeRef.current < 200) return;
+    lastNavTimeRef.current = now;
+
     if (currentStageIndex > 0) {
       setCurrentStageIndex(prev => prev - 1);
     }
+  };
+
+  const handleSelectPath = (path: string) => {
+    setSelectedPath(path);
+    setSelectedModuleIndex(0);
   };
 
   const handleSkip = () => {
@@ -110,17 +133,18 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
     onClose();
   };
 
-  const activeModule = MODULES[selectedModuleIndex] || MODULES[0];
+  const selectedPathObj = LEARNING_PATHS.find(p => p.slug === selectedPath) || LEARNING_PATHS[0];
+  const pathModules = MODULES.filter(m => selectedPathObj.moduleSlugs.includes(m.slug));
+  const displayedModules = showAllModules ? MODULES : pathModules;
+  const activeModule = displayedModules[selectedModuleIndex] || displayedModules[0] || MODULES[0];
   const activeModuleTopics = TOPICS.filter(t => t.moduleSlug === activeModule.slug);
   const ModuleIcon = ICON_MAP[activeModule.iconName] || Brain;
 
   return (
     <div
-      onClick={handleSkip}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-200 cursor-pointer overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto"
     >
       <div
-        onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-3xl bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-cyan-500/30 rounded-3xl shadow-2xl overflow-hidden text-slate-800 dark:text-slate-200 cursor-default my-auto"
       >
         {/* Top Header Bar */}
@@ -179,7 +203,7 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
         </div>
 
         {/* Main Stage Content Area */}
-        <div className="p-6 sm:p-8 max-h-[62vh] overflow-y-auto">
+        <div className="p-6 sm:p-8 min-h-[460px] max-h-[64vh] overflow-y-auto">
           
           {/* STAGE 1: WELCOME */}
           {currentStage.id === 'welcome' && (
@@ -234,14 +258,14 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
               <div className="text-center space-y-1">
                 <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold">Step 1: Choose Your Journey</span>
                 <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white">Which learning track fits your background?</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Select a roadmap below. You can switch or explore freely at any time.</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Select a roadmap below. The next step will display the exact modules for your chosen path.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 
                 {/* Path A */}
                 <div
-                  onClick={() => setSelectedPath('path-a')}
+                  onClick={() => handleSelectPath('path-a')}
                   className={`cursor-pointer p-5 rounded-2xl border-2 transition-all space-y-3 ${
                     selectedPath === 'path-a'
                       ? 'bg-sky-50 dark:bg-cyan-950/40 border-sky-400 dark:border-cyan-500/60 shadow-lg ring-2 ring-sky-300 dark:ring-cyan-500/30'
@@ -264,14 +288,27 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
                   <p className="text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
                     Designed for developers starting with AI. Covers Python, Git, LLM principles, Prompt Engineering, Model APIs, and AI-powered IDEs.
                   </p>
-                  <div className="text-[11px] font-mono font-bold text-sky-600 dark:text-cyan-400">
+                  
+                  {/* Distinct Path A Modules List */}
+                  <div className="space-y-1.5 pt-1">
+                    <div className="text-[10px] font-mono uppercase text-sky-700 dark:text-cyan-400 font-bold">Included Modules (6):</div>
+                    <div className="flex flex-wrap gap-1">
+                      {MODULES.filter(m => LEARNING_PATHS[0].moduleSlugs.includes(m.slug)).map(m => (
+                        <span key={m.id} className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-sky-100/90 dark:bg-cyan-950/80 text-sky-800 dark:text-cyan-300 border border-sky-200 dark:border-cyan-800/50">
+                          {m.title}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="text-[11px] font-mono font-bold text-sky-600 dark:text-cyan-400 pt-1">
                     6 Modules • 35 Lesson Units
                   </div>
                 </div>
 
                 {/* Path B */}
                 <div
-                  onClick={() => setSelectedPath('path-b')}
+                  onClick={() => handleSelectPath('path-b')}
                   className={`cursor-pointer p-5 rounded-2xl border-2 transition-all space-y-3 ${
                     selectedPath === 'path-b'
                       ? 'bg-purple-50 dark:bg-violet-950/40 border-purple-400 dark:border-violet-500/60 shadow-lg ring-2 ring-purple-300 dark:ring-violet-500/30'
@@ -294,7 +331,20 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
                   <p className="text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
                     Advanced track for experienced developers. Covers local quant models, MCP server protocols, Vector Databases, and Agentic RAG.
                   </p>
-                  <div className="text-[11px] font-mono font-bold text-purple-600 dark:text-violet-400">
+
+                  {/* Distinct Path B Modules List */}
+                  <div className="space-y-1.5 pt-1">
+                    <div className="text-[10px] font-mono uppercase text-purple-700 dark:text-violet-400 font-bold">Included Modules (4):</div>
+                    <div className="flex flex-wrap gap-1">
+                      {MODULES.filter(m => LEARNING_PATHS[1].moduleSlugs.includes(m.slug)).map(m => (
+                        <span key={m.id} className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-purple-100/90 dark:bg-violet-950/80 text-purple-800 dark:text-violet-300 border border-purple-200 dark:border-violet-800/50">
+                          {m.title}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="text-[11px] font-mono font-bold text-purple-600 dark:text-violet-400 pt-1">
                     4 Modules • 21 Lesson Units
                   </div>
                 </div>
@@ -307,14 +357,48 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
           {currentStage.id === 'modules' && (
             <div className="space-y-5 animate-in fade-in duration-200">
               <div className="text-center space-y-1">
-                <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold">10 Structured Core Modules</span>
-                <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white">Explore the Curriculum Skill Tree</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Click any module pill below to preview what you will learn.</p>
+                <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold">
+                  {showAllModules ? 'All 10 Core Modules' : `${selectedPathObj.title} (${pathModules.length} Modules)`}
+                </span>
+                <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+                  {showAllModules ? 'Explore All Curriculum Modules' : `Modules for "${selectedPathObj.title}"`}
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                  {showAllModules 
+                    ? 'Previewing all 10 core modules in Waynautic Academy.'
+                    : `Showing the ${pathModules.length} sequential modules curated for ${selectedPathObj.title}.`}
+                </p>
+              </div>
+
+              {/* Path Filter Pills Toggle */}
+              <div className="flex items-center justify-center space-x-2">
+                <button
+                  type="button"
+                  onClick={() => { setShowAllModules(false); setSelectedModuleIndex(0); }}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold font-mono transition-colors ${
+                    !showAllModules
+                      ? 'bg-sky-500 text-white dark:bg-cyan-500 dark:text-black shadow-sm'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  {selectedPathObj.title} ({pathModules.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setShowAllModules(true); setSelectedModuleIndex(0); }}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold font-mono transition-colors ${
+                    showAllModules
+                      ? 'bg-sky-500 text-white dark:bg-cyan-500 dark:text-black shadow-sm'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  View All (10)
+                </button>
               </div>
 
               {/* Module selector pills */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
-                {MODULES.map((mod, idx) => (
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none justify-start sm:justify-center">
+                {displayedModules.map((mod, idx) => (
                   <button
                     key={mod.id}
                     onClick={() => setSelectedModuleIndex(idx)}
@@ -324,7 +408,7 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
                         : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
                     }`}
                   >
-                    0{mod.orderIndex}. {mod.slug.split('-')[0]}
+                    0{mod.orderIndex}. {mod.title.split(' ')[0]}
                   </button>
                 ))}
               </div>

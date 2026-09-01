@@ -31,13 +31,25 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const { profile, streak, bookmarks, updateProfile, signOut } = useWaynauticStore();
+  const { profile, streak, bookmarks, updateProfile, signOut, toggleBookmarkTopic } = useWaynauticStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
   const lastTopic = profile.lastAccessedTopicId 
     ? TOPICS.find(t => t.id === profile.lastAccessedTopicId || t.slug === profile.lastAccessedTopicId)
     : null;
+
+  const handleBookmarksClick = async () => {
+    // If currently viewing a topic, ensure it is bookmarked before navigating to bookmarks tab
+    const pathParts = pathname?.split('/').filter(Boolean) || [];
+    if (pathParts[0] === 'curriculum' && pathParts.length >= 3) {
+      const topicSlug = pathParts[2];
+      const activeTopic = TOPICS.find(t => t.slug === topicSlug || t.id === topicSlug);
+      if (activeTopic && !bookmarks.includes(activeTopic.id)) {
+        await toggleBookmarkTopic(activeTopic.id);
+      }
+    }
+  };
 
   const toggleTheme = () => {
     const nextTheme = profile.theme === 'dark' ? 'light' : 'dark';
@@ -126,6 +138,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           {/* Bookmarks Icon */}
           <Link
             href="/dashboard?tab=bookmarks"
+            onClick={handleBookmarksClick}
             className="relative p-2 text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 rounded-lg transition-colors"
             title="Saved Topics"
           >
@@ -225,7 +238,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
           <Link
             href="/dashboard?tab=bookmarks"
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={async () => {
+              setMobileMenuOpen(false);
+              await handleBookmarksClick();
+            }}
             className="flex items-center justify-between px-3.5 py-3 rounded-xl text-base font-bold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 min-h-[44px]"
           >
             <div className="flex items-center space-x-3">

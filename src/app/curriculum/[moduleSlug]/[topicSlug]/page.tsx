@@ -165,15 +165,21 @@ export default function TopicWorkspacePage() {
           
           {/* Bookmark Button */}
           <button
-            onClick={() => toggleBookmarkTopic(topic.id)}
+            onClick={async () => {
+              if (!isBookmarked) {
+                await toggleBookmarkTopic(topic.id);
+              }
+              router.push('/dashboard?tab=bookmarks');
+            }}
             className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all min-h-[38px] ${
               isBookmarked
                 ? 'bg-sky-100 text-sky-700 border-sky-300 dark:bg-cyan-950 dark:text-cyan-400 dark:border-cyan-500/40'
                 : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 dark:hover:text-white'
             }`}
+            title="Bookmark topic and view in Bookmarks tab"
           >
             <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-sky-600 dark:fill-cyan-400' : ''}`} />
-            <span>{isBookmarked ? 'Saved' : 'Save Topic'}</span>
+            <span>{isBookmarked ? 'Saved (View in Bookmarks)' : 'Save Topic'}</span>
           </button>
 
           {/* Mark Complete Button */}
