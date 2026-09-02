@@ -53,19 +53,10 @@ function LoginForm() {
   return (
     <div className="w-full max-w-md bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
       
-      <div className="text-center space-y-3">
-        <Link href="/" className="inline-block">
-          <Image
-            src="/waynautic-logo.png"
-            alt="Waynautic"
-            width={180}
-            height={40}
-            className="h-9 w-auto mx-auto object-contain"
-          />
-        </Link>
-        <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white pt-1">Student Login</h2>
+      <div className="text-center space-y-1.5">
+        <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Student Login</h2>
         <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-          Enter your email and password to access all courses & save your progress
+          Enter your email and password to access your courses & track progress
         </p>
       </div>
 
@@ -135,10 +126,8 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-[#F7F7F7] dark:bg-[#0B0F19] flex items-center justify-center p-4">
-      <Suspense fallback={<div className="text-center text-sm font-bold text-slate-500">Loading Login...</div>}>
-        <LoginForm />
-      </Suspense>
-    </div>
+    <Suspense fallback={<div className="text-center text-sm font-bold text-slate-500">Loading Login...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

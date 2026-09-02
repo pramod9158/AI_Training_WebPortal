@@ -55,6 +55,7 @@ function DashboardContent() {
 
   // Find last active/in-progress topic or default to topic 1
   const completedTopicIds = Object.keys(progress).filter(id => progress[id]?.status === 'completed');
+  const isBrandNewStudent = completedTopicsCount === 0 && !profile.lastAccessedTopicId;
   const lastTopicId = profile.lastAccessedTopicId || (completedTopicIds.length > 0 ? completedTopicIds[completedTopicIds.length - 1] : 't-1');
   const continueTopic = TOPICS.find(t => t.id === lastTopicId || t.slug === lastTopicId) || TOPICS[0];
 
@@ -165,7 +166,7 @@ function DashboardContent() {
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold flex items-center space-x-1.5">
               <Zap className="w-4 h-4 fill-sky-600 dark:fill-cyan-400" />
-              <span>Continue Where You Left Off</span>
+              <span>{isBrandNewStudent ? 'Start Your Learning Journey' : 'Continue Where You Left Off'}</span>
             </span>
             <span className="text-xs font-mono text-slate-500 dark:text-slate-400 font-medium">Module 0{MODULES.find(m => m.slug === continueTopic.moduleSlug)?.orderIndex}</span>
           </div>
@@ -180,7 +181,7 @@ function DashboardContent() {
               className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 shrink-0 min-h-[44px]"
             >
               <Play className="w-4 h-4 fill-white" />
-              <span>Resume Topic</span>
+              <span>{isBrandNewStudent ? 'Start Topic 01' : 'Resume Topic'}</span>
             </Link>
           </div>
         </div>

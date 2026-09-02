@@ -88,6 +88,10 @@ export async function signOutUser() {
   }
   if (typeof window !== 'undefined') {
     localStorage.removeItem(LAST_ACTIVITY_KEY);
+    localStorage.removeItem('waynautic_user_progress');
+    localStorage.removeItem('waynautic_user_bookmarks');
+    localStorage.removeItem('waynautic_user_badges');
+    localStorage.removeItem('waynautic_user_streak');
     const profileKey = 'waynautic_user_profile';
     const saved = localStorage.getItem(profileKey);
     if (saved) {

@@ -202,7 +202,7 @@ export async function saveQuizAttempt(topicId: string, score: number, totalQuest
 
 export function loadStreak(): UserStreak {
   if (typeof window === 'undefined') {
-    return { currentStreak: 1, longestStreak: 1, lastActiveDate: getTodayDateString() };
+    return { currentStreak: 0, longestStreak: 0, lastActiveDate: '' };
   }
   const saved = localStorage.getItem(STREAK_KEY);
   const today = getTodayDateString();
@@ -211,15 +211,16 @@ export function loadStreak(): UserStreak {
   if (saved) {
     try {
       const data: UserStreak = JSON.parse(saved);
-      if (data.lastActiveDate === today) {
-        return data;
-      } else if (data.lastActiveDate === yesterday) {
+      if (!data.lastActiveDate) {
+        return { currentStreak: 0, longestStreak: 0, lastActiveDate: '' };
+      }
+      if (data.lastActiveDate === today || data.lastActiveDate === yesterday) {
         return data;
       } else {
         // Inactive for more than 1 day: streak reset to 0 until next activity
         return { 
           currentStreak: 0, 
-          longestStreak: Math.max(data.longestStreak || 1, data.currentStreak || 1), 
+          longestStreak: Math.max(data.longestStreak || 0, data.currentStreak || 0), 
           lastActiveDate: data.lastActiveDate 
         };
       }
@@ -227,9 +228,7 @@ export function loadStreak(): UserStreak {
       console.error('Failed to parse streak', e);
     }
   }
-  const initial: UserStreak = { currentStreak: 1, longestStreak: 1, lastActiveDate: today };
-  localStorage.setItem(STREAK_KEY, JSON.stringify(initial));
-  return initial;
+  return { currentStreak: 0, longestStreak: 0, lastActiveDate: '' };
 }
 
 export async function recordActivity() {
@@ -406,6 +405,16 @@ export async function checkAndAwardBadges(progressMap: Record<string, UserProgre
   }
 }
 
+export function clearAllUserData() {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(PROGRESS_KEY);
+  localStorage.removeItem(BOOKMARKS_KEY);
+  localStorage.removeItem(BADGES_KEY);
+  localStorage.removeItem(STREAK_KEY);
+  resetGuestProfile();
+  window.dispatchEvent(new Event('waynautic_storage_change'));
+}
+
 export async function fetchAndSyncCloudUser(user: { id: string; email?: string }) {
   if (typeof window === 'undefined' || !isSupabaseConfigured) return;
 
@@ -437,46 +446,70 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
       saveProfile({
         userId: user.id,
         email: user.email,
-        displayName: user.email?.split('@')[0] || 'Developer'
+        displayName: user.email?.split('@')[0] || 'Developer',
+        avatarUrl: '',
+        selectedPath: 'path-a'
       });
     }
 
-    // 2. Fetch User Progress from DB
+    // 2. Fetch User Progress from DB (Strict user isolation: never merge with another user's local cache!)
     const { data: dbProgress } = await supabase
       .from('user_progress')
       .select('topic_id, status, completed_at')
       .eq('user_id', user.id);
 
+    const freshProgress: Record<string, UserProgress> = {};
     if (dbProgress && dbProgress.length > 0) {
-      const localProgress = loadProgress();
-      const updatedProgress = { ...localProgress };
-
       dbProgress.forEach((item: { topic_id: string; status: 'not_started' | 'in_progress' | 'completed'; completed_at?: string }) => {
         const topicSlug = item.topic_id;
         if (topicSlug) {
-          updatedProgress[topicSlug] = {
+          freshProgress[topicSlug] = {
             topicId: topicSlug,
             status: item.status,
             completedAt: item.completed_at
           };
         }
       });
-
-      localStorage.setItem(PROGRESS_KEY, JSON.stringify(updatedProgress));
     }
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(freshProgress));
 
-    // 3. Fetch User Bookmarks from DB
+    // 3. Fetch User Bookmarks from DB (Strict user isolation)
     const { data: dbBookmarks } = await supabase
       .from('user_bookmarks')
       .select('topic_id')
       .eq('user_id', user.id);
 
-    if (dbBookmarks && dbBookmarks.length > 0) {
-      const fetchedBookmarkSlugs = dbBookmarks
-        .map((b: { topic_id: string }) => b.topic_id)
-        .filter(Boolean);
-      localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(fetchedBookmarkSlugs));
-    }
+    const freshBookmarks = (dbBookmarks && dbBookmarks.length > 0)
+      ? dbBookmarks.map((b: { topic_id: string }) => b.topic_id).filter(Boolean)
+      : [];
+    localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(freshBookmarks));
+
+    // 4. Fetch User Badges from DB (Strict user isolation)
+    const { data: dbBadges } = await supabase
+      .from('user_badges')
+      .select('*')
+      .eq('user_id', user.id);
+
+    const freshBadges: UserBadge[] = (dbBadges && dbBadges.length > 0)
+      ? dbBadges.map((b: { id?: string; badge_type: string; earned_at?: string }) => ({
+          id: b.id || `badge-${b.badge_type}`,
+          badgeType: b.badge_type,
+          title: b.badge_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          description: 'Milestone milestone unlocked on Waynautic Academy!',
+          iconName: 'Award',
+          earnedAt: b.earned_at || new Date().toISOString()
+        }))
+      : [];
+    localStorage.setItem(BADGES_KEY, JSON.stringify(freshBadges));
+
+    // 5. User Streak from profile (Strict user isolation)
+    const streakDays = profileData?.streak_days || 0;
+    const userStreak: UserStreak = {
+      currentStreak: streakDays,
+      longestStreak: streakDays,
+      lastActiveDate: profileData?.last_active_at ? profileData.last_active_at.split('T')[0] : ''
+    };
+    localStorage.setItem(STREAK_KEY, JSON.stringify(userStreak));
 
     window.dispatchEvent(new Event('waynautic_storage_change'));
   } catch (err) {
@@ -500,14 +533,10 @@ export function useWaynauticStore() {
   };
 
   useEffect(() => {
-    // Record daily activity & check streak progression
-    recordActivity().then(() => {
-      reloadData();
-    });
-
     // Check session expiration on mount
     checkAndHandleInactivityTimeout().then((expired) => {
       if (expired) {
+        clearAllUserData();
         reloadData();
       }
     });
@@ -523,6 +552,13 @@ export function useWaynauticStore() {
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.user) {
           fetchAndSyncCloudUser(session.user);
+        } else {
+          // If no active session, clear any stale user metrics from previous sessions
+          const current = loadProfile();
+          if (!current.userId && !current.email) {
+            clearAllUserData();
+            reloadData();
+          }
         }
       });
 
@@ -530,7 +566,7 @@ export function useWaynauticStore() {
         if (session?.user) {
           fetchAndSyncCloudUser(session.user);
         } else if (event === 'SIGNED_OUT') {
-          resetGuestProfile();
+          clearAllUserData();
           reloadData();
         }
       });
