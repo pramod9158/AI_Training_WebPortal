@@ -40,10 +40,20 @@ function SignupForm() {
         return;
       }
 
-      // Check if email confirmation is required or standard new user signup
-      setRegisteredEmail(email);
-      setIsConfirmationPending(true);
-      setLoading(false);
+      // If email confirmation is required by Supabase, data.session is null
+      if (data?.user && !data?.session) {
+        setRegisteredEmail(email);
+        setIsConfirmationPending(true);
+        setLoading(false);
+      } else if (data?.session && data?.user) {
+        // If email confirmation is disabled in Supabase, sign in directly
+        await fetchAndSyncCloudUser(data.user);
+        router.push(redirectTo);
+      } else {
+        setRegisteredEmail(email);
+        setIsConfirmationPending(true);
+        setLoading(false);
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred during registration.';
       setErrorMsg(message);

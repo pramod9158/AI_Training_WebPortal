@@ -42,7 +42,7 @@ export async function checkAndHandleInactivityTimeout(): Promise<boolean> {
 
 export async function signUpWithEmail(email: string, password: string, displayName?: string) {
   if (!isSupabaseConfigured) {
-    return { data: { user: { id: 'demo-user-id', email } }, error: null };
+    return { data: { user: { id: 'demo-user-id', email }, session: null }, error: null };
   }
 
   const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined;
