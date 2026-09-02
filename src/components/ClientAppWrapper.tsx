@@ -14,7 +14,13 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
   const [searchOpen, setSearchOpen] = useState(false);
   const { profile } = useWaynauticStore();
 
-  const isAuthPage = pathname === '/login' || pathname === '/signup' || pathname?.startsWith('/login') || pathname?.startsWith('/signup');
+  const isAuthPage = 
+    pathname === '/login' || 
+    pathname === '/signup' || 
+    pathname === '/reset-password' || 
+    pathname?.startsWith('/login') || 
+    pathname?.startsWith('/signup') || 
+    pathname?.startsWith('/reset-password');
 
   useEffect(() => {
     if (typeof document !== 'undefined') {

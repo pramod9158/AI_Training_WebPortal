@@ -26,6 +26,18 @@ function LoginForm() {
   const [resetSuccess, setResetSuccess] = useState(false);
   const [resetError, setResetError] = useState('');
 
+  // If user lands on login with recovery parameters (from previous link or default Supabase redirect),
+  // automatically forward them to /reset-password with all tokens preserved.
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      const params = new URLSearchParams(window.location.search);
+      if (hash.includes('type=recovery') || params.get('type') === 'recovery' || params.get('code')) {
+        router.replace(`/reset-password${window.location.search}${window.location.hash}`);
+      }
+    }
+  }, [router]);
+
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);

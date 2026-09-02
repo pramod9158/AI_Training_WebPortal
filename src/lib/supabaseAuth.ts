@@ -124,8 +124,17 @@ export async function sendPasswordResetEmail(email: string) {
   if (!isSupabaseConfigured) {
     return { data: {}, error: null };
   }
-  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/login` : undefined;
+  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/reset-password` : undefined;
   return await supabase.auth.resetPasswordForEmail(email, {
     redirectTo
+  });
+}
+
+export async function updateUserPassword(newPassword: string) {
+  if (!isSupabaseConfigured) {
+    return { data: { user: null }, error: null };
+  }
+  return await supabase.auth.updateUser({
+    password: newPassword
   });
 }
