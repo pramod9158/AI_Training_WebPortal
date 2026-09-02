@@ -4,7 +4,7 @@ import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Mail, Lock, User, ShieldCheck, Clock, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, ShieldCheck, Clock, CheckCircle2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { signUpWithEmail } from '@/lib/supabaseAuth';
 import { fetchAndSyncCloudUser, useWaynauticStore } from '@/lib/store';
 
@@ -17,6 +17,7 @@ function SignupForm() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [isConfirmationPending, setIsConfirmationPending] = useState(false);
@@ -182,14 +183,22 @@ function SignupForm() {
           <div className="relative">
             <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               required
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Minimum 6 characters"
-              className="w-full py-3 pl-10 pr-4 bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-sky-500 font-medium"
+              className="w-full py-3 pl-10 pr-10 bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-sky-500 font-medium"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-0.5"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
           </div>
         </div>
 

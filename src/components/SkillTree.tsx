@@ -49,11 +49,8 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
       
       {/* Header Info */}
       <div className="flex items-center justify-between mb-6 px-1">
-        <span className="text-xs font-mono uppercase tracking-widest text-cyan-400 font-semibold">
+        <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold">
           Curriculum Learning Pathway ({modules.length} Modules)
-        </span>
-        <span className="text-xs text-slate-400 font-mono hidden sm:inline">
-          3 Modules per Row Grid
         </span>
       </div>
 
@@ -83,25 +80,25 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
               {/* Module Card Header Step Marker */}
               <div className="flex items-center justify-between mb-2.5 px-1">
                 <div className="flex items-center space-x-2">
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-mono border-2 shadow-md ${
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-mono border-2 shadow-sm ${
                     isCompleted
-                      ? 'bg-emerald-950 border-emerald-400 text-emerald-400 shadow-emerald-500/20'
+                      ? 'bg-emerald-50 dark:bg-emerald-950 border-emerald-500 dark:border-emerald-400 text-emerald-700 dark:text-emerald-400'
                       : isInProgress
-                      ? 'bg-cyan-950 border-cyan-400 text-cyan-400 shadow-cyan-500/20'
-                      : 'bg-slate-950 border-slate-700 text-slate-400'
+                      ? 'bg-sky-50 dark:bg-cyan-950 border-sky-500 dark:border-cyan-400 text-sky-700 dark:text-cyan-400'
+                      : 'bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400'
                   }`}>
                     {index + 1}
                   </div>
-                  <span className="text-[11px] font-mono tracking-wider uppercase text-slate-400 font-semibold">
+                  <span className="text-[11px] font-mono tracking-wider uppercase text-slate-500 dark:text-slate-400 font-semibold">
                     Step 0{index + 1}
                   </span>
                 </div>
                 <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold font-mono tracking-wider ${
                   mod.difficulty === 'Beginner'
-                    ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800/60'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800/60'
                     : mod.difficulty === 'Intermediate'
-                    ? 'bg-cyan-950/80 text-cyan-400 border border-cyan-800/60'
-                    : 'bg-violet-950/80 text-violet-400 border border-violet-800/60'
+                    ? 'bg-sky-50 dark:bg-cyan-950/80 text-sky-700 dark:text-cyan-400 border border-sky-300 dark:border-cyan-800/60'
+                    : 'bg-purple-50 dark:bg-violet-950/80 text-purple-700 dark:text-violet-400 border border-purple-300 dark:border-violet-800/60'
                 }`}>
                   {mod.difficulty}
                 </span>
@@ -110,16 +107,16 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
               {/* Module Card */}
               <Link
                 href={`/curriculum/${mod.slug}`}
-                className={`group relative flex-1 flex flex-col justify-between p-6 rounded-2xl border backdrop-blur-xl transition-all duration-300 ${
+                className={`group relative flex-1 flex flex-col justify-between p-6 rounded-3xl border-2 transition-all duration-300 ${
                   isCompleted
-                    ? 'bg-emerald-950/30 border-emerald-500/40 hover:border-emerald-400 shadow-lg shadow-emerald-500/10'
+                    ? 'bg-white dark:bg-slate-900/80 border-emerald-400/80 dark:border-emerald-500/40 hover:border-emerald-500 shadow-md'
                     : isInProgress
-                    ? 'bg-cyan-950/30 border-cyan-500/50 hover:border-cyan-400 shadow-xl shadow-cyan-500/15'
-                    : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900/90'
+                    ? 'bg-white dark:bg-slate-900/80 border-sky-400 dark:border-cyan-500/60 shadow-lg shadow-sky-500/10 ring-2 ring-sky-300/40 dark:ring-cyan-500/20'
+                    : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm'
                 }`}
               >
                 {/* Glowing Accent Corner */}
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-cyan-500/10 to-transparent rounded-tr-2xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-cyan-500/10 to-transparent rounded-tr-3xl pointer-events-none" />
 
                 <div>
                   {/* Module Icon Badge */}
@@ -128,53 +125,53 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
                       ? 'bg-gradient-to-tr from-emerald-400 to-teal-600 shadow-lg shadow-emerald-500/20'
                       : 'bg-gradient-to-tr from-cyan-500 via-blue-600 to-violet-600 shadow-lg shadow-cyan-500/20'
                   }`}>
-                    <div className="w-full h-full bg-[#0B0F19] rounded-[10px] flex items-center justify-center">
-                      <Icon className={`w-6 h-6 ${isCompleted ? 'text-emerald-400' : 'text-cyan-400'}`} />
+                    <div className="w-full h-full bg-slate-50 dark:bg-[#0B0F19] rounded-[10px] flex items-center justify-center">
+                      <Icon className={`w-6 h-6 ${isCompleted ? 'text-emerald-500 dark:text-emerald-400' : 'text-sky-600 dark:text-cyan-400'}`} />
                     </div>
                   </div>
 
                   {/* Card Title & Description */}
                   <div className="mt-4 space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-widest font-semibold">
+                      <span className="text-[11px] font-mono text-sky-600 dark:text-cyan-400 uppercase tracking-widest font-semibold">
                         Module {index + 1}
                       </span>
                       {isCompleted && (
-                        <span className="inline-flex items-center space-x-1 text-[10px] text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                        <span className="inline-flex items-center space-x-1 text-[10px] text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-500/30">
                           <CheckCircle2 className="w-3 h-3" />
                           <span>Done</span>
                         </span>
                       )}
                     </div>
-                    <h3 className="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-1">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-cyan-300 transition-colors line-clamp-1">
                       {mod.title}
                     </h3>
-                    <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed font-medium">
                       {mod.description}
                     </p>
                   </div>
                 </div>
 
                 {/* Progress Bar & Footer */}
-                <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
                   <div className="flex-1 mr-3">
-                    <div className="flex justify-between text-[11px] font-mono text-slate-400 mb-1">
+                    <div className="flex justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400 mb-1 font-medium">
                       <span>{completedCount} / {modTopics.length} Topics</span>
                       <span>{progressPercent}%</span>
                     </div>
-                    <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800">
                       <div
                         className={`h-full transition-all duration-500 ${
                           isCompleted
-                            ? 'bg-emerald-400'
-                            : 'bg-gradient-to-r from-cyan-500 to-violet-600'
+                            ? 'bg-emerald-500'
+                            : 'bg-gradient-to-r from-sky-500 to-blue-600 dark:from-cyan-500 dark:to-violet-600'
                         }`}
                         style={{ width: `${progressPercent}%` }}
                       />
                     </div>
                   </div>
 
-                  <div className="w-7 h-7 rounded-full bg-slate-800/80 flex items-center justify-center text-slate-400 group-hover:text-cyan-400 group-hover:bg-slate-800 transition-colors">
+                  <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:bg-sky-500 group-hover:text-white dark:group-hover:bg-cyan-500 dark:group-hover:text-black transition-colors">
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </div>

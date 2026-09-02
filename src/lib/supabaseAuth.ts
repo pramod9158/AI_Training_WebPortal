@@ -119,3 +119,13 @@ export async function getCurrentAuthUser() {
   const { data: { session } } = await supabase.auth.getSession();
   return session?.user || null;
 }
+
+export async function sendPasswordResetEmail(email: string) {
+  if (!isSupabaseConfigured) {
+    return { data: {}, error: null };
+  }
+  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/login` : undefined;
+  return await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo
+  });
+}

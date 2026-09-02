@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useParams, useSearchParams, useRouter, notFound } from 'next/navigation';
 import { TOPICS, getQuizForTopic } from '@/data/seedTopics';
-import { MODULES } from '@/data/seedModules';
+import { MODULES, getOrderedCurriculumTopics } from '@/data/seedModules';
 import { useWaynauticStore } from '@/lib/store';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { MarkdownNotes } from '@/components/MarkdownNotes';
@@ -16,9 +16,9 @@ import {
   Bookmark, 
   CheckCircle2, 
   ArrowLeft, 
-  ArrowRight,
-  Clock,
-  Lock
+  ArrowRight, 
+  Clock, 
+  Lock 
 } from 'lucide-react';
 
 export default function TopicWorkspacePage() {
@@ -26,16 +26,20 @@ export default function TopicWorkspacePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const moduleSlug = params?.moduleSlug as string;
-  const topicSlug = params?.topicSlug as string;
+  const moduleSlug = params.moduleSlug as string;
+  const topicSlug = params.topicSlug as string;
 
-  const { profile, progress, bookmarks, markTopicProgress, saveQuizAttempt, saveLastAccessedTopic, toggleBookmarkTopic } = useWaynauticStore();
-  const isLoggedIn = Boolean(profile.userId || profile.email);
+  const { profile, progress, bookmarks, toggleBookmarkTopic, markTopicProgress, saveQuizAttempt, saveLastAccessedTopic } = useWaynauticStore();
 
-  const topic = TOPICS.find((t) => t.moduleSlug === moduleSlug && t.slug === topicSlug);
   const moduleData = MODULES.find((m) => m.slug === moduleSlug);
+  const topic = TOPICS.find((t) => t.moduleSlug === moduleSlug && t.slug === topicSlug);
+
+  if (!moduleData || !topic) {
+    notFound();
+  }
 
   const topicId = topic?.id;
+  const isLoggedIn = Boolean(profile.userId || profile.email);
 
   // Record last accessed topic for Resume Learning
   React.useEffect(() => {
@@ -125,10 +129,21 @@ export default function TopicWorkspacePage() {
     router.replace(`/curriculum/${moduleSlug}/${topicSlug}?tab=${newTab}`, { scroll: false });
   };
 
-  // Find previous and next topic units
-  const currentTopicIndex = TOPICS.findIndex((t) => t.id === topic.id);
-  const prevTopic = currentTopicIndex > 0 ? TOPICS[currentTopicIndex - 1] : null;
-  const nextTopic = currentTopicIndex < TOPICS.length - 1 ? TOPICS[currentTopicIndex + 1] : null;
+  // Find ordered curriculum topics across all 10 modules in correct sequential roadmap order
+  const orderedTopics = getOrderedCurriculumTopics(TOPICS);
+  const currentTopicIndex = orderedTopics.findIndex((t) => t.id === topic.id);
+  const prevTopic = currentTopicIndex > 0 ? orderedTopics[currentTopicIndex - 1] : null;
+
+  // Next topic: find the next incomplete topic in sequence ahead of current topic
+  const remainingTopics = orderedTopics.slice(currentTopicIndex + 1);
+  const nextIncompleteTopic = remainingTopics.find((t) => progress[t.id]?.status !== 'completed');
+  // If all remaining are completed, fallback to the immediate next sequential topic
+  const nextTopic = nextIncompleteTopic || (remainingTopics.length > 0 ? remainingTopics[0] : null);
+
+  // Topic order index within the current module
+  const moduleTopics = TOPICS.filter((t) => t.moduleSlug === moduleData.slug);
+  const topicIndexInModule = moduleTopics.findIndex((t) => t.id === topic.id) + 1;
+  const topicIndexStr = topicIndexInModule < 10 ? `0${topicIndexInModule}` : topicIndexInModule;
 
   const isCompleted = progress[topic.id]?.status === 'completed';
   const isBookmarked = bookmarks.includes(topic.id);
@@ -200,8 +215,10 @@ export default function TopicWorkspacePage() {
 
       {/* Topic Title Header */}
       <div className="space-y-1.5">
-        <div className="flex items-center space-x-3 text-xs font-mono font-bold text-sky-600 dark:text-cyan-400">
+        <div className="flex items-center space-x-2.5 text-xs font-mono font-bold text-sky-600 dark:text-cyan-400">
           <span>Module 0{moduleData.orderIndex}</span>
+          <span>•</span>
+          <span>Topic {topicIndexStr}</span>
           <span>•</span>
           <span className="flex items-center space-x-1 text-slate-500 dark:text-slate-400 font-medium">
             <Clock className="w-3.5 h-3.5" />
@@ -300,7 +317,9 @@ export default function TopicWorkspacePage() {
             className="w-full sm:w-auto p-4 rounded-2xl bg-white dark:bg-slate-900/60 border-2 border-slate-200 dark:border-cyan-500/30 hover:border-sky-400 dark:hover:border-cyan-400 text-right transition-colors flex items-center justify-end space-x-3 group"
           >
             <div>
-              <div className="text-[10px] font-mono text-sky-600 dark:text-cyan-400 uppercase font-bold">Next Topic</div>
+              <div className="text-[10px] font-mono text-sky-600 dark:text-cyan-400 uppercase font-bold">
+                {progress[nextTopic.id]?.status === 'completed' ? 'Next Topic' : 'Next Incomplete Topic'}
+              </div>
               <div className="text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-cyan-300 truncate max-w-[200px]">
                 {nextTopic.title}
               </div>

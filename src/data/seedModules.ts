@@ -148,3 +148,14 @@ export const MODULES: Module[] = [
     iconName: 'Server'
   }
 ];
+
+export function getOrderedCurriculumTopics(allTopics: Topic[]): Topic[] {
+  const sortedModules = [...MODULES].sort((a, b) => a.orderIndex - b.orderIndex);
+  const result: Topic[] = [];
+  for (const mod of sortedModules) {
+    const modTopics = allTopics.filter(t => t.moduleSlug === mod.slug);
+    modTopics.sort((a, b) => a.orderIndex - b.orderIndex);
+    result.push(...modTopics);
+  }
+  return result;
+}
