@@ -31,7 +31,11 @@ function SignupForm() {
       const { data, error } = await signUpWithEmail(email, password, name);
 
       if (error) {
-        setErrorMsg(error.message);
+        if (error.message.toLowerCase().includes('rate limit')) {
+          setErrorMsg('Email rate limit reached: Supabase restricts verification emails to prevent spam. Please wait a few minutes before trying again, or log in if you already created this account.');
+        } else {
+          setErrorMsg(error.message);
+        }
         setLoading(false);
         return;
       }
@@ -129,8 +133,15 @@ function SignupForm() {
       </div>
 
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/80 border-2 border-rose-300 dark:border-rose-500/30 text-rose-800 dark:text-rose-300 text-xs font-mono font-bold">
-          {errorMsg}
+        <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/80 border-2 border-rose-300 dark:border-rose-500/30 text-rose-800 dark:text-rose-300 text-xs font-mono font-bold leading-relaxed space-y-1">
+          <div>{errorMsg}</div>
+          {errorMsg.includes('rate limit') && (
+            <div className="pt-1">
+              <Link href="/login" className="text-sky-600 dark:text-cyan-400 underline font-extrabold hover:text-sky-700">
+                Already registered? Go to Log In →
+              </Link>
+            </div>
+          )}
         </div>
       )}
 
