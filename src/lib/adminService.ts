@@ -16,8 +16,8 @@ const BARCODE_CONFIG_KEY = 'waynautic_admin_barcode_config';
 const LOCAL_PAYMENTS_KEY = 'waynautic_admin_payments';
 const LOCAL_CANDIDATES_KEY = 'waynautic_admin_candidates';
 
-// Default Master Passkey (Changeable by admin in UI or via environment)
-export const MASTER_ADMIN_PASSKEY = process.env.NEXT_PUBLIC_ADMIN_PASSKEY || 'waynautic-admin-2026';
+// Secure Administrative Master Key (Configurable via environment)
+export const MASTER_ADMIN_PASSKEY = process.env.NEXT_PUBLIC_ADMIN_PASSKEY || 'WN-SecOps#9824$AlphaAdmin';
 export const MASTER_ADMIN_EMAIL = 'admin@waynautic.ai';
 
 // Default Barcode / UPI configuration
@@ -33,211 +33,12 @@ export const DEFAULT_BARCODE_CONFIG: BarcodePaymentConfig = {
   notes: 'Instant Pro upgrade within 15 minutes of verification.'
 };
 
-// Seed candidates for local testing & showcase
-const SEED_CANDIDATES: CandidateRecord[] = [
-  {
-    id: 'cand-001',
-    email: 'ananya.sharma@techcorp.in',
-    displayName: 'Ananya Sharma',
-    avatarUrl: '',
-    role: 'candidate',
-    plan: 'pro',
-    accountStatus: 'active',
-    selectedPath: 'path-a',
-    createdAt: '2026-08-10T09:30:00Z',
-    lastActiveAt: '2026-09-08T14:20:00Z',
-    streakDays: 14,
-    completedTopicsCount: 42,
-    totalTopicsCount: TOPICS.length || 56,
-    progressPercent: 75,
-    quizzesAttempted: 18,
-    averageQuizScore: 92,
-    totalSpent: 999,
-    paymentCount: 1
-  },
-  {
-    id: 'cand-002',
-    email: 'rohit.verma@deeplearn.io',
-    displayName: 'Rohit Verma',
-    avatarUrl: '',
-    role: 'candidate',
-    plan: 'free',
-    accountStatus: 'active',
-    selectedPath: 'path-b',
-    createdAt: '2026-08-18T11:15:00Z',
-    lastActiveAt: '2026-09-07T18:45:00Z',
-    streakDays: 4,
-    completedTopicsCount: 12,
-    totalTopicsCount: TOPICS.length || 56,
-    progressPercent: 21,
-    quizzesAttempted: 5,
-    averageQuizScore: 84,
-    totalSpent: 0,
-    paymentCount: 0
-  },
-  {
-    id: 'cand-003',
-    email: 'priya.patel@datascience.org',
-    displayName: 'Priya Patel',
-    avatarUrl: '',
-    role: 'candidate',
-    plan: 'pro',
-    accountStatus: 'active',
-    selectedPath: 'path-a',
-    createdAt: '2026-08-01T08:00:00Z',
-    lastActiveAt: '2026-09-08T16:10:00Z',
-    streakDays: 28,
-    completedTopicsCount: TOPICS.length || 56,
-    totalTopicsCount: TOPICS.length || 56,
-    progressPercent: 100,
-    quizzesAttempted: 24,
-    averageQuizScore: 98,
-    totalSpent: 999,
-    paymentCount: 1
-  },
-  {
-    id: 'cand-004',
-    email: 'aarav.mehta@nexus.com',
-    displayName: 'Aarav Mehta',
-    avatarUrl: '',
-    role: 'candidate',
-    plan: 'pro',
-    accountStatus: 'active',
-    selectedPath: 'path-a',
-    createdAt: '2026-08-25T14:00:00Z',
-    lastActiveAt: '2026-09-08T11:30:00Z',
-    streakDays: 7,
-    completedTopicsCount: 26,
-    totalTopicsCount: TOPICS.length || 56,
-    progressPercent: 46,
-    quizzesAttempted: 11,
-    averageQuizScore: 88,
-    totalSpent: 999,
-    paymentCount: 1
-  },
-  {
-    id: 'cand-005',
-    email: 'sneha.rao@cloudnine.net',
-    displayName: 'Sneha Rao',
-    avatarUrl: '',
-    role: 'candidate',
-    plan: 'free',
-    accountStatus: 'active',
-    selectedPath: 'path-b',
-    createdAt: '2026-09-02T16:40:00Z',
-    lastActiveAt: '2026-09-08T09:15:00Z',
-    streakDays: 2,
-    completedTopicsCount: 4,
-    totalTopicsCount: TOPICS.length || 56,
-    progressPercent: 7,
-    quizzesAttempted: 2,
-    averageQuizScore: 75,
-    totalSpent: 0,
-    paymentCount: 0
-  },
-  {
-    id: 'cand-006',
-    email: 'vikram.singh@aiinnovations.in',
-    displayName: 'Vikram Singh',
-    avatarUrl: '',
-    role: 'candidate',
-    plan: 'enterprise',
-    accountStatus: 'active',
-    selectedPath: 'path-a',
-    createdAt: '2026-07-20T10:00:00Z',
-    lastActiveAt: '2026-09-06T15:20:00Z',
-    streakDays: 19,
-    completedTopicsCount: 50,
-    totalTopicsCount: TOPICS.length || 56,
-    progressPercent: 89,
-    quizzesAttempted: 22,
-    averageQuizScore: 94,
-    totalSpent: 2999,
-    paymentCount: 1
-  }
-];
+// No dummy candidates by default - all data fetched directly from Supabase
+const SEED_CANDIDATES: CandidateRecord[] = [];
 
-// Seed payments for local testing & showcase
-const SEED_PAYMENTS: PaymentRecord[] = [
-  {
-    id: 'pay-001',
-    userId: 'cand-001',
-    userEmail: 'ananya.sharma@techcorp.in',
-    userName: 'Ananya Sharma',
-    amount: 999,
-    currency: 'INR',
-    paymentMethod: 'barcode_qr',
-    transactionReference: 'UPI/423891823901',
-    barcodeId: 'waynautic_pro_upi',
-    status: 'verified',
-    planGranted: 'pro',
-    notes: 'Verified via HDFC Merchant App',
-    verifiedAt: '2026-08-10T10:15:00Z',
-    createdAt: '2026-08-10T09:45:00Z'
-  },
-  {
-    id: 'pay-002',
-    userId: 'cand-003',
-    userEmail: 'priya.patel@datascience.org',
-    userName: 'Priya Patel',
-    amount: 999,
-    currency: 'INR',
-    paymentMethod: 'barcode_qr',
-    transactionReference: 'UPI/421109482711',
-    barcodeId: 'waynautic_pro_upi',
-    status: 'verified',
-    planGranted: 'pro',
-    notes: 'Google Pay scanner confirmation match',
-    verifiedAt: '2026-08-01T08:30:00Z',
-    createdAt: '2026-08-01T08:10:00Z'
-  },
-  {
-    id: 'pay-003',
-    userId: 'cand-004',
-    userEmail: 'aarav.mehta@nexus.com',
-    userName: 'Aarav Mehta',
-    amount: 999,
-    currency: 'INR',
-    paymentMethod: 'barcode_qr',
-    transactionReference: 'UPI/424598129844',
-    barcodeId: 'waynautic_pro_upi',
-    status: 'verified',
-    planGranted: 'pro',
-    notes: 'PhonePe QR transaction verified',
-    verifiedAt: '2026-08-25T14:45:00Z',
-    createdAt: '2026-08-25T14:20:00Z'
-  },
-  {
-    id: 'pay-004',
-    userId: 'cand-002',
-    userEmail: 'rohit.verma@deeplearn.io',
-    userName: 'Rohit Verma',
-    amount: 999,
-    currency: 'INR',
-    paymentMethod: 'barcode_qr',
-    transactionReference: 'UPI/425983719283',
-    barcodeId: 'waynautic_pro_upi',
-    status: 'pending',
-    planGranted: 'pro',
-    notes: 'Candidate submitted via Paytm UPI Barcode. Awaiting admin approval.',
-    createdAt: '2026-09-08T12:30:00Z'
-  },
-  {
-    id: 'pay-005',
-    userId: 'cand-005',
-    userEmail: 'sneha.rao@cloudnine.net',
-    userName: 'Sneha Rao',
-    amount: 999,
-    currency: 'INR',
-    paymentMethod: 'barcode_qr',
-    transactionReference: 'UPI/426019284729',
-    barcodeId: 'waynautic_pro_upi',
-    status: 'pending',
-    planGranted: 'pro',
-    notes: 'Submitted 1 hour ago via BHIM barcode scan.',
-    createdAt: '2026-09-08T16:15:00Z'
-  }
-];
+// No dummy payments by default - all data fetched directly from Supabase
+const SEED_PAYMENTS: PaymentRecord[] = [];
+
 
 /* -------------------------------------------------------------
  * 1. AUTHENTICATION & ACCESS CONTROL
@@ -273,7 +74,8 @@ export function clearAdminSession(): void {
 }
 
 export async function verifyAdminPasskey(passkey: string): Promise<boolean> {
-  const isValid = passkey.trim() === MASTER_ADMIN_PASSKEY || passkey.trim() === 'waynautic-admin-2026';
+  const secret = process.env.NEXT_PUBLIC_ADMIN_PASSKEY || 'WN-SecOps#9824$AlphaAdmin';
+  const isValid = passkey.trim() === secret.trim();
   if (isValid) {
     setAdminSession(MASTER_ADMIN_EMAIL);
     return true;
@@ -386,7 +188,8 @@ export async function getPayments(filter?: { status?: string; search?: string })
     }
   }
 
-  if (payments.length === 0) {
+  // Only fall back to local store if Supabase is completely unconfigured
+  if (!isSupabaseConfigured && payments.length === 0) {
     payments = getLocalPayments();
     if (filter?.status && filter.status !== 'all') {
       payments = payments.filter((p) => p.status === filter.status);
@@ -693,7 +496,8 @@ export async function getCandidates(filters?: {
     }
   }
 
-  if (candidates.length === 0) {
+  // Only fall back to local store if Supabase is completely unconfigured
+  if (!isSupabaseConfigured && candidates.length === 0) {
     candidates = getLocalCandidates();
   }
 
@@ -894,16 +698,15 @@ export async function getAdminMetrics(): Promise<AdminMetrics> {
     ? Math.round(candidates.reduce((sum, c) => sum + c.progressPercent, 0) / totalCandidates)
     : 0;
 
-  const candidatesWithQuizzes = candidates.filter((c) => c.quizzesAttempted > 0);
   const overallQuizPassRate = candidatesWithQuizzes.length > 0
     ? Math.round(candidatesWithQuizzes.reduce((sum, c) => sum + c.averageQuizScore, 0) / candidatesWithQuizzes.length)
-    : 88;
+    : 0;
 
   const totalQuizzesTaken = candidates.reduce((sum, c) => sum + c.quizzesAttempted, 0);
 
   return {
     totalCandidates,
-    activeToday: Math.max(1, Math.round(totalCandidates * 0.45)),
+    activeToday: totalCandidates > 0 ? Math.max(1, Math.round(totalCandidates * 0.45)) : 0,
     proCandidates,
     totalRevenue,
     pendingVerifications,

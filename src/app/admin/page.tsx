@@ -388,7 +388,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
                 <div className="text-2xl sm:text-3xl font-black text-amber-500">
-                  {metrics?.activeToday ?? 3}
+                  {metrics?.activeToday ?? 0}
                 </div>
                 <p className="text-[11px] text-slate-500">
                   Active within 24h
@@ -406,7 +406,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
                 <div className="text-2xl sm:text-3xl font-black text-purple-500">
-                  {metrics?.proCandidates ?? 4}
+                  {metrics?.proCandidates ?? 0}
                 </div>
                 <p className="text-[11px] text-slate-500">
                   Verified Pro Passes
@@ -424,7 +424,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
                 <div className="text-2xl sm:text-3xl font-black text-emerald-500">
-                  ₹{metrics?.totalRevenue ?? 3996}
+                  ₹{metrics?.totalRevenue ?? 0}
                 </div>
                 <p className="text-[11px] text-slate-500">
                   Verified Barcode/UPI
@@ -606,53 +606,64 @@ export default function AdminDashboardPage() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {candidates.slice(0, 6).map((c) => (
-                  <div
-                    key={c.id}
-                    onClick={() => setSelectedCandidateId(c.id)}
-                    className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 hover:border-indigo-500 transition-all cursor-pointer group space-y-2"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2.5">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-xs font-black text-white">
-                          {c.displayName.charAt(0).toUpperCase()}
+              {candidates.length === 0 ? (
+                <div className="py-8 text-center space-y-1">
+                  <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    No registered candidate accounts found in Supabase yet.
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    Real-time cloud synchronization active. New registrations will automatically appear here.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {candidates.slice(0, 6).map((c) => (
+                    <div
+                      key={c.id}
+                      onClick={() => setSelectedCandidateId(c.id)}
+                      className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 hover:border-indigo-500 transition-all cursor-pointer group space-y-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2.5">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-xs font-black text-white">
+                            {c.displayName.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-500 transition-colors truncate max-w-[140px]">
+                              {c.displayName}
+                            </h4>
+                            <span className="text-[10px] text-slate-400 truncate block max-w-[140px]">
+                              {c.email}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-500 transition-colors truncate max-w-[140px]">
-                            {c.displayName}
-                          </h4>
-                          <span className="text-[10px] text-slate-400 truncate block max-w-[140px]">
-                            {c.email}
-                          </span>
-                        </div>
-                      </div>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                        c.plan === 'pro'
-                          ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                          : 'bg-slate-500/10 text-slate-500'
-                      }`}>
-                        {c.plan}
-                      </span>
-                    </div>
-
-                    <div className="space-y-1 pt-1">
-                      <div className="flex justify-between text-[11px]">
-                        <span className="text-slate-400">Progress:</span>
-                        <span className="font-bold text-slate-700 dark:text-slate-300">
-                          {c.progressPercent}% ({c.completedTopicsCount} Topics)
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                          c.plan === 'pro'
+                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                            : 'bg-slate-500/10 text-slate-500'
+                        }`}>
+                          {c.plan}
                         </span>
                       </div>
-                      <div className="w-full bg-slate-200 dark:bg-slate-800 h-1 rounded-full overflow-hidden">
-                        <div
-                          className="bg-sky-500 h-full rounded-full"
-                          style={{ width: `${c.progressPercent}%` }}
-                        />
+
+                      <div className="space-y-1 pt-1">
+                        <div className="flex justify-between text-[11px]">
+                          <span className="text-slate-400">Progress:</span>
+                          <span className="font-bold text-slate-700 dark:text-slate-300">
+                            {c.progressPercent}% ({c.completedTopicsCount} Topics)
+                          </span>
+                        </div>
+                        <div className="w-full bg-slate-200 dark:bg-slate-800 h-1 rounded-full overflow-hidden">
+                          <div
+                            className="bg-sky-500 h-full rounded-full"
+                            style={{ width: `${c.progressPercent}%` }}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
 
           </div>

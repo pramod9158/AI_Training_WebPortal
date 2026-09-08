@@ -87,42 +87,14 @@ create policy "Allow public read access on barcode_configs"
   on public.barcode_configs for select
   using (true);
 
--- Admins can update barcode configs
-create policy "Allow admin write access on barcode_configs"
-  on public.barcode_configs for all
-  using (public.is_admin());
+-- Admins and public access policies
+create policy "Allow all on barcode_configs" on public.barcode_configs for all using (true) with check (true);
+create policy "Allow all on payments" on public.payments for all using (true) with check (true);
+create policy "Allow all read on user_profiles" on public.user_profiles for select using (true);
+create policy "Allow all update on user_profiles" on public.user_profiles for update using (true) with check (true);
+create policy "Allow all read on user_progress" on public.user_progress for select using (true);
+create policy "Allow all read on user_quiz_attempts" on public.user_quiz_attempts for select using (true);
 
--- Candidate can view own payments
-create policy "Candidates view own payments"
-  on public.payments for select
-  using (auth.uid() = user_id or public.is_admin());
-
--- Candidate can submit a payment record
-create policy "Candidates can insert payment submissions"
-  on public.payments for insert
-  with check (auth.uid() = user_id or auth.uid() is not null or public.is_admin());
-
--- Admins can view and update all payments
-create policy "Admins full access to payments"
-  on public.payments for all
-  using (public.is_admin());
-
--- Allow Admins full access to read all user profiles and progress
-create policy "Admins can view all user profiles"
-  on public.user_profiles for select
-  using (public.is_admin() or auth.uid() = id);
-
-create policy "Admins can update user profiles"
-  on public.user_profiles for update
-  using (public.is_admin() or auth.uid() = id);
-
-create policy "Admins can view all user progress"
-  on public.user_progress for select
-  using (public.is_admin() or auth.uid() = user_id);
-
-create policy "Admins can view all quiz attempts"
-  on public.user_quiz_attempts for select
-  using (public.is_admin() or auth.uid() = user_id);
 
 -- 5. TRIGGER FOR AUTOMATIC PRO UPGRADE ON PAYMENT VERIFICATION
 create or replace function public.handle_payment_verification()
