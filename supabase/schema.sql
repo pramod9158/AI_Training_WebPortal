@@ -47,11 +47,17 @@ create table if not exists public.user_profiles (
   display_name text,
   avatar_url text,
   selected_path text default 'path-a',
+  role text default 'candidate' check (role in ('candidate', 'admin', 'instructor')),
+  plan text default 'free' check (plan in ('free', 'pro', 'enterprise')),
+  account_status text default 'active' check (account_status in ('active', 'suspended')),
+  streak_days integer default 0,
+  last_active_at timestamptz default now(),
   last_accessed_topic_id text,
   last_accessed_at timestamptz,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
+
 
 -- 5. USER PROGRESS
 create table if not exists public.user_progress (
@@ -155,3 +161,48 @@ $$ language plpgsql security definer;
 create or replace trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- 10. BARCODE CONFIGS
+create table if not exists public.barcode_configs (
+  id text primary key,
+  title text not null,
+  upi_id text not null,
+  payee_name text not null,
+  amount numeric(10,2) not null default 999.00,
+  currency text not null default 'INR',
+  qr_image_url text,
+  description text,
+  is_active boolean default true,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- 11. PAYMENTS
+create table if not exists public.payments (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete set null,
+  user_email text not null,
+  user_name text,
+  amount numeric(10,2) not null,
+  currency text not null default 'INR',
+  payment_method text not null default 'barcode_qr' check (payment_method in ('barcode_qr', 'upi', 'cash', 'card', 'bank_transfer')),
+  transaction_reference text unique not null,
+  barcode_id text default 'waynautic_pro_upi',
+  status text not null default 'pending' check (status in ('pending', 'verified', 'rejected')),
+  proof_url text,
+  notes text,
+  rejection_reason text,
+  plan_granted text default 'pro' check (plan_granted in ('free', 'pro', 'enterprise')),
+  verified_at timestamptz,
+  verified_by uuid references auth.users(id) on delete set null,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table public.barcode_configs enable row level security;
+alter table public.payments enable row level security;
+
+create policy "Allow public read access on barcode_configs" on public.barcode_configs for select using (true);
+create policy "Candidates view own payments" on public.payments for select using (auth.uid() = user_id);
+create policy "Candidates insert own payments" on public.payments for insert with check (auth.uid() = user_id or auth.uid() is not null);
+

@@ -267,6 +267,7 @@ export async function recordActivity() {
   };
 
   localStorage.setItem(STREAK_KEY, JSON.stringify(updated));
+  checkAndAwardBadges(loadProgress(), updated);
   window.dispatchEvent(new Event('waynautic_storage_change'));
 
   if (isSupabaseConfigured) {
@@ -338,13 +339,17 @@ export function loadBadges(): UserBadge[] {
   return [];
 }
 
-export async function checkAndAwardBadges(progressMap: Record<string, UserProgress>) {
+export async function checkAndAwardBadges(
+  progressMap: Record<string, UserProgress>,
+  overrideStreak?: UserStreak
+) {
   const currentBadges = loadBadges();
   const earnedTypes = new Set(currentBadges.map(b => b.badgeType));
   const newBadges: UserBadge[] = [...currentBadges];
   const now = new Date().toISOString();
+  const currentStreakData = overrideStreak || loadStreak();
 
-  // First Topic Badge
+  // 1. First Topic Badge
   const completedTopicCount = Object.values(progressMap).filter(p => p.status === 'completed').length;
   if (completedTopicCount >= 1 && !earnedTypes.has('first_step')) {
     newBadges.push({
@@ -357,8 +362,8 @@ export async function checkAndAwardBadges(progressMap: Record<string, UserProgre
     });
   }
 
-  // Quiz Master Badge
-  const passedQuizzes = Object.values(progressMap).filter(p => p.score && p.score >= 70).length;
+  // 2. Quiz Master Badge (5 quizzes >= 70%)
+  const passedQuizzes = Object.values(progressMap).filter(p => p.score !== undefined && p.score >= 70).length;
   if (passedQuizzes >= 5 && !earnedTypes.has('quiz_master')) {
     newBadges.push({
       id: 'badge-quiz-master',
@@ -370,10 +375,72 @@ export async function checkAndAwardBadges(progressMap: Record<string, UserProgre
     });
   }
 
-  // Check per-module completion
+  // 3. Perfect Score Badge (100% on any quiz)
+  const hasPerfectScore = Object.values(progressMap).some(p => p.score === 100);
+  if (hasPerfectScore && !earnedTypes.has('perfect_score')) {
+    newBadges.push({
+      id: 'badge-perfect-score',
+      badgeType: 'perfect_score',
+      title: 'Flawless Mind',
+      description: 'Achieved a perfect 100% score on a topic quiz!',
+      iconName: 'Sparkles',
+      earnedAt: now
+    });
+  }
+
+  // 4. Halfway Hero (50%+ curriculum topics)
+  const totalTopicCount = TOPICS.length;
+  if (totalTopicCount > 0 && completedTopicCount >= Math.ceil(totalTopicCount / 2) && !earnedTypes.has('halfway_hero')) {
+    newBadges.push({
+      id: 'badge-halfway-hero',
+      badgeType: 'halfway_hero',
+      title: 'Halfway Hero',
+      description: 'Completed 50% or more of the entire Waynautic Academy curriculum!',
+      iconName: 'Trophy',
+      earnedAt: now
+    });
+  }
+
+  // 5. Curriculum Champion (100% curriculum topics)
+  if (totalTopicCount > 0 && completedTopicCount === totalTopicCount && !earnedTypes.has('curriculum_champion')) {
+    newBadges.push({
+      id: 'badge-curriculum-champion',
+      badgeType: 'curriculum_champion',
+      title: 'Curriculum Champion',
+      description: 'Mastered 100% of all curriculum topics and specialized AI modules!',
+      iconName: 'Crown',
+      earnedAt: now
+    });
+  }
+
+  // 6. Streak Badges
+  const maxStreak = Math.max(currentStreakData.currentStreak || 0, currentStreakData.longestStreak || 0);
+  if (maxStreak >= 3 && !earnedTypes.has('streak_3')) {
+    newBadges.push({
+      id: 'badge-streak-3',
+      badgeType: 'streak_3',
+      title: 'Consistent Learner',
+      description: 'Maintained a 3-day active learning streak!',
+      iconName: 'Flame',
+      earnedAt: now
+    });
+  }
+
+  if (maxStreak >= 7 && !earnedTypes.has('streak_7')) {
+    newBadges.push({
+      id: 'badge-streak-7',
+      badgeType: 'streak_7',
+      title: 'Unstoppable Momentum',
+      description: 'Maintained a 7-day active learning streak!',
+      iconName: 'Flame',
+      earnedAt: now
+    });
+  }
+
+  // 7. Check per-module completion
   MODULES.forEach(mod => {
     const modTopics = TOPICS.filter(t => t.moduleSlug === mod.slug);
-    const modCompleted = modTopics.every(t => progressMap[t.id]?.status === 'completed');
+    const modCompleted = modTopics.length > 0 && modTopics.every(t => progressMap[t.id]?.status === 'completed');
     const badgeType = `module_${mod.slug}`;
     if (modTopics.length > 0 && modCompleted && !earnedTypes.has(badgeType)) {
       newBadges.push({

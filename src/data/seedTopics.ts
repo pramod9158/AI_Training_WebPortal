@@ -1,5 +1,8 @@
 import { Topic, QuizQuestion } from './seedModules';
 
+export type { Topic, QuizQuestion };
+
+
 export const TOPICS: Topic[] = [
   // Module 1: LLMs (1-5)
   {

@@ -22,6 +22,8 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
     pathname?.startsWith('/signup') || 
     pathname?.startsWith('/reset-password');
 
+  const isAdminPage = pathname?.startsWith('/admin');
+
   useEffect(() => {
     if (typeof document !== 'undefined') {
       if (profile.theme === 'light') {
@@ -31,6 +33,15 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
       }
     }
   }, [profile.theme]);
+
+  if (isAdminPage) {
+    return (
+      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#090D16] text-slate-900 dark:text-slate-100">
+        {children}
+      </div>
+    );
+  }
+
 
   if (isAuthPage) {
     return (

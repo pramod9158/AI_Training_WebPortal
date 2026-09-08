@@ -19,10 +19,14 @@ import {
   Zap,
   PlayCircle,
   LogOut,
-  LogIn
+  LogIn,
+  QrCode,
+  Shield
 } from 'lucide-react';
 import { useWaynauticStore } from '@/lib/store';
 import { TOPICS } from '@/data/seedTopics';
+import { isAdminAuthenticated } from '@/lib/adminService';
+import { PaymentBarcodeModal } from './PaymentBarcodeModal';
 
 interface NavbarProps {
   onOpenSearch?: () => void;
@@ -33,11 +37,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const router = useRouter();
   const { profile, streak, bookmarks, updateProfile, signOut, toggleBookmarkTopic } = useWaynauticStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
+  const isAdmin = profile.role === 'admin' || (typeof window !== 'undefined' && isAdminAuthenticated());
+  const isProUser = profile.plan === 'pro' || profile.plan === 'enterprise';
   const lastTopic = profile.lastAccessedTopicId 
     ? TOPICS.find(t => t.id === profile.lastAccessedTopicId || t.slug === profile.lastAccessedTopicId)
     : null;
+
 
   const handleBookmarksClick = async () => {
     // If currently viewing a topic, ensure it is bookmarked before navigating to bookmarks tab
@@ -114,6 +122,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         {/* Right Action Icons & Auth */}
         <div className="flex items-center space-x-1 sm:space-x-2">
           
+          {/* Admin Portal Shortcut (When Admin or Passkey Active) */}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 font-extrabold text-xs shadow-sm hover:bg-indigo-100 transition-colors"
+              title="Admin Management Console"
+            >
+              <Shield className="w-3.5 h-3.5 text-indigo-500" />
+              <span className="hidden lg:inline">Admin</span>
+            </Link>
+          )}
+
+          {/* Upgrade / Pro Pass Trigger */}
+          {!isProUser ? (
+            <button
+              onClick={() => setPaymentModalOpen(true)}
+              className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-xs shadow-sm shadow-amber-500/20 transition-all hover:scale-[1.02]"
+              title="Pay via UPI Barcode / QR to unlock all courses"
+            >
+              <QrCode className="w-3.5 h-3.5" />
+              <span>Upgrade to Pro</span>
+            </button>
+          ) : (
+            <span className="hidden sm:inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-black uppercase tracking-wider">
+              <Sparkles className="w-3 h-3 text-amber-500" />
+              <span>PRO</span>
+            </span>
+          )}
+
           {/* Streak Counter Chip */}
           <Link
             href="/dashboard"
@@ -123,6 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
             <span>{streak.currentStreak}d</span>
           </Link>
+
 
           {/* Omni Search Button Trigger */}
           <button
@@ -264,6 +302,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <span>Interactive Guided Tour</span>
           </Link>
 
+          {/* Mobile Upgrade Trigger */}
+          {!isProUser && (
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setPaymentModalOpen(true);
+              }}
+              className="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-base font-extrabold text-white bg-gradient-to-r from-amber-500 to-orange-500 shadow-md min-h-[44px]"
+            >
+              <div className="flex items-center space-x-3">
+                <QrCode className="w-5 h-5" />
+                <span>Upgrade to Pro (Pay Barcode)</span>
+              </div>
+              <span className="text-xs bg-white/20 px-2 py-0.5 rounded-md">₹999</span>
+            </button>
+          )}
+
+          {/* Mobile Admin Link */}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-base font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 min-h-[44px]"
+            >
+              <Shield className="w-5 h-5 text-indigo-500" />
+              <span>Admin Console</span>
+            </Link>
+          )}
+
           <div className="pt-2">
             <button
               onClick={() => {
@@ -278,6 +345,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           </div>
         </div>
       )}
+
+      {/* Candidate Barcode / UPI Payment Modal */}
+      <PaymentBarcodeModal
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+      />
     </header>
   );
 };
+

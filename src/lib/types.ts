@@ -30,7 +30,14 @@ export interface UserProfileState {
   selectedPath: string; // 'path-a' | 'path-b' | 'free'
   hasCompletedOnboarding: boolean;
   theme: Theme;
+  role?: 'candidate' | 'admin' | 'instructor';
+  plan?: 'free' | 'pro' | 'enterprise';
+  accountStatus?: 'active' | 'suspended';
+  streakDays?: number;
+  lastActiveAt?: string;
+  createdAt?: string;
   lastAccessedTopicId?: string;
   lastAccessedAt?: string;
   lastActivityTimestamp?: number;
 }
+
