@@ -28,6 +28,13 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({ content }) => {
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
+  const isHtmlContent = 
+    content.trim().startsWith('<!DOCTYPE') ||
+    content.trim().startsWith('<html') ||
+    content.trim().startsWith('<div') ||
+    content.trim().startsWith('<article') ||
+    ((content.includes('<p>') || content.includes('<h2>') || content.includes('<h3>')) && !content.trim().startsWith('#'));
+
   return (
     <div className="w-full bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-8 shadow-xl text-slate-800 dark:text-slate-200 overflow-hidden">
       
@@ -37,10 +44,16 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({ content }) => {
         <span className="truncate">Topic Text Notes & Technical Specifications</span>
       </div>
 
-      {/* Markdown Body */}
-      <article className="prose max-w-none text-slate-700 dark:text-slate-200 prose-headings:text-slate-900 dark:prose-headings:text-white prose-headings:font-extrabold prose-h1:text-xl sm:prose-h1:text-2xl prose-h2:text-lg sm:prose-h2:text-xl prose-h3:text-base sm:prose-h3:text-lg prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:leading-relaxed prose-p:text-xs sm:prose-p:text-sm prose-a:text-sky-600 dark:prose-a:text-cyan-400 hover:prose-a:underline prose-ul:text-xs sm:prose-ul:text-sm prose-ol:text-xs sm:prose-ol:text-sm">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
+      {/* Body: Renders either rich HTML notes or Markdown notes */}
+      {isHtmlContent ? (
+        <article 
+          className="prose max-w-none text-slate-700 dark:text-slate-200 prose-headings:text-slate-900 dark:prose-headings:text-white prose-headings:font-extrabold prose-h1:text-xl sm:prose-h1:text-2xl prose-h2:text-lg sm:prose-h2:text-xl prose-h3:text-base sm:prose-h3:text-lg prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:leading-relaxed prose-p:text-xs sm:prose-p:text-sm prose-a:text-sky-600 dark:prose-a:text-cyan-400 hover:prose-a:underline prose-code:text-sky-700 dark:prose-code:text-cyan-300 prose-code:bg-slate-100 dark:prose-code:bg-slate-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-slate-200 dark:prose-code:border-slate-800 prose-ul:text-xs sm:prose-ul:text-sm prose-ol:text-xs sm:prose-ol:text-sm"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+      ) : (
+        <article className="prose max-w-none text-slate-700 dark:text-slate-200 prose-headings:text-slate-900 dark:prose-headings:text-white prose-headings:font-extrabold prose-h1:text-xl sm:prose-h1:text-2xl prose-h2:text-lg sm:prose-h2:text-xl prose-h3:text-base sm:prose-h3:text-lg prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:leading-relaxed prose-p:text-xs sm:prose-p:text-sm prose-a:text-sky-600 dark:prose-a:text-cyan-400 hover:prose-a:underline prose-ul:text-xs sm:prose-ul:text-sm prose-ol:text-xs sm:prose-ol:text-sm">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
           components={{
             // Custom Callouts / Alerts for Blockquotes
             blockquote({ children }) {
@@ -163,6 +176,7 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({ content }) => {
           {content}
         </ReactMarkdown>
       </article>
+      )}
 
     </div>
   );

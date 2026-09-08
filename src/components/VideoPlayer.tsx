@@ -27,6 +27,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, title, onProgress
     return rawUrl;
   };
 
+  const isDirectVideo = 
+    url.toLowerCase().endsWith('.mp4') || 
+    url.toLowerCase().endsWith('.webm') || 
+    url.toLowerCase().endsWith('.ogg') || 
+    url.startsWith('blob:') || 
+    url.startsWith('data:video');
+
   const embedUrl = getEmbedUrl(url);
 
   // Simulate progress watching callback when user clicks play
@@ -47,13 +54,29 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, title, onProgress
       <div className="relative w-full aspect-video bg-slate-100 dark:bg-[#05070D] flex items-center justify-center">
         
         {isPlaying ? (
-          <iframe
-            src={embedUrl}
-            title={title}
-            className="w-full h-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          />
+          isDirectVideo ? (
+            <video
+              src={url}
+              controls
+              autoPlay
+              className="w-full h-full object-contain bg-black"
+              onTimeUpdate={(e) => {
+                const v = e.currentTarget;
+                if (v.duration > 0 && v.currentTime / v.duration >= 0.9 && !hasWatched) {
+                  setHasWatched(true);
+                  if (onProgress90) onProgress90();
+                }
+              }}
+            />
+          ) : (
+            <iframe
+              src={embedUrl}
+              title={title}
+              className="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          )
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900/60 dark:to-[#070A12] cursor-pointer" onClick={handlePlayClick}>
             
