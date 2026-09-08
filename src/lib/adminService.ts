@@ -24,11 +24,12 @@ export const MASTER_ADMIN_EMAIL = 'admin@waynautic.ai';
 export const DEFAULT_BARCODE_CONFIG: BarcodePaymentConfig = {
   id: 'waynautic_pro_upi',
   title: 'Waynautic Pro AI Pass (Lifetime Access)',
-  upiId: 'waynautic@upi',
-  payeeName: 'Waynautic Academy',
+  upiId: 'pramodkalyan281@ybl',
+  payeeName: 'Pramod Kalyan',
   amount: 999.00,
   currency: 'INR',
-  description: 'Scan with Google Pay, PhonePe, Paytm, BHIM, or any UPI banking app. Enter the 12-digit UTR/Ref number below for instant verification.',
+  qrImageUrl: '/phonepe-upi-qr.jpg',
+  description: 'Scan with PhonePe, Google Pay, Paytm, BHIM, or any UPI banking app. Enter the 12-digit UTR/Ref number below for instant verification.',
   isActive: true,
   notes: 'Instant Pro upgrade within 15 minutes of verification.'
 };
@@ -91,7 +92,14 @@ export function getBarcodeConfig(): BarcodePaymentConfig {
   const saved = localStorage.getItem(BARCODE_CONFIG_KEY);
   if (saved) {
     try {
-      return { ...DEFAULT_BARCODE_CONFIG, ...JSON.parse(saved) };
+      const parsed = JSON.parse(saved);
+      if (parsed.upiId === 'waynautic@upi' || !parsed.upiId) {
+        parsed.upiId = DEFAULT_BARCODE_CONFIG.upiId;
+      }
+      if (!parsed.qrImageUrl || parsed.qrImageUrl === '') {
+        parsed.qrImageUrl = DEFAULT_BARCODE_CONFIG.qrImageUrl;
+      }
+      return { ...DEFAULT_BARCODE_CONFIG, ...parsed };
     } catch {
       // fallback
     }

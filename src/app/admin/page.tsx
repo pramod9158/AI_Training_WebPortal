@@ -623,6 +623,15 @@ export default function AdminDashboardPage() {
                   <h4 className="font-extrabold text-sm text-slate-900 dark:text-white">
                     {barcodeConfig.title}
                   </h4>
+                  {barcodeConfig.qrImageUrl && (
+                    <div className="my-3 mx-auto w-32 h-32 bg-white p-2 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center">
+                      <img 
+                        src={barcodeConfig.qrImageUrl} 
+                        alt="Active Barcode QR" 
+                        className="w-full h-full object-contain rounded-lg"
+                      />
+                    </div>
+                  )}
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                     UPI ID: <strong className="font-mono text-slate-700 dark:text-slate-300">{barcodeConfig.upiId}</strong>
                   </p>
@@ -1360,6 +1369,28 @@ export default function AdminDashboardPage() {
                       className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    QR Code Image URL / Path
+                  </label>
+                  <input
+                    type="text"
+                    value={settingsForm.qrImageUrl || ''}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, qrImageUrl: e.target.value })}
+                    placeholder="e.g. /phonepe-upi-qr.jpg"
+                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  />
+                  {settingsForm.qrImageUrl && (
+                    <div className="mt-2 w-24 h-24 bg-white p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm">
+                      <img 
+                        src={settingsForm.qrImageUrl} 
+                        alt="QR Preview" 
+                        className="w-full h-full object-contain rounded"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div>

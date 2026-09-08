@@ -199,76 +199,84 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                   </div>
 
                   {/* Responsive QR Code Container */}
-                  <div className="relative mx-auto bg-white p-3 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 w-36 h-36 sm:w-40 sm:h-40 flex flex-col items-center justify-center group">
-                    <svg viewBox="0 0 100 100" className="w-full h-full text-slate-900">
-                      {/* Corner 1 */}
-                      <rect x="5" y="5" width="26" height="26" fill="currentColor" rx="4" />
-                      <rect x="9" y="9" width="18" height="18" fill="white" rx="2" />
-                      <rect x="13" y="13" width="10" height="10" fill="currentColor" rx="1" />
-                      
-                      {/* Corner 2 */}
-                      <rect x="69" y="5" width="26" height="26" fill="currentColor" rx="4" />
-                      <rect x="73" y="9" width="18" height="18" fill="white" rx="2" />
-                      <rect x="77" y="13" width="10" height="10" fill="currentColor" rx="1" />
+                  <div className="relative mx-auto bg-white p-2.5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 w-44 h-44 sm:w-48 sm:h-48 flex flex-col items-center justify-center overflow-hidden group">
+                    {config.qrImageUrl ? (
+                      <img 
+                        src={config.qrImageUrl} 
+                        alt="Official PhonePe / UPI QR Code" 
+                        className="w-full h-full object-contain rounded-xl"
+                      />
+                    ) : (
+                      <svg viewBox="0 0 100 100" className="w-full h-full text-slate-900">
+                        {/* Corner 1 */}
+                        <rect x="5" y="5" width="26" height="26" fill="currentColor" rx="4" />
+                        <rect x="9" y="9" width="18" height="18" fill="white" rx="2" />
+                        <rect x="13" y="13" width="10" height="10" fill="currentColor" rx="1" />
+                        
+                        {/* Corner 2 */}
+                        <rect x="69" y="5" width="26" height="26" fill="currentColor" rx="4" />
+                        <rect x="73" y="9" width="18" height="18" fill="white" rx="2" />
+                        <rect x="77" y="13" width="10" height="10" fill="currentColor" rx="1" />
 
-                      {/* Corner 3 */}
-                      <rect x="5" y="69" width="26" height="26" fill="currentColor" rx="4" />
-                      <rect x="9" y="73" width="18" height="18" fill="white" rx="2" />
-                      <rect x="13" y="77" width="10" height="10" fill="currentColor" rx="1" />
+                        {/* Corner 3 */}
+                        <rect x="5" y="69" width="26" height="26" fill="currentColor" rx="4" />
+                        <rect x="9" y="73" width="18" height="18" fill="white" rx="2" />
+                        <rect x="13" y="77" width="10" height="10" fill="currentColor" rx="1" />
 
-                      {/* Matrix Grid Pattern */}
-                      <rect x="36" y="7" width="5" height="5" fill="currentColor" />
-                      <rect x="46" y="7" width="9" height="5" fill="currentColor" />
-                      <rect x="58" y="7" width="5" height="5" fill="currentColor" />
-                      <rect x="36" y="17" width="7" height="6" fill="currentColor" />
-                      <rect x="48" y="17" width="5" height="6" fill="currentColor" />
-                      <rect x="58" y="17" width="6" height="6" fill="currentColor" />
-                      <rect x="36" y="27" width="5" height="5" fill="currentColor" />
-                      <rect x="46" y="27" width="10" height="5" fill="currentColor" />
-                      <rect x="60" y="27" width="5" height="5" fill="currentColor" />
+                        {/* Matrix Grid Pattern */}
+                        <rect x="36" y="7" width="5" height="5" fill="currentColor" />
+                        <rect x="46" y="7" width="9" height="5" fill="currentColor" />
+                        <rect x="58" y="7" width="5" height="5" fill="currentColor" />
+                        <rect x="36" y="17" width="7" height="6" fill="currentColor" />
+                        <rect x="48" y="17" width="5" height="6" fill="currentColor" />
+                        <rect x="58" y="17" width="6" height="6" fill="currentColor" />
+                        <rect x="36" y="27" width="5" height="5" fill="currentColor" />
+                        <rect x="46" y="27" width="10" height="5" fill="currentColor" />
+                        <rect x="60" y="27" width="5" height="5" fill="currentColor" />
 
-                      <rect x="8" y="37" width="14" height="6" fill="currentColor" />
-                      <rect x="26" y="37" width="6" height="6" fill="currentColor" />
-                      <rect x="36" y="37" width="12" height="6" fill="currentColor" />
-                      <rect x="52" y="37" width="8" height="6" fill="currentColor" />
-                      <rect x="65" y="37" width="12" height="6" fill="currentColor" />
-                      <rect x="82" y="37" width="10" height="6" fill="currentColor" />
+                        <rect x="8" y="37" width="14" height="6" fill="currentColor" />
+                        <rect x="26" y="37" width="6" height="6" fill="currentColor" />
+                        <rect x="36" y="37" width="12" height="6" fill="currentColor" />
+                        <rect x="52" y="37" width="8" height="6" fill="currentColor" />
+                        <rect x="65" y="37" width="12" height="6" fill="currentColor" />
+                        <rect x="82" y="37" width="10" height="6" fill="currentColor" />
 
-                      <rect x="8" y="47" width="6" height="6" fill="currentColor" />
-                      <rect x="18" y="47" width="10" height="6" fill="currentColor" />
-                      <rect x="34" y="47" width="16" height="6" fill="currentColor" />
-                      <rect x="54" y="47" width="6" height="6" fill="currentColor" />
-                      <rect x="66" y="47" width="10" height="6" fill="currentColor" />
-                      <rect x="80" y="47" width="12" height="6" fill="currentColor" />
+                        <rect x="8" y="47" width="6" height="6" fill="currentColor" />
+                        <rect x="18" y="47" width="10" height="6" fill="currentColor" />
+                        <rect x="34" y="47" width="16" height="6" fill="currentColor" />
+                        <rect x="54" y="47" width="6" height="6" fill="currentColor" />
+                        <rect x="66" y="47" width="10" height="6" fill="currentColor" />
+                        <rect x="80" y="47" width="12" height="6" fill="currentColor" />
 
-                      <rect x="8" y="57" width="12" height="6" fill="currentColor" />
-                      <rect x="24" y="57" width="6" height="6" fill="currentColor" />
-                      <rect x="34" y="57" width="8" height="6" fill="currentColor" />
-                      <rect x="46" y="57" width="14" height="6" fill="currentColor" />
-                      <rect x="64" y="57" width="8" height="6" fill="currentColor" />
-                      <rect x="76" y="57" width="16" height="6" fill="currentColor" />
+                        <rect x="8" y="57" width="12" height="6" fill="currentColor" />
+                        <rect x="24" y="57" width="6" height="6" fill="currentColor" />
+                        <rect x="34" y="57" width="8" height="6" fill="currentColor" />
+                        <rect x="46" y="57" width="14" height="6" fill="currentColor" />
+                        <rect x="64" y="57" width="8" height="6" fill="currentColor" />
+                        <rect x="76" y="57" width="16" height="6" fill="currentColor" />
 
-                      <rect x="36" y="69" width="6" height="6" fill="currentColor" />
-                      <rect x="46" y="69" width="12" height="6" fill="currentColor" />
-                      <rect x="62" y="69" width="6" height="6" fill="currentColor" />
-                      <rect x="72" y="69" width="8" height="6" fill="currentColor" />
-                      <rect x="84" y="69" width="8" height="6" fill="currentColor" />
+                        <rect x="36" y="69" width="6" height="6" fill="currentColor" />
+                        <rect x="46" y="69" width="12" height="6" fill="currentColor" />
+                        <rect x="62" y="69" width="6" height="6" fill="currentColor" />
+                        <rect x="72" y="69" width="8" height="6" fill="currentColor" />
+                        <rect x="84" y="69" width="8" height="6" fill="currentColor" />
 
-                      <rect x="36" y="79" width="14" height="6" fill="currentColor" />
-                      <rect x="54" y="79" width="8" height="6" fill="currentColor" />
-                      <rect x="66" y="79" width="14" height="6" fill="currentColor" />
-                      <rect x="84" y="79" width="8" height="6" fill="currentColor" />
+                        <rect x="36" y="79" width="14" height="6" fill="currentColor" />
+                        <rect x="54" y="79" width="8" height="6" fill="currentColor" />
+                        <rect x="66" y="79" width="14" height="6" fill="currentColor" />
+                        <rect x="84" y="79" width="8" height="6" fill="currentColor" />
 
-                      <rect x="36" y="89" width="8" height="6" fill="currentColor" />
-                      <rect x="48" y="89" width="8" height="6" fill="currentColor" />
-                      <rect x="60" y="89" width="10" height="6" fill="currentColor" />
-                      <rect x="74" y="89" width="6" height="6" fill="currentColor" />
-                      <rect x="84" y="89" width="8" height="6" fill="currentColor" />
+                        <rect x="36" y="89" width="8" height="6" fill="currentColor" />
+                        <rect x="48" y="89" width="8" height="6" fill="currentColor" />
+                        <rect x="60" y="89" width="10" height="6" fill="currentColor" />
+                        <rect x="74" y="89" width="6" height="6" fill="currentColor" />
+                        <rect x="84" y="89" width="8" height="6" fill="currentColor" />
 
-                      {/* Center Brand Badge */}
-                      <circle cx="50" cy="50" r="9" fill="#0284C7" />
-                      <path d="M46 50 L49 53 L54 47" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                    </svg>
+                        {/* Center Brand Badge */}
+                        <circle cx="50" cy="50" r="9" fill="#0284C7" />
+                        <path d="M46 50 L49 53 L54 47" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                      </svg>
+                    )}
                   </div>
 
                   {/* Pricing Badge */}
