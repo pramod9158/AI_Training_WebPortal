@@ -1,22 +1,70 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useWaynauticStore } from '@/lib/store';
 import { isSupabaseConfigured } from '@/lib/supabaseClient';
-import { Award, Save, Sparkles, Check, Clock, LogOut, Database, Lock } from 'lucide-react';
+import { 
+  Award, 
+  Save, 
+  Sparkles, 
+  Check, 
+  Clock, 
+  LogOut, 
+  Database, 
+  Lock, 
+  User, 
+  Camera, 
+  ShieldCheck, 
+  Crown, 
+  QrCode, 
+  Compass, 
+  Sun, 
+  Moon, 
+  Cpu, 
+  Bot, 
+  Code2, 
+  Terminal, 
+  Flame, 
+  KeyRound 
+} from 'lucide-react';
 import { CertificateModal } from '@/components/CertificateModal';
+import { PaymentBarcodeModal } from '@/components/PaymentBarcodeModal';
 import { TOPICS } from '@/data/seedTopics';
 import { LEARNING_PATHS } from '@/data/seedModules';
+
+// 6 Curated Tech Avatar Presets
+const AVATAR_PRESETS = [
+  { id: 'ai-architect', label: 'AI Architect', icon: Bot, gradient: 'from-cyan-500 to-blue-600' },
+  { id: 'neural-coder', label: 'Neural Coder', icon: Cpu, gradient: 'from-purple-500 to-indigo-600' },
+  { id: 'prompt-engineer', label: 'Prompt Craftsman', icon: Sparkles, gradient: 'from-amber-500 to-orange-600' },
+  { id: 'cyber-dev', label: 'Cyber Systems', icon: Terminal, gradient: 'from-emerald-500 to-teal-600' },
+  { id: 'fullstack-ai', label: 'Full-Stack Dev', icon: Code2, gradient: 'from-rose-500 to-pink-600' },
+  { id: 'master-researcher', label: 'Lead Researcher', icon: Flame, gradient: 'from-violet-500 to-fuchsia-600' },
+];
 
 export default function ProfilePage() {
   const router = useRouter();
   const { profile, progress, badges, updateProfile, signOut } = useWaynauticStore();
+  
   const [name, setName] = useState(profile.displayName || 'Developer');
+  const [avatarPreset, setAvatarPreset] = useState<string>(profile.avatarPreset || 'ai-architect');
+  const [customAvatarUrl, setCustomAvatarUrl] = useState<string>(profile.avatarUrl || '');
+  const [selectedPath, setSelectedPath] = useState<string>(profile.selectedPath || 'path-a');
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [certModalOpen, setCertModalOpen] = useState(false);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+
+  useEffect(() => {
+    setName(profile.displayName || 'Developer');
+    setAvatarPreset(profile.avatarPreset || 'ai-architect');
+    setCustomAvatarUrl(profile.avatarUrl || '');
+    setSelectedPath(profile.selectedPath || 'path-a');
+  }, [profile]);
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
+  const isPro = profile.plan === 'pro' || profile.plan === 'enterprise';
 
   const selectedPathObj = LEARNING_PATHS.find(p => p.id === (profile.selectedPath || 'path-a')) || LEARNING_PATHS[0];
   const pathTopics = TOPICS.filter(t => selectedPathObj.moduleSlugs.includes(t.moduleSlug));
@@ -26,9 +74,18 @@ export default function ProfilePage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    await updateProfile({ displayName: name });
+    await updateProfile({ 
+      displayName: name.trim() || 'Developer',
+      avatarPreset,
+      avatarUrl: customAvatarUrl.trim(),
+      selectedPath
+    });
     setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 2000);
+    setTimeout(() => setSavedSuccess(false), 2500);
+  };
+
+  const handleThemeChange = async (newTheme: 'light' | 'dark') => {
+    await updateProfile({ theme: newTheme });
   };
 
   const handleSignOut = async () => {
@@ -36,9 +93,14 @@ export default function ProfilePage() {
     router.push('/login');
   };
 
+  // Find active preset
+  const activePreset = AVATAR_PRESETS.find(p => p.id === avatarPreset) || AVATAR_PRESETS[0];
+  const ActiveIcon = activePreset.icon;
+
   return (
-    <div className="min-h-screen py-8 sm:py-12 px-3 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-6 sm:space-y-8">
+    <div className="min-h-screen py-6 sm:py-10 px-3 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-6 sm:space-y-8">
       
+      {/* Certificate Modal */}
       <CertificateModal
         isOpen={certModalOpen}
         onClose={() => setCertModalOpen(false)}
@@ -49,17 +111,27 @@ export default function ProfilePage() {
         totalCount={pathTopics.length}
       />
 
-      {/* Header */}
-      <div className="border-b-2 border-slate-200 dark:border-slate-800 pb-6 flex items-center justify-between gap-4">
+      {/* Upgrade to Pro Modal */}
+      <PaymentBarcodeModal
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+      />
+
+      {/* Top Breadcrumb & Page Header */}
+      <div className="border-b-2 border-slate-200 dark:border-slate-800 pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold">Account & Credentials</span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white pt-1">Student Profile & Settings</h1>
+          <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold">
+            Account & Credentials
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white pt-1">
+            Student Profile & Settings
+          </h1>
         </div>
 
         {isLoggedIn && (
           <button
             onClick={handleSignOut}
-            className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-300 dark:border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold hover:bg-rose-100 transition-colors shrink-0"
+            className="self-start sm:self-auto flex items-center space-x-2 px-4 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-300 dark:border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold hover:bg-rose-100 transition-colors shrink-0"
           >
             <LogOut className="w-4 h-4" />
             <span>Sign Out</span>
@@ -67,83 +139,296 @@ export default function ProfilePage() {
         )}
       </div>
 
-      {/* Account Info Card */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
+      {/* Main Settings Form */}
+      <form onSubmit={handleSave} className="space-y-6">
         
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b-2 border-slate-200 dark:border-slate-800/80 pb-6">
-          <div className="flex items-center space-x-4">
-            <div className="w-14 sm:w-16 h-14 sm:h-16 rounded-full bg-gradient-to-tr from-sky-500 to-violet-600 p-[2px] shrink-0">
-              <div className="w-full h-full bg-white dark:bg-slate-950 rounded-full flex items-center justify-center text-xl font-extrabold text-sky-600 dark:text-cyan-300">
-                {name ? name.charAt(0).toUpperCase() : 'D'}
+        {/* Section 1: Identity & Avatar Card */}
+        <div className="p-5 sm:p-8 rounded-3xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
+            
+            {/* Live Profile Header Preview */}
+            <div className="flex items-center space-x-4">
+              <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr ${activePreset.gradient} p-1 shadow-lg shrink-0 flex items-center justify-center`}>
+                {customAvatarUrl ? (
+                  <div className="w-full h-full rounded-xl overflow-hidden bg-slate-950">
+                    <img 
+                      src={customAvatarUrl} 
+                      alt={name} 
+                      className="w-full h-full object-cover"
+                      onError={() => setCustomAvatarUrl('')}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-full rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center">
+                    <ActiveIcon className="w-8 h-8 sm:w-10 sm:h-10 text-slate-800 dark:text-white" />
+                  </div>
+                )}
+              </div>
+              
+              <div>
+                <div className="flex items-center space-x-2">
+                  <h3 className="font-extrabold text-slate-900 dark:text-white text-lg sm:text-xl">
+                    {name || 'Developer'}
+                  </h3>
+                  {isPro ? (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                      PRO PASS
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700">
+                      FREE TIER
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                  {profile.email || 'Local Student Session'}
+                </p>
+                <p className="text-[11px] text-sky-600 dark:text-cyan-400 font-semibold mt-1">
+                  Preset: {activePreset.label}
+                </p>
               </div>
             </div>
-            <div>
-              <h3 className="font-extrabold text-slate-900 dark:text-white text-lg">{name}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono font-medium">{profile.email || 'Email & Password Student Account'}</p>
+
+            {/* Cloud Sync Status */}
+            <div className="flex flex-col items-start sm:items-end space-y-1">
+              <div className="flex items-center space-x-2 text-xs font-mono text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/30 px-3 py-1 rounded-full font-bold">
+                <Database className="w-3.5 h-3.5" />
+                <span>{isSupabaseConfigured ? 'Supabase DB Synced' : 'Local Persistence Mode'}</span>
+              </div>
+              <div className="flex items-center space-x-1.5 text-[11px] font-mono text-slate-500 dark:text-slate-400 font-medium">
+                <Clock className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
+                <span>8-Hour Session Protection Active</span>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col items-start sm:items-end space-y-1">
-            <div className="flex items-center space-x-2 text-xs font-mono text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/30 px-3 py-1 rounded-full font-bold">
-              <Database className="w-3.5 h-3.5" />
-              <span>{isSupabaseConfigured ? 'Supabase DB Synced' : 'Local Persistence Mode'}</span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-[11px] font-mono text-slate-500 dark:text-slate-400 font-medium">
-              <Clock className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
-              <span>8-Hour Session Protection Active</span>
-            </div>
-          </div>
-        </div>
-
-        <form onSubmit={handleSave} className="space-y-6">
+          {/* Display Name Input */}
           <div className="space-y-2">
-            <label className="text-xs font-mono uppercase font-bold text-slate-700 dark:text-slate-300">Display Name / Certificate Name</label>
+            <label className="text-xs font-mono uppercase font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+              <User className="w-4 h-4 text-sky-600 dark:text-cyan-400" />
+              <span>Full Name (Appears on Verified Certificates)</span>
+            </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 font-semibold text-sm"
-              placeholder="Your full name"
+              className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 font-semibold text-sm transition-colors"
+              placeholder="e.g., Alex Mercer"
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="submit"
-              className="px-6 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs sm:text-sm transition-all flex items-center space-x-2 min-h-[44px]"
-            >
-              {savedSuccess ? <Check className="w-4 h-4 text-white" /> : <Save className="w-4 h-4 text-white" />}
-              <span>{savedSuccess ? 'Profile Saved!' : 'Save Profile'}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setCertModalOpen(true)}
-              className={`px-6 py-3 rounded-xl border-2 font-extrabold text-xs sm:text-sm transition-all flex items-center space-x-2 min-h-[44px] ${
-                isUnlocked
-                  ? 'bg-amber-50 hover:bg-amber-100 dark:bg-slate-800 text-amber-700 dark:text-amber-300 border-amber-400 dark:border-amber-500/30'
-                  : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
-              }`}
-            >
-              {isUnlocked ? (
-                <>
-                  <Award className="w-4 h-4 text-amber-500" />
-                  <span>View Certificate 🎓</span>
-                </>
-              ) : (
-                <>
-                  <Lock className="w-4 h-4 text-amber-500" />
-                  <span>Certificate Locked ({pathPercent}%)</span>
-                </>
-              )}
-            </button>
+          {/* Avatar Selector Grid */}
+          <div className="space-y-3">
+            <label className="text-xs font-mono uppercase font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+              <Camera className="w-4 h-4 text-sky-600 dark:text-cyan-400" />
+              <span>Choose Your Engineer Avatar</span>
+            </label>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+              {AVATAR_PRESETS.map((preset) => {
+                const Icon = preset.icon;
+                const isSelected = avatarPreset === preset.id && !customAvatarUrl;
+                return (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => {
+                      setAvatarPreset(preset.id);
+                      setCustomAvatarUrl('');
+                    }}
+                    className={`p-3 rounded-2xl border-2 flex flex-col items-center text-center space-y-2 transition-all ${
+                      isSelected
+                        ? 'border-sky-500 dark:border-cyan-400 bg-sky-50 dark:bg-cyan-950/40 shadow-md scale-105'
+                        : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 hover:border-slate-300 dark:hover:border-slate-700'
+                    }`}
+                  >
+                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${preset.gradient} p-0.5 flex items-center justify-center text-white shadow-sm`}>
+                      <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <Icon className="w-5 h-5 text-slate-800 dark:text-white" />
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-extrabold text-slate-800 dark:text-slate-200 leading-tight">
+                      {preset.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-        </form>
-      </div>
+          {/* Custom Avatar URL Field */}
+          <div className="space-y-2 pt-1">
+            <label className="text-xs font-mono uppercase font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+              <KeyRound className="w-3.5 h-3.5 text-slate-500" />
+              <span>Or Paste Custom Image URL (Optional)</span>
+            </label>
+            <input
+              type="url"
+              value={customAvatarUrl}
+              onChange={(e) => setCustomAvatarUrl(e.target.value)}
+              className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 font-mono text-xs transition-colors"
+              placeholder="https://example.com/my-photo.jpg"
+            />
+          </div>
 
-      {/* Badges Section */}
-      <div className="space-y-4">
+        </div>
+
+        {/* Section 2: Membership & Pro Pass Upgrade Card */}
+        <div className="p-5 sm:p-8 rounded-3xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-3 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20">
+                <Crown className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg">
+                  {isPro ? 'Waynautic Pro AI Pass (Lifetime Access)' : 'Waynautic Free Candidate Account'}
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400">
+                  {isPro 
+                    ? 'All 10 curriculum modules, quizzes, and verified certification unlocked.' 
+                    : 'Upgrade for ₹999 to unlock all 10 specialized modules & verified certificate.'}
+                </p>
+              </div>
+            </div>
+
+            {!isPro ? (
+              <button
+                type="button"
+                onClick={() => setPaymentModalOpen(true)}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-xs sm:text-sm shadow-md flex items-center space-x-2 shrink-0 transition-all active:scale-95 min-h-[44px]"
+              >
+                <QrCode className="w-4 h-4" />
+                <span>Upgrade to Pro (₹999)</span>
+              </button>
+            ) : (
+              <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-black">
+                <ShieldCheck className="w-4 h-4" />
+                <span>Verified Pro Active</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Section 3: Learning Path & Platform Preferences Card */}
+        <div className="p-5 sm:p-8 rounded-3xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
+          <h3 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg flex items-center space-x-2">
+            <Compass className="w-5 h-5 text-sky-600 dark:text-cyan-400" />
+            <span>Learning Pathway & Platform Settings</span>
+          </h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            {/* Learning Path Selection */}
+            {LEARNING_PATHS.map((path) => {
+              const isCurrent = selectedPath === path.id;
+              return (
+                <div
+                  key={path.id}
+                  onClick={() => setSelectedPath(path.id)}
+                  className={`p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all ${
+                    isCurrent
+                      ? 'border-sky-500 dark:border-cyan-400 bg-sky-50 dark:bg-cyan-950/30 shadow-md'
+                      : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-cyan-400">
+                      {path.id === 'path-a' ? 'Sequence A' : 'Sequence B'}
+                    </span>
+                    {isCurrent && (
+                      <span className="flex items-center space-x-1 text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-sky-500 text-white">
+                        <Check className="w-3 h-3" />
+                        <span>Active</span>
+                      </span>
+                    )}
+                  </div>
+                  <h4 className="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">
+                    {path.title}
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                    {path.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Theme Mode Toggle */}
+          <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h4 className="font-extrabold text-slate-900 dark:text-white text-sm">Theme Appearance</h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Select your preferred platform lighting mode.</p>
+            </div>
+            
+            <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => handleThemeChange('light')}
+                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  profile.theme === 'light'
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <Sun className="w-4 h-4 text-amber-500" />
+                <span>Light</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleThemeChange('dark')}
+                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  profile.theme === 'dark'
+                    ? 'bg-slate-800 text-white shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <Moon className="w-4 h-4 text-cyan-400" />
+                <span>Dark</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Action Buttons Bar */}
+        <div className="flex flex-wrap items-center gap-3 pt-2">
+          <button
+            type="submit"
+            className="px-6 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs sm:text-sm transition-all flex items-center space-x-2 min-h-[44px]"
+          >
+            {savedSuccess ? <Check className="w-4 h-4 text-white" /> : <Save className="w-4 h-4 text-white" />}
+            <span>{savedSuccess ? 'Profile & Settings Saved!' : 'Save Account Settings'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setCertModalOpen(true)}
+            className={`px-6 py-3 rounded-xl border-2 font-extrabold text-xs sm:text-sm transition-all flex items-center space-x-2 min-h-[44px] ${
+              isUnlocked
+                ? 'bg-amber-50 hover:bg-amber-100 dark:bg-slate-800 text-amber-700 dark:text-amber-300 border-amber-400 dark:border-amber-500/30'
+                : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
+            }`}
+          >
+            {isUnlocked ? (
+              <>
+                <Award className="w-4 h-4 text-amber-500" />
+                <span>View Official Certificate 🎓</span>
+              </>
+            ) : (
+              <>
+                <Lock className="w-4 h-4 text-amber-500" />
+                <span>Certificate Locked ({pathPercent}%)</span>
+              </>
+            )}
+          </button>
+        </div>
+
+      </form>
+
+      {/* Badges & Achievements Section */}
+      <div className="space-y-4 pt-4">
         <h2 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
           <Award className="w-5 h-5 text-purple-600 dark:text-violet-400" />
           <span>Earned Badges ({badges.length})</span>

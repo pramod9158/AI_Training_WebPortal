@@ -89,11 +89,11 @@ export default function AdminLoginPage() {
           .eq('id', data.user.id)
           .single();
 
-        if (profile?.role === 'admin' || data.user.email?.includes('admin')) {
+        if (profile?.role === 'admin') {
           setAdminSession(data.user.email);
           router.push('/admin');
         } else {
-          setErrorMessage('Access Denied: Your account does not hold administrator privileges.');
+          setErrorMessage('Access Denied: Your account does not hold administrator privileges (role must be admin).');
           await supabase.auth.signOut();
         }
       }

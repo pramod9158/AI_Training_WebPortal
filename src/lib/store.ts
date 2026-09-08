@@ -500,6 +500,9 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
         displayName: profileData.display_name || user.email?.split('@')[0] || 'Developer',
         avatarUrl: profileData.avatar_url || '',
         selectedPath: profileData.selected_path || 'path-a',
+        role: profileData.role || 'candidate',
+        plan: profileData.plan || 'free',
+        accountStatus: profileData.account_status || 'active',
         lastAccessedTopicId: profileData.last_accessed_topic_id || undefined,
         lastAccessedAt: profileData.last_accessed_at || undefined
       });

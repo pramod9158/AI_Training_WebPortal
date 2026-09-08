@@ -698,6 +698,7 @@ export async function getAdminMetrics(): Promise<AdminMetrics> {
     ? Math.round(candidates.reduce((sum, c) => sum + c.progressPercent, 0) / totalCandidates)
     : 0;
 
+  const candidatesWithQuizzes = candidates.filter((c) => c.quizzesAttempted > 0);
   const overallQuizPassRate = candidatesWithQuizzes.length > 0
     ? Math.round(candidatesWithQuizzes.reduce((sum, c) => sum + c.averageQuizScore, 0) / candidatesWithQuizzes.length)
     : 0;

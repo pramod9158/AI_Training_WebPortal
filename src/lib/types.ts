@@ -27,6 +27,7 @@ export interface UserProfileState {
   email?: string;
   displayName: string;
   avatarUrl: string;
+  avatarPreset?: string;
   selectedPath: string; // 'path-a' | 'path-b' | 'free'
   hasCompletedOnboarding: boolean;
   theme: Theme;

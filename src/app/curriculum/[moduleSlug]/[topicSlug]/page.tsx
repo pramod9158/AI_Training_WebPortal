@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, useSearchParams, useRouter, notFound } from 'next/navigation';
-import { TOPICS, getQuizForTopic } from '@/data/seedTopics';
 import { MODULES, getOrderedCurriculumTopics } from '@/data/seedModules';
+import { getAllTopics, getTopicBySlugs, getTopicQuiz } from '@/lib/curriculumService';
 import { useWaynauticStore } from '@/lib/store';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { MarkdownNotes } from '@/components/MarkdownNotes';
@@ -31,25 +31,32 @@ export default function TopicWorkspacePage() {
 
   const { profile, progress, bookmarks, toggleBookmarkTopic, markTopicProgress, saveQuizAttempt, saveLastAccessedTopic } = useWaynauticStore();
 
-  const moduleData = MODULES.find((m) => m.slug === moduleSlug);
-  const topic = TOPICS.find((t) => t.moduleSlug === moduleSlug && t.slug === topicSlug);
+  const [topicsVersion, setTopicsVersion] = useState(0);
 
-  if (!moduleData || !topic) {
-    notFound();
-  }
+  // Listen for admin curriculum changes
+  useEffect(() => {
+    const handleCurriculumChange = () => {
+      setTopicsVersion((v) => v + 1);
+    };
+    window.addEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+    return () => window.removeEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+  }, []);
+
+  const moduleData = MODULES.find((m) => m.slug === moduleSlug);
+  const topic = getTopicBySlugs(moduleSlug, topicSlug);
 
   const topicId = topic?.id;
   const isLoggedIn = Boolean(profile.userId || profile.email);
 
   // Record last accessed topic for Resume Learning
-  React.useEffect(() => {
+  useEffect(() => {
     if (topicId && isLoggedIn) {
       saveLastAccessedTopic(topicId);
     }
   }, [topicId, isLoggedIn, saveLastAccessedTopic]);
 
-  if (!topic || !moduleData) {
-    return notFound();
+  if (!moduleData || !topic) {
+    notFound();
   }
 
   // If not logged in, enforce login requirement before starting learning
@@ -101,19 +108,10 @@ export default function TopicWorkspacePage() {
             </Link>
 
             <Link
-              href={`/signup?redirectTo=/curriculum/${moduleSlug}/${topicSlug}`}
-              className="w-full sm:w-1/2 py-3.5 rounded-xl bg-sky-50 dark:bg-slate-900 hover:bg-sky-100 dark:hover:bg-slate-800 border-2 border-sky-300 dark:border-slate-700 text-sky-800 dark:text-white font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center min-h-[44px]"
+              href="/signup"
+              className="w-full sm:w-1/2 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-2 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white font-extrabold text-xs sm:text-sm transition-all text-center min-h-[44px] flex items-center justify-center"
             >
-              <span>Create Free Account</span>
-            </Link>
-          </div>
-
-          <div className="pt-2">
-            <Link
-              href="/curriculum"
-              className="text-xs text-slate-500 dark:text-slate-400 hover:underline font-bold"
-            >
-              ← Back to Curriculum Syllabus
+              Create Free Account
             </Link>
           </div>
 
@@ -122,32 +120,32 @@ export default function TopicWorkspacePage() {
     );
   }
 
-  // Active Tab from URL search params (defaults to 'watch')
+  // Active Tab from URL query params (defaults to 'watch')
   const currentTab = (searchParams.get('tab') as 'watch' | 'read' | 'quiz') || 'watch';
 
   const setTab = (newTab: 'watch' | 'read' | 'quiz') => {
     router.replace(`/curriculum/${moduleSlug}/${topicSlug}?tab=${newTab}`, { scroll: false });
   };
 
-  // Find ordered curriculum topics across all 10 modules in correct sequential roadmap order
-  const orderedTopics = getOrderedCurriculumTopics(TOPICS);
+  // Find ordered curriculum topics across all modules in correct sequential roadmap order
+  const allActiveTopics = getAllTopics();
+  const orderedTopics = getOrderedCurriculumTopics(allActiveTopics);
   const currentTopicIndex = orderedTopics.findIndex((t) => t.id === topic.id);
   const prevTopic = currentTopicIndex > 0 ? orderedTopics[currentTopicIndex - 1] : null;
 
-  // Next topic: find the next incomplete topic in sequence ahead of current topic
+  // Next topic: find next incomplete topic in sequence ahead of current topic
   const remainingTopics = orderedTopics.slice(currentTopicIndex + 1);
   const nextIncompleteTopic = remainingTopics.find((t) => progress[t.id]?.status !== 'completed');
-  // If all remaining are completed, fallback to the immediate next sequential topic
   const nextTopic = nextIncompleteTopic || (remainingTopics.length > 0 ? remainingTopics[0] : null);
 
-  // Topic order index within the current module
-  const moduleTopics = TOPICS.filter((t) => t.moduleSlug === moduleData.slug);
+  // Topic order index within current module
+  const moduleTopics = allActiveTopics.filter((t) => t.moduleSlug === moduleData.slug);
   const topicIndexInModule = moduleTopics.findIndex((t) => t.id === topic.id) + 1;
   const topicIndexStr = topicIndexInModule < 10 ? `0${topicIndexInModule}` : topicIndexInModule;
 
   const isCompleted = progress[topic.id]?.status === 'completed';
   const isBookmarked = bookmarks.includes(topic.id);
-  const quizQuestions = getQuizForTopic(topic.id, topic.title);
+  const quizQuestions = getTopicQuiz(topic.id, topic.title);
 
   const handleVideoProgress90 = () => {
     markTopicProgress(topic.id, 'completed');
@@ -163,7 +161,7 @@ export default function TopicWorkspacePage() {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-6 pb-24 sm:pb-12">
+    <div className="min-h-screen py-6 sm:py-8 px-3 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-6 pb-24 sm:pb-12">
       
       {/* Top Breadcrumbs & Topic Action Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-slate-200 dark:border-slate-800 pb-4">
@@ -220,16 +218,20 @@ export default function TopicWorkspacePage() {
           <span>•</span>
           <span>Topic {topicIndexStr}</span>
           <span>•</span>
-          <span className="flex items-center space-x-1 text-slate-500 dark:text-slate-400 font-medium">
+          <span className="flex items-center space-x-1 text-slate-500 dark:text-slate-400">
             <Clock className="w-3.5 h-3.5" />
             <span>{topic.estimatedMinutes} mins</span>
           </span>
         </div>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">{topic.title}</h1>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed">{topic.description}</p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+          {topic.title}
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">
+          {topic.description}
+        </p>
       </div>
 
-      {/* Responsive Desktop Tab Switcher */}
+      {/* Responsive Desktop & Laptop Tab Switcher */}
       <div className="hidden sm:flex items-center space-x-2 border-b-2 border-slate-200 dark:border-slate-800 pb-2">
         <button
           onClick={() => setTab('watch')}
@@ -265,6 +267,9 @@ export default function TopicWorkspacePage() {
         >
           <HelpCircle className="w-4 h-4" />
           <span>3. Take Quiz</span>
+          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-white/20 ml-1">
+            {quizQuestions.length}
+          </span>
         </button>
       </div>
 
@@ -329,17 +334,17 @@ export default function TopicWorkspacePage() {
         )}
       </div>
 
-      {/* Sticky Mobile Bottom Tab Bar (<640px viewports) */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-md border-t-2 border-slate-200 dark:border-slate-800 p-2 flex items-center justify-around shadow-2xl pb-3">
+      {/* Sticky Mobile Bottom Tab Bar (<640px viewports) with safe area support */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-md border-t-2 border-slate-200 dark:border-slate-800 p-1.5 flex items-center justify-around shadow-2xl pb-safe">
         <button
           onClick={() => setTab('watch')}
           className={`flex flex-col items-center p-2 rounded-xl text-xs font-extrabold transition-all min-h-[44px] min-w-[70px] ${
             currentTab === 'watch' 
-              ? 'text-[#1899D6] bg-sky-50 dark:bg-cyan-950/40' 
+              ? 'text-[#1899D6] bg-sky-50 dark:bg-cyan-950/40 font-black' 
               : 'text-slate-500 dark:text-slate-400'
           }`}
         >
-          <Play className={`w-5 h-5 mb-1 ${currentTab === 'watch' ? 'fill-[#1899D6]' : ''}`} />
+          <Play className={`w-5 h-5 mb-0.5 ${currentTab === 'watch' ? 'fill-[#1899D6]' : ''}`} />
           <span>Watch</span>
         </button>
 
@@ -347,24 +352,27 @@ export default function TopicWorkspacePage() {
           onClick={() => setTab('read')}
           className={`flex flex-col items-center p-2 rounded-xl text-xs font-extrabold transition-all min-h-[44px] min-w-[70px] ${
             currentTab === 'read' 
-              ? 'text-[#1899D6] bg-sky-50 dark:bg-cyan-950/40' 
+              ? 'text-[#1899D6] bg-sky-50 dark:bg-cyan-950/40 font-black' 
               : 'text-slate-500 dark:text-slate-400'
           }`}
         >
-          <BookOpen className="w-5 h-5 mb-1" />
+          <BookOpen className="w-5 h-5 mb-0.5" />
           <span>Read</span>
         </button>
 
         <button
           onClick={() => setTab('quiz')}
-          className={`flex flex-col items-center p-2 rounded-xl text-xs font-extrabold transition-all min-h-[44px] min-w-[70px] ${
+          className={`flex flex-col items-center p-2 rounded-xl text-xs font-extrabold transition-all min-h-[44px] min-w-[70px] relative ${
             currentTab === 'quiz' 
-              ? 'text-[#1899D6] bg-sky-50 dark:bg-cyan-950/40' 
+              ? 'text-[#1899D6] bg-sky-50 dark:bg-cyan-950/40 font-black' 
               : 'text-slate-500 dark:text-slate-400'
           }`}
         >
-          <HelpCircle className="w-5 h-5 mb-1" />
+          <HelpCircle className="w-5 h-5 mb-0.5" />
           <span>Quiz</span>
+          <span className="absolute top-1 right-2 text-[9px] font-mono px-1 rounded-full bg-sky-500 text-white font-bold">
+            {quizQuestions.length}
+          </span>
         </button>
       </div>
 
