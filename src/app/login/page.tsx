@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Mail, Lock, ShieldCheck, Clock, Eye, EyeOff, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { signInWithEmail, sendPasswordResetEmail } from '@/lib/supabaseAuth';
 import { fetchAndSyncCloudUser, useWaynauticStore } from '@/lib/store';
+import { clearAdminSession } from '@/lib/adminService';
 
 function LoginForm() {
   const router = useRouter();
@@ -44,6 +45,9 @@ function LoginForm() {
     setErrorMsg('');
 
     try {
+      // Purge any stale admin console session when logging in as student
+      clearAdminSession();
+
       const { data, error } = await signInWithEmail(email, password);
 
       if (error) {

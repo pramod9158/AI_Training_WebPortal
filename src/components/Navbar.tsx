@@ -26,7 +26,6 @@ import {
 import { useWaynauticStore } from '@/lib/store';
 import { TOPICS } from '@/data/seedTopics';
 import { getResumeLearningUrl } from '@/lib/curriculumService';
-import { isAdminAuthenticated } from '@/lib/adminService';
 import dynamic from 'next/dynamic';
 import { NotificationDrawer } from './NotificationDrawer';
 
@@ -47,7 +46,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
-  const isAdmin = profile.role === 'admin' || (typeof window !== 'undefined' && isAdminAuthenticated());
   const isProUser = profile.plan === 'pro' || profile.plan === 'enterprise';
   const resumeUrl = getResumeLearningUrl(profile);
   const lastTopic = profile.lastAccessedTopicId 
@@ -129,18 +127,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
         {/* Right Action Icons & Auth */}
         <div className="flex items-center space-x-1 sm:space-x-2">
-          
-          {/* Admin Portal Shortcut (When Admin or Passkey Active) */}
-          {isAdmin && (
-            <Link
-              href="/admin"
-              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 font-extrabold text-xs shadow-sm hover:bg-indigo-100 transition-colors"
-              title="Admin Management Console"
-            >
-              <Shield className="w-3.5 h-3.5 text-indigo-500" />
-              <span className="hidden lg:inline">Admin</span>
-            </Link>
-          )}
 
           {/* Upgrade / Pro Pass Trigger */}
           {!isProUser ? (
@@ -410,18 +396,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               </div>
               <span className="text-xs bg-white/20 px-2 py-0.5 rounded-md font-mono font-bold">₹999</span>
             </button>
-          )}
-
-          {/* Mobile Admin Link */}
-          {isAdmin && (
-            <Link
-              href="/admin"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 min-h-[44px]"
-            >
-              <Shield className="w-5 h-5 text-indigo-500" />
-              <span>Admin Console</span>
-            </Link>
           )}
 
           {/* Mobile Theme Toggle & Search */}

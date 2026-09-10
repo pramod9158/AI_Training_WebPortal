@@ -61,3 +61,21 @@ drop policy if exists "Allow all read on user_quiz_attempts" on public.user_quiz
 create policy "Allow all read on user_quiz_attempts"
   on public.user_quiz_attempts for select
   using (true);
+
+-- 6. USER_NOTIFICATIONS TABLE: Allow payment status notices & nudges to be delivered
+alter table if exists public.user_notifications enable row level security;
+drop policy if exists "Allow all on user_notifications" on public.user_notifications;
+drop policy if exists "Users view notifications" on public.user_notifications;
+drop policy if exists "Users update notifications" on public.user_notifications;
+
+create policy "Allow all on user_notifications"
+  on public.user_notifications for all
+  using (true)
+  with check (true);
+
+-- 7. PAYMENTS SCHEMA GUARANTEE (ensure rejection_reason exists)
+alter table if exists public.payments 
+  add column if not exists rejection_reason text,
+  add column if not exists plan_granted text default 'pro',
+  add column if not exists verified_at timestamptz,
+  add column if not exists notes text;

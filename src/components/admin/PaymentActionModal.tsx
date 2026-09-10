@@ -247,30 +247,69 @@ export const PaymentActionModal: React.FC<PaymentActionModalProps> = ({
                 </>
               ) : (
                 /* Rejection Input Mode */
-                <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 space-y-3">
-                  <span className="text-xs font-bold text-rose-700 dark:text-rose-400 block">
-                    Reason for Rejection *
-                  </span>
-                  <input
-                    type="text"
+                <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold text-rose-700 dark:text-rose-400 block">
+                      State Reason for Declining *
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      Sent to student & log
+                    </span>
+                  </div>
+
+                  {/* Preset quick reasons */}
+                  <div className="space-y-1">
+                    <span className="text-[10px] text-slate-500 font-semibold block">
+                      Quick Presets:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        'UTR reference not found in bank ledger',
+                        'Payment amount is less than ₹999 required',
+                        'Duplicate transaction reference already used',
+                        'Payment reference or screenshot invalid'
+                      ].map((preset) => (
+                        <button
+                          key={preset}
+                          type="button"
+                          onClick={() => setRejectionReason(preset)}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-medium border text-left transition-colors ${
+                            rejectionReason === preset
+                              ? 'bg-rose-600 text-white border-rose-600'
+                              : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-rose-200 dark:border-rose-800/80 hover:bg-rose-100/60'
+                          }`}
+                        >
+                          {preset}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <textarea
                     required
+                    rows={3}
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
-                    placeholder="e.g. UTR not found in bank ledger or invalid amount"
-                    className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-rose-300 dark:border-rose-800 text-slate-900 dark:text-white text-xs focus:outline-none"
+                    placeholder="Provide specific reason why payment could not be verified..."
+                    className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-rose-300 dark:border-rose-800 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-rose-500"
                   />
-                  <div className="flex space-x-2">
+
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    ℹ️ The student will see this reason in their app along with the support hotline number <strong className="text-slate-800 dark:text-slate-200">9158998226</strong> to resolve payment discrepancies.
+                  </p>
+
+                  <div className="flex space-x-2 pt-1">
                     <button
-                      disabled={loading}
+                      disabled={loading || !rejectionReason.trim()}
                       onClick={handleReject}
-                      className="flex-1 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-colors"
+                      className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs transition-colors disabled:opacity-50 shadow-md shadow-rose-600/20 cursor-pointer"
                     >
-                      Confirm Rejection
+                      {loading ? 'Declining...' : 'Confirm Decline & Notify Student'}
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowRejectInput(false)}
-                      className="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs"
+                      className="px-4 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
                     >
                       Cancel
                     </button>

@@ -68,9 +68,12 @@ import { PaymentActionModal } from '@/components/admin/PaymentActionModal';
 import { ManualPaymentModal } from '@/components/admin/ManualPaymentModal';
 import { TopicEditorModal } from '@/components/admin/TopicEditorModal';
 import { QuizEditorModal } from '@/components/admin/QuizEditorModal';
+import { useWaynauticStore } from '@/lib/store';
+import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 
 export default function AdminDashboardPage() {
   const router = useRouter();
+  const { profile } = useWaynauticStore();
 
   // Auth verification
   const [authChecked, setAuthChecked] = useState(false);
@@ -116,14 +119,49 @@ export default function AdminDashboardPage() {
     setTimeout(() => setActionNotice(null), 3500);
   };
 
-  // Auth Guard
+  // Strict Auth Guard: completely block candidate students from admin portal
   useEffect(() => {
-    if (!isAdminAuthenticated()) {
-      router.replace('/admin/login');
-    } else {
+    const verifyAdmin = async () => {
+      // 1. If currently logged in as a candidate in student profile, deny immediately
+      if (profile.userId && profile.role === 'candidate') {
+        clearAdminSession();
+        router.replace('/admin/login');
+        return;
+      }
+
+      // 2. Must hold active admin passkey session
+      if (!isAdminAuthenticated()) {
+        router.replace('/admin/login');
+        return;
+      }
+
+      // 3. If Supabase session is active, verify user role in user_profiles
+      if (isSupabaseConfigured) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            const { data: prof } = await supabase
+              .from('user_profiles')
+              .select('role')
+              .eq('id', session.user.id)
+              .single();
+
+            if (prof && prof.role === 'candidate') {
+              clearAdminSession();
+              router.replace('/admin/login');
+              return;
+            }
+          }
+        } catch {
+          // Fall back to passkey verification
+        }
+      }
+
       setAuthChecked(true);
-    }
-  }, [router]);
+    };
+
+    verifyAdmin();
+  }, [router, profile.userId, profile.role]);
 
   // Load all platform data
   const loadPlatformData = async () => {
@@ -577,9 +615,9 @@ export default function AdminDashboardPage() {
                         <div className="flex items-center space-x-2 w-full sm:w-auto">
                           <button
                             onClick={() => setSelectedPayment(p)}
-                            className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 text-slate-800 dark:text-slate-200 text-xs font-bold transition-colors"
+                            className="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 text-slate-800 dark:text-slate-200 text-xs font-bold transition-colors cursor-pointer"
                           >
-                            Inspect
+                            Review / Decline
                           </button>
                           <button
                             onClick={() => handleQuickApprove(p.id)}
@@ -1028,9 +1066,9 @@ export default function AdminDashboardPage() {
                             )}
                             <button
                               onClick={() => setSelectedPayment(p)}
-                              className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold transition-colors"
+                              className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold transition-colors cursor-pointer"
                             >
-                              Details
+                              {p.status === 'pending' ? 'Review / Decline' : 'Details'}
                             </button>
                           </td>
                         </tr>

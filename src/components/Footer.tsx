@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Shield, Sparkles, BookOpen, Compass } from 'lucide-react';
+import { Sparkles, BookOpen, Compass } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
@@ -71,12 +71,6 @@ export const Footer: React.FC = () => {
               <li><Link href="/dashboard" className="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-300 transition-colors">Student Dashboard</Link></li>
               <li><Link href="/profile" className="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-300 transition-colors">Profile & Settings</Link></li>
               <li><Link href="/onboarding" className="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-300 transition-colors">Interactive Tour</Link></li>
-              <li>
-                <Link href="/admin/login" className="flex items-center space-x-1 text-slate-500 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  <Shield className="w-3 h-3 text-indigo-500" />
-                  <span>Admin Console</span>
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -88,10 +82,6 @@ export const Footer: React.FC = () => {
           <div className="flex items-center space-x-4">
             <Link href="/about" className="hover:text-slate-800 dark:hover:text-slate-300 transition-colors">
               About & Curriculum Guide
-            </Link>
-            <span>•</span>
-            <Link href="/admin" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-              Internal Ops
             </Link>
           </div>
         </div>

@@ -252,15 +252,84 @@ export async function submitCandidatePayment(data: {
   };
 }
 
+export async function getCandidateLatestPayment(userId?: string, userEmail?: string): Promise<PaymentRecord | null> {
+  if (isSupabaseConfigured && (userId || userEmail)) {
+    try {
+      let query = supabase.from('payments').select('*');
+      if (userId) {
+        query = query.eq('user_id', userId);
+      } else if (userEmail) {
+        query = query.ilike('user_email', userEmail.trim());
+      }
+      const { data, error } = await query.order('created_at', { ascending: false }).limit(1);
+      if (!error && data && data.length > 0) {
+        const p = data[0];
+        return {
+          id: p.id,
+          userId: p.user_id,
+          userEmail: p.user_email,
+          userName: p.user_name || p.user_email.split('@')[0],
+          amount: Number(p.amount),
+          currency: p.currency,
+          paymentMethod: p.payment_method,
+          transactionReference: p.transaction_reference,
+          barcodeId: p.barcode_id || 'waynautic_pro_upi',
+          status: p.status,
+          proofUrl: p.proof_url,
+          notes: p.notes,
+          rejectionReason: p.rejection_reason,
+          planGranted: p.plan_granted || 'pro',
+          verifiedAt: p.verified_at,
+          verifiedBy: p.verified_by,
+          createdAt: p.created_at
+        };
+      }
+    } catch (err) {
+      console.warn('Error querying candidate latest payment:', err);
+    }
+  }
+
+  // Fallback to local
+  const payments = getLocalPayments();
+  const match = payments.find((p) => 
+    (userId && p.userId === userId) || 
+    (userEmail && p.userEmail.toLowerCase() === userEmail.toLowerCase())
+  );
+  return match || null;
+}
+
 export async function approvePayment(
   paymentId: string,
   notes?: string
 ): Promise<{ success: boolean; message: string }> {
   const now = new Date().toISOString();
+  let targetUserEmail: string | undefined;
+  let targetUserId: string | undefined;
 
-  // Update Supabase
+  // 1. Fetch payment info if needed
+  const payments = getLocalPayments();
+  const localTarget = payments.find((p) => p.id === paymentId);
+  if (localTarget) {
+    targetUserEmail = localTarget.userEmail;
+    targetUserId = localTarget.userId;
+  }
+
+  // 2. Update Supabase
   if (isSupabaseConfigured) {
     try {
+      if (!targetUserEmail || !targetUserId) {
+        const { data: dbPayment } = await supabase
+          .from('payments')
+          .select('*')
+          .eq('id', paymentId)
+          .maybeSingle();
+        if (dbPayment) {
+          targetUserEmail = dbPayment.user_email;
+          targetUserId = dbPayment.user_id;
+        }
+      }
+
+      // Update payment status
       await supabase
         .from('payments')
         .update({
@@ -269,14 +338,38 @@ export async function approvePayment(
           notes: notes ? `${notes} (Approved)` : 'Verified by Administrator'
         })
         .eq('id', paymentId);
+
+      // Upgrade student user profile to pro
+      if (targetUserId) {
+        await supabase
+          .from('user_profiles')
+          .update({ plan: 'pro' })
+          .eq('id', targetUserId);
+      }
+      if (targetUserEmail) {
+        await supabase
+          .from('user_profiles')
+          .update({ plan: 'pro' })
+          .ilike('email', targetUserEmail.trim());
+      }
+
+      // Insert celebratory in-app notification for the student
+      if (targetUserId) {
+        await supabase.from('user_notifications').insert({
+          user_id: targetUserId,
+          title: 'Payment Approved! Pro Unlocked 🎉',
+          message: 'Your payment verification was approved by the admissions team! Waynautic Pro AI Pass is now active with unlimited access to all 10 modules & lifetime certification.',
+          type: 'system',
+          link_url: '/profile',
+          is_read: false
+        });
+      }
     } catch (err) {
       console.warn('Supabase payment approval error:', err);
     }
   }
 
-  // Update Local Payments
-  const payments = getLocalPayments();
-  const targetPayment = payments.find((p) => p.id === paymentId);
+  // 3. Update Local Payments Cache
   const updatedPayments = payments.map((p) => {
     if (p.id === paymentId) {
       return {
@@ -290,9 +383,14 @@ export async function approvePayment(
   });
   saveLocalPayments(updatedPayments);
 
-  // Upgrade candidate's plan
-  if (targetPayment) {
-    await updateCandidatePlanByEmail(targetPayment.userEmail, targetPayment.planGranted || 'pro');
+  // 4. Upgrade local candidate profile
+  if (targetUserEmail) {
+    await updateCandidatePlanByEmail(targetUserEmail, 'pro');
+  }
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('waynautic_payments_changed'));
+    window.dispatchEvent(new Event('waynautic_storage_change'));
   }
 
   return { success: true, message: 'Payment approved successfully. Candidate upgraded to Pro.' };
@@ -302,36 +400,83 @@ export async function rejectPayment(
   paymentId: string,
   rejectionReason: string
 ): Promise<{ success: boolean; message: string }> {
-  // Update Supabase
+  const cleanReason = rejectionReason.trim();
+  if (!cleanReason) {
+    return { success: false, message: 'Please specify a reason for declining the payment.' };
+  }
+
+  let targetUserId: string | undefined;
+  let targetUserEmail: string | undefined;
+  let txRef: string | undefined;
+
+  const payments = getLocalPayments();
+  const localTarget = payments.find((p) => p.id === paymentId);
+  if (localTarget) {
+    targetUserId = localTarget.userId;
+    targetUserEmail = localTarget.userEmail;
+    txRef = localTarget.transactionReference;
+  }
+
+  // 1. Update Supabase
   if (isSupabaseConfigured) {
     try {
+      if (!targetUserId || !targetUserEmail) {
+        const { data: dbPayment } = await supabase
+          .from('payments')
+          .select('*')
+          .eq('id', paymentId)
+          .maybeSingle();
+        if (dbPayment) {
+          targetUserId = dbPayment.user_id;
+          targetUserEmail = dbPayment.user_email;
+          txRef = dbPayment.transaction_reference;
+        }
+      }
+
+      // Mark payment as rejected with specific reason
       await supabase
         .from('payments')
         .update({
           status: 'rejected',
-          rejection_reason: rejectionReason
+          rejection_reason: cleanReason
         })
         .eq('id', paymentId);
+
+      // Insert notification for student with the reason and support phone 9158998226
+      if (targetUserId) {
+        await supabase.from('user_notifications').insert({
+          user_id: targetUserId,
+          title: 'Payment Verification Not Approved',
+          message: `Your payment reference ${txRef ? `(${txRef}) ` : ''}could not be approved. Reason: "${cleanReason}". If you believe this is an error or need assistance, please contact admissions/support at 9158998226.`,
+          type: 'system',
+          link_url: '/profile',
+          is_read: false
+        });
+      }
     } catch (err) {
       console.warn('Supabase payment rejection error:', err);
     }
   }
 
-  // Update Local
-  const payments = getLocalPayments();
+  // 2. Update Local Cache
   const updatedPayments = payments.map((p) => {
     if (p.id === paymentId) {
       return {
         ...p,
         status: 'rejected' as const,
-        rejectionReason
+        rejectionReason: cleanReason
       };
     }
     return p;
   });
   saveLocalPayments(updatedPayments);
 
-  return { success: true, message: 'Payment marked as rejected.' };
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('waynautic_payments_changed'));
+    window.dispatchEvent(new Event('waynautic_storage_change'));
+  }
+
+  return { success: true, message: 'Payment marked as rejected. Student notified with reason and support contact.' };
 }
 
 export async function recordManualPayment(data: {

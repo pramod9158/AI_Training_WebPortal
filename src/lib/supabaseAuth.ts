@@ -92,6 +92,7 @@ export async function signOutUser() {
     localStorage.removeItem('waynautic_user_bookmarks');
     localStorage.removeItem('waynautic_user_badges');
     localStorage.removeItem('waynautic_user_streak');
+    localStorage.removeItem('waynautic_admin_session');
     const profileKey = 'waynautic_user_profile';
     const saved = localStorage.getItem(profileKey);
     if (saved) {

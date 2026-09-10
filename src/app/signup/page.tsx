@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Mail, Lock, User, ShieldCheck, Clock, CheckCircle2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { signUpWithEmail } from '@/lib/supabaseAuth';
 import { fetchAndSyncCloudUser, useWaynauticStore } from '@/lib/store';
+import { clearAdminSession } from '@/lib/adminService';
 
 function SignupForm() {
   const router = useRouter();
@@ -29,7 +30,10 @@ function SignupForm() {
     setErrorMsg('');
 
     try {
-      const { data, error } = await signUpWithEmail(email, password, name);
+      // Purge any stale admin console session
+      clearAdminSession();
+
+      const { data, error } = await signUpWithEmail(email, password, name.trim());
 
       if (error) {
         if (error.message.toLowerCase().includes('rate limit')) {

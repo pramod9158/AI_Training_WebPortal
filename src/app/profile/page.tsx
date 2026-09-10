@@ -66,7 +66,7 @@ export default function ProfilePage() {
   const [payments, setPayments] = useState<any[]>([]);
   const [loadingPayments, setLoadingPayments] = useState(false);
 
-  useEffect(() => {
+  const loadUserPayments = () => {
     if (isSupabaseConfigured && (profile.userId || profile.email)) {
       setLoadingPayments(true);
       let query = supabase.from('payments').select('*');
@@ -82,6 +82,16 @@ export default function ProfilePage() {
         setLoadingPayments(false);
       });
     }
+  };
+
+  useEffect(() => {
+    loadUserPayments();
+    window.addEventListener('waynautic_payments_changed', loadUserPayments);
+    window.addEventListener('waynautic_storage_change', loadUserPayments);
+    return () => {
+      window.removeEventListener('waynautic_payments_changed', loadUserPayments);
+      window.removeEventListener('waynautic_storage_change', loadUserPayments);
+    };
   }, [profile.userId, profile.email]);
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
@@ -348,36 +358,83 @@ export default function ProfilePage() {
                 Checking billing records in Supabase...
               </div>
             ) : payments.length > 0 ? (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {payments.map((p) => (
-                  <div key={p.id} className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
-                    <div>
-                      <div className="font-mono font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-                        <span>UTR: {p.transaction_reference}</span>
-                        <span>•</span>
-                        <span className="text-emerald-600 dark:text-emerald-400">₹{p.amount} {p.currency}</span>
+                  <div key={p.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-3 text-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div>
+                        <div className="font-mono font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                          <span>UTR: {p.transaction_reference}</span>
+                          <span>•</span>
+                          <span className="text-emerald-600 dark:text-emerald-400">₹{p.amount} {p.currency}</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          Submitted on {new Date(p.created_at).toLocaleDateString()} at {new Date(p.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </div>
                       </div>
-                      <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                        Submitted on {new Date(p.created_at).toLocaleDateString()}
+
+                      <div>
+                        {p.status === 'verified' ? (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-600 flex items-center space-x-1">
+                            <Check className="w-3 h-3 text-emerald-600" />
+                            <span>Payment Approved (Pro Active)</span>
+                          </span>
+                        ) : p.status === 'rejected' ? (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-600">
+                            Payment Declined
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-600 flex items-center space-x-1">
+                            <Clock className="w-3 h-3" />
+                            <span>Pending Admin Review</span>
+                          </span>
+                        )}
                       </div>
                     </div>
-                    <div>
-                      {p.status === 'verified' ? (
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-600 flex items-center space-x-1">
-                          <Check className="w-3 h-3" />
-                          <span>Payment Verified (Pro Granted)</span>
-                        </span>
-                      ) : p.status === 'rejected' ? (
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-600">
-                          Payment Rejected {p.rejection_reason ? `(${p.rejection_reason})` : ''}
-                        </span>
-                      ) : (
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-600 flex items-center space-x-1">
-                          <Clock className="w-3 h-3" />
-                          <span>Verification In Progress</span>
-                        </span>
-                      )}
-                    </div>
+
+                    {/* Declined Details & Support Contact 9158998226 */}
+                    {p.status === 'rejected' && (
+                      <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 space-y-2">
+                        <div className="text-rose-700 dark:text-rose-300 font-semibold text-xs">
+                          Decline Reason: <strong className="font-bold">&ldquo;{p.rejection_reason || 'UTR could not be matched with bank ledger deposits'}&rdquo;</strong>
+                        </div>
+                        <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-rose-200/60 dark:border-rose-900/40 text-[11px]">
+                          <div className="flex flex-wrap items-center gap-2 text-slate-600 dark:text-slate-300">
+                            <span>Admissions Helpline:</span>
+                            <a 
+                              href="tel:9158998226" 
+                              className="font-extrabold text-slate-900 dark:text-white underline hover:text-sky-500"
+                            >
+                              📞 9158998226
+                            </a>
+                            <span>•</span>
+                            <a 
+                              href={`https://wa.me/919158998226?text=${encodeURIComponent(`Hello Waynautic, my payment (${p.transaction_reference}) was declined for ${profile.email || ''}. Please assist.`)}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="font-extrabold text-emerald-600 dark:text-emerald-400 underline"
+                            >
+                              💬 WhatsApp
+                            </a>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setPaymentModalOpen(true)}
+                            className="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-[11px] shadow-sm transition-colors cursor-pointer"
+                          >
+                            Re-submit Corrected UTR
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Pending Notice */}
+                    {p.status === 'pending' && (
+                      <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 text-[11px] text-amber-800 dark:text-amber-300 flex items-center justify-between">
+                        <span>Awaiting verification (~15 mins). Need immediate help?</span>
+                        <a href="tel:9158998226" className="font-bold underline ml-2">Call 9158998226</a>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

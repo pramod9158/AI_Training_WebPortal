@@ -82,6 +82,14 @@ export function resetGuestProfile() {
   window.dispatchEvent(new Event('waynautic_storage_change'));
 }
 
+export function saveLocalProfile(profile: Partial<UserProfileState>) {
+  if (typeof window === 'undefined') return;
+  const current = loadProfile();
+  const updated = { ...current, ...profile };
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(updated));
+  window.dispatchEvent(new Event('waynautic_storage_change'));
+}
+
 export async function saveProfile(profile: Partial<UserProfileState>) {
   if (typeof window === 'undefined') return;
   recordUserActivity();
@@ -103,6 +111,9 @@ export async function saveProfile(profile: Partial<UserProfileState>) {
           last_accessed_tab: updated.lastAccessedTab,
           last_accessed_at: updated.lastAccessedAt
         };
+        if (updated.plan) {
+          payload.plan = updated.plan;
+        }
         await supabase.from('user_profiles').upsert(payload);
       }
     } catch (e) {
@@ -251,12 +262,21 @@ export function loadStreak(): UserStreak {
         return data;
       } else {
         // Inactive for more than 1 day: streak reset to 0 until next activity
-        return { 
+        const resetStreak: UserStreak = { 
           currentStreak: 0, 
           longestStreak: Math.max(data.longestStreak || 0, data.currentStreak || 0), 
           lastActiveDate: data.lastActiveDate,
           weeklyActivity: data.weeklyActivity || {}
         };
+        localStorage.setItem(STREAK_KEY, JSON.stringify(resetStreak));
+        if (isSupabaseConfigured && (data.currentStreak || 0) > 0) {
+          supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session?.user) {
+              supabase.from('user_profiles').update({ streak_days: 0 }).eq('id', session.user.id).then();
+            }
+          }).catch(() => {});
+        }
+        return resetStreak;
       }
     } catch (e) {
       console.error('Failed to parse streak', e);
@@ -532,22 +552,59 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
   if (typeof window === 'undefined' || !isSupabaseConfigured) return;
 
   try {
-    // 1. Fetch User Profile
+    // 1. Fetch User Profile from Supabase
     const { data: profileData } = await supabase
       .from('user_profiles')
       .select('*')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
+
+    // 2. Check if user has an approved payment in Supabase payments ledger
+    let hasApprovedPayment = false;
+    try {
+      let payQuery = supabase
+        .from('payments')
+        .select('id, status')
+        .eq('status', 'verified');
+      
+      if (user.id && user.email) {
+        payQuery = payQuery.or(`user_id.eq.${user.id},user_email.ilike.${user.email}`);
+      } else if (user.id) {
+        payQuery = payQuery.eq('user_id', user.id);
+      } else if (user.email) {
+        payQuery = payQuery.ilike('user_email', user.email);
+      }
+      const { data: payRows } = await payQuery.limit(1);
+      hasApprovedPayment = Boolean(payRows && payRows.length > 0);
+    } catch (pErr) {
+      console.warn('Payment check query error in fetchAndSyncCloudUser:', pErr);
+    }
+
+    const effectivePlan: 'free' | 'pro' | 'enterprise' = 
+      (profileData?.plan === 'enterprise') 
+        ? 'enterprise' 
+        : (profileData?.plan === 'pro' || hasApprovedPayment) 
+        ? 'pro' 
+        : 'free';
+
+    // If approved payment exists in payments table but user_profiles.plan was still 'free', self-heal and update DB
+    if (hasApprovedPayment && profileData?.plan !== 'pro' && profileData?.plan !== 'enterprise') {
+      try {
+        await supabase.from('user_profiles').update({ plan: 'pro' }).eq('id', user.id);
+      } catch (uErr) {
+        console.warn('Failed to self-heal user plan in Supabase:', uErr);
+      }
+    }
 
     if (profileData) {
-      saveProfile({
+      saveLocalProfile({
         userId: user.id,
-        email: user.email,
+        email: user.email || profileData.email,
         displayName: profileData.display_name || user.email?.split('@')[0] || 'Developer',
         avatarUrl: profileData.avatar_url || '',
         selectedPath: profileData.selected_path || 'path-a',
         role: profileData.role || 'candidate',
-        plan: profileData.plan || 'free',
+        plan: effectivePlan,
         accountStatus: profileData.account_status || 'active',
         lastAccessedTopicId: profileData.last_accessed_topic_id || undefined,
         lastAccessedTab: profileData.last_accessed_tab || undefined,
@@ -557,15 +614,18 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
       // Initialize profile if not present
       await supabase.from('user_profiles').upsert({
         id: user.id,
+        email: user.email,
         display_name: user.email?.split('@')[0] || 'Developer',
-        selected_path: 'path-a'
+        selected_path: 'path-a',
+        plan: effectivePlan
       });
-      saveProfile({
+      saveLocalProfile({
         userId: user.id,
         email: user.email,
         displayName: user.email?.split('@')[0] || 'Developer',
         avatarUrl: '',
-        selectedPath: 'path-a'
+        selectedPath: 'path-a',
+        plan: effectivePlan
       });
     }
 
@@ -620,14 +680,35 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
       : [];
     localStorage.setItem(BADGES_KEY, JSON.stringify(freshBadges));
 
-    // 5. User Streak from profile (Strict user isolation)
-    const streakDays = profileData?.streak_days || 0;
+    // 5. User Streak from profile (Strict user isolation & automatic inactivity reset)
+    const todayStr = getTodayDateString();
+    const yesterdayStr = getYesterdayDateString();
+    const rawActive = profileData?.last_active_at ? profileData.last_active_at.split('T')[0] : '';
+    let currentStreak = profileData?.streak_days || 0;
+    let isBroken = false;
+
+    if (!rawActive || (rawActive !== todayStr && rawActive !== yesterdayStr)) {
+      // Inactive for more than 1 day: streak reset to 0
+      currentStreak = 0;
+      isBroken = true;
+    }
+
     const userStreak: UserStreak = {
-      currentStreak: streakDays,
-      longestStreak: streakDays,
-      lastActiveDate: profileData?.last_active_at ? profileData.last_active_at.split('T')[0] : ''
+      currentStreak,
+      longestStreak: Math.max(profileData?.streak_days || 0, currentStreak),
+      lastActiveDate: rawActive,
+      weeklyActivity: {}
     };
     localStorage.setItem(STREAK_KEY, JSON.stringify(userStreak));
+
+    // If streak was broken due to inactivity, update Supabase DB to 0 as well
+    if (isBroken && profileData?.streak_days && profileData.streak_days > 0) {
+      try {
+        await supabase.from('user_profiles').update({ streak_days: 0 }).eq('id', user.id);
+      } catch (sErr) {
+        console.warn('Could not reset broken streak in Supabase:', sErr);
+      }
+    }
 
     // 6. Fetch User Notifications from DB
     const { data: dbNotifications } = await supabase
@@ -1128,10 +1209,24 @@ export function useWaynauticStore() {
       };
     }
 
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible' && isSupabaseConfigured) {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (session?.user) {
+            fetchAndSyncCloudUser(session.user);
+          }
+        });
+      }
+    };
+    window.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('focus', handleVisibility);
+
     return () => {
       if (authUnsubscribe) authUnsubscribe();
       window.removeEventListener('waynautic_storage_change', handleStorage);
       window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('focus', handleVisibility);
     };
   }, []);
 
