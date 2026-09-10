@@ -27,8 +27,9 @@ import { OnboardingTour } from '@/components/OnboardingTour';
 
 export default function HomePage() {
   const router = useRouter();
-  const { progress, streak } = useWaynauticStore();
+  const { profile, progress, streak } = useWaynauticStore();
   const [onboardingOpen, setOnboardingOpen] = useState(false);
+  const isLoggedIn = Boolean(profile.userId || profile.email);
 
   // Find last active/in-progress topic or default to topic 1
   const completedTopicIds = Object.keys(progress).filter(id => progress[id]?.status === 'completed');
@@ -51,7 +52,11 @@ export default function HomePage() {
         <div className="flex justify-center mb-6">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 text-xs font-mono tracking-wide shadow-sm shadow-cyan-500/10">
             <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Master AI Engineering & Development Skills</span>
+            <span>
+              {profile.userId || profile.email 
+                ? `Welcome, ${profile.displayName || 'Developer'}!` 
+                : 'Master AI Engineering & Development Skills'}
+            </span>
             <span className="bg-cyan-500 text-black px-1.5 py-0.2 text-[10px] font-bold rounded font-sans">56 Topics</span>
           </div>
         </div>
@@ -71,14 +76,14 @@ export default function HomePage() {
           {/* Call to Actions */}
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
             
-            <button
-              onClick={() => setOnboardingOpen(true)}
+            <Link
+              href={isLoggedIn ? "/curriculum" : "/login"}
               className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 text-white font-bold text-base hover:brightness-110 shadow-xl shadow-cyan-500/25 transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 group"
             >
               <Zap className="w-5 h-5 text-cyan-300 fill-cyan-300 group-hover:scale-110 transition-transform" />
               <span>Start Learning Now</span>
               <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
 
             <Link
               href="/curriculum"

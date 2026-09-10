@@ -151,7 +151,7 @@ function DashboardContent() {
             {isLoggedIn ? 'Student Dashboard' : 'Guest Dashboard'}
           </span>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white pt-1">
-            {isLoggedIn ? `Welcome back, ${profile.displayName || 'Developer'} 👋` : 'Welcome, Guest 👋'}
+            {isLoggedIn ? `Welcome, ${profile.displayName || 'Developer'} 👋` : 'Welcome, Guest 👋'}
           </h1>
         </div>
 

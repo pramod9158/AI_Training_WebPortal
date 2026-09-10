@@ -11,7 +11,7 @@ import { clearAdminSession } from '@/lib/adminService';
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirectTo') || '/dashboard';
+  const redirectTo = searchParams.get('redirectTo') || '/';
 
   const { updateProfile } = useWaynauticStore();
   const [email, setEmail] = useState('');
