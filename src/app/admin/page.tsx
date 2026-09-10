@@ -37,7 +37,8 @@ import {
   HelpCircle,
   Plus,
   FileCode,
-  RotateCcw
+  RotateCcw,
+  Lock
 } from 'lucide-react';
 import { 
   CandidateRecord, 
@@ -107,10 +108,6 @@ export default function AdminDashboardPage() {
   const [selectedPayment, setSelectedPayment] = useState<PaymentRecord | null>(null);
   const [manualPaymentOpen, setManualPaymentOpen] = useState(false);
 
-  // Settings Form State
-  const [settingsForm, setSettingsForm] = useState<BarcodePaymentConfig>(getBarcodeConfig());
-  const [settingsSavedSuccess, setSettingsSavedSuccess] = useState(false);
-
   // Notification / Toast
   const [actionNotice, setActionNotice] = useState<string | null>(null);
 
@@ -143,7 +140,6 @@ export default function AdminDashboardPage() {
       setCandidates(c);
       setPayments(p);
       setBarcodeConfig(b);
-      setSettingsForm(b);
       setDiagnostics(d);
       setAllTopics(getAllTopics());
     } catch (err) {
@@ -226,16 +222,6 @@ export default function AdminDashboardPage() {
       showNotice('Payment approved & candidate upgraded to Pro!');
       loadPlatformData();
     }
-  };
-
-  // Save Settings
-  const handleSaveSettings = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const updated = await saveBarcodeConfig(settingsForm);
-    setBarcodeConfig(updated);
-    setSettingsSavedSuccess(true);
-    showNotice('Barcode & Payment settings updated successfully!');
-    setTimeout(() => setSettingsSavedSuccess(false), 3000);
   };
 
   if (!authChecked) {
@@ -397,8 +383,8 @@ export default function AdminDashboardPage() {
                 : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Settings className="w-4 h-4" />
-            <span>Barcode & UPI Settings</span>
+            <Lock className="w-4 h-4 text-amber-500" />
+            <span>Barcode & UPI Status</span>
           </button>
         </div>
       </header>
@@ -643,10 +629,10 @@ export default function AdminDashboardPage() {
                 <div className="pt-2">
                   <button
                     onClick={() => setActiveTab('settings')}
-                    className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-colors flex items-center justify-center space-x-1.5"
+                    className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs shadow-sm transition-colors flex items-center justify-center space-x-1.5"
                   >
-                    <Settings className="w-3.5 h-3.5" />
-                    <span>Edit Barcode & Pricing</span>
+                    <Lock className="w-3.5 h-3.5 text-amber-500" />
+                    <span>View Gateway Status</span>
                   </button>
                 </div>
               </div>
@@ -1296,136 +1282,137 @@ export default function AdminDashboardPage() {
         )}
 
         {/* -------------------------------------------------------------------
-         * TAB 5: BARCODE & UPI SETTINGS
+         * TAB 5: BARCODE & UPI STATUS (CODE-CONTROLLED POLICY)
          * -----------------------------------------------------------------*/}
         {activeTab === 'settings' && (
-          <div className="max-w-3xl space-y-6 animate-in fade-in duration-200">
-            <div className="p-6 rounded-3xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+          <div className="max-w-4xl space-y-6 animate-in fade-in duration-200">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
               
-              <div>
-                <h3 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
-                  <Settings className="w-5 h-5 text-indigo-500" />
-                  <span>Configure Barcode / UPI Gateway</span>
-                </h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Update your merchant UPI handle, course fee, and candidate payment instructions in real time.
-                </p>
+              {/* Header */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2.5 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                    <Lock className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
+                      <span>Payment Gateway (Code-Controlled)</span>
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      Strict policy: UPI and Barcode parameters are managed exclusively via project files.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center space-x-1">
+                    <Lock className="w-3 h-3" />
+                    <span>UI Editing Disabled</span>
+                  </span>
+                </div>
               </div>
 
-              <form onSubmit={handleSaveSettings} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      UPI ID (Virtual Payment Address) *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={settingsForm.upiId}
-                      onChange={(e) => setSettingsForm({ ...settingsForm, upiId: e.target.value })}
-                      placeholder="e.g. waynautic@upi"
-                      className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Payee Merchant Name *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={settingsForm.payeeName}
-                      onChange={(e) => setSettingsForm({ ...settingsForm, payeeName: e.target.value })}
-                      placeholder="e.g. Waynautic Academy"
-                      className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                    />
+              {/* Security Policy Alert Banner */}
+              <div className="p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60 flex items-start space-x-3">
+                <ShieldCheck className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                <div className="text-xs space-y-1 text-indigo-950 dark:text-indigo-200 leading-relaxed">
+                  <p className="font-extrabold">Permanent Code-Only Security Enforcement</p>
+                  <p>
+                    By platform security design, payment credentials cannot be altered through this admin interface. To update the UPI ID, payee name, course fee, or QR code image in the future, edit the files directly in your repository:
+                  </p>
+                  <div className="pt-1 font-mono text-[11px] text-indigo-700 dark:text-indigo-300 space-y-0.5">
+                    <div>• Config file: <strong>src/config/payment/upiConfig.ts</strong></div>
+                    <div>• Barcode image: <strong>src/config/payment/qr-code.jpg</strong></div>
                   </div>
                 </div>
+              </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Pro Course Fee (INR) *
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min="0"
-                      value={settingsForm.amount}
-                      onChange={(e) => setSettingsForm({ ...settingsForm, amount: Number(e.target.value) })}
-                      className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Currency Code
-                    </label>
-                    <input
-                      type="text"
-                      value={settingsForm.currency}
-                      onChange={(e) => setSettingsForm({ ...settingsForm, currency: e.target.value.toUpperCase() })}
-                      className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    QR Code Image URL / Path
-                  </label>
-                  <input
-                    type="text"
-                    value={settingsForm.qrImageUrl || ''}
-                    onChange={(e) => setSettingsForm({ ...settingsForm, qrImageUrl: e.target.value })}
-                    placeholder="e.g. /phonepe-upi-qr.jpg"
-                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                  />
-                  {settingsForm.qrImageUrl && (
-                    <div className="mt-2 w-24 h-24 bg-white p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm">
-                      <img 
-                        src={settingsForm.qrImageUrl} 
-                        alt="QR Preview" 
-                        className="w-full h-full object-contain rounded"
-                      />
+              {/* Read-Only Parameters Display */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start pt-2">
+                
+                {/* Left 7 Cols: Details */}
+                <div className="md:col-span-7 space-y-4">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                        Active UPI ID (Virtual Payment Address)
+                      </span>
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                        <span>{barcodeConfig.upiId}</span>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(barcodeConfig.upiId);
+                            alert('UPI ID copied to clipboard!');
+                          }}
+                          className="px-2.5 py-1 text-[11px] font-sans font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 rounded-lg transition-colors"
+                        >
+                          Copy
+                        </button>
+                      </div>
                     </div>
-                  )}
+
+                    <div className="grid grid-cols-2 gap-3 pt-1">
+                      <div>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                          Payee Merchant Name
+                        </span>
+                        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200">
+                          {barcodeConfig.payeeName}
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                          Course Fee / Tier
+                        </span>
+                        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                          ₹{barcodeConfig.amount} {barcodeConfig.currency}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                        Pass Title
+                      </span>
+                      <div className="p-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200">
+                        {barcodeConfig.title}
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                        Payment Instructions
+                      </span>
+                      <div className="p-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                        {barcodeConfig.description}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Pass Title
-                  </label>
-                  <input
-                    type="text"
-                    value={settingsForm.title}
-                    onChange={(e) => setSettingsForm({ ...settingsForm, title: e.target.value })}
-                    className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                  />
+                {/* Right 5 Cols: Barcode Image */}
+                <div className="md:col-span-5 flex flex-col items-center justify-center p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-center space-y-3">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Active QR Code Barcode
+                  </span>
+                  <div className="w-44 h-44 bg-white p-2 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center overflow-hidden">
+                    {barcodeConfig.qrImageUrl ? (
+                      <img 
+                        src={barcodeConfig.qrImageUrl} 
+                        alt="Active Barcode QR" 
+                        className="w-full h-full object-contain rounded-xl"
+                      />
+                    ) : (
+                      <QrCode className="w-20 h-20 text-slate-400" />
+                    )}
+                  </div>
+                  <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                    Asset: <strong>src/config/payment/qr-code.jpg</strong>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Candidate Instructions / Notes
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={settingsForm.description}
-                    onChange={(e) => setSettingsForm({ ...settingsForm, description: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                  />
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs shadow-md transition-colors"
-                  >
-                    Save & Publish Settings
-                  </button>
-                </div>
-              </form>
+              </div>
 
             </div>
           </div>

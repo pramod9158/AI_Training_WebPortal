@@ -10,6 +10,7 @@ import {
 } from './adminTypes';
 import { MODULES } from '@/data/seedModules';
 import { TOPICS } from '@/data/seedTopics';
+import { MASTER_PAYMENT_CONFIG } from '@/config/payment/upiConfig';
 
 const ADMIN_SESSION_KEY = 'waynautic_admin_session';
 const BARCODE_CONFIG_KEY = 'waynautic_admin_barcode_config';
@@ -20,18 +21,18 @@ const LOCAL_CANDIDATES_KEY = 'waynautic_admin_candidates';
 export const MASTER_ADMIN_PASSKEY = process.env.NEXT_PUBLIC_ADMIN_PASSKEY || 'WN-SecOps#9824$AlphaAdmin';
 export const MASTER_ADMIN_EMAIL = 'admin@waynautic.ai';
 
-// Default Barcode / UPI configuration
+// Master Barcode / UPI configuration (Code-Only Policy: managed strictly in src/config/payment/)
 export const DEFAULT_BARCODE_CONFIG: BarcodePaymentConfig = {
-  id: 'waynautic_pro_upi',
-  title: 'Waynautic Pro AI Pass (Lifetime Access)',
-  upiId: 'pramodkalyan281@ybl',
-  payeeName: 'Pramod Kalyan',
-  amount: 999.00,
-  currency: 'INR',
-  qrImageUrl: '/phonepe-upi-qr.jpg',
-  description: 'Scan with PhonePe, Google Pay, Paytm, BHIM, or any UPI banking app. Enter the 12-digit UTR/Ref number below for instant verification.',
-  isActive: true,
-  notes: 'Instant Pro upgrade within 15 minutes of verification.'
+  id: MASTER_PAYMENT_CONFIG.id,
+  title: MASTER_PAYMENT_CONFIG.title,
+  upiId: MASTER_PAYMENT_CONFIG.upiId,
+  payeeName: MASTER_PAYMENT_CONFIG.payeeName,
+  amount: MASTER_PAYMENT_CONFIG.amount,
+  currency: MASTER_PAYMENT_CONFIG.currency,
+  qrImageUrl: MASTER_PAYMENT_CONFIG.qrImageUrl,
+  description: MASTER_PAYMENT_CONFIG.description,
+  isActive: MASTER_PAYMENT_CONFIG.isActive,
+  notes: MASTER_PAYMENT_CONFIG.notes
 };
 
 // No dummy candidates by default - all data fetched directly from Supabase
@@ -85,56 +86,28 @@ export async function verifyAdminPasskey(passkey: string): Promise<boolean> {
 }
 
 /* -------------------------------------------------------------
- * 2. BARCODE PAYMENT CONFIGURATION
+ * 2. BARCODE PAYMENT CONFIGURATION (STRICT CODE-ONLY POLICY)
  * -----------------------------------------------------------*/
 export function getBarcodeConfig(): BarcodePaymentConfig {
-  if (typeof window === 'undefined') return DEFAULT_BARCODE_CONFIG;
-  const saved = localStorage.getItem(BARCODE_CONFIG_KEY);
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      if (parsed.upiId === 'waynautic@upi' || !parsed.upiId) {
-        parsed.upiId = DEFAULT_BARCODE_CONFIG.upiId;
-      }
-      if (!parsed.qrImageUrl || parsed.qrImageUrl === '') {
-        parsed.qrImageUrl = DEFAULT_BARCODE_CONFIG.qrImageUrl;
-      }
-      return { ...DEFAULT_BARCODE_CONFIG, ...parsed };
-    } catch {
-      // fallback
-    }
-  }
-  return DEFAULT_BARCODE_CONFIG;
+  // STRICT CODE-ONLY POLICY: Always returns the master configuration from src/config/payment/
+  // UI overrides and localStorage alterations are disabled by security design.
+  return {
+    id: MASTER_PAYMENT_CONFIG.id,
+    title: MASTER_PAYMENT_CONFIG.title,
+    upiId: MASTER_PAYMENT_CONFIG.upiId,
+    payeeName: MASTER_PAYMENT_CONFIG.payeeName,
+    amount: MASTER_PAYMENT_CONFIG.amount,
+    currency: MASTER_PAYMENT_CONFIG.currency,
+    qrImageUrl: MASTER_PAYMENT_CONFIG.qrImageUrl,
+    description: MASTER_PAYMENT_CONFIG.description,
+    isActive: MASTER_PAYMENT_CONFIG.isActive,
+    notes: MASTER_PAYMENT_CONFIG.notes
+  };
 }
 
-export async function saveBarcodeConfig(config: Partial<BarcodePaymentConfig>): Promise<BarcodePaymentConfig> {
-  const current = getBarcodeConfig();
-  const updated: BarcodePaymentConfig = { ...current, ...config };
-  
-  if (typeof window !== 'undefined') {
-    localStorage.setItem(BARCODE_CONFIG_KEY, JSON.stringify(updated));
-  }
-
-  if (isSupabaseConfigured) {
-    try {
-      await supabase.from('barcode_configs').upsert({
-        id: updated.id,
-        title: updated.title,
-        upi_id: updated.upiId,
-        payee_name: updated.payeeName,
-        amount: updated.amount,
-        currency: updated.currency,
-        qr_image_url: updated.qrImageUrl,
-        description: updated.description,
-        is_active: updated.isActive,
-        updated_at: new Date().toISOString()
-      });
-    } catch (err) {
-      console.warn('Could not sync barcode config to Supabase (using local):', err);
-    }
-  }
-
-  return updated;
+export async function saveBarcodeConfig(_config?: Partial<BarcodePaymentConfig>): Promise<BarcodePaymentConfig> {
+  console.warn('UI modification of payment gateway is disabled by security policy. Update src/config/payment/ directly.');
+  return getBarcodeConfig();
 }
 
 /* -------------------------------------------------------------

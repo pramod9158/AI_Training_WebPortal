@@ -8,6 +8,14 @@ export interface Module {
   iconName: string;
 }
 
+export interface VideoChapter {
+  id?: string;
+  title: string;
+  timestamp: number; // in seconds
+  description?: string;
+  topicSlug?: string;
+}
+
 export interface Topic {
   id: string;
   moduleId: string;
@@ -20,6 +28,7 @@ export interface Topic {
   orderIndex: number;
   textContent: string;
   estimatedMinutes: number;
+  chapters?: VideoChapter[];
 }
 
 export interface QuizQuestion {

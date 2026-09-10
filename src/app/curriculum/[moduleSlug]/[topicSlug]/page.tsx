@@ -4,11 +4,12 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, useSearchParams, useRouter, notFound } from 'next/navigation';
 import { MODULES, getOrderedCurriculumTopics } from '@/data/seedModules';
-import { getAllTopics, getTopicBySlugs, getTopicQuiz } from '@/lib/curriculumService';
+import { getAllTopics, getTopicBySlugs, getTopicQuiz, getTopicChapters } from '@/lib/curriculumService';
 import { useWaynauticStore } from '@/lib/store';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { MarkdownNotes } from '@/components/MarkdownNotes';
 import { QuizEngine } from '@/components/QuizEngine';
+import { generateAndDownloadTopicPdf } from '@/lib/pdfNotesGenerator';
 import { 
   Play, 
   BookOpen, 
@@ -18,7 +19,9 @@ import {
   ArrowLeft, 
   ArrowRight, 
   Clock, 
-  Lock 
+  Lock,
+  Download,
+  Sparkles
 } from 'lucide-react';
 
 export default function TopicWorkspacePage() {
@@ -146,9 +149,14 @@ export default function TopicWorkspacePage() {
   const isCompleted = progress[topic.id]?.status === 'completed';
   const isBookmarked = bookmarks.includes(topic.id);
   const quizQuestions = getTopicQuiz(topic.id, topic.title);
+  const topicChapters = getTopicChapters(topic, allActiveTopics);
+
+  const [showAutoCompletedToast, setShowAutoCompletedToast] = useState(false);
 
   const handleVideoProgress90 = () => {
     markTopicProgress(topic.id, 'completed');
+    setShowAutoCompletedToast(true);
+    setTimeout(() => setShowAutoCompletedToast(false), 6000);
   };
 
   const handleQuizComplete = (scorePercent: number) => {
@@ -158,6 +166,16 @@ export default function TopicWorkspacePage() {
     } else {
       markTopicProgress(topic.id, 'in_progress', scorePercent);
     }
+  };
+
+  const handleDownloadPdfNotes = () => {
+    generateAndDownloadTopicPdf({
+      title: topic.title,
+      slug: topic.slug,
+      textContent: topic.textContent,
+      estimatedMinutes: topic.estimatedMinutes,
+      moduleTitle: moduleData.title
+    });
   };
 
   return (
@@ -176,6 +194,17 @@ export default function TopicWorkspacePage() {
 
         <div className="flex items-center flex-wrap gap-2 sm:gap-3">
           
+          {/* Download Notes PDF Button */}
+          <button
+            onClick={handleDownloadPdfNotes}
+            className="flex items-center space-x-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all min-h-[38px] bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800 dark:hover:text-white"
+            title="Download printable study notes PDF"
+          >
+            <Download className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
+            <span className="hidden sm:inline">Download Notes (PDF)</span>
+            <span className="sm:hidden">PDF Notes</span>
+          </button>
+
           {/* Bookmark Button */}
           <button
             onClick={async () => {
@@ -192,7 +221,7 @@ export default function TopicWorkspacePage() {
             title="Bookmark topic and view in Bookmarks tab"
           >
             <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-sky-600 dark:fill-cyan-400' : ''}`} />
-            <span>{isBookmarked ? 'Saved (View in Bookmarks)' : 'Save Topic'}</span>
+            <span>{isBookmarked ? 'Saved' : 'Save'}</span>
           </button>
 
           {/* Mark Complete Button */}
@@ -205,11 +234,27 @@ export default function TopicWorkspacePage() {
             }`}
           >
             <CheckCircle2 className={`w-3.5 h-3.5 ${isCompleted ? 'text-emerald-600 fill-emerald-100 dark:text-emerald-400 dark:fill-emerald-400/20' : 'text-white'}`} />
-            <span>{isCompleted ? 'Completed ✓' : 'Mark as Complete'}</span>
+            <span>{isCompleted ? 'Completed ✓' : 'Mark Complete'}</span>
           </button>
 
         </div>
       </div>
+
+      {/* Auto-Completed 90% Notification Banner */}
+      {showAutoCompletedToast && (
+        <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/70 border-2 border-emerald-400 dark:border-emerald-500/50 flex items-center justify-between text-xs text-emerald-900 dark:text-emerald-200 font-bold shadow-md animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center space-x-2.5">
+            <Sparkles className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>Awesome job! You reached 90% of the video — this topic has been automatically marked as complete! 🎉</span>
+          </div>
+          <button
+            onClick={() => setShowAutoCompletedToast(false)}
+            className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-900"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Topic Title Header */}
       <div className="space-y-1.5">
@@ -279,12 +324,25 @@ export default function TopicWorkspacePage() {
           <VideoPlayer
             url={topic.videoUrl}
             title={topic.title}
+            topicId={topic.id}
+            chapters={topicChapters}
+            notesContent={topic.textContent}
+            moduleTitle={moduleData.title}
             onProgress90={handleVideoProgress90}
+            onNavigateTopic={(targetSlug) => {
+              router.push(`/curriculum/${moduleSlug}/${targetSlug}?tab=watch`);
+            }}
           />
         )}
 
         {currentTab === 'read' && (
-          <MarkdownNotes content={topic.textContent} />
+          <MarkdownNotes 
+            content={topic.textContent}
+            topicTitle={topic.title}
+            topicSlug={topic.slug}
+            moduleTitle={moduleData.title}
+            estimatedMinutes={topic.estimatedMinutes}
+          />
         )}
 
         {currentTab === 'quiz' && (

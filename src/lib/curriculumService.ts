@@ -2,7 +2,7 @@
 // Allows Admin account to add, edit, and manage topics and quiz questions dynamically.
 
 import { TOPICS, getQuizForTopic } from '@/data/seedTopics';
-import { MODULES, Topic, QuizQuestion } from '@/data/seedModules';
+import { MODULES, Topic, QuizQuestion, VideoChapter } from '@/data/seedModules';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 
 const CUSTOM_TOPICS_STORAGE_KEY = 'waynautic_admin_custom_topics';
@@ -70,6 +70,7 @@ export async function saveTopic(topicData: {
   orderIndex?: number;
   estimatedMinutes?: number;
   textContent: string;
+  chapters?: VideoChapter[];
 }): Promise<Topic> {
   const existingId = topicData.id;
   const currentTopics = getAllTopics();
@@ -93,7 +94,8 @@ export async function saveTopic(topicData: {
     videoProvider: topicData.videoProvider || 'youtube',
     orderIndex: topicData.orderIndex || (existingTopic ? existingTopic.orderIndex : currentTopics.length + 1),
     estimatedMinutes: topicData.estimatedMinutes || 15,
-    textContent: topicData.textContent || `# ${topicData.title}\n\nAdd your lesson notes and code examples here.`
+    textContent: topicData.textContent || `# ${topicData.title}\n\nAdd your lesson notes and code examples here.`,
+    chapters: topicData.chapters || existingTopic?.chapters
   };
 
   if (typeof window !== 'undefined') {
@@ -238,3 +240,83 @@ export function resetCurriculumToDefault(): void {
   localStorage.removeItem(DELETED_TOPICS_STORAGE_KEY);
   window.dispatchEvent(new Event('waynautic_curriculum_changed'));
 }
+
+/**
+ * Resolves or dynamically generates jump points/chapters for a video.
+ * Handles:
+ * 1. Explicit chapters if configured on topic
+ * 2. Videos combining multiple topics (topics sharing the same video URL)
+ * 3. Structured lesson chapters derived from content headings or duration
+ */
+export function getTopicChapters(topic: Topic, allTopics?: Topic[]): VideoChapter[] {
+  if (topic.chapters && topic.chapters.length > 0) {
+    return topic.chapters;
+  }
+
+  const topicsList = allTopics || getAllTopics();
+
+  // Check if multiple topics in the system share the exact same videoUrl
+  const sharingTopics = topicsList.filter(
+    (t) => t.videoUrl && t.videoUrl === topic.videoUrl
+  ).sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
+
+  if (sharingTopics.length > 1) {
+    // This video combines multiple curriculum topics!
+    let accumulatedSeconds = 0;
+    return sharingTopics.map((t, idx) => {
+      const chapterTime = accumulatedSeconds;
+      accumulatedSeconds += Math.max(3, t.estimatedMinutes || 5) * 60;
+      return {
+        id: `topic-${t.id}`,
+        title: `${t.orderIndex ? `${t.orderIndex}. ` : ''}${t.title}`,
+        timestamp: idx === 0 ? 0 : chapterTime,
+        description: t.description,
+        topicSlug: t.slug
+      };
+    });
+  }
+
+  // Parse markdown ## headings to create sensible chapters for in-depth video navigation
+  const headingMatches = [...(topic.textContent || '').matchAll(/^##\s+(.+)$/gm)];
+  if (headingMatches.length > 0) {
+    const totalDurationSeconds = Math.max((topic.estimatedMinutes || 15) * 60, 600);
+    const interval = Math.floor(totalDurationSeconds / (headingMatches.length + 1));
+
+    const chapters: VideoChapter[] = [
+      {
+        id: 'intro',
+        title: 'Introduction & Overview',
+        timestamp: 0,
+        description: topic.description
+      }
+    ];
+
+    headingMatches.forEach((m, idx) => {
+      const headingTitle = m[1].replace(/[*_`#]/g, '').trim();
+      chapters.push({
+        id: `section-${idx + 1}`,
+        title: headingTitle,
+        timestamp: (idx + 1) * interval,
+        description: `Deep dive into ${headingTitle}`
+      });
+    });
+
+    chapters.push({
+      id: 'summary',
+      title: 'Key Takeaways & Summary',
+      timestamp: Math.max(0, totalDurationSeconds - 90),
+      description: 'Review of core principles and next steps'
+    });
+
+    return chapters;
+  }
+
+  // Default fallback chapters
+  return [
+    { id: 'c1', title: 'Introduction & Concepts', timestamp: 0 },
+    { id: 'c2', title: 'Core Architecture & Theory', timestamp: 120 },
+    { id: 'c3', title: 'Practical Code Walkthrough', timestamp: 300 },
+    { id: 'c4', title: 'Summary & Next Steps', timestamp: 540 }
+  ];
+}
+
