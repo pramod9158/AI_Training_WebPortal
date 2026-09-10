@@ -614,6 +614,8 @@ export default function AdminDashboardPage() {
                       <img 
                         src={barcodeConfig.qrImageUrl} 
                         alt="Active Barcode QR" 
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-contain rounded-lg"
                       />
                     </div>
@@ -1401,6 +1403,8 @@ export default function AdminDashboardPage() {
                       <img 
                         src={barcodeConfig.qrImageUrl} 
                         alt="Active Barcode QR" 
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-contain rounded-xl"
                       />
                     ) : (

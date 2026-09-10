@@ -17,6 +17,7 @@ import {
 import { useWaynauticStore } from '@/lib/store';
 import { getBarcodeConfig, submitCandidatePayment } from '@/lib/adminService';
 import { BarcodePaymentConfig } from '@/lib/adminTypes';
+import { trackPaymentModalOpened, trackPaymentSubmitted } from '@/lib/analytics';
 
 interface PaymentBarcodeModalProps {
   isOpen: boolean;
@@ -42,6 +43,7 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
+      trackPaymentModalOpened();
       setConfig(getBarcodeConfig());
       if (profile.displayName && profile.displayName !== 'Guest') {
         setFullName(profile.displayName);
@@ -92,6 +94,7 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
       });
 
       if (res.success) {
+        trackPaymentSubmitted(config.amount, cleanUtr);
         setSubmittedSuccess(true);
         if (onSuccess) onSuccess();
       } else {
@@ -204,6 +207,8 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                       <img 
                         src={config.qrImageUrl} 
                         alt="Official PhonePe / UPI QR Code" 
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-contain rounded-xl"
                       />
                     ) : (

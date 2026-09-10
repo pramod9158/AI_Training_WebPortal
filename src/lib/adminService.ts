@@ -811,3 +811,65 @@ export function exportPaymentsToCSV(payments: PaymentRecord[]): void {
   link.click();
   document.body.removeChild(link);
 }
+
+/* -------------------------------------------------------------
+ * 8. RE-ENGAGEMENT & STREAK NUDGE MANAGEMENT
+ * -----------------------------------------------------------*/
+export async function sendReEngagementNudge(
+  candidateEmail: string,
+  nudgeType: 'streak_warning' | 're_engagement',
+  customNote?: string
+): Promise<{ success: boolean; message: string }> {
+  const candidates = await getCandidates();
+  const candidate = candidates.find((c) => c.email.toLowerCase() === candidateEmail.toLowerCase());
+
+  const title = nudgeType === 'streak_warning' 
+    ? '🔥 Streak at Risk Alert!' 
+    : '👋 We miss you at Waynautic Academy!';
+
+  const message = nudgeType === 'streak_warning'
+    ? `Hey ${candidate?.displayName || 'Learner'}, your learning streak is at risk! Log in today to keep your streak alive.${customNote ? ` Note: ${customNote}` : ''}`
+    : `Hey ${candidate?.displayName || 'Learner'}, resume your AI engineering path where you left off.${customNote ? ` Note: ${customNote}` : ''}`;
+
+  const linkUrl = '/curriculum/intro-ai/t-1?tab=watch';
+
+  if (typeof window !== 'undefined') {
+    try {
+      const NOTIFICATIONS_KEY = 'waynautic_user_notifications';
+      const existing = JSON.parse(localStorage.getItem(NOTIFICATIONS_KEY) || '[]');
+      existing.unshift({
+        id: `nudge-admin-${Date.now()}`,
+        title,
+        message,
+        type: nudgeType,
+        linkUrl,
+        isRead: false,
+        createdAt: new Date().toISOString()
+      });
+      localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(existing));
+      window.dispatchEvent(new Event('waynautic_storage_change'));
+    } catch (e) {
+      console.warn('Failed to store nudge notification:', e);
+    }
+  }
+
+  if (isSupabaseConfigured && candidate?.id) {
+    try {
+      await supabase.from('user_notifications').insert({
+        user_id: candidate.id,
+        title,
+        message,
+        type: nudgeType,
+        link_url: linkUrl
+      });
+    } catch (err) {
+      console.warn('Supabase nudge insert error:', err);
+    }
+  }
+
+  return {
+    success: true,
+    message: `Re-engagement email & streak nudge dispatched successfully to ${candidateEmail}!`
+  };
+}
+

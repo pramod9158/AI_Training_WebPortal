@@ -25,8 +25,15 @@ import {
 } from 'lucide-react';
 import { useWaynauticStore } from '@/lib/store';
 import { TOPICS } from '@/data/seedTopics';
+import { getResumeLearningUrl } from '@/lib/curriculumService';
 import { isAdminAuthenticated } from '@/lib/adminService';
-import { PaymentBarcodeModal } from './PaymentBarcodeModal';
+import dynamic from 'next/dynamic';
+import { NotificationDrawer } from './NotificationDrawer';
+
+const PaymentBarcodeModal = dynamic(
+  () => import('./PaymentBarcodeModal').then((mod) => mod.PaymentBarcodeModal),
+  { ssr: false }
+);
 
 interface NavbarProps {
   onOpenSearch?: () => void;
@@ -42,6 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const isLoggedIn = Boolean(profile.userId || profile.email);
   const isAdmin = profile.role === 'admin' || (typeof window !== 'undefined' && isAdminAuthenticated());
   const isProUser = profile.plan === 'pro' || profile.plan === 'enterprise';
+  const resumeUrl = getResumeLearningUrl(profile);
   const lastTopic = profile.lastAccessedTopicId 
     ? TOPICS.find(t => t.id === profile.lastAccessedTopicId || t.slug === profile.lastAccessedTopicId)
     : null;
@@ -188,6 +196,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             )}
           </Link>
 
+          {/* Notification & Nudge Bell Drawer */}
+          <NotificationDrawer />
+
           {/* Dark / Light Mode Toggle */}
           <button
             onClick={toggleTheme}
@@ -209,7 +220,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   {profile.avatarUrl ? (
                     <img 
                       src={profile.avatarUrl} 
-                      alt={profile.displayName} 
+                      alt={profile.displayName || 'User profile'} 
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover rounded-full bg-slate-900" 
                     />
                   ) : (
@@ -267,7 +280,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   {profile.avatarUrl ? (
                     <img 
                       src={profile.avatarUrl} 
-                      alt={profile.displayName} 
+                      alt={profile.displayName || 'User profile'} 
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover rounded-full bg-slate-900" 
                     />
                   ) : (

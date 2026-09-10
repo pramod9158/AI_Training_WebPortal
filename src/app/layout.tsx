@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { Analytics } from '@vercel/analytics/react';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,6 +36,7 @@ export default function RootLayout({
     <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
         <ClientAppWrapper>{children}</ClientAppWrapper>
+        <Analytics />
       </body>
     </html>
   );

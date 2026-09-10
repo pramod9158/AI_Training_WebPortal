@@ -15,10 +15,13 @@ import {
   ChevronRight, 
   ExternalLink,
   Sliders,
-  Volume2
+  Volume2,
+  AlertTriangle,
+  RefreshCw
 } from 'lucide-react';
 import { VideoChapter } from '@/data/seedModules';
 import { generateAndDownloadTopicPdf } from '@/lib/pdfNotesGenerator';
+import { trackVideoStarted } from '@/lib/analytics';
 
 interface VideoPlayerProps {
   url: string;
@@ -65,6 +68,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [resumedFrom, setResumedFrom] = useState<number | null>(null);
   const [showResumeToast, setShowResumeToast] = useState(false);
   const [completionCelebration, setCompletionCelebration] = useState(false);
+  const [hasVideoError, setHasVideoError] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -271,7 +275,58 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       {/* 16:9 Adaptive Video Viewport */}
       <div className="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
         
-        {isPlaying ? (
+        {hasVideoError ? (
+          /* Graceful Video Load Error Fallback UI */
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-slate-950 border-2 border-rose-500/40 rounded-2xl space-y-4">
+            <div className="w-14 h-14 rounded-2xl bg-rose-950/80 border border-rose-500/40 flex items-center justify-center text-rose-400 shadow-lg">
+              <AlertTriangle className="w-7 h-7" />
+            </div>
+            <div className="space-y-1 max-w-md">
+              <h4 className="text-base sm:text-lg font-extrabold text-white">Video Stream Unavailable</h4>
+              <p className="text-xs sm:text-sm text-slate-300">
+                The video stream could not be loaded due to a network connection issue or restricted video provider embedding.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+              <button
+                onClick={() => {
+                  setHasVideoError(false);
+                  setIsPlaying(true);
+                }}
+                className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-extrabold text-xs transition-colors flex items-center space-x-1.5 min-h-[38px]"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Retry Video</span>
+              </button>
+              <a
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-extrabold text-xs transition-colors flex items-center space-x-1.5 min-h-[38px]"
+              >
+                <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Open Link Directly</span>
+              </a>
+              {notesContent && (
+                <button
+                  onClick={() => {
+                    generateAndDownloadTopicPdf({
+                      title,
+                      slug: topicId || 'topic',
+                      textContent: notesContent,
+                      estimatedMinutes: 15,
+                      moduleTitle: moduleTitle || 'Module'
+                    });
+                  }}
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-extrabold text-xs transition-colors flex items-center space-x-1.5 min-h-[38px]"
+                >
+                  <Download className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Download Notes PDF</span>
+                </button>
+              )}
+            </div>
+          </div>
+        ) : isPlaying ? (
           isDirectVideo ? (
             <video
               ref={videoRef}
@@ -279,6 +334,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               controls
               autoPlay
               className="w-full h-full object-contain bg-black"
+              onError={() => setHasVideoError(true)}
               onLoadedMetadata={(e) => {
                 const dur = e.currentTarget.duration;
                 setDuration(dur);
@@ -303,6 +359,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               ref={iframeRef}
               src={embedUrl}
               title={title}
+              loading="lazy"
               className="w-full h-full border-0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen

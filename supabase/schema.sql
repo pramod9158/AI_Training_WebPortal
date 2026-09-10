@@ -53,6 +53,7 @@ create table if not exists public.user_profiles (
   streak_days integer default 0,
   last_active_at timestamptz default now(),
   last_accessed_topic_id text,
+  last_accessed_tab text default 'watch',
   last_accessed_at timestamptz,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
@@ -205,4 +206,57 @@ alter table public.payments enable row level security;
 create policy "Allow public read access on barcode_configs" on public.barcode_configs for select using (true);
 create policy "Candidates view own payments" on public.payments for select using (auth.uid() = user_id);
 create policy "Candidates insert own payments" on public.payments for insert with check (auth.uid() = user_id or auth.uid() is not null);
+
+-- 12. TOPIC COMMENTS & Q&A
+create table if not exists public.topic_comments (
+  id uuid primary key default gen_random_uuid(),
+  topic_id text not null,
+  user_id uuid references auth.users(id) on delete cascade,
+  user_name text not null,
+  user_avatar text,
+  content text not null,
+  is_question boolean default false,
+  parent_id uuid references public.topic_comments(id) on delete cascade,
+  created_at timestamptz default now()
+);
+
+-- 13. TOPIC RATINGS & REVIEWS
+create table if not exists public.topic_ratings (
+  id uuid primary key default gen_random_uuid(),
+  topic_id text not null,
+  user_id uuid references auth.users(id) on delete cascade,
+  vote text check (vote in ('up', 'down')),
+  stars integer check (stars >= 1 and stars <= 5),
+  feedback text,
+  updated_at timestamptz default now(),
+  unique(user_id, topic_id)
+);
+
+-- 14. USER NOTIFICATIONS & RE-ENGAGEMENT NUDGES
+create table if not exists public.user_notifications (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade,
+  title text not null,
+  message text not null,
+  type text not null check (type in ('streak_warning', 're_engagement', 'badge_earned', 'system')),
+  link_url text not null,
+  is_read boolean default false,
+  created_at timestamptz default now()
+);
+
+alter table public.topic_comments enable row level security;
+alter table public.topic_ratings enable row level security;
+alter table public.user_notifications enable row level security;
+
+create policy "Public read comments" on public.topic_comments for select using (true);
+create policy "Users insert comments" on public.topic_comments for insert with check (auth.uid() = user_id or auth.uid() is not null);
+create policy "Users delete own comments" on public.topic_comments for delete using (auth.uid() = user_id);
+
+create policy "Public read ratings" on public.topic_ratings for select using (true);
+create policy "Users insert ratings" on public.topic_ratings for insert with check (auth.uid() = user_id or auth.uid() is not null);
+create policy "Users update ratings" on public.topic_ratings for update using (auth.uid() = user_id);
+
+create policy "Users view notifications" on public.user_notifications for select using (auth.uid() = user_id);
+create policy "Users update notifications" on public.user_notifications for update using (auth.uid() = user_id);
+
 

@@ -20,6 +20,7 @@ export interface UserStreak {
   currentStreak: number;
   longestStreak: number;
   lastActiveDate: string; // YYYY-MM-DD
+  weeklyActivity?: Record<string, boolean>; // e.g. { mon: true, tue: true, ... }
 }
 
 export interface UserProfileState {
@@ -38,7 +39,44 @@ export interface UserProfileState {
   lastActiveAt?: string;
   createdAt?: string;
   lastAccessedTopicId?: string;
+  lastAccessedTab?: 'watch' | 'read' | 'quiz';
   lastAccessedAt?: string;
   lastActivityTimestamp?: number;
 }
+
+export interface TopicComment {
+  id: string;
+  topicId: string;
+  userId?: string;
+  userName: string;
+  userAvatar?: string;
+  content: string;
+  isQuestion: boolean;
+  parentId?: string;
+  upvotes?: number;
+  userUpvoted?: boolean;
+  createdAt: string;
+}
+
+export interface TopicRating {
+  id: string;
+  topicId: string;
+  userId?: string;
+  userVote?: 'up' | 'down'; // Thumbs rating
+  starRating?: number; // 1 to 5 stars
+  feedbackText?: string;
+  createdAt: string;
+}
+
+export interface UserNotification {
+  id: string;
+  userId?: string;
+  title: string;
+  message: string;
+  type: 'streak_warning' | 're_engagement' | 'badge_earned' | 'system';
+  linkUrl: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
 

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useWaynauticStore } from '@/lib/store';
-import { isSupabaseConfigured } from '@/lib/supabaseClient';
+import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { 
   Award, 
   Save, 
@@ -62,6 +62,27 @@ export default function ProfilePage() {
     setCustomAvatarUrl(profile.avatarUrl || '');
     setSelectedPath(profile.selectedPath || 'path-a');
   }, [profile]);
+
+  const [payments, setPayments] = useState<any[]>([]);
+  const [loadingPayments, setLoadingPayments] = useState(false);
+
+  useEffect(() => {
+    if (isSupabaseConfigured && (profile.userId || profile.email)) {
+      setLoadingPayments(true);
+      let query = supabase.from('payments').select('*');
+      if (profile.userId) {
+        query = query.eq('user_id', profile.userId);
+      } else if (profile.email) {
+        query = query.ilike('user_email', profile.email);
+      }
+      query.order('created_at', { ascending: false }).then(({ data, error }) => {
+        if (!error && data) {
+          setPayments(data);
+        }
+        setLoadingPayments(false);
+      });
+    }
+  }, [profile.userId, profile.email]);
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
   const isPro = profile.plan === 'pro' || profile.plan === 'enterprise';
@@ -154,6 +175,8 @@ export default function ProfilePage() {
                     <img 
                       src={customAvatarUrl} 
                       alt={name} 
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover"
                       onError={() => setCustomAvatarUrl('')}
                     />
@@ -306,6 +329,62 @@ export default function ProfilePage() {
                 <ShieldCheck className="w-4 h-4" />
                 <span>Verified Pro Active</span>
               </div>
+            )}
+          </div>
+
+          {/* Payment & Billing History from Supabase */}
+          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono uppercase font-bold text-slate-500 dark:text-slate-400">
+                Payment & Billing History
+              </span>
+              <span className="text-[10px] font-mono text-slate-400">
+                Live Supabase Records
+              </span>
+            </div>
+
+            {loadingPayments ? (
+              <div className="p-3 text-center text-xs font-mono text-slate-400 animate-pulse">
+                Checking billing records in Supabase...
+              </div>
+            ) : payments.length > 0 ? (
+              <div className="space-y-2">
+                {payments.map((p) => (
+                  <div key={p.id} className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+                    <div>
+                      <div className="font-mono font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                        <span>UTR: {p.transaction_reference}</span>
+                        <span>•</span>
+                        <span className="text-emerald-600 dark:text-emerald-400">₹{p.amount} {p.currency}</span>
+                      </div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                        Submitted on {new Date(p.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <div>
+                      {p.status === 'verified' ? (
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-600 flex items-center space-x-1">
+                          <Check className="w-3 h-3" />
+                          <span>Payment Verified (Pro Granted)</span>
+                        </span>
+                      ) : p.status === 'rejected' ? (
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-600">
+                          Payment Rejected {p.rejection_reason ? `(${p.rejection_reason})` : ''}
+                        </span>
+                      ) : (
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-600 flex items-center space-x-1">
+                          <Clock className="w-3 h-3" />
+                          <span>Verification In Progress</span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                No payment transactions recorded yet. When you scan the official QR and submit your UTR, your verification receipts will appear here.
+              </p>
             )}
           </div>
         </div>

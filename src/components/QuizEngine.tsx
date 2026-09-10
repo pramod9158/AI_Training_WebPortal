@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, HelpCircle, Award, RotateCcw, ArrowRight } from 'lucide-react';
+import { CheckCircle2, HelpCircle, Award, RotateCcw, ArrowRight, History } from 'lucide-react';
 import { QuizQuestion } from '@/data/seedModules';
+import { fetchTopicQuizAttempts } from '@/lib/store';
 
 interface QuizEngineProps {
   topicId: string;
@@ -22,6 +23,13 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   const [selectedOptions, setSelectedOptions] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [attempts, setAttempts] = useState<Array<{ id: string; score: number; totalQuestions: number; attemptedAt: string }>>([]);
+
+  useEffect(() => {
+    if (topicId) {
+      fetchTopicQuizAttempts(topicId).then(setAttempts);
+    }
+  }, [topicId, submitted]);
 
   const currentQuestion = questions[currentIndex];
   const selectedForCurrent = selectedOptions[currentIndex];
@@ -119,8 +127,33 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
           </div>
         </div>
 
+        {/* Live Quiz Attempt History from Supabase */}
+        {attempts.length > 0 && (
+          <div className="max-w-xs mx-auto pt-2 text-left space-y-2">
+            <div className="flex items-center space-x-1.5 text-[11px] font-mono text-slate-500 dark:text-slate-400 font-bold uppercase">
+              <History className="w-3.5 h-3.5 text-sky-500" />
+              <span>Database Attempts Log ({attempts.length})</span>
+            </div>
+            <div className="space-y-1.5 max-h-28 overflow-y-auto pr-1">
+              {attempts.slice(0, 4).map((att, idx) => {
+                const scorePercent = Math.round((att.score / Math.max(att.totalQuestions, 1)) * 100);
+                return (
+                  <div key={att.id || idx} className="p-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] font-mono flex items-center justify-between">
+                    <span className="text-slate-500 dark:text-slate-400">
+                      Attempt #{attempts.length - idx}
+                    </span>
+                    <span className={`font-bold ${scorePercent >= 70 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                      {att.score}/{att.totalQuestions} ({scorePercent}%)
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Retake Button */}
-        <div className="pt-4 flex justify-center">
+        <div className="pt-2 flex justify-center">
           <button
             onClick={handleRetake}
             className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px]"

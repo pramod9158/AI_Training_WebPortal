@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { UserProgress, UserBadge, UserStreak, UserProfileState } from './types';
+import { UserProgress, UserBadge, UserStreak, UserProfileState, TopicComment, TopicRating, UserNotification } from './types';
 import { MODULES } from '../data/seedModules';
 import { TOPICS } from '../data/seedTopics';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
@@ -12,6 +12,9 @@ const BADGES_KEY = 'waynautic_user_badges';
 const STREAK_KEY = 'waynautic_user_streak';
 const BOOKMARKS_KEY = 'waynautic_user_bookmarks';
 const PROFILE_KEY = 'waynautic_user_profile';
+const COMMENTS_KEY = 'waynautic_topic_comments';
+const RATINGS_KEY = 'waynautic_topic_ratings';
+const NOTIFICATIONS_KEY = 'waynautic_user_notifications';
 
 export function getTodayDateString(): string {
   const d = new Date();
@@ -97,6 +100,7 @@ export async function saveProfile(profile: Partial<UserProfileState>) {
           avatar_url: updated.avatarUrl,
           selected_path: updated.selectedPath,
           last_accessed_topic_id: updated.lastAccessedTopicId,
+          last_accessed_tab: updated.lastAccessedTab,
           last_accessed_at: updated.lastAccessedAt
         };
         await supabase.from('user_profiles').upsert(payload);
@@ -107,12 +111,13 @@ export async function saveProfile(profile: Partial<UserProfileState>) {
   }
 }
 
-export function saveLastAccessedTopic(topicId: string) {
+export function saveLastAccessedTopic(topicId: string, tab?: 'watch' | 'read' | 'quiz') {
   if (typeof window === 'undefined') return;
   recordUserActivity();
   const now = new Date().toISOString();
   saveProfile({
     lastAccessedTopicId: topicId,
+    lastAccessedTab: tab || 'watch',
     lastAccessedAt: now
   });
 }
@@ -200,9 +205,37 @@ export async function saveQuizAttempt(topicId: string, score: number, totalQuest
   }
 }
 
+export async function fetchTopicQuizAttempts(topicId: string): Promise<Array<{ id: string; score: number; totalQuestions: number; attemptedAt: string }>> {
+  if (isSupabaseConfigured) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data, error } = await supabase
+          .from('user_quiz_attempts')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .eq('topic_id', topicId)
+          .order('attempted_at', { ascending: false });
+
+        if (!error && data) {
+          return data.map((a: any) => ({
+            id: a.id,
+            score: a.score,
+            totalQuestions: a.total_questions,
+            attemptedAt: a.attempted_at
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn('Error fetching quiz attempts from Supabase:', err);
+    }
+  }
+  return [];
+}
+
 export function loadStreak(): UserStreak {
   if (typeof window === 'undefined') {
-    return { currentStreak: 0, longestStreak: 0, lastActiveDate: '' };
+    return { currentStreak: 0, longestStreak: 0, lastActiveDate: '', weeklyActivity: {} };
   }
   const saved = localStorage.getItem(STREAK_KEY);
   const today = getTodayDateString();
@@ -212,7 +245,7 @@ export function loadStreak(): UserStreak {
     try {
       const data: UserStreak = JSON.parse(saved);
       if (!data.lastActiveDate) {
-        return { currentStreak: 0, longestStreak: 0, lastActiveDate: '' };
+        return { currentStreak: 0, longestStreak: 0, lastActiveDate: '', weeklyActivity: {} };
       }
       if (data.lastActiveDate === today || data.lastActiveDate === yesterday) {
         return data;
@@ -221,14 +254,15 @@ export function loadStreak(): UserStreak {
         return { 
           currentStreak: 0, 
           longestStreak: Math.max(data.longestStreak || 0, data.currentStreak || 0), 
-          lastActiveDate: data.lastActiveDate 
+          lastActiveDate: data.lastActiveDate,
+          weeklyActivity: data.weeklyActivity || {}
         };
       }
     } catch (e) {
       console.error('Failed to parse streak', e);
     }
   }
-  return { currentStreak: 0, longestStreak: 0, lastActiveDate: '' };
+  return { currentStreak: 0, longestStreak: 0, lastActiveDate: '', weeklyActivity: {} };
 }
 
 export async function recordActivity() {
@@ -239,14 +273,23 @@ export async function recordActivity() {
 
   let currentStreak = 1;
   let longestStreak = 1;
+  let weeklyActivity: Record<string, boolean> = {};
+
+  const dayKeys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  const currentDayKey = dayKeys[new Date().getDay()];
 
   if (saved) {
     try {
       const data: UserStreak = JSON.parse(saved);
       longestStreak = data.longestStreak || 1;
+      weeklyActivity = data.weeklyActivity || {};
 
       if (data.lastActiveDate === today) {
-        return; // Already recorded streak for today
+        // Ensure today's day key is set
+        weeklyActivity[currentDayKey] = true;
+        const updated: UserStreak = { ...data, weeklyActivity };
+        localStorage.setItem(STREAK_KEY, JSON.stringify(updated));
+        return;
       } else if (data.lastActiveDate === yesterday) {
         // Consecutive day activity!
         currentStreak = (data.currentStreak || 0) + 1;
@@ -260,10 +303,13 @@ export async function recordActivity() {
     }
   }
 
+  weeklyActivity[currentDayKey] = true;
+
   const updated: UserStreak = {
     currentStreak,
     longestStreak,
-    lastActiveDate: today
+    lastActiveDate: today,
+    weeklyActivity
   };
 
   localStorage.setItem(STREAK_KEY, JSON.stringify(updated));
@@ -504,6 +550,7 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
         plan: profileData.plan || 'free',
         accountStatus: profileData.account_status || 'active',
         lastAccessedTopicId: profileData.last_accessed_topic_id || undefined,
+        lastAccessedTab: profileData.last_accessed_tab || undefined,
         lastAccessedAt: profileData.last_accessed_at || undefined
       });
     } else {
@@ -525,18 +572,19 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
     // 2. Fetch User Progress from DB (Strict user isolation: never merge with another user's local cache!)
     const { data: dbProgress } = await supabase
       .from('user_progress')
-      .select('topic_id, status, completed_at')
+      .select('topic_id, status, completed_at, score')
       .eq('user_id', user.id);
 
     const freshProgress: Record<string, UserProgress> = {};
     if (dbProgress && dbProgress.length > 0) {
-      dbProgress.forEach((item: { topic_id: string; status: 'not_started' | 'in_progress' | 'completed'; completed_at?: string }) => {
+      dbProgress.forEach((item: { topic_id: string; status: 'not_started' | 'in_progress' | 'completed'; completed_at?: string; score?: number }) => {
         const topicSlug = item.topic_id;
         if (topicSlug) {
           freshProgress[topicSlug] = {
             topicId: topicSlug,
             status: item.status,
-            completedAt: item.completed_at
+            completedAt: item.completed_at,
+            score: item.score
           };
         }
       });
@@ -581,10 +629,442 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
     };
     localStorage.setItem(STREAK_KEY, JSON.stringify(userStreak));
 
+    // 6. Fetch User Notifications from DB
+    const { data: dbNotifications } = await supabase
+      .from('user_notifications')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (dbNotifications && dbNotifications.length > 0) {
+      const freshNotifications: UserNotification[] = dbNotifications.map((n: any) => ({
+        id: n.id,
+        userId: n.user_id,
+        title: n.title,
+        message: n.message,
+        type: n.type,
+        linkUrl: n.link_url,
+        isRead: Boolean(n.is_read),
+        createdAt: n.created_at
+      }));
+      localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(freshNotifications));
+    }
+
+    window.dispatchEvent(new Event('waynautic_storage_change'));
+
     window.dispatchEvent(new Event('waynautic_storage_change'));
   } catch (err) {
     console.error('Error syncing cloud user data:', err);
   }
+}
+
+export function loadAllTopicComments(): Record<string, TopicComment[]> {
+  if (typeof window === 'undefined') return {};
+  const saved = localStorage.getItem(COMMENTS_KEY);
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      console.error('Failed to parse topic comments', e);
+    }
+  }
+  return {};
+}
+
+export function loadTopicComments(topicId: string): TopicComment[] {
+  const all = loadAllTopicComments();
+  return all[topicId] || [];
+}
+
+export async function fetchTopicCommentsFromDb(topicId: string): Promise<TopicComment[]> {
+  if (isSupabaseConfigured) {
+    try {
+      const { data, error } = await supabase
+        .from('topic_comments')
+        .select('*')
+        .eq('topic_id', topicId)
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        const mapped: TopicComment[] = data.map((d: any) => ({
+          id: d.id,
+          topicId: d.topic_id,
+          userId: d.user_id,
+          userName: d.user_name || 'Developer',
+          userAvatar: d.user_avatar || '',
+          content: d.content,
+          isQuestion: Boolean(d.is_question),
+          parentId: d.parent_id || undefined,
+          upvotes: 0,
+          userUpvoted: false,
+          createdAt: d.created_at
+        }));
+
+        const all = loadAllTopicComments();
+        all[topicId] = mapped;
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
+          window.dispatchEvent(new Event('waynautic_storage_change'));
+        }
+        return mapped;
+      }
+    } catch (err) {
+      console.warn('Error fetching topic comments from Supabase:', err);
+    }
+  }
+  return loadTopicComments(topicId);
+}
+
+export async function addTopicComment(
+  topicId: string,
+  content: string,
+  isQuestion: boolean = false,
+  parentId?: string
+): Promise<TopicComment> {
+  if (typeof window === 'undefined') throw new Error('Client side only');
+  const profile = loadProfile();
+  const newComment: TopicComment = {
+    id: `cmt-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+    topicId,
+    userId: profile.userId,
+    userName: profile.displayName || 'Developer',
+    userAvatar: profile.avatarUrl,
+    content: content.trim(),
+    isQuestion,
+    parentId,
+    upvotes: 0,
+    userUpvoted: false,
+    createdAt: new Date().toISOString()
+  };
+
+  const all = loadAllTopicComments();
+  const list = all[topicId] || [];
+  all[topicId] = [newComment, ...list];
+  localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
+  window.dispatchEvent(new Event('waynautic_storage_change'));
+
+  if (isSupabaseConfigured) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.from('topic_comments').insert({
+          topic_id: topicId,
+          user_id: session.user.id,
+          user_name: profile.displayName || 'Developer',
+          user_avatar: profile.avatarUrl,
+          content: content.trim(),
+          is_question: isQuestion,
+          parent_id: parentId
+        });
+      }
+    } catch (err) {
+      console.warn('Supabase comment insert error:', err);
+    }
+  }
+
+  return newComment;
+}
+
+export async function deleteTopicComment(topicId: string, commentId: string): Promise<void> {
+  if (typeof window === 'undefined') return;
+  const all = loadAllTopicComments();
+  if (all[topicId]) {
+    all[topicId] = all[topicId].filter((c) => c.id !== commentId && c.parentId !== commentId);
+    localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
+    window.dispatchEvent(new Event('waynautic_storage_change'));
+  }
+
+  if (isSupabaseConfigured) {
+    try {
+      await supabase.from('topic_comments').delete().eq('id', commentId);
+    } catch (err) {
+      console.warn('Supabase comment delete error:', err);
+    }
+  }
+}
+
+export async function toggleCommentUpvote(topicId: string, commentId: string): Promise<void> {
+  if (typeof window === 'undefined') return;
+  const all = loadAllTopicComments();
+  if (all[topicId]) {
+    all[topicId] = all[topicId].map((c) => {
+      if (c.id === commentId) {
+        const userUpvoted = !c.userUpvoted;
+        const upvotes = (c.upvotes || 0) + (userUpvoted ? 1 : -1);
+        return { ...c, userUpvoted, upvotes: Math.max(0, upvotes) };
+      }
+      return c;
+    });
+    localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
+    window.dispatchEvent(new Event('waynautic_storage_change'));
+  }
+}
+
+export function loadAllTopicRatings(): Record<string, TopicRating[]> {
+  if (typeof window === 'undefined') return {};
+  const saved = localStorage.getItem(RATINGS_KEY);
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      console.error('Failed to parse topic ratings', e);
+    }
+  }
+  return {};
+}
+
+export function loadTopicUserRating(topicId: string): TopicRating | null {
+  const all = loadAllTopicRatings();
+  const list = all[topicId] || [];
+  const profile = loadProfile();
+  return list.find((r) => r.userId === profile.userId) || list[0] || null;
+}
+
+export function getTopicRatingStats(topicId: string) {
+  const all = loadAllTopicRatings();
+  const list = all[topicId] || [];
+  const totalVotes = list.length;
+  const upvotes = list.filter((r) => r.userVote === 'up').length;
+  const downvotes = list.filter((r) => r.userVote === 'down').length;
+  const starRatings = list.map((r) => r.starRating).filter((s): s is number => typeof s === 'number');
+  const avgStars = starRatings.length > 0 ? Number((starRatings.reduce((a, b) => a + b, 0) / starRatings.length).toFixed(1)) : 5.0;
+
+  return {
+    totalVotes,
+    upvotes,
+    downvotes,
+    avgStars,
+    starRatingsCount: starRatings.length
+  };
+}
+
+export async function fetchTopicRatingsFromDb(topicId: string): Promise<{
+  userRating: TopicRating | null;
+  stats: { totalVotes: number; upvotes: number; downvotes: number; avgStars: number; starRatingsCount: number };
+}> {
+  if (isSupabaseConfigured) {
+    try {
+      const { data, error } = await supabase
+        .from('topic_ratings')
+        .select('*')
+        .eq('topic_id', topicId);
+
+      if (!error && data) {
+        const profile = loadProfile();
+        const mapped: TopicRating[] = data.map((r: any) => ({
+          id: r.id,
+          topicId: r.topic_id,
+          userId: r.user_id,
+          userVote: r.vote || 'up',
+          starRating: r.stars || 5,
+          feedbackText: r.feedback || '',
+          createdAt: r.updated_at || r.created_at || new Date().toISOString()
+        }));
+
+        const all = loadAllTopicRatings();
+        all[topicId] = mapped;
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(RATINGS_KEY, JSON.stringify(all));
+          window.dispatchEvent(new Event('waynautic_storage_change'));
+        }
+
+        const userRating = mapped.find((r) => r.userId === profile.userId) || null;
+        const totalVotes = mapped.length;
+        const upvotes = mapped.filter((r) => r.userVote === 'up').length;
+        const downvotes = mapped.filter((r) => r.userVote === 'down').length;
+        const starRatings = mapped.map((r) => r.starRating).filter((s): s is number => typeof s === 'number');
+        const avgStars = starRatings.length > 0 ? Number((starRatings.reduce((a, b) => a + b, 0) / starRatings.length).toFixed(1)) : 5.0;
+
+        return {
+          userRating,
+          stats: {
+            totalVotes,
+            upvotes,
+            downvotes,
+            avgStars,
+            starRatingsCount: starRatings.length
+          }
+        };
+      }
+    } catch (err) {
+      console.warn('Error fetching topic ratings from Supabase:', err);
+    }
+  }
+
+  return {
+    userRating: loadTopicUserRating(topicId),
+    stats: getTopicRatingStats(topicId)
+  };
+}
+
+export async function saveTopicRating(
+  topicId: string,
+  userVote?: 'up' | 'down',
+  starRating?: number,
+  feedbackText?: string
+): Promise<TopicRating> {
+  if (typeof window === 'undefined') throw new Error('Client side only');
+  recordUserActivity();
+  const profile = loadProfile();
+  const all = loadAllTopicRatings();
+  const list = all[topicId] || [];
+  const existingIndex = list.findIndex((r) => r.userId === profile.userId);
+
+  const newRating: TopicRating = {
+    id: existingIndex >= 0 ? list[existingIndex].id : `rat-${Date.now()}`,
+    topicId,
+    userId: profile.userId,
+    userVote: userVote !== undefined ? userVote : (existingIndex >= 0 ? list[existingIndex].userVote : 'up'),
+    starRating: starRating !== undefined ? starRating : (existingIndex >= 0 ? list[existingIndex].starRating : 5),
+    feedbackText: feedbackText !== undefined ? feedbackText : (existingIndex >= 0 ? list[existingIndex].feedbackText : ''),
+    createdAt: new Date().toISOString()
+  };
+
+  if (existingIndex >= 0) {
+    list[existingIndex] = newRating;
+  } else {
+    list.push(newRating);
+  }
+
+  all[topicId] = list;
+  localStorage.setItem(RATINGS_KEY, JSON.stringify(all));
+  window.dispatchEvent(new Event('waynautic_storage_change'));
+
+  if (isSupabaseConfigured) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.from('topic_ratings').upsert({
+          topic_id: topicId,
+          user_id: session.user.id,
+          vote: newRating.userVote,
+          stars: newRating.starRating,
+          feedback: newRating.feedbackText,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id,topic_id' });
+      }
+    } catch (err) {
+      console.warn('Supabase rating upsert error:', err);
+    }
+  }
+
+  return newRating;
+}
+
+export function loadUserNotifications(): UserNotification[] {
+  if (typeof window === 'undefined') return [];
+  const saved = localStorage.getItem(NOTIFICATIONS_KEY);
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      console.error('Failed to parse notifications', e);
+    }
+  }
+  const defaultNudge: UserNotification = {
+    id: 'nudge-welcome',
+    title: 'Welcome to Waynautic Academy! 🚀',
+    message: 'Start your daily learning streak today by completing your first topic lesson.',
+    type: 'system',
+    linkUrl: '/curriculum/intro-ai/t-1?tab=watch',
+    isRead: false,
+    createdAt: new Date().toISOString()
+  };
+  return [defaultNudge];
+}
+
+export async function fetchUserNotificationsFromDb(): Promise<UserNotification[]> {
+  if (isSupabaseConfigured) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data, error } = await supabase
+          .from('user_notifications')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .order('created_at', { ascending: false });
+
+        if (!error && data) {
+          const freshNotifications: UserNotification[] = data.map((n: any) => ({
+            id: n.id,
+            userId: n.user_id,
+            title: n.title,
+            message: n.message,
+            type: n.type,
+            linkUrl: n.link_url,
+            isRead: Boolean(n.is_read),
+            createdAt: n.created_at
+          }));
+          localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(freshNotifications));
+          window.dispatchEvent(new Event('waynautic_storage_change'));
+          return freshNotifications;
+        }
+      }
+    } catch (err) {
+      console.warn('Error fetching notifications from Supabase:', err);
+    }
+  }
+  return loadUserNotifications();
+}
+
+export async function markNotificationRead(id: string): Promise<void> {
+  if (typeof window === 'undefined') return;
+  const list = loadUserNotifications();
+  const updated = list.map((n) => (n.id === id ? { ...n, isRead: true } : n));
+  localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(updated));
+  window.dispatchEvent(new Event('waynautic_storage_change'));
+
+  if (isSupabaseConfigured) {
+    try {
+      await supabase.from('user_notifications').update({ is_read: true }).eq('id', id);
+    } catch (err) {
+      console.warn('Error syncing notification read status to Supabase:', err);
+    }
+  }
+}
+
+export async function sendNudgeNotification(
+  title: string,
+  message: string,
+  type: 'streak_warning' | 're_engagement' | 'badge_earned' | 'system',
+  linkUrl: string
+): Promise<UserNotification> {
+  if (typeof window === 'undefined') throw new Error('Client side only');
+  const profile = loadProfile();
+  const newNudge: UserNotification = {
+    id: `nudge-${Date.now()}`,
+    userId: profile.userId,
+    title,
+    message,
+    type,
+    linkUrl,
+    isRead: false,
+    createdAt: new Date().toISOString()
+  };
+
+  const list = loadUserNotifications();
+  const updated = [newNudge, ...list];
+  localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(updated));
+  window.dispatchEvent(new Event('waynautic_storage_change'));
+
+  if (isSupabaseConfigured) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.from('user_notifications').insert({
+          user_id: session.user.id,
+          title,
+          message,
+          type,
+          link_url: linkUrl
+        });
+      }
+    } catch (err) {
+      console.warn('Supabase notification insert error:', err);
+    }
+  }
+
+  return newNudge;
 }
 
 export function useWaynauticStore() {
@@ -593,6 +1073,7 @@ export function useWaynauticStore() {
   const [streak, setStreakState] = useState<UserStreak>(() => loadStreak());
   const [bookmarks, setBookmarksState] = useState<string[]>(() => loadBookmarks());
   const [badges, setBadgesState] = useState<UserBadge[]>(() => loadBadges());
+  const [notifications, setNotificationsState] = useState<UserNotification[]>(() => loadUserNotifications());
 
   const reloadData = () => {
     setProfileState(loadProfile());
@@ -600,6 +1081,7 @@ export function useWaynauticStore() {
     setStreakState(loadStreak());
     setBookmarksState(loadBookmarks());
     setBadgesState(loadBadges());
+    setNotificationsState(loadUserNotifications());
   };
 
   useEffect(() => {
@@ -659,12 +1141,20 @@ export function useWaynauticStore() {
     streak,
     bookmarks,
     badges,
+    notifications,
     updateProfile: saveProfile,
     markTopicProgress: saveProgress,
     saveQuizAttempt,
     saveLastAccessedTopic,
     toggleBookmarkTopic: toggleBookmark,
+    addTopicComment,
+    deleteTopicComment,
+    toggleCommentUpvote,
+    saveTopicRating,
+    markNotificationRead,
+    sendNudgeNotification,
     signOut: signOutUser,
     refresh: reloadData
   };
 }
+

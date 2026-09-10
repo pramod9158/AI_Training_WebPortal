@@ -320,3 +320,67 @@ export function getTopicChapters(topic: Topic, allTopics?: Topic[]): VideoChapte
   ];
 }
 
+/**
+ * Resolves the user's exact deep-link return destination (topic + tab).
+ * Defaults to topic 1 watch tab if no history exists.
+ */
+export function getResumeLearningUrl(profile?: { lastAccessedTopicId?: string; lastAccessedTab?: 'watch' | 'read' | 'quiz' }): string {
+  const topics = getAllTopics();
+  const lastId = profile?.lastAccessedTopicId;
+  const lastTab = profile?.lastAccessedTab || 'watch';
+
+  if (lastId) {
+    const topic = topics.find((t) => t.id === lastId || t.slug === lastId);
+    if (topic) {
+      return `/curriculum/${topic.moduleSlug}/${topic.slug}?tab=${lastTab}`;
+    }
+  }
+
+  // Fallback to first available topic
+  const firstTopic = topics[0];
+  if (firstTopic) {
+    return `/curriculum/${firstTopic.moduleSlug}/${firstTopic.slug}?tab=watch`;
+  }
+
+  return '/curriculum';
+}
+
+/**
+ * Calculates recommended topics related to the current topic.
+ * Prioritizes:
+ * 1. Next topic in curriculum sequence
+ * 2. Topics in the same module
+ * 3. Complementary topics across modules
+ */
+export function getRecommendedTopics(currentTopic: Topic, allTopics?: Topic[], limit: number = 3): Topic[] {
+  const list = allTopics || getAllTopics();
+  const otherTopics = list.filter((t) => t.id !== currentTopic.id);
+
+  const sameModuleTopics = otherTopics.filter((t) => t.moduleSlug === currentTopic.moduleSlug);
+
+  const currentIdx = list.findIndex((t) => t.id === currentTopic.id);
+  const nextInRoadmap = currentIdx >= 0 && currentIdx < list.length - 1 ? list[currentIdx + 1] : null;
+
+  const recommendations: Topic[] = [];
+
+  if (nextInRoadmap && nextInRoadmap.id !== currentTopic.id) {
+    recommendations.push(nextInRoadmap);
+  }
+
+  sameModuleTopics.forEach((t) => {
+    if (!recommendations.some((r) => r.id === t.id) && recommendations.length < limit) {
+      recommendations.push(t);
+    }
+  });
+
+  otherTopics.forEach((t) => {
+    if (!recommendations.some((r) => r.id === t.id) && recommendations.length < limit) {
+      recommendations.push(t);
+    }
+  });
+
+  return recommendations.slice(0, limit);
+}
+
+
+

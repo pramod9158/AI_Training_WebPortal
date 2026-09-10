@@ -25,6 +25,8 @@ import {
 import { MODULES } from '@/data/seedModules';
 import { TOPICS } from '@/data/seedTopics';
 import { useWaynauticStore } from '@/lib/store';
+import { getResumeLearningUrl } from '@/lib/curriculumService';
+import { StreakTracker } from '@/components/StreakTracker';
 import { 
   computeOverallStats, 
   computeModuleProgressStats, 
@@ -164,6 +166,9 @@ function DashboardContent() {
           </Link>
         </div>
       </div>
+
+      {/* Streak At Risk Banner if inactive today */}
+      <StreakTracker variant="banner" />
 
       {/* Guest Mode Banner if not logged in */}
       {!isLoggedIn && (
@@ -400,7 +405,7 @@ function DashboardContent() {
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 font-medium line-clamp-2">{continueTopic.description}</p>
             </div>
             <Link
-              href={`/curriculum/${continueTopic.moduleSlug}/${continueTopic.slug}?tab=watch`}
+              href={getResumeLearningUrl(profile)}
               className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 shrink-0 min-h-[44px]"
             >
               <Play className="w-4 h-4 fill-white" />

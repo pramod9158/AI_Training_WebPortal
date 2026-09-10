@@ -269,3 +269,281 @@ export function generateAndDownloadTopicPdf(topic: TopicPdfData): void {
     .replace(/(^-|-$)/g, '');
   doc.save(`Waynautic-Notes-${safeFilename}.pdf`);
 }
+
+interface ModulePdfData {
+  moduleTitle: string;
+  moduleSlug: string;
+  topics: Array<{
+    title: string;
+    slug?: string;
+    textContent: string;
+    estimatedMinutes?: number;
+  }>;
+}
+
+export function generateAndDownloadModulePdf(data: ModulePdfData): void {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+  });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const marginX = 16;
+  const marginTop = 20;
+  const marginBottom = 18;
+  const contentWidth = pageWidth - marginX * 2;
+
+  let currentY = marginTop;
+
+  const ensureSpace = (neededHeight: number) => {
+    if (currentY + neededHeight > pageHeight - marginBottom) {
+      doc.addPage();
+      currentY = marginTop;
+      drawHeaderWatermark();
+    }
+  };
+
+  const drawHeaderWatermark = () => {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+    doc.text(`WAYNAUTIC ACADEMY • ${data.moduleTitle.toUpperCase()} QUICK REFERENCE`, marginX, 10);
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.3);
+    doc.line(marginX, 12, pageWidth - marginX, 12);
+  };
+
+  drawHeaderWatermark();
+
+  doc.setFillColor(15, 23, 42); // Slate 900
+  doc.roundedRect(marginX, currentY, contentWidth, 26, 3, 3, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(56, 189, 248); // Sky 400
+  doc.text('WAYNAUTIC ACADEMY • FULL MODULE STUDY GUIDE', marginX + 6, currentY + 7);
+
+  doc.setFontSize(14);
+  doc.setTextColor(255, 255, 255);
+  doc.text(data.moduleTitle, marginX + 6, currentY + 16);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(203, 213, 225);
+  const totalMins = data.topics.reduce((acc, t) => acc + (t.estimatedMinutes || 15), 0);
+  doc.text(`Complete Quick-Reference • ${data.topics.length} Topic Lessons • ~${totalMins} mins total • Exported on ${new Date().toLocaleDateString()}`, marginX + 6, currentY + 22);
+
+  currentY += 32;
+
+  ensureSpace(20);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.setTextColor(2, 132, 199);
+  doc.text('MODULE TABLE OF CONTENTS', marginX, currentY);
+  currentY += 6;
+
+  data.topics.forEach((topic, idx) => {
+    ensureSpace(6);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(51, 65, 85);
+    doc.text(`Topic ${idx + 1 < 10 ? '0' : ''}${idx + 1}: ${topic.title}`, marginX + 4, currentY);
+    currentY += 5;
+  });
+
+  currentY += 6;
+
+  data.topics.forEach((topic, topicIdx) => {
+    ensureSpace(20);
+
+    doc.setFillColor(241, 245, 249);
+    doc.roundedRect(marginX, currentY, contentWidth, 12, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(15, 23, 42);
+    doc.text(`Lesson ${topicIdx + 1}: ${topic.title}`, marginX + 4, currentY + 8);
+    currentY += 16;
+
+    const rawContent = topic.textContent || '';
+    const cleanedContent = rawContent
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>');
+
+    const lines = cleanedContent.split('\n');
+    let inCodeBlock = false;
+    let codeBuffer: string[] = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const rawLine = lines[i];
+      const trimmed = rawLine.trim();
+
+      if (trimmed.startsWith('```')) {
+        if (inCodeBlock) {
+          inCodeBlock = false;
+          if (codeBuffer.length > 0) {
+            const codeBlockText = codeBuffer.join('\n');
+            doc.setFont('courier', 'normal');
+            doc.setFontSize(8);
+            const wrappedCode = doc.splitTextToSize(codeBlockText, contentWidth - 8);
+            const blockHeight = wrappedCode.length * 3.8 + 8;
+
+            ensureSpace(blockHeight);
+
+            doc.setFillColor(15, 23, 42);
+            doc.roundedRect(marginX, currentY, contentWidth, blockHeight, 2, 2, 'F');
+
+            doc.setTextColor(56, 189, 248);
+            let codeY = currentY + 5;
+            for (const cLine of wrappedCode) {
+              doc.text(cLine, marginX + 4, codeY);
+              codeY += 3.8;
+            }
+
+            currentY += blockHeight + 4;
+            codeBuffer = [];
+          }
+        } else {
+          inCodeBlock = true;
+          codeBuffer = [];
+        }
+        continue;
+      }
+
+      if (inCodeBlock) {
+        codeBuffer.push(rawLine);
+        continue;
+      }
+
+      if (!trimmed) {
+        currentY += 2;
+        continue;
+      }
+
+      if (trimmed.startsWith('# ')) {
+        const hText = trimmed.replace(/^#\s+/, '').replace(/[*_]/g, '');
+        ensureSpace(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(13);
+        doc.setTextColor(15, 23, 42);
+        doc.text(hText, marginX, currentY);
+        currentY += 7;
+        continue;
+      }
+
+      if (trimmed.startsWith('## ')) {
+        const hText = trimmed.replace(/^##\s+/, '').replace(/[*_]/g, '');
+        ensureSpace(10);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(2, 132, 199);
+        doc.text(hText, marginX, currentY);
+        currentY += 6;
+        continue;
+      }
+
+      if (trimmed.startsWith('### ')) {
+        const hText = trimmed.replace(/^###\s+/, '').replace(/[*_]/g, '');
+        ensureSpace(8);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9.5);
+        doc.setTextColor(51, 65, 85);
+        doc.text(hText, marginX, currentY);
+        currentY += 5;
+        continue;
+      }
+
+      if (trimmed.startsWith('>')) {
+        const calloutText = trimmed.replace(/^>\s*/, '').replace(/\[!(NOTE|TIP|WARNING|IMPORTANT|CAUTION)\]/g, '$1:').replace(/[*_]/g, '');
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(8.5);
+        const wrappedCallout = doc.splitTextToSize(calloutText, contentWidth - 8);
+        const boxHeight = wrappedCallout.length * 4 + 6;
+
+        ensureSpace(boxHeight);
+
+        doc.setFillColor(240, 249, 255);
+        doc.roundedRect(marginX, currentY, contentWidth, boxHeight, 1.5, 1.5, 'F');
+        doc.setDrawColor(2, 132, 199);
+        doc.setLineWidth(0.8);
+        doc.line(marginX, currentY, marginX, currentY + boxHeight);
+
+        doc.setTextColor(3, 105, 161);
+        let calloutY = currentY + 4.5;
+        for (const cLine of wrappedCallout) {
+          doc.text(cLine, marginX + 4, calloutY);
+          calloutY += 4;
+        }
+
+        currentY += boxHeight + 4;
+        continue;
+      }
+
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ') || /^\d+\.\s/.test(trimmed)) {
+        const cleanBullet = trimmed.replace(/^([-*]|\d+\.)\s+/, '').replace(/[*_`]/g, '');
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(51, 65, 85);
+
+        const wrappedBullet = doc.splitTextToSize(cleanBullet, contentWidth - 6);
+        ensureSpace(wrappedBullet.length * 4.2 + 2);
+
+        doc.setFillColor(2, 132, 199);
+        doc.circle(marginX + 2, currentY - 1, 0.8, 'F');
+
+        let bulletY = currentY;
+        for (let b = 0; b < wrappedBullet.length; b++) {
+          doc.text(wrappedBullet[b], marginX + 6, bulletY);
+          bulletY += 4.2;
+        }
+        currentY = bulletY + 1.5;
+        continue;
+      }
+
+      const cleanParagraph = trimmed.replace(/[*_`]/g, '');
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(51, 65, 85);
+
+      const wrappedParagraph = doc.splitTextToSize(cleanParagraph, contentWidth);
+      ensureSpace(wrappedParagraph.length * 4.2 + 2);
+
+      for (const pLine of wrappedParagraph) {
+        doc.text(pLine, marginX, currentY);
+        currentY += 4.2;
+      }
+      currentY += 2;
+    }
+
+    currentY += 8;
+  });
+
+  const totalPages = doc.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.3);
+    doc.line(marginX, pageHeight - 12, pageWidth - marginX, pageHeight - 12);
+
+    doc.text(`Waynautic Academy • ${data.moduleTitle} Quick-Reference`, marginX, pageHeight - 8);
+
+    const pageStr = `Page ${p} of ${totalPages}`;
+    const pageStrWidth = doc.getTextWidth(pageStr);
+    doc.text(pageStr, pageWidth - marginX - pageStrWidth, pageHeight - 8);
+  }
+
+  const safeFilename = (data.moduleSlug || data.moduleTitle || 'module-notes')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  doc.save(`Waynautic-Module-Guide-${safeFilename}.pdf`);
+}
+
