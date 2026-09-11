@@ -121,7 +121,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         
         {/* Left Section: Extreme Left Logo + Clean Nav Links */}
-        <div className="flex items-center space-x-6 lg:space-x-8">
+        <div className="flex items-center space-x-6 lg:space-x-8 shrink-0">
           
           {/* Brand Logo - Extreme Left & Prominent */}
           <Link href="/" className="flex items-center group py-1 shrink-0" aria-label="Waynautic Academy Home">
@@ -158,12 +158,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         </div>
 
         {/* Right Section: Focused & Consolidated Utilities */}
-        <div className="flex items-center space-x-2 sm:space-x-2.5">
+        <div className="flex items-center space-x-1 sm:space-x-2 shrink-0">
 
           {/* Compact Search Trigger */}
           <button
             onClick={onOpenSearch}
-            className="flex items-center space-x-2 px-2.5 py-1.5 bg-slate-100/90 dark:bg-slate-800/80 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 rounded-lg text-xs text-slate-500 dark:text-slate-400 transition-colors"
+            className="flex items-center space-x-1.5 p-2 sm:px-2.5 sm:py-1.5 bg-slate-100/90 dark:bg-slate-800/80 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 rounded-lg text-xs text-slate-500 dark:text-slate-400 transition-colors shrink-0"
             title="Search topics (Cmd+K)"
           >
             <Search className="w-3.5 h-3.5 shrink-0" />
@@ -187,19 +187,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           {/* Notification Bell (Logged-in only) */}
           {isLoggedIn && <NotificationDrawer />}
 
-          {/* Theme Toggle (Quick 1-Click) */}
+          {/* Theme Toggle (Desktop / Tablet; also in mobile drawer) */}
           <button
             onClick={toggleTheme}
-            className="p-2 text-slate-500 dark:text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 rounded-lg transition-colors"
+            className="hidden sm:flex p-2 text-slate-500 dark:text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 rounded-lg transition-colors shrink-0"
             title="Toggle theme"
             aria-label="Toggle theme"
           >
             {profile.theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
           </button>
 
-          {/* Consolidated User Profile Menu / Log In Button */}
+          {/* Consolidated User Profile Menu (Desktop; on mobile user accesses profile in drawer) */}
           {isLoggedIn ? (
-            <div className="relative" ref={userMenuRef}>
+            <div className="relative hidden md:block" ref={userMenuRef}>
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center space-x-2 p-1 pl-1.5 pr-2 rounded-full border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/80 dark:bg-slate-900/80 transition-all focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
@@ -329,7 +329,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           ) : (
             <Link
               href="/login"
-              className="flex items-center space-x-1.5 px-4 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs shadow-sm transition-colors"
+              className="hidden sm:flex items-center space-x-1.5 px-4 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs shadow-sm transition-colors shrink-0"
             >
               <LogIn className="w-3.5 h-3.5" />
               <span>Log In</span>
