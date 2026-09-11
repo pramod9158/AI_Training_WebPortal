@@ -149,15 +149,22 @@ export function loadProgress(): Record<string, UserProgress> {
 export async function saveProgress(
   topicId: string,
   status: 'not_started' | 'in_progress' | 'completed',
-  score?: number
+  score?: number,
+  forceStatus?: boolean
 ) {
   if (typeof window === 'undefined') return;
   recordUserActivity();
   const current = loadProgress();
   const prev = current[topicId];
   
-  const updatedStatus = status;
-  const updatedCompletedAt = status === 'completed' ? (prev?.completedAt || new Date().toISOString()) : undefined;
+  // Protect completed topics: never downgrade from 'completed' to 'in_progress'
+  // unless explicitly requested with forceStatus (such as an intentional user toggle)
+  let updatedStatus = status;
+  if (prev?.status === 'completed' && status === 'in_progress' && !forceStatus) {
+    updatedStatus = 'completed';
+  }
+
+  const updatedCompletedAt = updatedStatus === 'completed' ? (prev?.completedAt || new Date().toISOString()) : undefined;
   const updatedScore = score !== undefined ? Math.max(score, prev?.score || 0) : prev?.score;
 
   current[topicId] = {
@@ -177,16 +184,25 @@ export async function saveProgress(
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        const { error } = await supabase.from('user_progress').upsert({
+        const payload: Record<string, any> = {
           user_id: session.user.id,
           topic_id: topicId,
           status: updatedStatus,
           completed_at: updatedCompletedAt,
           updated_at: new Date().toISOString()
-        }, { onConflict: 'user_id,topic_id' });
+        };
+        if (updatedScore !== undefined) {
+          payload.score = updatedScore;
+        }
+
+        const { error } = await supabase.from('user_progress').upsert(payload, { onConflict: 'user_id,topic_id' });
 
         if (error) {
-          console.error('Supabase user_progress upsert error:', error);
+          console.warn('Supabase user_progress upsert error:', error);
+          if (error.message?.includes('score')) {
+            delete payload.score;
+            await supabase.from('user_progress').upsert(payload, { onConflict: 'user_id,topic_id' });
+          }
         }
       }
     } catch (err) {
@@ -199,19 +215,27 @@ export async function saveQuizAttempt(topicId: string, score: number, totalQuest
   if (typeof window === 'undefined') return;
   recordUserActivity();
   
-  // Save progress score locally
-  await saveProgress(topicId, 'completed', Math.round((score / totalQuestions) * 100));
+  const total = Math.max(totalQuestions, 1);
+  const scorePercent = Math.round((score / total) * 100);
+  const quizPassed = scorePercent >= 70;
+  
+  // Save progress: mark as completed if passed (>= 70%), otherwise in_progress
+  await saveProgress(topicId, quizPassed ? 'completed' : 'in_progress', scorePercent);
 
   if (isSupabaseConfigured) {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      await supabase.from('user_quiz_attempts').insert({
-        user_id: session.user.id,
-        topic_id: topicId,
-        score,
-        total_questions: totalQuestions,
-        attempted_at: new Date().toISOString()
-      });
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.from('user_quiz_attempts').insert({
+          user_id: session.user.id,
+          topic_id: topicId,
+          score,
+          total_questions: totalQuestions,
+          attempted_at: new Date().toISOString()
+        });
+      }
+    } catch (err) {
+      console.warn('Error saving quiz attempt to Supabase:', err);
     }
   }
 }
@@ -630,26 +654,69 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
     }
 
     // 2. Fetch User Progress from DB (Strict user isolation: never merge with another user's local cache!)
-    const { data: dbProgress } = await supabase
+    const { data: dbProgress, error: progressErr } = await supabase
       .from('user_progress')
       .select('topic_id, status, completed_at, score')
       .eq('user_id', user.id);
 
-    const freshProgress: Record<string, UserProgress> = {};
-    if (dbProgress && dbProgress.length > 0) {
+    if (!progressErr && dbProgress) {
+      const localProgress = loadProgress();
+      const freshProgress: Record<string, UserProgress> = { ...localProgress };
+      const topicsToSyncToDb: string[] = [];
+
       dbProgress.forEach((item: { topic_id: string; status: 'not_started' | 'in_progress' | 'completed'; completed_at?: string; score?: number }) => {
         const topicSlug = item.topic_id;
         if (topicSlug) {
+          const localItem = localProgress[topicSlug];
+          
+          // Never downgrade 'completed' back to 'in_progress'
+          let bestStatus = item.status;
+          let bestCompletedAt = item.completed_at;
+          let bestScore = item.score !== undefined && item.score !== null ? Number(item.score) : localItem?.score;
+
+          if (localItem?.status === 'completed' && item.status !== 'completed') {
+            bestStatus = 'completed';
+            bestCompletedAt = localItem.completedAt || new Date().toISOString();
+            topicsToSyncToDb.push(topicSlug);
+          } else if (localItem?.score !== undefined && (bestScore === undefined || localItem.score > bestScore)) {
+            bestScore = localItem.score;
+          }
+
           freshProgress[topicSlug] = {
             topicId: topicSlug,
-            status: item.status,
-            completedAt: item.completed_at,
-            score: item.score
+            status: bestStatus,
+            completedAt: bestCompletedAt,
+            score: bestScore
           };
         }
       });
+
+      // Retain any local topics marked completed that aren't in DB yet
+      Object.entries(localProgress).forEach(([tid, lItem]) => {
+        if (!freshProgress[tid]) {
+          freshProgress[tid] = lItem;
+          if (lItem.status === 'completed') {
+            topicsToSyncToDb.push(tid);
+          }
+        }
+      });
+
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(freshProgress));
+
+      // Push any locally completed topics to Supabase if missing or behind in DB
+      if (topicsToSyncToDb.length > 0) {
+        for (const tid of topicsToSyncToDb) {
+          const syncItem = freshProgress[tid];
+          supabase.from('user_progress').upsert({
+            user_id: user.id,
+            topic_id: tid,
+            status: syncItem.status,
+            completed_at: syncItem.completedAt || new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'user_id,topic_id' }).then();
+        }
+      }
     }
-    localStorage.setItem(PROGRESS_KEY, JSON.stringify(freshProgress));
 
     // 3. Fetch User Bookmarks from DB (Strict user isolation)
     const { data: dbBookmarks } = await supabase
@@ -898,7 +965,7 @@ export function loadTopicUserRating(topicId: string): TopicRating | null {
   const all = loadAllTopicRatings();
   const list = all[topicId] || [];
   const profile = loadProfile();
-  return list.find((r) => r.userId === profile.userId) || list[0] || null;
+  return list.find((r) => r.userId === profile.userId) || null;
 }
 
 export function getTopicRatingStats(topicId: string) {
@@ -907,8 +974,12 @@ export function getTopicRatingStats(topicId: string) {
   const totalVotes = list.length;
   const upvotes = list.filter((r) => r.userVote === 'up').length;
   const downvotes = list.filter((r) => r.userVote === 'down').length;
-  const starRatings = list.map((r) => r.starRating).filter((s): s is number => typeof s === 'number');
-  const avgStars = starRatings.length > 0 ? Number((starRatings.reduce((a, b) => a + b, 0) / starRatings.length).toFixed(1)) : 5.0;
+  const starRatings = list
+    .map((r) => r.starRating)
+    .filter((s): s is number => typeof s === 'number' && s > 0);
+  const avgStars = starRatings.length > 0
+    ? Number((starRatings.reduce((a, b) => a + b, 0) / starRatings.length).toFixed(1))
+    : 0;
 
   return {
     totalVotes,
@@ -921,59 +992,38 @@ export function getTopicRatingStats(topicId: string) {
 
 export async function fetchTopicRatingsFromDb(topicId: string): Promise<{
   userRating: TopicRating | null;
+  ratings: TopicRating[];
   stats: { totalVotes: number; upvotes: number; downvotes: number; avgStars: number; starRatingsCount: number };
 }> {
-  if (isSupabaseConfigured) {
-    try {
-      const { data, error } = await supabase
-        .from('topic_ratings')
-        .select('*')
-        .eq('topic_id', topicId);
-
-      if (!error && data) {
-        const profile = loadProfile();
-        const mapped: TopicRating[] = data.map((r: any) => ({
-          id: r.id,
-          topicId: r.topic_id,
-          userId: r.user_id,
-          userVote: r.vote || 'up',
-          starRating: r.stars || 5,
-          feedbackText: r.feedback || '',
-          createdAt: r.updated_at || r.created_at || new Date().toISOString()
-        }));
-
+  try {
+    const res = await fetch(`/api/ratings?topicId=${encodeURIComponent(topicId)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && Array.isArray(data.ratings)) {
         const all = loadAllTopicRatings();
-        all[topicId] = mapped;
+        all[topicId] = data.ratings;
         if (typeof window !== 'undefined') {
           localStorage.setItem(RATINGS_KEY, JSON.stringify(all));
           window.dispatchEvent(new Event('waynautic_storage_change'));
         }
-
-        const userRating = mapped.find((r) => r.userId === profile.userId) || null;
-        const totalVotes = mapped.length;
-        const upvotes = mapped.filter((r) => r.userVote === 'up').length;
-        const downvotes = mapped.filter((r) => r.userVote === 'down').length;
-        const starRatings = mapped.map((r) => r.starRating).filter((s): s is number => typeof s === 'number');
-        const avgStars = starRatings.length > 0 ? Number((starRatings.reduce((a, b) => a + b, 0) / starRatings.length).toFixed(1)) : 5.0;
-
+        const profile = loadProfile();
+        const userRating = data.ratings.find((r: TopicRating) => r.userId === profile.userId) || null;
         return {
           userRating,
-          stats: {
-            totalVotes,
-            upvotes,
-            downvotes,
-            avgStars,
-            starRatingsCount: starRatings.length
-          }
+          ratings: data.ratings,
+          stats: data.stats || getTopicRatingStats(topicId)
         };
       }
-    } catch (err) {
-      console.warn('Error fetching topic ratings from Supabase:', err);
     }
+  } catch (err) {
+    console.warn('Could not fetch ratings from /api/ratings:', err);
   }
 
+  const all = loadAllTopicRatings();
+  const list = all[topicId] || [];
   return {
     userRating: loadTopicUserRating(topicId),
+    ratings: list,
     stats: getTopicRatingStats(topicId)
   };
 }
@@ -983,7 +1033,11 @@ export async function saveTopicRating(
   userVote?: 'up' | 'down',
   starRating?: number,
   feedbackText?: string
-): Promise<TopicRating> {
+): Promise<{
+  rating: TopicRating;
+  ratings: TopicRating[];
+  stats: { totalVotes: number; upvotes: number; downvotes: number; avgStars: number; starRatingsCount: number };
+}> {
   if (typeof window === 'undefined') throw new Error('Client side only');
   recordUserActivity();
   const profile = loadProfile();
@@ -995,8 +1049,10 @@ export async function saveTopicRating(
     id: existingIndex >= 0 ? list[existingIndex].id : `rat-${Date.now()}`,
     topicId,
     userId: profile.userId,
-    userVote: userVote !== undefined ? userVote : (existingIndex >= 0 ? list[existingIndex].userVote : 'up'),
-    starRating: starRating !== undefined ? starRating : (existingIndex >= 0 ? list[existingIndex].starRating : 5),
+    userName: profile.displayName || 'Member',
+    userAvatar: profile.avatarUrl || '',
+    userVote: userVote !== undefined ? userVote : (existingIndex >= 0 ? list[existingIndex].userVote : undefined),
+    starRating: starRating !== undefined ? starRating : (existingIndex >= 0 ? list[existingIndex].starRating : undefined),
     feedbackText: feedbackText !== undefined ? feedbackText : (existingIndex >= 0 ? list[existingIndex].feedbackText : ''),
     createdAt: new Date().toISOString()
   };
@@ -1004,32 +1060,49 @@ export async function saveTopicRating(
   if (existingIndex >= 0) {
     list[existingIndex] = newRating;
   } else {
-    list.push(newRating);
+    list.unshift(newRating);
   }
 
   all[topicId] = list;
   localStorage.setItem(RATINGS_KEY, JSON.stringify(all));
   window.dispatchEvent(new Event('waynautic_storage_change'));
 
-  if (isSupabaseConfigured) {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        await supabase.from('topic_ratings').upsert({
-          topic_id: topicId,
-          user_id: session.user.id,
-          vote: newRating.userVote,
-          stars: newRating.starRating,
-          feedback: newRating.feedbackText,
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'user_id,topic_id' });
+  // Post to server API for universal cross-member visibility
+  try {
+    const res = await fetch('/api/ratings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        topicId,
+        userId: profile.userId,
+        userName: profile.displayName || 'Member',
+        userAvatar: profile.avatarUrl || '',
+        userVote: newRating.userVote,
+        starRating: newRating.starRating,
+        feedbackText: newRating.feedbackText
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success) {
+        all[topicId] = data.ratings;
+        localStorage.setItem(RATINGS_KEY, JSON.stringify(all));
+        return {
+          rating: data.rating,
+          ratings: data.ratings,
+          stats: data.stats
+        };
       }
-    } catch (err) {
-      console.warn('Supabase rating upsert error:', err);
     }
+  } catch (err) {
+    console.warn('Failed to sync rating to server:', err);
   }
 
-  return newRating;
+  return {
+    rating: newRating,
+    ratings: list,
+    stats: getTopicRatingStats(topicId)
+  };
 }
 
 export function loadUserNotifications(): UserNotification[] {
@@ -1185,13 +1258,6 @@ export function useWaynauticStore() {
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.user) {
           fetchAndSyncCloudUser(session.user);
-        } else {
-          // If no active session, clear any stale user metrics from previous sessions
-          const current = loadProfile();
-          if (!current.userId && !current.email) {
-            clearAllUserData();
-            reloadData();
-          }
         }
       });
 

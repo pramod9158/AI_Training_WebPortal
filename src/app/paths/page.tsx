@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { LEARNING_PATHS, MODULES } from '@/data/seedModules';
-import { TOPICS } from '@/data/seedTopics';
+import { getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { useWaynauticStore } from '@/lib/store';
 import { SkillTree } from '@/components/SkillTree';
 import { Compass, CheckCircle2, ArrowRight, Zap, Trophy, Award, Lock } from 'lucide-react';
@@ -13,12 +13,20 @@ export default function PathsPage() {
   const { profile, progress, updateProfile } = useWaynauticStore();
   const [activePathSlug, setActivePathSlug] = useState<string>(profile.selectedPath || 'path-a');
   const [certModalOpen, setCertModalOpen] = useState(false);
+  const [topics, setTopics] = useState(getAllTopics());
+
+  React.useEffect(() => {
+    fetchCurriculumUpdates().then((updated) => setTopics(updated));
+    const handleCurriculumChange = () => setTopics(getAllTopics());
+    window.addEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+    return () => window.removeEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+  }, []);
 
   const selectedPathObj = LEARNING_PATHS.find(p => p.slug === activePathSlug) || LEARNING_PATHS[0];
   const pathModules = MODULES.filter(m => selectedPathObj.moduleSlugs.includes(m.slug));
 
   // Calculate completion percentage for active path
-  const pathTopics = TOPICS.filter(t => selectedPathObj.moduleSlugs.includes(t.moduleSlug));
+  const pathTopics = topics.filter(t => selectedPathObj.moduleSlugs.includes(t.moduleSlug));
   const completedPathTopics = pathTopics.filter(t => progress[t.id]?.status === 'completed');
   const pathPercent = Math.round((completedPathTopics.length / Math.max(pathTopics.length, 1)) * 100);
 

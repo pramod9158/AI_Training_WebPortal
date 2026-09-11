@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useParams, notFound } from 'next/navigation';
 import { MODULES } from '@/data/seedModules';
-import { TOPICS } from '@/data/seedTopics';
+import { getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { useWaynauticStore } from '@/lib/store';
 import { generateAndDownloadModulePdf } from '@/lib/pdfNotesGenerator';
 import { 
@@ -35,6 +35,17 @@ export function ModuleClient() {
   const params = useParams();
   const moduleSlug = params?.moduleSlug as string;
   const { progress } = useWaynauticStore();
+  const [topics, setTopics] = React.useState(getAllTopics());
+
+  React.useEffect(() => {
+    fetchCurriculumUpdates().then((updated) => setTopics(updated));
+
+    const handleCurriculumChange = () => {
+      setTopics(getAllTopics());
+    };
+    window.addEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+    return () => window.removeEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+  }, []);
 
   const moduleData = MODULES.find((m) => m.slug === moduleSlug);
   if (!moduleData) {
@@ -42,7 +53,7 @@ export function ModuleClient() {
   }
 
   const Icon = ICON_MAP[moduleData.iconName] || Brain;
-  const moduleTopics = TOPICS.filter((t) => t.moduleSlug === moduleSlug);
+  const moduleTopics = topics.filter((t) => t.moduleSlug === moduleSlug);
   const completedCount = moduleTopics.filter(
     (t) => progress[t.id]?.status === 'completed'
   ).length;

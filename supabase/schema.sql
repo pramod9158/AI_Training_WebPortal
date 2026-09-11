@@ -66,6 +66,7 @@ create table if not exists public.user_progress (
   user_id uuid not null references auth.users(id) on delete cascade,
   topic_id text not null,
   status text not null check (status in ('not_started', 'in_progress', 'completed')),
+  score integer,
   completed_at timestamptz,
   updated_at timestamptz default now(),
   unique(user_id, topic_id)

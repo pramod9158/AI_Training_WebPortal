@@ -17,7 +17,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { Module } from '@/data/seedModules';
-import { TOPICS } from '@/data/seedTopics';
+import { getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { UserProgress } from '@/lib/types';
 
 interface SkillTreeProps {
@@ -44,6 +44,17 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
   userProgress,
   highlightSlugs
 }) => {
+  const [topics, setTopics] = React.useState(getAllTopics());
+
+  React.useEffect(() => {
+    fetchCurriculumUpdates().then((updated) => setTopics(updated));
+
+    const handleCurriculumChange = () => {
+      setTopics(getAllTopics());
+    };
+    window.addEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+    return () => window.removeEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+  }, []);
   return (
     <div className="w-full py-6">
       
@@ -58,7 +69,7 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {modules.map((mod, index) => {
           const Icon = ICON_MAP[mod.iconName] || Brain;
-          const modTopics = TOPICS.filter((t) => t.moduleSlug === mod.slug);
+          const modTopics = topics.filter((t) => t.moduleSlug === mod.slug);
           const completedCount = modTopics.filter(
             (t) => userProgress[t.id]?.status === 'completed'
           ).length;

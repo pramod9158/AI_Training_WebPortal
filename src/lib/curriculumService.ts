@@ -1,19 +1,96 @@
 // Waynautic Academy - Curriculum & Content Service
 // Allows Admin account to add, edit, and manage topics and quiz questions dynamically.
+// Synchronizes seamlessly across Admin Portal, Academy Portal, Server API, and Supabase Cloud.
 
 import { TOPICS, getQuizForTopic } from '@/data/seedTopics';
 import { MODULES, Topic, QuizQuestion, VideoChapter } from '@/data/seedModules';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 
-const CUSTOM_TOPICS_STORAGE_KEY = 'waynautic_admin_custom_topics';
-const CUSTOM_QUIZZES_STORAGE_KEY = 'waynautic_admin_custom_quizzes';
-const DELETED_TOPICS_STORAGE_KEY = 'waynautic_admin_deleted_topics';
+export const CUSTOM_TOPICS_STORAGE_KEY = 'waynautic_admin_custom_topics';
+export const CUSTOM_QUIZZES_STORAGE_KEY = 'waynautic_admin_custom_quizzes';
+export const DELETED_TOPICS_STORAGE_KEY = 'waynautic_admin_deleted_topics';
+export const CURRICULUM_SYNC_TIMESTAMP_KEY = 'waynautic_curriculum_last_updated';
+
+// Cross-tab broadcast channel for instantaneous synchronization
+let broadcastChannel: BroadcastChannel | null = null;
+if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+  try {
+    broadcastChannel = new BroadcastChannel('waynautic_curriculum_sync');
+    broadcastChannel.onmessage = (event) => {
+      if (event.data?.type === 'curriculum_updated') {
+        window.dispatchEvent(new Event('waynautic_curriculum_changed'));
+      }
+    };
+  } catch (err) {
+    console.warn('[CurriculumService] BroadcastChannel not available:', err);
+  }
+}
+
+// Multi-tab storage event listener fallback
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (
+      e.key === CURRICULUM_SYNC_TIMESTAMP_KEY ||
+      e.key === CUSTOM_TOPICS_STORAGE_KEY ||
+      e.key === CUSTOM_QUIZZES_STORAGE_KEY ||
+      e.key === DELETED_TOPICS_STORAGE_KEY
+    ) {
+      window.dispatchEvent(new Event('waynautic_curriculum_changed'));
+    }
+  });
+}
+
+/**
+ * Notifies all tabs and components on the client that curriculum data changed.
+ */
+export function notifyCurriculumChange(): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    localStorage.setItem(CURRICULUM_SYNC_TIMESTAMP_KEY, Date.now().toString());
+  } catch {}
+
+  window.dispatchEvent(new Event('waynautic_curriculum_changed'));
+
+  if (broadcastChannel) {
+    try {
+      broadcastChannel.postMessage({ type: 'curriculum_updated', timestamp: Date.now() });
+    } catch {}
+  }
+}
 
 /**
  * Returns all active topics, merging seed data with admin additions and modifications.
  */
 export function getAllTopics(): Topic[] {
   if (typeof window === 'undefined') {
+    try {
+      // Server-side: read custom topics file if present
+      const fs = require('fs');
+      const path = require('path');
+      const file = path.join(process.cwd(), 'src', 'data', 'custom_curriculum.json');
+      if (fs.existsSync(file)) {
+        const raw = fs.readFileSync(file, 'utf-8');
+        const parsed = JSON.parse(raw);
+        const deletedIds: string[] = Array.isArray(parsed?.deletedTopicIds) ? parsed.deletedTopicIds : [];
+        const customTopics: Topic[] = Array.isArray(parsed?.customTopics) ? parsed.customTopics : [];
+
+        let topics = TOPICS.filter((t) => !deletedIds.includes(t.id));
+        const customMap = new Map<string, Topic>();
+        const newTopics: Topic[] = [];
+
+        customTopics.forEach((ct) => {
+          if (TOPICS.some((t) => t.id === ct.id)) {
+            customMap.set(ct.id, ct);
+          } else if (!deletedIds.includes(ct.id)) {
+            newTopics.push(ct);
+          }
+        });
+
+        topics = topics.map((t) => (customMap.has(t.id) ? customMap.get(t.id)! : t));
+        return [...topics, ...newTopics];
+      }
+    } catch {}
     return TOPICS;
   }
 
@@ -49,15 +126,112 @@ export function getAllTopics(): Topic[] {
 }
 
 /**
- * Find a specific topic by module and topic slugs.
+ * Find a specific topic by module and topic slugs with smart fallbacks.
  */
 export function getTopicBySlugs(moduleSlug: string, topicSlug: string): Topic | undefined {
   const topics = getAllTopics();
-  return topics.find((t) => t.moduleSlug === moduleSlug && t.slug === topicSlug);
+
+  // 1. Exact match by module and slug
+  const match = topics.find((t) => t.moduleSlug === moduleSlug && t.slug === topicSlug);
+  if (match) return match;
+
+  // 2. Match by topic id
+  const matchById = topics.find((t) => t.moduleSlug === moduleSlug && t.id === topicSlug);
+  if (matchById) return matchById;
+
+  // 3. Global slug match across any module
+  const globalMatch = topics.find((t) => t.slug === topicSlug);
+  if (globalMatch) return globalMatch;
+
+  // 4. Match by slugified title
+  const slugifiedTitle = topicSlug.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const titleMatch = topics.find((t) => {
+    const tSlug = t.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    return t.moduleSlug === moduleSlug && tSlug === slugifiedTitle;
+  });
+
+  return titleMatch;
 }
 
 /**
- * Save or update a topic.
+ * Fetches latest curriculum updates from the server API & Supabase and merges into client cache.
+ */
+export async function fetchCurriculumUpdates(): Promise<Topic[]> {
+  if (typeof window === 'undefined') return getAllTopics();
+
+  let hasUpdates = false;
+
+  // 1. Fetch from server API
+  try {
+    const res = await fetch('/api/curriculum', { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.customTopics)) {
+        const localCustom: Topic[] = JSON.parse(localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]');
+        const localDeleted: string[] = JSON.parse(localStorage.getItem(DELETED_TOPICS_STORAGE_KEY) || '[]');
+
+        const remoteCustom: Topic[] = data.customTopics;
+        const remoteDeleted: string[] = Array.isArray(data.deletedTopicIds) ? data.deletedTopicIds : [];
+
+        if (
+          JSON.stringify(localCustom) !== JSON.stringify(remoteCustom) ||
+          JSON.stringify(localDeleted) !== JSON.stringify(remoteDeleted)
+        ) {
+          localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, JSON.stringify(remoteCustom));
+          localStorage.setItem(DELETED_TOPICS_STORAGE_KEY, JSON.stringify(remoteDeleted));
+          hasUpdates = true;
+        }
+      }
+    }
+  } catch (apiErr) {
+    console.warn('[CurriculumService] Server API sync error:', apiErr);
+  }
+
+  // 2. If Supabase is configured, check Supabase topics
+  if (isSupabaseConfigured) {
+    try {
+      const { data: supaTopics, error } = await supabase.from('topics').select('*');
+      if (!error && supaTopics && supaTopics.length > 0) {
+        const mappedTopics: Topic[] = supaTopics.map((row: any) => ({
+          id: row.id,
+          moduleId: row.module_id || '11111111-1111-4111-a111-111111111111',
+          moduleSlug: row.module_slug || 'llms',
+          slug: row.slug,
+          title: row.title,
+          description: row.description || '',
+          videoUrl: row.video_url || 'https://www.youtube.com/embed/zxQyTK8ckyY',
+          videoProvider: row.video_provider || 'youtube',
+          orderIndex: row.order_index || 1,
+          estimatedMinutes: row.estimated_minutes || 15,
+          textContent: row.text_content || '',
+          chapters: row.chapters && Array.isArray(row.chapters) ? row.chapters : undefined
+        }));
+
+        const existingCustom: Topic[] = JSON.parse(localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]');
+        const mergedCustomMap = new Map<string, Topic>();
+        existingCustom.forEach((t) => mergedCustomMap.set(t.id, t));
+        mappedTopics.forEach((t) => mergedCustomMap.set(t.id, t));
+
+        const updatedList = Array.from(mergedCustomMap.values());
+        if (JSON.stringify(existingCustom) !== JSON.stringify(updatedList)) {
+          localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, JSON.stringify(updatedList));
+          hasUpdates = true;
+        }
+      }
+    } catch (supaErr) {
+      console.warn('[CurriculumService] Supabase topics sync warning:', supaErr);
+    }
+  }
+
+  if (hasUpdates) {
+    notifyCurriculumChange();
+  }
+
+  return getAllTopics();
+}
+
+/**
+ * Save or update a topic with cloud API, Supabase, and local persistence.
  */
 export async function saveTopic(topicData: {
   id?: string;
@@ -98,6 +272,7 @@ export async function saveTopic(topicData: {
     chapters: topicData.chapters || existingTopic?.chapters
   };
 
+  // 1. Update client localStorage immediately for zero latency
   if (typeof window !== 'undefined') {
     try {
       const customTopics: Topic[] = JSON.parse(localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]');
@@ -114,19 +289,28 @@ export async function saveTopic(topicData: {
         );
       }
 
-      window.dispatchEvent(new Event('waynautic_curriculum_changed'));
+      notifyCurriculumChange();
     } catch (err) {
       console.error('Failed to save topic in local storage:', err);
     }
   }
 
-  // Attempt Supabase sync if configured
+  // 2. Asynchronously sync to Server API
+  try {
+    await fetch('/api/curriculum', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedTopic)
+    });
+  } catch (apiErr) {
+    console.warn('[CurriculumService] Server API save warning:', apiErr);
+  }
+
+  // 3. Asynchronously sync to Supabase if configured
   if (isSupabaseConfigured) {
     try {
-      await supabase.from('topics').upsert({
+      const payload: Record<string, any> = {
         id: updatedTopic.id,
-        module_id: updatedTopic.moduleId,
-        module_slug: updatedTopic.moduleSlug,
         slug: updatedTopic.slug,
         title: updatedTopic.title,
         description: updatedTopic.description,
@@ -134,11 +318,19 @@ export async function saveTopic(topicData: {
         video_provider: updatedTopic.videoProvider,
         order_index: updatedTopic.orderIndex,
         estimated_minutes: updatedTopic.estimatedMinutes,
-        text_content: updatedTopic.textContent,
-        updated_at: new Date().toISOString()
-      });
-    } catch (e) {
-      // Non-blocking fallback to local storage
+        text_content: updatedTopic.textContent
+      };
+
+      if (updatedTopic.moduleSlug) {
+        payload.module_slug = updatedTopic.moduleSlug;
+      }
+      if (updatedTopic.chapters) {
+        payload.chapters = updatedTopic.chapters;
+      }
+
+      await supabase.from('topics').upsert(payload);
+    } catch (supaErr) {
+      console.warn('[CurriculumService] Supabase topic save warning:', supaErr);
     }
   }
 
@@ -162,12 +354,29 @@ export async function deleteTopic(topicId: string): Promise<boolean> {
     const remaining = customTopics.filter((t) => t.id !== topicId);
     localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, JSON.stringify(remaining));
 
-    window.dispatchEvent(new Event('waynautic_curriculum_changed'));
-    return true;
+    notifyCurriculumChange();
   } catch (err) {
-    console.error('Failed to delete topic:', err);
+    console.error('Failed to delete topic from local storage:', err);
     return false;
   }
+
+  // Sync delete to Server API
+  try {
+    await fetch(`/api/curriculum?id=${encodeURIComponent(topicId)}`, { method: 'DELETE' });
+  } catch (err) {
+    console.warn('[CurriculumService] Server API delete warning:', err);
+  }
+
+  // Sync delete to Supabase if configured
+  if (isSupabaseConfigured) {
+    try {
+      await supabase.from('topics').delete().eq('id', topicId);
+    } catch (e) {
+      console.warn('[CurriculumService] Supabase delete warning:', e);
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -194,11 +403,71 @@ export function getTopicQuiz(topicId: string, topicTitle: string): QuizQuestion[
 }
 
 /**
+ * Fetches latest quiz questions for a topic from server API & Supabase.
+ */
+export async function fetchTopicQuizUpdates(topicId: string): Promise<QuizQuestion[] | null> {
+  if (typeof window === 'undefined' || !topicId) return null;
+
+  // 1. Fetch from Server API
+  try {
+    const res = await fetch(`/api/curriculum/quiz?topicId=${encodeURIComponent(topicId)}`, { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.questions) && data.questions.length > 0) {
+        const customQuizzes: Record<string, QuizQuestion[]> = JSON.parse(
+          localStorage.getItem(CUSTOM_QUIZZES_STORAGE_KEY) || '{}'
+        );
+        customQuizzes[topicId] = data.questions;
+        localStorage.setItem(CUSTOM_QUIZZES_STORAGE_KEY, JSON.stringify(customQuizzes));
+        notifyCurriculumChange();
+        return data.questions;
+      }
+    }
+  } catch (err) {
+    console.warn('[CurriculumService] Quiz fetch error:', err);
+  }
+
+  // 2. Fetch from Supabase
+  if (isSupabaseConfigured) {
+    try {
+      const { data: supaQuestions } = await supabase
+        .from('quiz_questions')
+        .select('*')
+        .eq('topic_id', topicId);
+
+      if (supaQuestions && supaQuestions.length > 0) {
+        const questions: QuizQuestion[] = supaQuestions.map((q: any) => ({
+          id: q.id,
+          topicId: q.topic_id,
+          questionText: q.question_text,
+          options: q.options,
+          correctOptionIndex: q.correct_option_index,
+          explanation: q.explanation
+        }));
+
+        const customQuizzes: Record<string, QuizQuestion[]> = JSON.parse(
+          localStorage.getItem(CUSTOM_QUIZZES_STORAGE_KEY) || '{}'
+        );
+        customQuizzes[topicId] = questions;
+        localStorage.setItem(CUSTOM_QUIZZES_STORAGE_KEY, JSON.stringify(customQuizzes));
+        notifyCurriculumChange();
+        return questions;
+      }
+    } catch (e) {
+      console.warn('[CurriculumService] Supabase quiz query warning:', e);
+    }
+  }
+
+  return null;
+}
+
+/**
  * Save or update quiz questions for a topic.
  */
 export async function saveTopicQuiz(topicId: string, questions: QuizQuestion[]): Promise<void> {
   if (typeof window === 'undefined') return;
 
+  // 1. Save to local storage
   try {
     const customQuizzes: Record<string, QuizQuestion[]> = JSON.parse(
       localStorage.getItem(CUSTOM_QUIZZES_STORAGE_KEY) || '{}'
@@ -206,18 +475,29 @@ export async function saveTopicQuiz(topicId: string, questions: QuizQuestion[]):
 
     customQuizzes[topicId] = questions;
     localStorage.setItem(CUSTOM_QUIZZES_STORAGE_KEY, JSON.stringify(customQuizzes));
-    window.dispatchEvent(new Event('waynautic_curriculum_changed'));
+    notifyCurriculumChange();
   } catch (err) {
     console.error('Failed to save quiz in storage:', err);
   }
 
-  // Attempt Supabase sync if configured
+  // 2. Sync to Server API
+  try {
+    await fetch('/api/curriculum/quiz', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topicId, questions })
+    });
+  } catch (err) {
+    console.warn('[CurriculumService] Quiz server sync error:', err);
+  }
+
+  // 3. Attempt Supabase sync if configured
   if (isSupabaseConfigured) {
     try {
       for (const q of questions) {
         await supabase.from('quiz_questions').upsert({
           id: q.id,
-          topic_id: q.topicId,
+          topic_id: q.topicId || topicId,
           question_text: q.questionText,
           options: q.options,
           correct_option_index: q.correctOptionIndex,
@@ -225,7 +505,7 @@ export async function saveTopicQuiz(topicId: string, questions: QuizQuestion[]):
         });
       }
     } catch (e) {
-      // Non-blocking fallback
+      console.warn('[CurriculumService] Supabase quiz upsert warning:', e);
     }
   }
 }
@@ -238,15 +518,11 @@ export function resetCurriculumToDefault(): void {
   localStorage.removeItem(CUSTOM_TOPICS_STORAGE_KEY);
   localStorage.removeItem(CUSTOM_QUIZZES_STORAGE_KEY);
   localStorage.removeItem(DELETED_TOPICS_STORAGE_KEY);
-  window.dispatchEvent(new Event('waynautic_curriculum_changed'));
+  notifyCurriculumChange();
 }
 
 /**
  * Resolves or dynamically generates jump points/chapters for a video.
- * Handles:
- * 1. Explicit chapters if configured on topic
- * 2. Videos combining multiple topics (topics sharing the same video URL)
- * 3. Structured lesson chapters derived from content headings or duration
  */
 export function getTopicChapters(topic: Topic, allTopics?: Topic[]): VideoChapter[] {
   if (topic.chapters && topic.chapters.length > 0) {
@@ -261,7 +537,6 @@ export function getTopicChapters(topic: Topic, allTopics?: Topic[]): VideoChapte
   ).sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
 
   if (sharingTopics.length > 1) {
-    // This video combines multiple curriculum topics!
     let accumulatedSeconds = 0;
     return sharingTopics.map((t, idx) => {
       const chapterTime = accumulatedSeconds;
@@ -322,7 +597,6 @@ export function getTopicChapters(topic: Topic, allTopics?: Topic[]): VideoChapte
 
 /**
  * Resolves the user's exact deep-link return destination (topic + tab).
- * Defaults to topic 1 watch tab if no history exists.
  */
 export function getResumeLearningUrl(profile?: { lastAccessedTopicId?: string; lastAccessedTab?: 'watch' | 'read' | 'quiz' }): string {
   const topics = getAllTopics();
@@ -347,10 +621,6 @@ export function getResumeLearningUrl(profile?: { lastAccessedTopicId?: string; l
 
 /**
  * Calculates recommended topics related to the current topic.
- * Prioritizes:
- * 1. Next topic in curriculum sequence
- * 2. Topics in the same module
- * 3. Complementary topics across modules
  */
 export function getRecommendedTopics(currentTopic: Topic, allTopics?: Topic[], limit: number = 3): Topic[] {
   const list = allTopics || getAllTopics();
@@ -381,6 +651,3 @@ export function getRecommendedTopics(currentTopic: Topic, allTopics?: Topic[], l
 
   return recommendations.slice(0, limit);
 }
-
-
-

@@ -23,9 +23,8 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { MODULES } from '@/data/seedModules';
-import { TOPICS } from '@/data/seedTopics';
 import { useWaynauticStore } from '@/lib/store';
-import { getResumeLearningUrl } from '@/lib/curriculumService';
+import { getResumeLearningUrl, getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { StreakTracker } from '@/components/StreakTracker';
 import { 
   computeOverallStats, 
@@ -47,6 +46,15 @@ function DashboardContent() {
     }
     return 'overview';
   });
+
+  const [topics, setTopics] = useState(getAllTopics());
+
+  useEffect(() => {
+    fetchCurriculumUpdates().then((updated) => setTopics(updated));
+    const handleCurriculumChange = () => setTopics(getAllTopics());
+    window.addEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+    return () => window.removeEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+  }, []);
 
   // Filters for sub-views
   const [moduleFilter, setModuleFilter] = useState<'all' | 'in_progress' | 'completed' | 'not_started'>('all');
@@ -70,15 +78,15 @@ function DashboardContent() {
   }, [tabParam]);
 
   // Analytics
-  const overallStats = useMemo(() => computeOverallStats(progress), [progress]);
-  const moduleStats = useMemo(() => computeModuleProgressStats(progress), [progress]);
+  const overallStats = useMemo(() => computeOverallStats(progress, topics), [progress, topics]);
+  const moduleStats = useMemo(() => computeModuleProgressStats(progress, topics), [progress, topics]);
   const badgeCatalog = useMemo(() => getFullBadgeCatalog(badges, progress, streak), [badges, progress, streak]);
 
   // Find last active/in-progress topic or default to topic 1
   const completedTopicIds = Object.keys(progress).filter(id => progress[id]?.status === 'completed');
   const isBrandNewStudent = overallStats.completedTopics === 0 && !profile.lastAccessedTopicId;
   const lastTopicId = profile.lastAccessedTopicId || (completedTopicIds.length > 0 ? completedTopicIds[completedTopicIds.length - 1] : 't-1');
-  const continueTopic = TOPICS.find(t => t.id === lastTopicId || t.slug === lastTopicId) || TOPICS[0];
+  const continueTopic = topics.find(t => t.id === lastTopicId || t.slug === lastTopicId) || topics[0];
   const continueModule = MODULES.find(m => m.slug === continueTopic?.moduleSlug) || MODULES[0];
 
   // Filtered Modules
@@ -89,7 +97,7 @@ function DashboardContent() {
 
   // Filtered Quizzes
   const quizList = useMemo(() => {
-    return TOPICS.map(topic => {
+    return topics.map(topic => {
       const mod = MODULES.find(m => m.slug === topic.moduleSlug);
       const prog = progress[topic.id];
       const score = prog?.score;
@@ -110,7 +118,7 @@ function DashboardContent() {
         status: prog?.status || 'not_started'
       };
     });
-  }, [progress]);
+  }, [progress, topics]);
 
   const filteredQuizzes = useMemo(() => {
     return quizList.filter(item => {

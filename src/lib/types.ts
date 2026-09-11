@@ -62,6 +62,8 @@ export interface TopicRating {
   id: string;
   topicId: string;
   userId?: string;
+  userName?: string;
+  userAvatar?: string;
   userVote?: 'up' | 'down'; // Thumbs rating
   starRating?: number; // 1 to 5 stars
   feedbackText?: string;

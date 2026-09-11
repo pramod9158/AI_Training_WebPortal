@@ -1,0 +1,34 @@
+{
+  "t-1": [
+    {
+      "id": "rat-1",
+      "topicId": "t-1",
+      "userId": "usr-alice",
+      "userName": "Alice Chen",
+      "starRating": 5,
+      "userVote": "up",
+      "feedbackText": "Outstanding explanation of self-attention matrices and query-key dot products!",
+      "createdAt": "2026-09-11T08:09:05.964Z"
+    },
+    {
+      "id": "rat-2",
+      "topicId": "t-1",
+      "userId": "usr-bob",
+      "userName": "Bob Miller",
+      "starRating": 4,
+      "userVote": "up",
+      "feedbackText": "Great lesson! The mind map helped a lot.",
+      "createdAt": "2026-09-11T07:09:05.964Z"
+    },
+    {
+      "id": "rat-3",
+      "topicId": "t-1",
+      "userId": "usr-carol",
+      "userName": "Carol Zhang",
+      "starRating": 4,
+      "userVote": "up",
+      "feedbackText": "Very clear code examples.",
+      "createdAt": "2026-09-11T06:09:05.964Z"
+    }
+  ]
+}

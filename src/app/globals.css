@@ -98,10 +98,9 @@ html:not(.dark) {
      -------------------------------------------------------------------------- */
   .bg-\[\#0B0F19\],
   .bg-\[\#0D121F\],
-  .bg-\[\#070A12\],
   .bg-\[\#05070D\],
-  .bg-slate-950,
-  .bg-slate-900,
+  .bg-slate-950:not(.notes-code-pre):not(.notes-code-wrapper),
+  .bg-slate-900:not(.notes-code-header):not(.notes-code-wrapper),
   .bg-slate-900\/95,
   .bg-slate-900\/90,
   .bg-slate-900\/80,
@@ -117,7 +116,7 @@ html:not(.dark) {
   }
 
   /* Inner / Secondary Boxes */
-  .bg-slate-800,
+  .bg-slate-800:not(.notes-code-header *):not(.notes-code-wrapper *),
   .bg-slate-800\/90,
   .bg-slate-800\/80,
   .bg-slate-800\/60,
@@ -126,6 +125,62 @@ html:not(.dark) {
     background-image: none !important;
     background-color: #F7F7F7 !important;
     border-color: #E5E5E5 !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     Code Blocks & Architecture Mind Maps (High-Contrast Terminal Styling)
+     Guarantees crystal-clear high contrast for code & ASCII box diagrams
+     -------------------------------------------------------------------------- */
+  .notes-code-wrapper {
+    background-image: none !important;
+    background-color: #0A0F1D !important;
+    border: 2px solid #1E293B !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.22) !important;
+  }
+
+  .notes-code-header {
+    background-image: none !important;
+    background-color: #131B2E !important;
+    border-bottom: 1px solid #1E293B !important;
+    color: #94A3B8 !important;
+  }
+
+  .notes-code-header span {
+    color: #38BDF8 !important;
+  }
+
+  .notes-code-header button {
+    background-color: #1E293B !important;
+    border: 1px solid #334155 !important;
+    color: #E2E8F0 !important;
+  }
+
+  .notes-code-header button:hover {
+    background-color: #334155 !important;
+    color: #FFFFFF !important;
+  }
+
+  .notes-code-pre,
+  .notes-code-pre code {
+    background-image: none !important;
+    background-color: #0A0F1D !important;
+    color: #F8FAFC !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  }
+
+  .notes-code-pre span.text-sky-400 {
+    color: #38BDF8 !important;
+    font-weight: 700 !important;
+  }
+
+  .notes-code-pre span.text-slate-100 {
+    color: #F8FAFC !important;
+    font-weight: 600 !important;
+  }
+
+  .notes-code-pre span.text-slate-400 {
+    color: #94A3B8 !important;
   }
 
   /* --------------------------------------------------------------------------

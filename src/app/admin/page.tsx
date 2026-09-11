@@ -44,11 +44,10 @@ import {
   CandidateRecord, 
   PaymentRecord, 
   BarcodePaymentConfig, 
-  AdminMetrics, 
-  TopicDiagnostic 
+  AdminMetrics
 } from '@/lib/adminTypes';
 import { MODULES, Topic } from '@/data/seedModules';
-import { getAllTopics, resetCurriculumToDefault } from '@/lib/curriculumService';
+import { getAllTopics, resetCurriculumToDefault, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { 
   isAdminAuthenticated, 
   clearAdminSession, 
@@ -58,7 +57,6 @@ import {
   getBarcodeConfig, 
   saveBarcodeConfig, 
   approvePayment, 
-  getCurriculumDiagnostics, 
   exportCandidatesToCSV, 
   exportPaymentsToCSV,
   updateCandidatePlan
@@ -78,15 +76,14 @@ export default function AdminDashboardPage() {
   // Auth verification
   const [authChecked, setAuthChecked] = useState(false);
 
-  // Tab State: 'overview' | 'candidates' | 'payments' | 'curriculum' | 'diagnostics' | 'settings'
-  const [activeTab, setActiveTab] = useState<'overview' | 'candidates' | 'payments' | 'curriculum' | 'diagnostics' | 'settings'>('overview');
+  // Tab State: 'overview' | 'candidates' | 'payments' | 'curriculum' | 'settings'
+  const [activeTab, setActiveTab] = useState<'overview' | 'candidates' | 'payments' | 'curriculum' | 'settings'>('overview');
 
   // Data States
   const [metrics, setMetrics] = useState<AdminMetrics | null>(null);
   const [candidates, setCandidates] = useState<CandidateRecord[]>([]);
   const [payments, setPayments] = useState<PaymentRecord[]>([]);
   const [barcodeConfig, setBarcodeConfig] = useState<BarcodePaymentConfig>(getBarcodeConfig());
-  const [diagnostics, setDiagnostics] = useState<TopicDiagnostic[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Curriculum Management States
@@ -167,19 +164,18 @@ export default function AdminDashboardPage() {
   const loadPlatformData = async () => {
     setLoading(true);
     try {
-      const [m, c, p, b, d] = await Promise.all([
+      const [m, c, p, b] = await Promise.all([
         getAdminMetrics(),
         getCandidates(),
         getPayments(),
-        getBarcodeConfig(),
-        getCurriculumDiagnostics()
+        getBarcodeConfig()
       ]);
       setMetrics(m);
       setCandidates(c);
       setPayments(p);
       setBarcodeConfig(b);
-      setDiagnostics(d);
       setAllTopics(getAllTopics());
+      fetchCurriculumUpdates().then((fresh) => setAllTopics(fresh));
     } catch (err) {
       console.error('Failed to load admin data:', err);
     } finally {
@@ -399,18 +395,6 @@ export default function AdminDashboardPage() {
           >
             <BookOpen className="w-4 h-4" />
             <span>Curriculum & Quizzes ({allTopics.length})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('diagnostics')}
-            className={`py-3 px-2 sm:px-3 border-b-2 flex items-center space-x-2 transition-all whitespace-nowrap ${
-              activeTab === 'diagnostics'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <Award className="w-4 h-4" />
-            <span>Curriculum Diagnostics</span>
           </button>
 
           <button
@@ -1182,7 +1166,6 @@ export default function AdminDashboardPage() {
                         <th className="pb-3">Module</th>
                         <th className="pb-3">Topic Title & Slug</th>
                         <th className="pb-3">Duration</th>
-                        <th className="pb-3">Video Provider</th>
                         <th className="pb-3 text-right pr-2">Actions</th>
                       </tr>
                     </thead>
@@ -1209,11 +1192,6 @@ export default function AdminDashboardPage() {
                               <span className="flex items-center space-x-1 text-slate-600 dark:text-slate-300">
                                 <Clock className="w-3 h-3 text-slate-400" />
                                 <span>{t.estimatedMinutes} mins</span>
-                              </span>
-                            </td>
-                            <td className="py-3.5 whitespace-nowrap">
-                              <span className="capitalize text-slate-600 dark:text-slate-400 font-mono text-[11px]">
-                                {t.videoProvider || 'youtube'}
                               </span>
                             </td>
                             <td className="py-3.5 pr-2 text-right whitespace-nowrap">
@@ -1258,66 +1236,6 @@ export default function AdminDashboardPage() {
               )}
             </div>
 
-          </div>
-        )}
-
-        {/* -------------------------------------------------------------------
-         * TAB 5: CURRICULUM DIAGNOSTICS & QUIZ INSIGHTS
-         * -----------------------------------------------------------------*/}
-        {activeTab === 'diagnostics' && (
-          <div className="space-y-6 animate-in fade-in duration-200">
-            <div className="p-6 rounded-3xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-              <div>
-                <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
-                  Curriculum Topic Completion & Quiz Health
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Analyze drop-off points, toughest quizzes, and topic mastery across student cohorts.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {diagnostics.map((diag, index) => (
-                  <div
-                    key={diag.topicId}
-                    className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 space-y-3"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <span className="text-[10px] font-mono text-indigo-500 font-bold">
-                          {diag.moduleTitle}
-                        </span>
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-0.5">
-                          {diag.topicTitle}
-                        </h4>
-                      </div>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-                        diag.averageQuizScore >= 85
-                          ? 'bg-emerald-500/10 text-emerald-500'
-                          : 'bg-amber-500/10 text-amber-500'
-                      }`}>
-                        {diag.averageQuizScore}% Pass
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2 text-xs pt-1">
-                      <div>
-                        <span className="text-[10px] text-slate-400 block">Completion Rate</span>
-                        <span className="font-bold text-slate-700 dark:text-slate-300">
-                          {diag.completionRate}% ({diag.completionCount} students)
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-[10px] text-slate-400 block">Quiz Attempts</span>
-                        <span className="font-bold text-slate-700 dark:text-slate-300">
-                          {diag.attemptsCount} total attempts
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         )}
 

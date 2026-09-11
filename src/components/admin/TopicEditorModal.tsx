@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MODULES, Topic } from '@/data/seedModules';
 import { saveTopic, deleteTopic } from '@/lib/curriculumService';
-import { verifyAdminPasskey } from '@/lib/adminService';
+import { verifyAdminPasskey, isAdminAuthenticated } from '@/lib/adminService';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { 
   X, 
@@ -42,8 +42,8 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
   onSaved,
   onDeleted
 }) => {
-  // Admin Authorization State (Requires credentials before editing)
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  // Admin Authorization State (Requires credentials before editing, auto-clears if already signed into admin console)
+  const [isAuthorized, setIsAuthorized] = useState(() => isAdminAuthenticated());
   const [authMode, setAuthMode] = useState<'passkey' | 'credentials'>('passkey');
   const [adminPasskey, setAdminPasskey] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
@@ -75,7 +75,7 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
   // Reset state whenever modal is opened
   useEffect(() => {
     if (isOpen) {
-      setIsAuthorized(false);
+      setIsAuthorized(isAdminAuthenticated());
       setAdminPasskey('');
       setAdminEmail('');
       setAdminPassword('');

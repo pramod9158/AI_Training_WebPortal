@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Play, 
   Pause, 
@@ -72,16 +72,27 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const storageKey = useMemo(() => `waynautic_video_pos_${topicId || encodeURIComponent(url)}`, [topicId, url]);
+  const currentTimeRef = useRef<number>(0);
+  const isPlayingRef = useRef<boolean>(false);
+  const hasSeekedResumeRef = useRef<boolean>(false);
 
-  // Load saved speed and saved playback position
+  const storageKey = useMemo(
+    () => `waynautic_video_pos_${topicId || encodeURIComponent(url)}`,
+    [topicId, url]
+  );
+
+  // Keep refs in sync for reliable unmount/unload saving
+  currentTimeRef.current = currentTime;
+  isPlayingRef.current = isPlaying;
+
+  // Load saved speed and saved playback position on mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
       const savedSpeed = localStorage.getItem('waynautic_playback_speed');
       if (savedSpeed) {
         const parsed = parseFloat(savedSpeed);
-        if (SPEED_OPTIONS.includes(parsed)) {
+        if (parsed > 0 && !isNaN(parsed)) {
           setPlaybackSpeed(parsed);
         }
       }
@@ -89,14 +100,40 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       const savedPos = localStorage.getItem(storageKey);
       if (savedPos) {
         const parsedPos = parseFloat(savedPos);
-        if (parsedPos > 5) {
+        if (parsedPos > 2) {
           setResumedFrom(parsedPos);
           setCurrentTime(parsedPos);
+          currentTimeRef.current = parsedPos;
         }
       }
     } catch (e) {
       console.warn('Could not read video storage data:', e);
     }
+  }, [storageKey]);
+
+  // Persist position on window unload, tab hide, or unmount
+  useEffect(() => {
+    const saveCurrentPosition = () => {
+      if (currentTimeRef.current > 2 && typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(storageKey, currentTimeRef.current.toString());
+        } catch {}
+      }
+    };
+
+    window.addEventListener('beforeunload', saveCurrentPosition);
+    window.addEventListener('pagehide', saveCurrentPosition);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        saveCurrentPosition();
+      }
+    });
+
+    return () => {
+      saveCurrentPosition();
+      window.removeEventListener('beforeunload', saveCurrentPosition);
+      window.removeEventListener('pagehide', saveCurrentPosition);
+    };
   }, [storageKey]);
 
   // Direct video format check
@@ -107,8 +144,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     url.startsWith('blob:') || 
     url.startsWith('data:video');
 
-  // Convert watch URL to embed URL with enablejsapi=1 and start time
-  const getEmbedUrl = (rawUrl: string, startTime = 0) => {
+  // Convert watch URL to embed URL with enablejsapi=1 and initial start time
+  const getEmbedUrl = useCallback((rawUrl: string, startTime = 0) => {
     let baseEmbed = 'https://www.youtube.com/embed/zxQyTK8ckyY';
     if (!rawUrl) return `${baseEmbed}?enablejsapi=1&autoplay=1&rel=0`;
 
@@ -128,29 +165,40 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     params.set('enablejsapi', '1');
     params.set('autoplay', '1');
     params.set('rel', '0');
-    if (startTime > 5) {
+    if (startTime > 2) {
       params.set('start', Math.floor(startTime).toString());
     }
 
     return `${baseEmbed}?${params.toString()}`;
-  };
+  }, []);
 
   const embedUrl = useMemo(() => {
     return getEmbedUrl(url, resumedFrom || 0);
-  }, [url, resumedFrom]);
+  }, [url, resumedFrom, getEmbedUrl]);
 
-  // YouTube postMessage control
-  const sendYouTubeCommand = (func: string, args: any[] = []) => {
+  // YouTube postMessage command dispatcher
+  const sendYouTubeCommand = useCallback((func: string, args: any[] = []) => {
     if (iframeRef.current?.contentWindow) {
       iframeRef.current.contentWindow.postMessage(
         JSON.stringify({ event: 'command', func, args }),
         '*'
       );
     }
-  };
+  }, []);
+
+  // Send YouTube API listener registration
+  const pingYouTubeListening = useCallback(() => {
+    if (iframeRef.current?.contentWindow) {
+      // Standard YouTube IFrame listening registration
+      iframeRef.current.contentWindow.postMessage(
+        JSON.stringify({ event: 'listening' }),
+        '*'
+      );
+    }
+  }, []);
 
   // Check 90% threshold
-  const checkCompletion = (curr: number, dur: number) => {
+  const checkCompletion = useCallback((curr: number, dur: number) => {
     if (dur > 0 && curr / dur >= 0.9 && !hasWatched90) {
       setHasWatched90(true);
       setCompletionCelebration(true);
@@ -159,11 +207,16 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       }
       setTimeout(() => setCompletionCelebration(false), 8000);
     }
-  };
+  }, [hasWatched90, onProgress90]);
 
   // Seek handler (works for both HTML5 and YouTube)
   const handleSeekTo = (seconds: number) => {
     setCurrentTime(seconds);
+    currentTimeRef.current = seconds;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(storageKey, seconds.toString());
+    }
+
     if (isDirectVideo && videoRef.current) {
       videoRef.current.currentTime = seconds;
       videoRef.current.play().catch(() => {});
@@ -174,7 +227,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setShowJumpMenu(false);
   };
 
-  // Change playback speed
+  // Change playback speed from platform controls
   const handleSetSpeed = (speed: number) => {
     setPlaybackSpeed(speed);
     setShowSpeedMenu(false);
@@ -193,6 +246,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const handleStartOver = () => {
     setResumedFrom(null);
     setShowResumeToast(false);
+    hasSeekedResumeRef.current = true;
     handleSeekTo(0);
     if (typeof window !== 'undefined') {
       localStorage.removeItem(storageKey);
@@ -202,12 +256,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   // Launch playback
   const handleLaunchPlayer = () => {
     setIsPlaying(true);
-    if (resumedFrom && resumedFrom > 5) {
+    hasSeekedResumeRef.current = false;
+    trackVideoStarted(topicId || title);
+
+    if (resumedFrom && resumedFrom > 2) {
       setShowResumeToast(true);
     }
   };
 
-  // Periodic position saver and YouTube postMessage listener
+  // YouTube postMessage event listener & speed synchronization
   useEffect(() => {
     if (!isPlaying) return;
 
@@ -223,11 +280,45 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         if (!event.data) return;
         const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
 
+        // 1. Synchronize playback speed if changed from YouTube player's built-in gear settings
+        let incomingSpeed: number | null = null;
+        if (data.event === 'onPlaybackRateChange') {
+          incomingSpeed = typeof data.info === 'number' ? data.info : Number(data.info);
+        } else if (data.event === 'infoDelivery' && typeof data.info?.playbackRate === 'number') {
+          incomingSpeed = data.info.playbackRate;
+        }
+
+        if (incomingSpeed && typeof incomingSpeed === 'number' && !isNaN(incomingSpeed) && incomingSpeed > 0) {
+          setPlaybackSpeed((current) => {
+            if (Math.abs(current - incomingSpeed!) > 0.05) {
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('waynautic_playback_speed', incomingSpeed!.toString());
+              }
+              return incomingSpeed!;
+            }
+            return current;
+          });
+        }
+
+        // 2. Handle YouTube onReady / onStateChange to guarantee resume from saved time
+        if (
+          (data.event === 'onReady' || data.event === 'initialDelivery' || (data.event === 'onStateChange' && data.info === 1)) &&
+          !hasSeekedResumeRef.current &&
+          resumedFrom &&
+          resumedFrom > 2
+        ) {
+          sendYouTubeCommand('seekTo', [resumedFrom, true]);
+          hasSeekedResumeRef.current = true;
+          setShowResumeToast(true);
+        }
+
+        // 3. Track current playback time from YouTube infoDelivery
         if (data.event === 'infoDelivery' && data.info) {
           if (typeof data.info.currentTime === 'number') {
             const time = data.info.currentTime;
             setCurrentTime(time);
-            if (time > 3 && typeof window !== 'undefined') {
+            currentTimeRef.current = time;
+            if (time > 2 && typeof window !== 'undefined') {
               localStorage.setItem(storageKey, time.toString());
             }
           }
@@ -245,18 +336,28 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     window.addEventListener('message', handleMessage);
 
-    // Ping YouTube for updates
+    // Subscribe to YouTube events immediately and keep pinging periodically
+    pingYouTubeListening();
     const pollInterval = setInterval(() => {
-      if (!isDirectVideo && iframeRef.current?.contentWindow) {
-        sendYouTubeCommand('listening');
+      if (!isDirectVideo) {
+        pingYouTubeListening();
       }
-    }, 1500);
+    }, 1000);
 
     return () => {
       window.removeEventListener('message', handleMessage);
       clearInterval(pollInterval);
     };
-  }, [isPlaying, isDirectVideo, playbackSpeed, storageKey, hasWatched90]);
+  }, [
+    isPlaying, 
+    isDirectVideo, 
+    playbackSpeed, 
+    storageKey, 
+    resumedFrom, 
+    checkCompletion, 
+    pingYouTubeListening, 
+    sendYouTubeCommand
+  ]);
 
   // Active chapter lookup based on current time
   const activeChapterIndex = useMemo(() => {
@@ -301,7 +402,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               <a
                 href={url}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-extrabold text-xs transition-colors flex items-center space-x-1.5 min-h-[38px]"
               >
                 <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
@@ -338,7 +439,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               onLoadedMetadata={(e) => {
                 const dur = e.currentTarget.duration;
                 setDuration(dur);
-                if (resumedFrom && resumedFrom > 5) {
+                if (resumedFrom && resumedFrom > 2) {
                   e.currentTarget.currentTime = resumedFrom;
                   setShowResumeToast(true);
                 }
@@ -348,7 +449,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 const v = e.currentTarget;
                 const time = v.currentTime;
                 setCurrentTime(time);
-                if (time > 3 && typeof window !== 'undefined') {
+                currentTimeRef.current = time;
+                if (time > 2 && typeof window !== 'undefined') {
                   localStorage.setItem(storageKey, time.toString());
                 }
                 checkCompletion(time, v.duration);
@@ -359,7 +461,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               ref={iframeRef}
               src={embedUrl}
               title={title}
-              loading="lazy"
+              loading="eager"
+              onLoad={() => {
+                pingYouTubeListening();
+                if (resumedFrom && resumedFrom > 2) {
+                  setTimeout(() => {
+                    sendYouTubeCommand('seekTo', [resumedFrom, true]);
+                  }, 500);
+                }
+              }}
               className="w-full h-full border-0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
@@ -387,10 +497,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </h3>
 
             {/* Resume or Chapter info */}
-            {resumedFrom && resumedFrom > 5 ? (
-              <div className="relative z-10 mt-3 inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-sky-500/20 border border-sky-400/40 text-sky-300 text-xs font-bold backdrop-blur-md">
-                <Clock className="w-3.5 h-3.5 text-sky-400" />
-                <span>Resume from {formatTime(resumedFrom)}</span>
+            {resumedFrom && resumedFrom > 2 ? (
+              <div className="relative z-10 mt-3 inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-sky-500/25 border-2 border-sky-400/50 text-sky-200 text-xs font-extrabold backdrop-blur-md shadow-lg animate-pulse">
+                <Clock className="w-4 h-4 text-sky-300" />
+                <span>Click to Resume from {formatTime(resumedFrom)}</span>
               </div>
             ) : (
               <p className="relative z-10 text-xs text-slate-300 mt-2 font-medium">
@@ -415,14 +525,20 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               Resumed from <strong className="text-sky-400 font-mono">{formatTime(resumedFrom)}</strong>
             </span>
             <button
-              onClick={handleStartOver}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleStartOver();
+              }}
               className="px-2 py-0.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-sky-300 transition-colors flex items-center space-x-1"
             >
               <RotateCcw className="w-3 h-3" />
               <span>Start Over</span>
             </button>
             <button 
-              onClick={() => setShowResumeToast(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowResumeToast(false);
+              }}
               className="text-slate-400 hover:text-white"
             >
               <X className="w-3.5 h-3.5" />
@@ -547,7 +663,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           )}
 
           {/* Restart Button */}
-          {currentTime > 5 && (
+          {currentTime > 2 && (
             <button
               onClick={handleStartOver}
               className="flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold transition-all"

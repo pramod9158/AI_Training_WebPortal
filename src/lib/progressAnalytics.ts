@@ -1,5 +1,6 @@
 import { MODULES, Module } from '@/data/seedModules';
-import { TOPICS, Topic } from '@/data/seedTopics';
+import { Topic } from '@/data/seedTopics';
+import { getAllTopics } from './curriculumService';
 import { UserProgress, UserStreak, UserBadge } from './types';
 
 export interface BadgeCatalogItem {
@@ -49,9 +50,11 @@ export interface OverallProgressStats {
 }
 
 export function computeOverallStats(
-  progress: Record<string, UserProgress>
+  progress: Record<string, UserProgress>,
+  topicsList?: Topic[]
 ): OverallProgressStats {
-  const totalTopics = TOPICS.length;
+  const currentTopics = topicsList || getAllTopics();
+  const totalTopics = currentTopics.length;
   const progressList = Object.values(progress);
   
   const completedTopics = progressList.filter(p => p.status === 'completed').length;
@@ -68,8 +71,8 @@ export function computeOverallStats(
     ? Math.round(quizScores.reduce((a, b) => a + b, 0) / totalQuizzesAttempted)
     : null;
 
-  const totalEstimatedMinutes = TOPICS.reduce((acc, t) => acc + (t.estimatedMinutes || 20), 0);
-  const completedEstimatedMinutes = TOPICS
+  const totalEstimatedMinutes = currentTopics.reduce((acc, t) => acc + (t.estimatedMinutes || 20), 0);
+  const completedEstimatedMinutes = currentTopics
     .filter(t => progress[t.id]?.status === 'completed')
     .reduce((acc, t) => acc + (t.estimatedMinutes || 20), 0);
 
@@ -106,10 +109,12 @@ export function computeOverallStats(
 }
 
 export function computeModuleProgressStats(
-  progress: Record<string, UserProgress>
+  progress: Record<string, UserProgress>,
+  topicsList?: Topic[]
 ): ModuleProgressStats[] {
+  const currentTopics = topicsList || getAllTopics();
   return MODULES.map(mod => {
-    const modTopics = TOPICS.filter(t => t.moduleSlug === mod.slug);
+    const modTopics = currentTopics.filter(t => t.moduleSlug === mod.slug);
     const totalTopics = modTopics.length;
     const completedTopics = modTopics.filter(t => progress[t.id]?.status === 'completed').length;
     const inProgressTopics = modTopics.filter(t => progress[t.id]?.status === 'in_progress').length;

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useParams, useSearchParams, useRouter, notFound } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { MODULES, getOrderedCurriculumTopics } from '@/data/seedModules';
-import { getAllTopics, getTopicBySlugs, getTopicQuiz, getTopicChapters } from '@/lib/curriculumService';
+import { getAllTopics, getTopicBySlugs, getTopicQuiz, getTopicChapters, fetchCurriculumUpdates, fetchTopicQuizUpdates } from '@/lib/curriculumService';
 import { useWaynauticStore } from '@/lib/store';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { MarkdownNotes } from '@/components/MarkdownNotes';
@@ -71,12 +71,21 @@ export function TopicWorkspaceClient() {
 
   const moduleSlug = params.moduleSlug as string;
   const topicSlug = params.topicSlug as string;
+  const currentTab = (searchParams.get('tab') as 'watch' | 'read' | 'quiz') || 'watch';
 
   const { profile, progress, bookmarks, toggleBookmarkTopic, markTopicProgress, saveQuizAttempt, saveLastAccessedTopic } = useWaynauticStore();
 
-  const [, setTopicsVersion] = useState(0);
+  const [topicsVersion, setTopicsVersion] = useState(0);
+  const [showAutoCompletedToast, setShowAutoCompletedToast] = useState(false);
 
-  // Listen for admin curriculum changes
+  // Background fetch latest curriculum and quiz from cloud API/Supabase
+  useEffect(() => {
+    fetchCurriculumUpdates().then(() => {
+      setTopicsVersion((v) => v + 1);
+    });
+  }, []);
+
+  // Listen for admin curriculum changes across tabs and windows
   useEffect(() => {
     const handleCurriculumChange = () => {
       setTopicsVersion((v) => v + 1);
@@ -88,9 +97,26 @@ export function TopicWorkspaceClient() {
   const moduleData = MODULES.find((m) => m.slug === moduleSlug);
   const topic = getTopicBySlugs(moduleSlug, topicSlug);
 
+  // Fetch updated quiz questions for this topic in background
+  useEffect(() => {
+    if (topic?.id) {
+      fetchTopicQuizUpdates(topic.id).then((freshQuestions) => {
+        if (freshQuestions && freshQuestions.length > 0) {
+          setTopicsVersion((v) => v + 1);
+        }
+      });
+    }
+  }, [topic?.id]);
+
+  // If topic slug was renamed by admin, automatically replace URL without full page reload
+  useEffect(() => {
+    if (topic && topic.slug !== topicSlug) {
+      router.replace(`/curriculum/${topic.moduleSlug}/${topic.slug}?tab=${currentTab}`, { scroll: false });
+    }
+  }, [topic, topicSlug, currentTab, router]);
+
   const topicId = topic?.id;
   const isLoggedIn = Boolean(profile.userId || profile.email);
-  const currentTab = (searchParams.get('tab') as 'watch' | 'read' | 'quiz') || 'watch';
 
   // Record last accessed topic & tab for deep-link Resume Learning
   useEffect(() => {
@@ -197,8 +223,6 @@ export function TopicWorkspaceClient() {
   const quizQuestions = getTopicQuiz(topic.id, topic.title);
   const topicChapters = getTopicChapters(topic, allActiveTopics);
 
-  const [showAutoCompletedToast, setShowAutoCompletedToast] = useState(false);
-
   const handleVideoProgress90 = () => {
     markTopicProgress(topic.id, 'completed');
     trackTopicCompleted(topic.title, topic.id);
@@ -210,10 +234,7 @@ export function TopicWorkspaceClient() {
     saveQuizAttempt(topic.id, Math.round((scorePercent / 100) * quizQuestions.length), quizQuestions.length);
     trackQuizCompleted(topic.title, scorePercent, topic.id);
     if (scorePercent >= 70) {
-      markTopicProgress(topic.id, 'completed', scorePercent);
       trackTopicCompleted(topic.title, topic.id);
-    } else {
-      markTopicProgress(topic.id, 'in_progress', scorePercent);
     }
   };
 
@@ -281,7 +302,7 @@ export function TopicWorkspaceClient() {
 
           {/* Mark Complete Button */}
           <button
-            onClick={() => markTopicProgress(topic.id, isCompleted ? 'in_progress' : 'completed')}
+            onClick={() => markTopicProgress(topic.id, isCompleted ? 'in_progress' : 'completed', undefined, true)}
             className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl border-2 text-xs font-extrabold transition-all shadow-sm active:scale-95 min-h-[38px] focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
               isCompleted
                 ? 'bg-emerald-50 text-emerald-800 border-emerald-400 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-500/60 shadow-emerald-500/10'
@@ -388,9 +409,6 @@ export function TopicWorkspaceClient() {
         >
           <HelpCircle className="w-4 h-4" />
           <span>3. Take Quiz</span>
-          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-white/20 ml-1">
-            {quizQuestions.length}
-          </span>
         </button>
       </div>
 
@@ -399,6 +417,7 @@ export function TopicWorkspaceClient() {
         {currentTab === 'watch' && (
           <div role="tabpanel" id="panel-watch" aria-labelledby="tab-watch">
             <VideoPlayer
+              key={`vp-${topic.id}-${topic.videoUrl}`}
               url={topic.videoUrl}
               title={topic.title}
               topicId={topic.id}
@@ -416,6 +435,7 @@ export function TopicWorkspaceClient() {
         {currentTab === 'read' && (
           <div role="tabpanel" id="panel-read" aria-labelledby="tab-read">
             <MarkdownNotes 
+              key={`notes-${topic.id}-${topic.textContent?.length}-${topicsVersion}`}
               content={topic.textContent}
               topicTitle={topic.title}
               topicSlug={topic.slug}
@@ -428,6 +448,7 @@ export function TopicWorkspaceClient() {
         {currentTab === 'quiz' && (
           <div role="tabpanel" id="panel-quiz" aria-labelledby="tab-quiz">
             <QuizEngine
+              key={`quiz-${topic.id}-${quizQuestions.length}-${topicsVersion}`}
               topicId={topic.id}
               topicTitle={topic.title}
               questions={quizQuestions}

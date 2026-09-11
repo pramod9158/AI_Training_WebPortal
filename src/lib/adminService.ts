@@ -200,55 +200,164 @@ export async function submitCandidatePayment(data: {
   proofUrl?: string;
   notes?: string;
 }): Promise<{ success: boolean; message: string; payment?: PaymentRecord }> {
-  const newPayment: PaymentRecord = {
-    id: `pay-${Date.now()}`,
-    userId: data.userId,
-    userEmail: data.userEmail.trim(),
-    userName: data.userName || data.userEmail.split('@')[0],
-    amount: data.amount,
-    currency: data.currency || 'INR',
-    paymentMethod: 'barcode_qr',
-    transactionReference: data.transactionReference.trim(),
-    barcodeId: 'waynautic_pro_upi',
-    status: 'pending',
-    proofUrl: data.proofUrl,
-    notes: data.notes,
-    planGranted: 'pro',
-    createdAt: new Date().toISOString()
-  };
+  const cleanEmail = data.userEmail.trim();
+  const cleanTxRef = data.transactionReference.trim();
+  const now = new Date().toISOString();
 
   // 1. Try Supabase
   if (isSupabaseConfigured) {
     try {
-      const { error } = await supabase.from('payments').insert({
-        user_id: data.userId,
-        user_email: data.userEmail,
-        user_name: data.userName,
-        amount: data.amount,
-        currency: data.currency || 'INR',
-        payment_method: 'barcode_qr',
-        transaction_reference: data.transactionReference,
-        barcode_id: 'waynautic_pro_upi',
-        status: 'pending',
-        proof_url: data.proofUrl,
-        notes: data.notes,
-        plan_granted: 'pro'
-      });
-      if (error) throw error;
+      // Check if there is already a pending payment for this user
+      const { data: existingPending } = await supabase
+        .from('payments')
+        .select('id')
+        .ilike('user_email', cleanEmail)
+        .eq('status', 'pending')
+        .limit(1);
+
+      if (existingPending && existingPending.length > 0) {
+        // Update existing pending payment instead of creating a duplicate request
+        const existingId = existingPending[0].id;
+        const { error: updateErr } = await supabase
+          .from('payments')
+          .update({
+            user_name: data.userName,
+            amount: data.amount,
+            currency: data.currency || 'INR',
+            transaction_reference: cleanTxRef,
+            proof_url: data.proofUrl,
+            notes: data.notes || 'Updated candidate payment reference',
+            updated_at: now
+          })
+          .eq('id', existingId);
+
+        if (!updateErr) {
+          const updatedRecord: PaymentRecord = {
+            id: existingId,
+            userId: data.userId,
+            userEmail: cleanEmail,
+            userName: data.userName || cleanEmail.split('@')[0],
+            amount: data.amount,
+            currency: data.currency || 'INR',
+            paymentMethod: 'barcode_qr',
+            transactionReference: cleanTxRef,
+            barcodeId: 'waynautic_pro_upi',
+            status: 'pending',
+            proofUrl: data.proofUrl,
+            notes: data.notes,
+            planGranted: 'pro',
+            createdAt: now
+          };
+
+          // Update local cache
+          const localList = getLocalPayments();
+          const filteredLocal = localList.map((p) => (p.id === existingId || (p.userEmail.toLowerCase() === cleanEmail.toLowerCase() && p.status === 'pending') ? updatedRecord : p));
+          saveLocalPayments(filteredLocal);
+
+          return {
+            success: true,
+            message: 'Your pending payment reference has been updated successfully! Admissions will verify shortly.',
+            payment: updatedRecord
+          };
+        }
+      } else {
+        // No existing pending payment, insert new
+        const { data: insertedData, error: insErr } = await supabase.from('payments').insert({
+          user_id: data.userId,
+          user_email: cleanEmail,
+          user_name: data.userName,
+          amount: data.amount,
+          currency: data.currency || 'INR',
+          payment_method: 'barcode_qr',
+          transaction_reference: cleanTxRef,
+          barcode_id: 'waynautic_pro_upi',
+          status: 'pending',
+          proof_url: data.proofUrl,
+          notes: data.notes,
+          plan_granted: 'pro'
+        }).select().maybeSingle();
+
+        if (!insErr && insertedData) {
+          const createdRecord: PaymentRecord = {
+            id: insertedData.id,
+            userId: insertedData.user_id,
+            userEmail: insertedData.user_email,
+            userName: insertedData.user_name || cleanEmail.split('@')[0],
+            amount: Number(insertedData.amount),
+            currency: insertedData.currency,
+            paymentMethod: insertedData.payment_method,
+            transactionReference: insertedData.transaction_reference,
+            barcodeId: insertedData.barcode_id || 'waynautic_pro_upi',
+            status: insertedData.status,
+            proofUrl: insertedData.proof_url,
+            notes: insertedData.notes,
+            planGranted: insertedData.plan_granted || 'pro',
+            createdAt: insertedData.created_at
+          };
+          const localList = getLocalPayments();
+          saveLocalPayments([createdRecord, ...localList.filter(p => p.id !== createdRecord.id)]);
+          return {
+            success: true,
+            message: 'Payment reference submitted successfully! Our admissions team will verify your payment within 15 minutes.',
+            payment: createdRecord
+          };
+        }
+      }
     } catch (err) {
-      console.warn('Could not insert payment into Supabase, saving locally:', err);
+      console.warn('Could not process payment in Supabase, using local fallback:', err);
     }
   }
 
   // 2. Local Fallback / Cache
   const localList = getLocalPayments();
-  const updated = [newPayment, ...localList];
-  saveLocalPayments(updated);
+  const existingPendingIndex = localList.findIndex(
+    (p) => p.userEmail.toLowerCase() === cleanEmail.toLowerCase() && p.status === 'pending'
+  );
+
+  let resultPayment: PaymentRecord;
+  let updatedList: PaymentRecord[];
+
+  if (existingPendingIndex >= 0) {
+    resultPayment = {
+      ...localList[existingPendingIndex],
+      userName: data.userName || localList[existingPendingIndex].userName,
+      amount: data.amount,
+      currency: data.currency || 'INR',
+      transactionReference: cleanTxRef,
+      proofUrl: data.proofUrl || localList[existingPendingIndex].proofUrl,
+      notes: data.notes || localList[existingPendingIndex].notes,
+      createdAt: now
+    };
+    updatedList = [...localList];
+    updatedList[existingPendingIndex] = resultPayment;
+  } else {
+    resultPayment = {
+      id: `pay-${Date.now()}`,
+      userId: data.userId,
+      userEmail: cleanEmail,
+      userName: data.userName || cleanEmail.split('@')[0],
+      amount: data.amount,
+      currency: data.currency || 'INR',
+      paymentMethod: 'barcode_qr',
+      transactionReference: cleanTxRef,
+      barcodeId: 'waynautic_pro_upi',
+      status: 'pending',
+      proofUrl: data.proofUrl,
+      notes: data.notes,
+      planGranted: 'pro',
+      createdAt: now
+    };
+    updatedList = [resultPayment, ...localList];
+  }
+
+  saveLocalPayments(updatedList);
 
   return {
     success: true,
-    message: 'Payment reference submitted successfully! Our admissions team will verify your payment within 15 minutes.',
-    payment: newPayment
+    message: existingPendingIndex >= 0 
+      ? 'Your pending payment reference has been updated successfully! Admissions will verify shortly.' 
+      : 'Payment reference submitted successfully! Our admissions team will verify your payment within 15 minutes.',
+    payment: resultPayment
   };
 }
 
@@ -353,6 +462,19 @@ export async function approvePayment(
           .ilike('email', targetUserEmail.trim());
       }
 
+      // Auto-reconcile any OTHER pending payment requests for this same candidate
+      if (targetUserEmail) {
+        await supabase
+          .from('payments')
+          .update({
+            status: 'rejected',
+            rejection_reason: 'Auto-reconciled: Candidate upgraded to Pro via verified transaction reference'
+          })
+          .ilike('user_email', targetUserEmail.trim())
+          .eq('status', 'pending')
+          .neq('id', paymentId);
+      }
+
       // Insert celebratory in-app notification for the student
       if (targetUserId) {
         await supabase.from('user_notifications').insert({
@@ -369,7 +491,7 @@ export async function approvePayment(
     }
   }
 
-  // 3. Update Local Payments Cache
+  // 3. Update Local Payments Cache & Auto-reconcile other pending requests for this email
   const updatedPayments = payments.map((p) => {
     if (p.id === paymentId) {
       return {
@@ -377,6 +499,19 @@ export async function approvePayment(
         status: 'verified' as const,
         verifiedAt: now,
         notes: notes || p.notes || 'Verified by Admin'
+      };
+    }
+    // Auto-reconcile any duplicate pending payment from the same candidate
+    if (
+      targetUserEmail &&
+      p.userEmail &&
+      p.userEmail.toLowerCase().trim() === targetUserEmail.toLowerCase().trim() &&
+      p.status === 'pending'
+    ) {
+      return {
+        ...p,
+        status: 'rejected' as const,
+        rejectionReason: 'Auto-reconciled: Candidate upgraded to Pro'
       };
     }
     return p;
@@ -579,7 +714,7 @@ export async function getCandidates(filters?: {
         // Fetch progress aggregates for all users
         const { data: progressRows } = await supabase.from('user_progress').select('user_id, status');
         const { data: quizRows } = await supabase.from('user_quiz_attempts').select('user_id, score');
-        const { data: payRows } = await supabase.from('payments').select('user_id, user_email, amount, status');
+        const { data: payRows } = await supabase.from('payments').select('user_id, user_email, amount, status, plan_granted');
 
         const totalTopics = TOPICS.length || 56;
 
@@ -587,9 +722,20 @@ export async function getCandidates(filters?: {
           const userProgress = progressRows?.filter((pr) => pr.user_id === p.id) || [];
           const completedCount = userProgress.filter((pr) => pr.status === 'completed').length;
           const userQuizzes = quizRows?.filter((q) => q.user_id === p.id) || [];
-          const userPayments = payRows?.filter((py) => py.user_id === p.id || py.user_email === p.email) || [];
+          const userPayments = payRows?.filter((py) => py.user_id === p.id || (py.user_email && p.email && py.user_email.toLowerCase() === p.email.toLowerCase())) || [];
           const verifiedPayments = userPayments.filter((py) => py.status === 'verified');
-          const totalSpent = verifiedPayments.reduce((sum, item) => sum + Number(item.amount), 0);
+          
+          // Deduplicate verified payments per plan so multiple approvals for the same plan count once
+          const seenPlans = new Set<string>();
+          const uniqueCandidateVerified: typeof verifiedPayments = [];
+          for (const py of verifiedPayments) {
+            const planKey = ((py as any).plan_granted || 'pro').toLowerCase().trim();
+            if (!seenPlans.has(planKey)) {
+              seenPlans.add(planKey);
+              uniqueCandidateVerified.push(py);
+            }
+          }
+          const totalSpent = uniqueCandidateVerified.reduce((sum, item) => sum + Number(item.amount), 0);
 
           const avgScore = userQuizzes.length > 0
             ? Math.round(userQuizzes.reduce((sum, q) => sum + Number(q.score), 0) / userQuizzes.length)
@@ -817,7 +963,21 @@ export async function getAdminMetrics(): Promise<AdminMetrics> {
   const proCandidates = candidates.filter((c) => c.plan === 'pro' || c.plan === 'enterprise').length;
   
   const verifiedPayments = payments.filter((p) => p.status === 'verified');
-  const totalRevenue = verifiedPayments.reduce((sum, p) => sum + Number(p.amount), 0);
+  
+  // Deduplicate verified payments per candidate email & plan granted
+  // If the same candidate was approved twice for the same plan, count it only once in total revenue
+  const seenUserPlans = new Set<string>();
+  const uniqueVerifiedPayments: PaymentRecord[] = [];
+  for (const p of verifiedPayments) {
+    const emailKey = (p.userEmail || '').toLowerCase().trim();
+    const planKey = (p.planGranted || 'pro').toLowerCase().trim();
+    const compositeKey = `${emailKey}_${planKey}`;
+    if (!seenUserPlans.has(compositeKey)) {
+      seenUserPlans.add(compositeKey);
+      uniqueVerifiedPayments.push(p);
+    }
+  }
+  const totalRevenue = uniqueVerifiedPayments.reduce((sum, p) => sum + Number(p.amount), 0);
   const pendingVerifications = payments.filter((p) => p.status === 'pending').length;
 
   const avgProgress = totalCandidates > 0

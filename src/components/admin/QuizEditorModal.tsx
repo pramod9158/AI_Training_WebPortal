@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { QuizQuestion } from '@/data/seedModules';
 import { getTopicQuiz, saveTopicQuiz } from '@/lib/curriculumService';
-import { verifyAdminPasskey } from '@/lib/adminService';
+import { verifyAdminPasskey, isAdminAuthenticated } from '@/lib/adminService';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { parseQuizMarkdown } from '@/lib/quizParser';
 import { 
@@ -40,8 +40,8 @@ export const QuizEditorModal: React.FC<QuizEditorModalProps> = ({
   topicTitle,
   onSaved
 }) => {
-  // Admin Authorization State (Requires credentials before unlocking)
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  // Admin Authorization State (Requires credentials before unlocking, auto-clears if already signed into admin console)
+  const [isAuthorized, setIsAuthorized] = useState(() => isAdminAuthenticated());
   const [authMode, setAuthMode] = useState<'passkey' | 'credentials'>('passkey');
   const [adminPasskey, setAdminPasskey] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
@@ -62,7 +62,7 @@ export const QuizEditorModal: React.FC<QuizEditorModalProps> = ({
 
   useEffect(() => {
     if (isOpen && topicId) {
-      setIsAuthorized(false);
+      setIsAuthorized(isAdminAuthenticated());
       setAdminPasskey('');
       setAdminEmail('');
       setAdminPassword('');

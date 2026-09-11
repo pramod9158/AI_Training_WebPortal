@@ -170,7 +170,7 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
               );
             },
 
-            // Syntax Code Blocks & Inline Chips
+            // Syntax Code Blocks & Inline Chips with high-contrast diagram rendering
             code({ className, children, ...props }: React.ComponentPropsWithoutRef<'code'> & { inline?: boolean }) {
               const codeString = String(children).replace(/\n$/, '');
               const match = /language-(\w+)/.exec(className || '');
@@ -178,26 +178,112 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
 
               if (isInline) {
                 return (
-                  <code className="bg-slate-100 dark:bg-slate-900 text-sky-700 dark:text-cyan-300 px-1.5 py-0.5 rounded text-xs sm:text-sm font-mono border border-slate-200 dark:border-slate-800 font-semibold before:content-none after:content-none" {...props}>
+                  <code className="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-cyan-300 px-1.5 py-0.5 rounded text-xs font-mono font-bold border border-slate-300 dark:border-slate-800 before:content-none after:content-none" {...props}>
                     {children}
                   </code>
                 );
               }
 
               const languageLabel = match ? match[1] : 'code';
+              const isDiagram = /[┌┐└┘├┤┬┴┼─│▼▲►◄═║╔╗╚╝]/.test(codeString);
+              const displayLabel = isDiagram 
+                ? 'Architecture Mind Map' 
+                : languageLabel === 'text' 
+                ? 'Plain Text' 
+                : languageLabel;
+
+              // Renders ASCII box characters in sky-400 and text labels in bright white
+              const renderHighlighted = () => {
+                if (isDiagram) {
+                  const lines = codeString.split('\n');
+                  return lines.map((line, lineIdx) => {
+                    const parts: React.ReactNode[] = [];
+                    let currentSeg = '';
+                    let isBox = false;
+
+                    for (let i = 0; i < line.length; i++) {
+                      const c = line[i];
+                      const isBoxChar = /[┌┐└┘├┤┬┴┼─│▼▲►◄═║╔╗╚╝]/.test(c);
+
+                      if (i === 0) {
+                        isBox = isBoxChar;
+                        currentSeg = c;
+                      } else if (isBoxChar === isBox) {
+                        currentSeg += c;
+                      } else {
+                        parts.push(
+                          <span
+                            key={`${lineIdx}-${parts.length}`}
+                            className={isBox ? 'text-sky-400 font-bold' : 'text-slate-100 font-semibold'}
+                          >
+                            {currentSeg}
+                          </span>
+                        );
+                        isBox = isBoxChar;
+                        currentSeg = c;
+                      }
+                    }
+
+                    if (currentSeg) {
+                      parts.push(
+                        <span
+                          key={`${lineIdx}-${parts.length}`}
+                          className={isBox ? 'text-sky-400 font-bold' : 'text-slate-100 font-semibold'}
+                        >
+                          {currentSeg}
+                        </span>
+                      );
+                    }
+
+                    return (
+                      <React.Fragment key={lineIdx}>
+                        {parts}
+                        {lineIdx < lines.length - 1 ? '\n' : ''}
+                      </React.Fragment>
+                    );
+                  });
+                }
+
+                // General code lines (Python, Bash, JS, etc.)
+                const lines = codeString.split('\n');
+                return lines.map((line, lineIdx) => {
+                  const trimmed = line.trim();
+                  if (trimmed.startsWith('#') || trimmed.startsWith('//')) {
+                    return (
+                      <span key={lineIdx} className="text-slate-400 italic">
+                        {line}
+                        {lineIdx < lines.length - 1 ? '\n' : ''}
+                      </span>
+                    );
+                  }
+                  return (
+                    <span key={lineIdx} className="text-slate-100">
+                      {line}
+                      {lineIdx < lines.length - 1 ? '\n' : ''}
+                    </span>
+                  );
+                });
+              };
 
               return (
-                <div className="relative group my-4 rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-800 bg-[#070A12] shadow-md">
-                  <div className="flex items-center justify-between px-3 sm:px-4 py-2 bg-slate-900 border-b border-slate-800 text-[11px] sm:text-xs font-mono text-slate-400">
-                    <span className="flex items-center space-x-1.5">
-                      <FileCode className="w-3.5 h-3.5 text-cyan-400" />
-                      <span className="font-bold uppercase tracking-wider text-cyan-400">{languageLabel}</span>
-                    </span>
+                <div className="notes-code-wrapper relative group my-5 rounded-2xl overflow-hidden border-2 border-slate-700/80 dark:border-slate-800 bg-[#0A0F1D] shadow-xl">
+                  <div className="notes-code-header flex items-center justify-between px-3.5 sm:px-4 py-2.5 bg-[#131B2E] border-b border-slate-800 text-[11px] sm:text-xs font-mono text-slate-300">
+                    <div className="flex items-center space-x-2.5">
+                      <div className="flex items-center space-x-1.5 opacity-80">
+                        <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+                      </div>
+                      <span className="flex items-center space-x-1.5 pl-2 border-l border-slate-700/60">
+                        <FileCode className="w-3.5 h-3.5 text-sky-400" />
+                        <span className="font-bold uppercase tracking-wider text-sky-300">{displayLabel}</span>
+                      </span>
+                    </div>
                     <button
                       type="button"
                       onClick={() => handleCopy(codeString)}
-                      className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
-                      title="Copy code snippet"
+                      className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700/80 transition-colors text-xs font-medium"
+                      title="Copy code or diagram"
                     >
                       {copiedCode === codeString ? (
                         <>
@@ -206,14 +292,16 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
                         </>
                       ) : (
                         <>
-                          <Copy className="w-3.5 h-3.5" />
+                          <Copy className="w-3.5 h-3.5 text-slate-400" />
                           <span>Copy</span>
                         </>
                       )}
                     </button>
                   </div>
-                  <pre className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm font-mono text-cyan-100 bg-[#070A12] m-0 leading-relaxed scrollbar-thin">
-                    <code>{children}</code>
+                  <pre className="notes-code-pre p-4 sm:p-5 overflow-x-auto text-xs sm:text-sm font-mono text-slate-100 bg-[#0A0F1D] m-0 leading-relaxed scrollbar-thin">
+                    <code className="font-mono leading-relaxed block tracking-normal whitespace-pre text-slate-100">
+                      {renderHighlighted()}
+                    </code>
                   </pre>
                 </div>
               );

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, X, BookOpen, ArrowRight } from 'lucide-react';
-import { TOPICS } from '@/data/seedTopics';
+import { getAllTopics } from '@/lib/curriculumService';
 import { MODULES } from '@/data/seedModules';
 
 interface SearchModalProps {
@@ -13,6 +13,7 @@ interface SearchModalProps {
 
 export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
+  const allTopics = getAllTopics();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -31,8 +32,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
   if (!isOpen) return null;
 
   const filteredTopics = query.trim() === ''
-    ? TOPICS.slice(0, 6)
-    : TOPICS.filter(
+    ? allTopics.slice(0, 6)
+    : allTopics.filter(
         (t) =>
           t.title.toLowerCase().includes(query.toLowerCase()) ||
           t.description.toLowerCase().includes(query.toLowerCase()) ||

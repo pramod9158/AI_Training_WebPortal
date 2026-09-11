@@ -1,16 +1,27 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MODULES } from '@/data/seedModules';
-import { TOPICS } from '@/data/seedTopics';
+import { getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { SkillTree } from '@/components/SkillTree';
 import { useWaynauticStore } from '@/lib/store';
 import { BookOpen, Sparkles, Trophy, Zap } from 'lucide-react';
 
 export default function CurriculumPage() {
   const { progress } = useWaynauticStore();
+  const [topics, setTopics] = useState(getAllTopics());
 
-  const totalTopicsCount = TOPICS.length;
+  useEffect(() => {
+    fetchCurriculumUpdates().then((updated) => setTopics(updated));
+
+    const handleCurriculumChange = () => {
+      setTopics(getAllTopics());
+    };
+    window.addEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+    return () => window.removeEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+  }, []);
+
+  const totalTopicsCount = topics.length || 1;
   const completedTopicsCount = Object.values(progress).filter(p => p.status === 'completed').length;
   const overallPercent = Math.round((completedTopicsCount / totalTopicsCount) * 100);
 
