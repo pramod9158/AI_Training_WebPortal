@@ -23,6 +23,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { MODULES } from '@/data/seedModules';
+import { TOPICS } from '@/data/seedTopics';
 import { useWaynauticStore } from '@/lib/store';
 import { getResumeLearningUrl, getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { StreakTracker } from '@/components/StreakTracker';
@@ -80,7 +81,7 @@ function DashboardContent() {
   // Analytics
   const overallStats = useMemo(() => computeOverallStats(progress, topics), [progress, topics]);
   const moduleStats = useMemo(() => computeModuleProgressStats(progress, topics), [progress, topics]);
-  const badgeCatalog = useMemo(() => getFullBadgeCatalog(badges, progress, streak), [badges, progress, streak]);
+  const badgeCatalog = useMemo(() => getFullBadgeCatalog(badges, progress, streak, topics), [badges, progress, streak, topics]);
 
   // Find last active/in-progress topic or default to topic 1
   const completedTopicIds = Object.keys(progress).filter(id => progress[id]?.status === 'completed');
@@ -669,7 +670,7 @@ function DashboardContent() {
             <div className="space-y-1">
               <span className="text-[10px] sm:text-xs font-mono text-slate-400 uppercase font-bold">Total Attempts</span>
               <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-                {overallStats.totalQuizzesAttempted} <span className="text-xs font-normal text-slate-400">/ {TOPICS.length}</span>
+                {overallStats.totalQuizzesAttempted} <span className="text-xs font-normal text-slate-400">/ {topics.length}</span>
               </div>
             </div>
 

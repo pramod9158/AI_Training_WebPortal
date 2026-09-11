@@ -1,5 +1,5 @@
 import { MODULES, Module } from '@/data/seedModules';
-import { Topic } from '@/data/seedTopics';
+import { Topic, TOPICS } from '@/data/seedTopics';
 import { getAllTopics } from './curriculumService';
 import { UserProgress, UserStreak, UserBadge } from './types';
 
@@ -153,12 +153,14 @@ export function computeModuleProgressStats(
 export function getFullBadgeCatalog(
   userBadges: UserBadge[],
   progress: Record<string, UserProgress>,
-  streak: UserStreak
+  streak: UserStreak,
+  topicsList?: Topic[]
 ): BadgeCatalogItem[] {
   const earnedMap = new Map<string, UserBadge>();
   userBadges.forEach(b => earnedMap.set(b.badgeType, b));
 
-  const totalTopicsCount = TOPICS.length;
+  const currentTopics = topicsList || getAllTopics() || TOPICS;
+  const totalTopicsCount = currentTopics.length;
   const completedTopicsCount = Object.values(progress).filter(p => p.status === 'completed').length;
   const passedQuizzesCount = Object.values(progress).filter(p => p.score !== undefined && p.score >= 70).length;
   const perfectScoreCount = Object.values(progress).filter(p => p.score === 100).length;
@@ -271,7 +273,7 @@ export function getFullBadgeCatalog(
 
     // Per-Module Specialists
     ...MODULES.map(mod => {
-      const modTopics = TOPICS.filter(t => t.moduleSlug === mod.slug);
+      const modTopics = currentTopics.filter(t => t.moduleSlug === mod.slug);
       const doneCount = modTopics.filter(t => progress[t.id]?.status === 'completed').length;
       const badgeType = `module_${mod.slug}`;
       const isUnlocked = earnedMap.has(badgeType) || (modTopics.length > 0 && doneCount === modTopics.length);

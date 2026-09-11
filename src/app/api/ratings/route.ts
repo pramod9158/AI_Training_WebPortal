@@ -173,18 +173,18 @@ export async function POST(req: NextRequest) {
 
     // Also attempt Supabase upsert in background
     if (isSupabaseConfigured && userId && /^[0-9a-fA-F-]{36}$/.test(userId)) {
-      supabase
-        .from('topic_ratings')
-        .upsert({
-          topic_id: topicId,
-          user_id: userId,
-          vote: ratingEntry.userVote,
-          stars: ratingEntry.starRating,
-          feedback: ratingEntry.feedbackText,
-          updated_at: now
-        }, { onConflict: 'user_id,topic_id' })
-        .then(() => {})
-        .catch(() => {});
+      Promise.resolve(
+        supabase
+          .from('topic_ratings')
+          .upsert({
+            topic_id: topicId,
+            user_id: userId,
+            vote: ratingEntry.userVote,
+            stars: ratingEntry.starRating,
+            feedback: ratingEntry.feedbackText,
+            updated_at: now
+          }, { onConflict: 'user_id,topic_id' })
+      ).catch(() => {});
     }
 
     const sorted = [...list].sort(

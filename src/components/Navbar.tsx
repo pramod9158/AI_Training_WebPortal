@@ -22,7 +22,8 @@ import {
   LogIn,
   QrCode,
   Shield,
-  ChevronDown
+  ChevronDown,
+  Trophy
 } from 'lucide-react';
 import { useWaynauticStore } from '@/lib/store';
 import { getAllTopics, getResumeLearningUrl } from '@/lib/curriculumService';
@@ -104,15 +105,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   const navLinks = isLoggedIn
     ? [
-        { href: '/curriculum', label: 'Curriculum' },
-        { href: '/paths', label: 'Paths' },
-        { href: '/dashboard', label: 'Dashboard' },
-        { href: '/about', label: 'About' },
+        { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
+        { href: '/paths', label: 'Paths', icon: Compass },
+        { href: '/dashboard', label: 'Dashboard', icon: Trophy },
+        { href: '/about', label: 'About', icon: Sparkles },
       ]
     : [
-        { href: '/curriculum', label: 'Curriculum' },
-        { href: '/paths', label: 'Paths' },
-        { href: '/about', label: 'About' },
+        { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
+        { href: '/paths', label: 'Paths', icon: Compass },
+        { href: '/about', label: 'About', icon: Sparkles },
       ];
 
   return (
