@@ -285,17 +285,14 @@ export function TopicWorkspaceClient() {
           {/* Bookmark Button */}
           <button
             onClick={async () => {
-              if (!isBookmarked) {
-                await toggleBookmarkTopic(topic.id);
-              }
-              router.push('/dashboard?tab=bookmarks');
+              await toggleBookmarkTopic(topic.id);
             }}
             className={`h-10 flex items-center justify-center space-x-1.5 px-3 rounded-xl border text-xs font-bold transition-all focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none w-full sm:w-auto ${
               isBookmarked
                 ? 'bg-amber-500/10 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-700/50'
                 : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 dark:hover:text-white'
             }`}
-            title="Bookmark topic and view in Bookmarks tab"
+            title={isBookmarked ? "Click to remove from bookmarks" : "Save topic to bookmarks"}
             aria-label={isBookmarked ? "Topic saved in bookmarks" : "Save topic to bookmarks"}
           >
             <Bookmark className={`w-3.5 h-3.5 shrink-0 ${isBookmarked ? 'fill-amber-600 dark:fill-amber-400 text-amber-600 dark:text-amber-400' : ''}`} />

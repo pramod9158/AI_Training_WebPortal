@@ -7,7 +7,6 @@ import {
   CheckCircle2, 
   RotateCcw, 
   FastForward, 
-  ListVideo, 
   X, 
   Download, 
   Sparkles, 
@@ -62,7 +61,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [hasWatched90, setHasWatched90] = useState(false);
-  const [showJumpMenu, setShowJumpMenu] = useState(false);
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const [resumedFrom, setResumedFrom] = useState<number | null>(null);
@@ -224,7 +222,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       sendYouTubeCommand('seekTo', [seconds, true]);
       sendYouTubeCommand('playVideo');
     }
-    setShowJumpMenu(false);
   };
 
   // Change playback speed from platform controls
@@ -507,13 +504,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 Click to launch interactive 16:9 adaptive video player
               </p>
             )}
-
-            {chapters.length > 1 && (
-              <div className="relative z-10 mt-2.5 inline-flex items-center space-x-1 text-[11px] text-cyan-300/80 font-mono">
-                <ListVideo className="w-3 h-3 text-cyan-400" />
-                <span>{chapters.length} chapters & topics available in Jump Menu</span>
-              </div>
-            )}
           </div>
         )}
 
@@ -556,112 +546,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </div>
           </div>
         )}
-
-        {/* Jump Menu Drawer Overlay */}
-        {showJumpMenu && (
-          <div className="absolute inset-0 z-40 bg-slate-950/95 backdrop-blur-md p-4 sm:p-6 flex flex-col justify-between animate-in fade-in duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <div className="flex items-center space-x-2">
-                <ListVideo className="w-5 h-5 text-cyan-400" />
-                <h4 className="text-sm font-extrabold text-white">Video Jump Menu ({chapters.length} points)</h4>
-              </div>
-              <button
-                onClick={() => setShowJumpMenu(false)}
-                className="p-1 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-                title="Close jump menu"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Chapters & Topics List */}
-            <div className="overflow-y-auto space-y-2 my-3 pr-1 max-h-[70%] scrollbar-thin">
-              {chapters.map((chapter, idx) => {
-                const isActive = activeChapterIndex === idx;
-                return (
-                  <div
-                    key={chapter.id || idx}
-                    onClick={() => handleSeekTo(chapter.timestamp)}
-                    className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between group/item ${
-                      isActive
-                        ? 'bg-cyan-950/70 border-cyan-500/60 text-white shadow-md'
-                        : 'bg-slate-900/70 hover:bg-slate-800 border-slate-800 text-slate-300 hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3 truncate mr-2">
-                      <span className={`px-2 py-0.5 rounded-lg text-xs font-mono font-bold shrink-0 ${
-                        isActive ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-cyan-400'
-                      }`}>
-                        {formatTime(chapter.timestamp)}
-                      </span>
-                      <div className="truncate text-left">
-                        <div className="text-xs font-bold truncate group-hover/item:text-cyan-300">
-                          {chapter.title}
-                        </div>
-                        {chapter.description && (
-                          <div className="text-[11px] text-slate-400 truncate max-w-md">
-                            {chapter.description}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-2 shrink-0">
-                      {chapter.topicSlug && onNavigateTopic && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onNavigateTopic(chapter.topicSlug!);
-                          }}
-                          className="px-2 py-1 rounded-lg bg-sky-900/60 hover:bg-sky-800 border border-sky-600/40 text-[10px] text-sky-200 font-bold flex items-center space-x-1"
-                          title="Open dedicated topic workspace"
-                        >
-                          <span>Open Topic</span>
-                          <ExternalLink className="w-2.5 h-2.5" />
-                        </button>
-                      )}
-                      <ChevronRight className="w-4 h-4 text-slate-500 group-hover/item:translate-x-0.5 transition-transform" />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-              <span>Click any chapter to jump the video directly to that section</span>
-              <button
-                onClick={() => setShowJumpMenu(false)}
-                className="px-3 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold"
-              >
-                Back to Video
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Modern High-Performance Controls & Jump Bar */}
+      {/* Modern High-Performance Controls Bar */}
       <div className="px-4 py-3 bg-slate-50 dark:bg-[#0B101E] border-t-2 border-slate-200 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-300">
         
-        {/* Left Side: Jump Menu & Status */}
+        {/* Left Side: Restart & Status */}
         <div className="flex items-center flex-wrap gap-2">
           
-          {/* Jump Menu Trigger */}
-          {chapters.length > 0 && (
-            <button
-              onClick={() => setShowJumpMenu(!showJumpMenu)}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-cyan-100 hover:bg-cyan-200 dark:bg-cyan-950/70 dark:hover:bg-cyan-900 border border-cyan-300 dark:border-cyan-500/40 text-cyan-800 dark:text-cyan-300 font-bold transition-all shadow-sm active:scale-95"
-              title="Open Jump Menu to jump between topics and chapters"
-            >
-              <ListVideo className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
-              <span>Jump Menu</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 font-bold">
-                {chapters.length}
-              </span>
-            </button>
-          )}
-
           {/* Restart Button */}
           {currentTime > 2 && (
             <button

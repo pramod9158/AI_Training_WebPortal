@@ -964,7 +964,7 @@ function DashboardContent() {
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:gap-4">
               {bookmarks.map((topicId) => {
-                const topic = TOPICS.find((t) => t.id === topicId || t.slug === topicId);
+                const topic = topics.find((t) => t.id === topicId || t.slug === topicId);
                 if (!topic) return null;
                 const mod = MODULES.find((m) => m.slug === topic.moduleSlug);
                 const isCompleted = progress[topic.id]?.status === 'completed';
