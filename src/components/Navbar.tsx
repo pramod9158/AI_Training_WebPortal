@@ -149,10 +149,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           {!isProUser && (
             <button
               onClick={() => setPaymentModalOpen(true)}
-              className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-xs shadow-sm shadow-amber-500/20 transition-all hover:scale-[1.02]"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 font-bold text-xs shadow-sm transition-colors"
               title="Pay via UPI Barcode / QR to unlock all courses"
             >
-              <QrCode className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
               <span>Upgrade to Pro</span>
             </button>
           )}
@@ -244,7 +244,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           ) : (
             <Link
               href="/login"
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border border-[#58A700] text-white font-extrabold text-xs shadow-sm transition-colors"
+              className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs shadow-sm transition-colors"
             >
               <LogIn className="w-3.5 h-3.5" />
               <span>Log In</span>
@@ -324,7 +324,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <Link
               href="/login"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center space-x-2 py-3 bg-[#58CC02] text-white font-extrabold text-sm rounded-xl shadow-sm min-h-[44px]"
+              className="w-full flex items-center justify-center space-x-2 py-3 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-sm rounded-xl shadow-sm min-h-[44px] transition-colors"
             >
               <LogIn className="w-4 h-4" />
               <span>Log In to Account</span>
@@ -405,13 +405,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 setMobileMenuOpen(false);
                 setPaymentModalOpen(true);
               }}
-              className="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-extrabold text-white bg-gradient-to-r from-amber-500 to-orange-500 shadow-md min-h-[44px]"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold text-amber-800 dark:text-amber-300 bg-amber-500/10 hover:bg-amber-500/15 border border-amber-500/30 transition-colors min-h-[44px]"
             >
-              <div className="flex items-center space-x-3">
-                <QrCode className="w-5 h-5" />
-                <span>Upgrade to Pro (Pay Barcode)</span>
+              <div className="flex items-center space-x-2.5">
+                <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
+                <span>Upgrade to Pro Pass</span>
               </div>
-              <span className="text-xs bg-white/20 px-2 py-0.5 rounded-md font-mono font-bold">₹999</span>
+              <span className="text-[11px] bg-amber-500/20 px-2 py-0.5 rounded-md font-mono font-bold">₹999</span>
             </button>
           )}
 

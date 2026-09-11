@@ -29,7 +29,7 @@ This document tracks prioritized development items categorized by execution time
 
 | Task | Description | Why It Matters | Complexity |
 | :--- | :--- | :--- | :---: |
-| **Community Lesson Discussion Threads** | Build per-topic discussion forums where learners can ask clarifying questions, share solutions, and upvote helpful answers. | Fosters a vibrant developer community and peer-to-peer learning environment. | **Large** |
-| **Admin Content Management CMS** | Build a protected Admin Portal (`/admin`) for creating, editing, and publishing modules, topics, markdown notes, and quizzes directly into Supabase. | Eliminates the need to commit code changes to update educational curriculum. | **Large** |
+| **Community Lesson Discussion Threads** | Build per-topic discussion forums where learners can ask clarifying questions, share solutions, and upvote helpful answers. | **Completed ✓** (`src/components/TopicComments.tsx`) | **Medium** |
+| **Admin Content Management CMS** | Build a protected Admin Portal (`/admin`) for creating, editing, and publishing modules, topics, markdown notes, and quizzes directly into Supabase. | **Completed ✓** (`/admin`, `curriculumService.ts`, `TopicEditorModal.tsx`, `QuizEditorModal.tsx`) | **Large** |
 | **AI Teaching Assistant Chatbot** | Integrate an embedded AI tutor in topic pages that has access to the topic notes and can answer learner questions in context. | Provides immediate 24/7 unblocking for difficult technical topics. | **Large** |
 | **Organization & Team Dashboards** | Support enterprise cohort tracking, manager dashboards, and bulk seat licensing. | Enables B2B enterprise training sales for tech companies upskilling their engineering teams. | **Large** |

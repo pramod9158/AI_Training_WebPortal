@@ -449,17 +449,25 @@ export async function approvePayment(
         .eq('id', paymentId);
 
       // Upgrade student user profile to pro
-      if (targetUserId) {
-        await supabase
-          .from('user_profiles')
-          .update({ plan: 'pro' })
-          .eq('id', targetUserId);
+      let resolvedUserId = targetUserId;
+      if (!resolvedUserId && targetUserEmail) {
+        const { data: payRow } = await supabase
+          .from('payments')
+          .select('user_id')
+          .ilike('user_email', targetUserEmail.trim())
+          .not('user_id', 'is', null)
+          .limit(1)
+          .maybeSingle();
+        if (payRow?.user_id) {
+          resolvedUserId = payRow.user_id;
+        }
       }
-      if (targetUserEmail) {
+
+      if (resolvedUserId) {
         await supabase
           .from('user_profiles')
           .update({ plan: 'pro' })
-          .ilike('email', targetUserEmail.trim());
+          .eq('id', resolvedUserId);
       }
 
       // Auto-reconcile any OTHER pending payment requests for this same candidate
@@ -741,9 +749,11 @@ export async function getCandidates(filters?: {
             ? Math.round(userQuizzes.reduce((sum, q) => sum + Number(q.score), 0) / userQuizzes.length)
             : 0;
 
+          const payEmail = userPayments.find((py) => py.user_email)?.user_email;
+
           return {
             id: p.id,
-            email: p.email || `${p.display_name?.toLowerCase().replace(/\s+/g, '') || 'learner'}@example.com`,
+            email: p.email || payEmail || `${p.display_name?.toLowerCase().replace(/\s+/g, '') || 'learner'}@example.com`,
             displayName: p.display_name || 'Learner',
             avatarUrl: p.avatar_url || '',
             role: p.role || 'candidate',

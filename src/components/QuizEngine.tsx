@@ -156,9 +156,9 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
         <div className="pt-2 flex justify-center">
           <button
             onClick={handleRetake}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px]"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 min-h-[42px] shadow-sm"
           >
-            <RotateCcw className="w-4 h-4 text-white" />
+            <RotateCcw className="w-4 h-4 text-current" />
             <span>Retake Quiz</span>
           </button>
         </div>
@@ -247,10 +247,10 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
         <button
           disabled={!isAnswered}
           onClick={handleNext}
-          className={`w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3.5 rounded-2xl font-extrabold text-xs sm:text-sm transition-all min-h-[44px] ${
+          className={`w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all min-h-[42px] ${
             isAnswered
-              ? 'bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white'
-              : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-2 border-slate-200 dark:border-slate-700 cursor-not-allowed'
+              ? 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 shadow-sm'
+              : 'bg-slate-100 dark:bg-slate-850 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-800 cursor-not-allowed'
           }`}
         >
           <span>{currentIndex === questions.length - 1 ? 'Finish & Submit Quiz' : 'Next Question'}</span>

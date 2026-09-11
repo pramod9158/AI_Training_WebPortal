@@ -1092,7 +1092,7 @@ export default function AdminDashboardPage() {
                       setEditingTopic(null);
                       setTopicModalOpen(true);
                     }}
-                    className="px-4 py-2.5 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_2px_0_0_#58A700] text-white text-xs font-extrabold flex items-center space-x-1.5 transition-all active:scale-95"
+                    className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-sm active:scale-95"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add New Topic</span>

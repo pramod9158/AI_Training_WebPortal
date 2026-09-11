@@ -91,7 +91,11 @@ export function ModuleClient() {
             <div>
               <div className="flex items-center space-x-2">
                 <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest">Module 0{moduleData.orderIndex}</span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-slate-800 text-slate-300">
+                <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${
+                  moduleData.difficulty === 'Beginner' ? 'badge-diff-beginner' :
+                  moduleData.difficulty === 'Intermediate' ? 'badge-diff-intermediate' :
+                  'badge-diff-advanced'
+                }`}>
                   {moduleData.difficulty}
                 </span>
               </div>
@@ -102,7 +106,7 @@ export function ModuleClient() {
           </div>
 
           {/* Action CTAs: Start Module & Download Full Module PDF */}
-          <div className="flex items-center space-x-3 shrink-0">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto shrink-0">
             <button
               onClick={() => {
                 generateAndDownloadModulePdf({
@@ -111,20 +115,20 @@ export function ModuleClient() {
                   topics: moduleTopics
                 });
               }}
-              className="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-xs sm:text-sm transition-all flex items-center space-x-2 focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
+              className="h-10 sm:h-11 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none w-full sm:w-auto"
               title="Download all lesson notes in this module as a single PDF guide"
               aria-label="Download Module Guide PDF"
             >
-              <Download className="w-4 h-4 text-cyan-400" />
+              <Download className="w-4 h-4 text-slate-400 shrink-0" />
               <span>Download Module Guide (PDF)</span>
             </button>
 
             {firstUncompleted && (
               <Link
                 href={`/curriculum/${moduleSlug}/${firstUncompleted.slug}`}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold text-sm hover:brightness-110 shadow-lg shadow-cyan-500/20 transition-all flex items-center space-x-2 shrink-0 focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
+                className="h-10 sm:h-11 px-5 rounded-xl bg-white hover:bg-slate-100 text-slate-950 font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 shrink-0 shadow-sm focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none w-full sm:w-auto"
               >
-                <Play className="w-4 h-4 fill-black" />
+                <Play className="w-4 h-4 fill-current shrink-0" />
                 <span>{completedCount > 0 ? 'Continue Module' : 'Start Module'}</span>
               </Link>
             )}

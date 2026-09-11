@@ -9,9 +9,10 @@ Welcome to the AI Memory system for **Waynautic Academy**. This folder serves as
 When joining this project or beginning a new development session, read the documentation files in the following sequence:
 
 1. [README.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/README.md) *(You are here)*: Overview, navigation index, and operating guidelines.
-2. [PROJECT_CONTEXT.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/PROJECT_CONTEXT.md): Tech stack versions, high-level architecture, domain model, and services.
-3. [CURRENT_STATE.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/CURRENT_STATE.md): Completed features, in-progress items, backlog, and fragile areas.
-4. [Latest Session File in `sessions/`](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/sessions/2026-08-21.md): Summary of the most recent work, decisions, and immediate next steps.
+2. [NEW_FEATURE_PLAYBOOK.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/NEW_FEATURE_PLAYBOOK.md): **MANDATORY FOR ALL DEVELOPERS & AI AGENTS** — Core mental model, 6 golden rules, and step-by-step instructions for adding new features.
+3. [PROJECT_CONTEXT.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/PROJECT_CONTEXT.md): Tech stack versions, high-level architecture, domain model, and services.
+4. [CURRENT_STATE.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/CURRENT_STATE.md): Completed features, in-progress items, backlog, and fragile areas.
+5. [Latest Session File in `sessions/`](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/sessions/2026-09-11.md): Summary of the most recent work, decisions, and immediate next steps.
 
 ---
 
@@ -20,12 +21,13 @@ When joining this project or beginning a new development session, read the docum
 | File | Purpose |
 | :--- | :--- |
 | [README.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/README.md) | Navigation index, reading order, and AI memory maintenance guidelines. |
+| [NEW_FEATURE_PLAYBOOK.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/NEW_FEATURE_PLAYBOOK.md) | **Step-by-step developer/AI playbook for implementing any new feature.** |
+| [ONBOARDING.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/ONBOARDING.md) | 10-minute quickstart guide for engineers starting on the codebase. |
 | [PROJECT_CONTEXT.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/PROJECT_CONTEXT.md) | Technical stack, versions, domain model, architecture, and environment configuration. |
 | [CURRENT_STATE.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/CURRENT_STATE.md) | Feature-by-feature completion status, known quirks, and stability notes. |
 | [DECISIONS.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/DECISIONS.md) | Architecture Decision Records (ADRs) logging key technical and structural decisions. |
 | [SCHEMA_AND_APIS.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/SCHEMA_AND_APIS.md) | Supabase relational schemas, RLS policies, video delivery mapping, and API endpoints. |
 | [TODO.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/TODO.md) | Prioritized roadmap categorized by Now, Next, and Later milestones. |
-| [ONBOARDING.md](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/ONBOARDING.md) | 10-minute quickstart guide for engineers starting on the codebase. |
 | [sessions/](file:///c:/Users/User/OneDrive/Documents/ai%20training/ai%20training%20web%20portal/ai-memory/sessions/) | Chronological developer session logs documenting work increments. |
 
 ---

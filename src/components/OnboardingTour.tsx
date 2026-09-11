@@ -579,12 +579,12 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
           {/* STAGE 7: READY TO START */}
           {currentStage.id === 'ready' && (
             <div className="space-y-6 animate-in fade-in duration-200 text-center">
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-[#58CC02] border-2 border-[#58A700] flex items-center justify-center shadow-xl">
-                <Zap className="w-8 h-8 text-white fill-white" />
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 flex items-center justify-center shadow-md">
+                <Zap className="w-7 h-7 fill-current" />
               </div>
 
               <div className="space-y-2 max-w-lg mx-auto">
-                <span className="text-xs font-mono uppercase tracking-widest text-[#58CC02] font-extrabold">You&apos;re All Set!</span>
+                <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold">You&apos;re All Set!</span>
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Ready to begin your learning journey?</h3>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
                   Your selected roadmap is <strong className="text-sky-600 dark:text-cyan-400">{selectedPath === 'path-a' ? 'Path A (New to AI Development)' : 'Path B (Production AI Systems)'}</strong>. Click below to start your very first lesson.
@@ -594,10 +594,10 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
               <div className="pt-2">
                 <button
                   onClick={handleComplete}
-                  className="w-full sm:w-auto px-10 py-4 rounded-2xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_4px_0_0_#58A700] active:translate-y-1 active:shadow-none text-white font-extrabold text-base transition-all inline-flex items-center justify-center space-x-2"
+                  className="w-full sm:w-auto px-8 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-sm transition-all inline-flex items-center justify-center space-x-2 shadow-sm"
                 >
                   <span>Start First Lesson Now</span>
-                  <ArrowRight className="w-5 h-5 text-white" />
+                  <ArrowRight className="w-4 h-4 text-current" />
                 </button>
               </div>
             </div>
@@ -610,32 +610,32 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
           <button
             onClick={handlePrev}
             disabled={currentStageIndex === 0}
-            className={`inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-extrabold transition-all ${
+            className={`inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               currentStageIndex === 0
                 ? 'opacity-40 cursor-not-allowed text-slate-400'
-                : 'bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+                : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back</span>
           </button>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2.5">
             {currentStageIndex < TOUR_STAGES.length - 1 ? (
               <button
                 onClick={handleNext}
-                className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] active:translate-y-0.5 active:shadow-none text-white font-extrabold text-xs transition-all"
+                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all shadow-sm"
               >
                 <span>Next Step</span>
-                <ArrowRight className="w-4 h-4 text-white" />
+                <ArrowRight className="w-4 h-4 text-current" />
               </button>
             ) : (
               <button
                 onClick={handleComplete}
-                className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] active:translate-y-0.5 active:shadow-none text-white font-extrabold text-xs transition-all"
+                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all shadow-sm"
               >
                 <span>Start Learning</span>
-                <Zap className="w-4 h-4 text-white fill-white" />
+                <Zap className="w-4 h-4 text-current fill-current" />
               </button>
             )}
           </div>

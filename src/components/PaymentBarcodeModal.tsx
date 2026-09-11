@@ -232,17 +232,17 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                 </div>
               )}
 
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5 w-full sm:w-auto">
                 <Link
                   href="/curriculum"
                   onClick={onClose}
-                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs transition-all active:scale-95"
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs transition-all min-h-[40px] flex items-center justify-center shadow-sm"
                 >
                   Explore Full Curriculum
                 </Link>
                 <button
                   onClick={onClose}
-                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors min-h-[40px] flex items-center justify-center"
                 >
                   Close
                 </button>

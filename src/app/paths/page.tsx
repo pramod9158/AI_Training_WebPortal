@@ -149,10 +149,10 @@ export default function PathsPage() {
         <div className="w-full sm:w-auto flex items-center justify-center sm:justify-end">
           <button
             onClick={() => setCertModalOpen(true)}
-            className={`w-full sm:w-auto px-6 py-3 rounded-xl border-2 text-xs font-extrabold transition-all flex items-center justify-center space-x-2 min-h-[44px] ${
+            className={`w-full sm:w-auto px-6 py-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center space-x-2 min-h-[44px] shadow-sm ${
               isPathCompleted
-                ? 'bg-[#58CC02] hover:bg-[#61E002] border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white'
-                : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
+                ? 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 dark:border-white'
+                : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
             }`}
           >
             {isPathCompleted ? (

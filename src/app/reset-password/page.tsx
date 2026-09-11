@@ -164,10 +164,10 @@ function ResetPasswordForm() {
         <div className="pt-2">
           <Link
             href="/login"
-            className="w-full py-3.5 rounded-2xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-sm transition-all flex items-center justify-center space-x-2"
+            className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-sm transition-all flex items-center justify-center space-x-2 shadow-sm"
           >
             <span>Log In with New Password</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 text-current" />
           </Link>
         </div>
       </div>
@@ -273,9 +273,9 @@ function ResetPasswordForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3.5 rounded-2xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-sm transition-all flex items-center justify-center space-x-2 min-h-[46px]"
+          className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px] shadow-sm disabled:opacity-60"
         >
-          <Lock className="w-4 h-4 text-white" />
+          <Lock className="w-4 h-4 text-current" />
           <span>{loading ? 'Updating Password in Database...' : 'Save New Password'}</span>
         </button>
       </form>

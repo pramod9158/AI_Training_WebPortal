@@ -329,9 +329,9 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setPaymentModalOpen(true)}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-xs sm:text-sm shadow-md flex items-center space-x-2 shrink-0 transition-all active:scale-95 min-h-[44px]"
+                className="px-4 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30 font-bold text-xs sm:text-sm flex items-center space-x-2 shrink-0 transition-all min-h-[40px]"
               >
-                <QrCode className="w-4 h-4" />
+                <QrCode className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                 <span>Upgrade to Pro (₹999)</span>
               </button>
             ) : (
@@ -532,9 +532,9 @@ export default function ProfilePage() {
         <div className="flex flex-wrap items-center gap-3 pt-2">
           <button
             type="submit"
-            className="px-6 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs sm:text-sm transition-all flex items-center space-x-2 min-h-[44px]"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 min-h-[42px] shadow-sm"
           >
-            {savedSuccess ? <Check className="w-4 h-4 text-white" /> : <Save className="w-4 h-4 text-white" />}
+            {savedSuccess ? <Check className="w-4 h-4 text-emerald-400" /> : <Save className="w-4 h-4 text-current" />}
             <span>{savedSuccess ? 'Profile & Settings Saved!' : 'Save Account Settings'}</span>
           </button>
 

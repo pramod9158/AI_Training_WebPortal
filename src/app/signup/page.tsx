@@ -101,10 +101,10 @@ function SignupForm() {
         <div className="space-y-3 pt-2">
           <Link
             href={`/login${redirectTo !== '/onboarding' && redirectTo !== '/dashboard' ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`}
-            className="w-full py-3.5 rounded-2xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-sm transition-all flex items-center justify-center space-x-2 min-h-[46px]"
+            className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px] shadow-sm"
           >
             <span>Proceed to Log In</span>
-            <ArrowRight className="w-4 h-4 text-white" />
+            <ArrowRight className="w-4 h-4 text-current" />
           </Link>
 
           <button
@@ -209,9 +209,9 @@ function SignupForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3.5 rounded-2xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-sm transition-all flex items-center justify-center space-x-2 min-h-[46px]"
+          className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px] shadow-sm disabled:opacity-60"
         >
-          <ShieldCheck className="w-4 h-4 text-white" />
+          <ShieldCheck className="w-4 h-4 text-current" />
           <span>{loading ? 'Creating Account...' : 'Register & Start Learning'}</span>
         </button>
       </form>

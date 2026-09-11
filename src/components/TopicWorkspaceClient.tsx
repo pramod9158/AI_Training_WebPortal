@@ -171,15 +171,15 @@ export function TopicWorkspaceClient() {
           <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
             <Link
               href={`/login?redirectTo=/curriculum/${moduleSlug}/${topicSlug}`}
-              className="w-full sm:w-1/2 py-3.5 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px] focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
+              className="w-full sm:w-1/2 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px] shadow-sm focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
             >
               <span>Log In to Account</span>
-              <ArrowRight className="w-4 h-4 text-white" />
+              <ArrowRight className="w-4 h-4 text-current" />
             </Link>
 
             <Link
               href="/signup"
-              className="w-full sm:w-1/2 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-2 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white font-extrabold text-xs sm:text-sm transition-all text-center min-h-[44px] flex items-center justify-center focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
+              className="w-full sm:w-1/2 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold text-xs sm:text-sm transition-all text-center min-h-[44px] flex items-center justify-center focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
             >
               Create Free Account
             </Link>
@@ -263,19 +263,21 @@ export function TopicWorkspaceClient() {
           <span className="text-sky-600 dark:text-cyan-400 font-bold truncate max-w-[160px] sm:max-w-[240px]">{topic.title}</span>
         </div>
 
-        <div className="flex items-center flex-wrap gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           
           {/* Streak Tracker Pill */}
-          <StreakTracker variant="compact" />
+          <div className="h-10 flex items-center justify-center">
+            <StreakTracker variant="compact" />
+          </div>
 
           {/* Download Notes PDF Button */}
           <button
             onClick={handleDownloadPdfNotes}
-            className="flex items-center space-x-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all min-h-[38px] bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800 dark:hover:text-white focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
+            className="h-10 flex items-center justify-center space-x-1.5 px-3 rounded-xl border text-xs font-bold transition-all bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800 dark:hover:text-white focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none w-full sm:w-auto"
             title="Download printable study notes PDF"
             aria-label="Download printable study notes PDF"
           >
-            <Download className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
+            <Download className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300 shrink-0" />
             <span className="hidden sm:inline">Download Notes (PDF)</span>
             <span className="sm:hidden">PDF Notes</span>
           </button>
@@ -288,29 +290,29 @@ export function TopicWorkspaceClient() {
               }
               router.push('/dashboard?tab=bookmarks');
             }}
-            className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all min-h-[38px] focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
+            className={`h-10 flex items-center justify-center space-x-1.5 px-3 rounded-xl border text-xs font-bold transition-all focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none w-full sm:w-auto ${
               isBookmarked
-                ? 'bg-sky-100 text-sky-700 border-sky-300 dark:bg-cyan-950 dark:text-cyan-400 dark:border-cyan-500/40'
+                ? 'bg-amber-500/10 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-700/50'
                 : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 dark:hover:text-white'
             }`}
             title="Bookmark topic and view in Bookmarks tab"
             aria-label={isBookmarked ? "Topic saved in bookmarks" : "Save topic to bookmarks"}
           >
-            <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-sky-600 dark:fill-cyan-400' : ''}`} />
+            <Bookmark className={`w-3.5 h-3.5 shrink-0 ${isBookmarked ? 'fill-amber-600 dark:fill-amber-400 text-amber-600 dark:text-amber-400' : ''}`} />
             <span>{isBookmarked ? 'Saved' : 'Save'}</span>
           </button>
 
           {/* Mark Complete Button */}
           <button
             onClick={() => markTopicProgress(topic.id, isCompleted ? 'in_progress' : 'completed', undefined, true)}
-            className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl border-2 text-xs font-extrabold transition-all shadow-sm active:scale-95 min-h-[38px] focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
+            className={`h-10 flex items-center justify-center space-x-1.5 px-3 sm:px-4 rounded-xl border text-xs font-bold transition-all shadow-sm active:scale-95 focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none w-full sm:w-auto ${
               isCompleted
-                ? 'bg-emerald-50 text-emerald-800 border-emerald-400 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-500/60 shadow-emerald-500/10'
-                : 'bg-[#58CC02] hover:bg-[#61E002] text-white border-[#58A700] shadow-[0_2px_0_0_#58A700]'
+                ? 'bg-emerald-50 text-emerald-800 border-emerald-300 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-700/50'
+                : 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 dark:border-white'
             }`}
             aria-label={isCompleted ? "Topic completed. Click to mark in progress" : "Mark topic as complete"}
           >
-            <CheckCircle2 className={`w-3.5 h-3.5 ${isCompleted ? 'text-emerald-600 fill-emerald-100 dark:text-emerald-400 dark:fill-emerald-400/20' : 'text-white'}`} />
+            <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${isCompleted ? 'text-emerald-600 fill-emerald-100 dark:text-emerald-400 dark:fill-emerald-400/20' : 'text-slate-400 dark:text-slate-600'}`} />
             <span>{isCompleted ? 'Completed ✓' : 'Mark Complete'}</span>
           </button>
 
@@ -322,10 +324,10 @@ export function TopicWorkspaceClient() {
         <div 
           role="status" 
           aria-live="polite"
-          className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/70 border-2 border-emerald-400 dark:border-emerald-500/50 flex items-center justify-between text-xs text-emerald-900 dark:text-emerald-200 font-bold shadow-md animate-in fade-in slide-in-from-top-2"
+          className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-700/50 flex items-center justify-between text-xs text-emerald-900 dark:text-emerald-200 font-bold shadow-sm animate-in fade-in slide-in-from-top-2"
         >
           <div className="flex items-center space-x-2.5">
-            <Sparkles className="w-4 h-4 text-emerald-500 shrink-0" />
+            <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>Awesome job! You reached 90% of the video — this topic has been automatically marked as complete! 🎉</span>
           </div>
           <button
@@ -339,8 +341,8 @@ export function TopicWorkspaceClient() {
       )}
 
       {/* Topic Title Header */}
-      <div className="space-y-1.5">
-        <div className="flex items-center space-x-2.5 text-xs font-mono font-bold text-sky-600 dark:text-cyan-400">
+      <div className="space-y-2">
+        <div className="flex items-center flex-wrap gap-2 text-xs font-mono font-bold text-slate-600 dark:text-slate-400">
           <span>Module 0{moduleData.orderIndex}</span>
           <span>•</span>
           <span>Topic {topicIndexStr}</span>
@@ -349,8 +351,16 @@ export function TopicWorkspaceClient() {
             <Clock className="w-3.5 h-3.5" />
             <span>{topic.estimatedMinutes} mins</span>
           </span>
+          <span>•</span>
+          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${
+            moduleData.difficulty === 'Beginner' ? 'badge-diff-beginner' :
+            moduleData.difficulty === 'Intermediate' ? 'badge-diff-intermediate' :
+            'badge-diff-advanced'
+          }`}>
+            {moduleData.difficulty}
+          </span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           {topic.title}
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">
@@ -359,7 +369,7 @@ export function TopicWorkspaceClient() {
       </div>
 
       {/* Responsive Desktop & Laptop Tab Switcher */}
-      <div role="tablist" aria-label="Topic Learning Modes" className="hidden sm:flex items-center space-x-2 border-b-2 border-slate-200 dark:border-slate-800 pb-2">
+      <div role="tablist" aria-label="Topic Learning Modes" className="hidden sm:flex items-center space-x-1.5 border-b border-slate-200 dark:border-slate-800 pb-2">
         <button
           role="tab"
           id="tab-watch"
@@ -367,13 +377,13 @@ export function TopicWorkspaceClient() {
           aria-controls="panel-watch"
           onClick={() => setTab('watch')}
           onKeyDown={(e) => handleKeyDownTab(e, 'watch')}
-          className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
+          className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
             currentTab === 'watch'
-              ? 'bg-[#1CB0F6] text-white border-2 border-[#1899D6] shadow-[0_3px_0_0_#1899D6]'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
           }`}
         >
-          <Play className={`w-4 h-4 ${currentTab === 'watch' ? 'fill-white' : ''}`} />
+          <Play className={`w-4 h-4 ${currentTab === 'watch' ? 'fill-current' : ''}`} />
           <span>1. Watch Video</span>
         </button>
 
@@ -384,10 +394,10 @@ export function TopicWorkspaceClient() {
           aria-controls="panel-read"
           onClick={() => setTab('read')}
           onKeyDown={(e) => handleKeyDownTab(e, 'read')}
-          className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
+          className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
             currentTab === 'read'
-              ? 'bg-[#1CB0F6] text-white border-2 border-[#1899D6] shadow-[0_3px_0_0_#1899D6]'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
           }`}
         >
           <BookOpen className="w-4 h-4" />
@@ -401,10 +411,10 @@ export function TopicWorkspaceClient() {
           aria-controls="panel-quiz"
           onClick={() => setTab('quiz')}
           onKeyDown={(e) => handleKeyDownTab(e, 'quiz')}
-          className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
+          className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
             currentTab === 'quiz'
-              ? 'bg-[#1CB0F6] text-white border-2 border-[#1899D6] shadow-[0_3px_0_0_#1899D6]'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
           }`}
         >
           <HelpCircle className="w-4 h-4" />
@@ -468,38 +478,38 @@ export function TopicWorkspaceClient() {
       <RecommendedTopics currentTopic={topic} />
 
       {/* Previous / Next Lesson Navigation Footer */}
-      <div className="pt-8 border-t-2 border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="pt-8 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-3">
         {prevTopic ? (
           <Link
             href={`/curriculum/${prevTopic.moduleSlug}/${prevTopic.slug}?tab=watch`}
-            className="w-full sm:w-auto p-4 rounded-2xl bg-white dark:bg-slate-900/60 border-2 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-left transition-colors flex items-center space-x-3 group focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
+            className="w-full p-3.5 sm:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-left transition-colors flex items-center space-x-3 group focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
           >
-            <ArrowLeft className="w-4 h-4 text-slate-400 group-hover:-translate-x-1 transition-transform" />
-            <div>
-              <div className="text-[10px] font-mono text-slate-500 uppercase font-bold">Previous Topic</div>
-              <div className="text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-cyan-300 truncate max-w-[200px]">
+            <ArrowLeft className="w-4 h-4 text-slate-400 group-hover:-translate-x-0.5 transition-transform shrink-0" />
+            <div className="min-w-0">
+              <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase font-bold">Previous Topic</div>
+              <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 truncate">
                 {prevTopic.title}
               </div>
             </div>
           </Link>
         ) : (
-          <div />
+          <div className="hidden sm:block" />
         )}
 
         {nextTopic && (
           <Link
             href={`/curriculum/${nextTopic.moduleSlug}/${nextTopic.slug}?tab=watch`}
-            className="w-full sm:w-auto p-4 rounded-2xl bg-white dark:bg-slate-900/60 border-2 border-slate-200 dark:border-cyan-500/30 hover:border-sky-400 dark:hover:border-cyan-400 text-right transition-colors flex items-center justify-end space-x-3 group focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
+            className="w-full p-3.5 sm:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-right transition-colors flex items-center justify-end space-x-3 group focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none sm:col-start-2"
           >
-            <div>
-              <div className="text-[10px] font-mono text-sky-600 dark:text-cyan-400 uppercase font-bold">
+            <div className="min-w-0">
+              <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase font-bold">
                 {progress[nextTopic.id]?.status === 'completed' ? 'Next Topic' : 'Next Incomplete Topic'}
               </div>
-              <div className="text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-cyan-300 truncate max-w-[200px]">
+              <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 truncate">
                 {nextTopic.title}
               </div>
             </div>
-            <ArrowRight className="w-4 h-4 text-sky-600 dark:text-cyan-400 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
           </Link>
         )}
       </div>
@@ -508,19 +518,19 @@ export function TopicWorkspaceClient() {
       <div 
         role="tablist" 
         aria-label="Mobile Navigation Tabs" 
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-md border-t-2 border-slate-200 dark:border-slate-800 p-1.5 flex items-center justify-around shadow-2xl pb-safe"
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0D121F]/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 p-2 flex items-center justify-around shadow-lg pb-safe"
       >
         <button
           role="tab"
           aria-selected={currentTab === 'watch'}
           onClick={() => setTab('watch')}
-          className={`flex flex-col items-center p-2 rounded-xl text-xs font-extrabold transition-all min-h-[44px] min-w-[70px] focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
+          className={`flex-1 flex flex-col items-center justify-center py-2 rounded-xl text-xs font-bold transition-all min-h-[44px] focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
             currentTab === 'watch' 
-              ? 'text-[#1899D6] bg-sky-50 dark:bg-cyan-950/40 font-black' 
-              : 'text-slate-500 dark:text-slate-400'
+              ? 'text-slate-900 bg-slate-100 dark:text-white dark:bg-slate-800' 
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
-          <Play className={`w-5 h-5 mb-0.5 ${currentTab === 'watch' ? 'fill-[#1899D6]' : ''}`} />
+          <Play className={`w-4 h-4 mb-1 ${currentTab === 'watch' ? 'fill-current' : ''}`} />
           <span>Watch</span>
         </button>
 
@@ -528,13 +538,13 @@ export function TopicWorkspaceClient() {
           role="tab"
           aria-selected={currentTab === 'read'}
           onClick={() => setTab('read')}
-          className={`flex flex-col items-center p-2 rounded-xl text-xs font-extrabold transition-all min-h-[44px] min-w-[70px] focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
+          className={`flex-1 flex flex-col items-center justify-center py-2 rounded-xl text-xs font-bold transition-all min-h-[44px] focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
             currentTab === 'read' 
-              ? 'text-[#1899D6] bg-sky-50 dark:bg-cyan-950/40 font-black' 
-              : 'text-slate-500 dark:text-slate-400'
+              ? 'text-slate-900 bg-slate-100 dark:text-white dark:bg-slate-800' 
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
-          <BookOpen className="w-5 h-5 mb-0.5" />
+          <BookOpen className="w-4 h-4 mb-1" />
           <span>Read</span>
         </button>
 
@@ -542,17 +552,14 @@ export function TopicWorkspaceClient() {
           role="tab"
           aria-selected={currentTab === 'quiz'}
           onClick={() => setTab('quiz')}
-          className={`flex flex-col items-center p-2 rounded-xl text-xs font-extrabold transition-all min-h-[44px] min-w-[70px] relative focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
+          className={`flex-1 flex flex-col items-center justify-center py-2 rounded-xl text-xs font-bold transition-all min-h-[44px] relative focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
             currentTab === 'quiz' 
-              ? 'text-[#1899D6] bg-sky-50 dark:bg-cyan-950/40 font-black' 
-              : 'text-slate-500 dark:text-slate-400'
+              ? 'text-slate-900 bg-slate-100 dark:text-white dark:bg-slate-800' 
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
-          <HelpCircle className="w-5 h-5 mb-0.5" />
+          <HelpCircle className="w-4 h-4 mb-1" />
           <span>Quiz</span>
-          <span className="absolute top-1 right-2 text-[9px] font-mono px-1 rounded-full bg-sky-500 text-white font-bold">
-            {quizQuestions.length}
-          </span>
         </button>
       </div>
 

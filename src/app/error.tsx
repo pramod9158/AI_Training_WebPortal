@@ -47,7 +47,7 @@ export default function GlobalErrorPage({
         <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
           <button
             onClick={() => reset()}
-            className="w-full sm:w-1/2 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px]"
+            className="w-full sm:w-1/2 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 min-h-[42px] shadow-sm"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Try Again</span>
@@ -55,9 +55,9 @@ export default function GlobalErrorPage({
 
           <Link
             href="/"
-            className="w-full sm:w-1/2 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-2 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px]"
+            className="w-full sm:w-1/2 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 min-h-[42px]"
           >
-            <Home className="w-4 h-4 text-cyan-400" />
+            <Home className="w-4 h-4 text-slate-500 dark:text-slate-400" />
             <span>Go to Home</span>
           </Link>
         </div>

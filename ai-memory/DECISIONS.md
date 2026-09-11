@@ -125,4 +125,34 @@ This document logs all key architectural, technical, and structural decisions ma
 * **Date**: 2026-08-24
 * **Status**: Accepted / Implemented
 * **Decision**: Ensure `window.addEventListener('waynautic_storage_change')` is registered unconditionally inside `useWaynauticStore()`'s `useEffect`, regardless of whether `isSupabaseConfigured` evaluates to `true` or `false`.
-* **Why**: An early return inside the Supabase subscription block previously bypassed the custom event listener when Supabase credentials were active, preventing instant UI state transitions (e.g. **Mark as Complete** &harr; **Completed ✓**) from reflecting visually in the current component.
+* **Why**: An early return inside the Supabase subscription block previously bypassed the custom event listener when Supabase credentials were active, preventing instant UI state transitions (e.g. **Mark as Complete** ↔ **Completed ✓**) from reflecting visually in the current component.
+
+---
+
+### ADR-012: Non-Downgradable Progress Status Architecture & Mount State Protection
+* **Date**: 2026-09-11
+* **Status**: Accepted / Implemented
+* **Decision**: 
+  1. Once a topic status reaches `'completed'`, automated events (video watch starts, reading notes, quiz retakes) are blocked from resetting it back to `'in_progress'`. Only deliberate user action via the "Mark Complete" toggle with `forceStatus: true` can change it.
+  2. Cloud synchronization in `fetchAndSyncCloudUser` merges database progress such that `'completed'` status always takes precedence over older `'in_progress'` rows, and automatically self-heals any missing or behind records in Supabase.
+  3. Removed mount-level data clearing: guest and offline learners retain their progress across refreshes and tab switches; `clearAllUserData()` is strictly reserved for explicit `SIGNED_OUT` auth events.
+* **Why**: Prevents learner frustration where finishing a quiz or switching browser tabs erased or reverted completed milestones.
+
+---
+
+### ADR-013: Payment Deduplication, Single-Pending Enforcement & Auto-Reconciliation
+* **Date**: 2026-09-11
+* **Status**: Accepted / Implemented
+* **Decision**:
+  1. When a user submits a payment reference via `submitCandidatePayment`, if an existing `pending` payment already exists for that user and plan, update that pending record instead of creating a second line item.
+  2. When an admin verifies a candidate's payment via `approvePayment`, automatically mark any remaining pending requests from that candidate as `reconciled` / `duplicate_resolved`.
+  3. In `getAdminMetrics` and `getCandidates`, verified payments are deduplicated by `(userEmail, planGranted)` when summing revenue and candidate spend.
+* **Why**: Prevents double-charging metrics (e.g. ₹999 × 2 = ₹1,998) when a user accidentally submits a payment reference twice and the administrator approves both requests.
+
+---
+
+### ADR-014: Server Route Handlers with Dual JSON + Supabase Fallback for Universal Community Content
+* **Date**: 2026-09-11
+* **Status**: Accepted / Implemented
+* **Decision**: Implement Next.js App Router server endpoints in `src/app/api/` (e.g., `/api/ratings`, `/api/curriculum`) backed by local filesystem JSON files in `src/data/` and Supabase PostgreSQL.
+* **Why**: Guarantees that ratings, community reviews, and admin curriculum modifications are universally visible to all visitors and candidates across different browsers and accounts, while providing zero-downtime persistence even in offline or local dev environments.

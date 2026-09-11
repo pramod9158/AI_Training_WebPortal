@@ -196,7 +196,13 @@ export default function HomePage() {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-xs font-mono text-cyan-400">Module 0{mod.orderIndex}</span>
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-slate-800 text-slate-300">
+                    <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${
+                      mod.difficulty === 'Beginner'
+                        ? 'badge-diff-beginner'
+                        : mod.difficulty === 'Intermediate'
+                        ? 'badge-diff-intermediate'
+                        : 'badge-diff-advanced'
+                    }`}>
                       {mod.difficulty}
                     </span>
                   </div>

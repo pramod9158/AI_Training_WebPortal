@@ -104,12 +104,12 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
                     Step 0{index + 1}
                   </span>
                 </div>
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold font-mono tracking-wider ${
+                <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${
                   mod.difficulty === 'Beginner'
-                    ? 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800/60'
+                    ? 'badge-diff-beginner'
                     : mod.difficulty === 'Intermediate'
-                    ? 'bg-sky-50 dark:bg-cyan-950/80 text-sky-700 dark:text-cyan-400 border border-sky-300 dark:border-cyan-800/60'
-                    : 'bg-purple-50 dark:bg-violet-950/80 text-purple-700 dark:text-violet-400 border border-purple-300 dark:border-violet-800/60'
+                    ? 'badge-diff-intermediate'
+                    : 'badge-diff-advanced'
                 }`}>
                   {mod.difficulty}
                 </span>

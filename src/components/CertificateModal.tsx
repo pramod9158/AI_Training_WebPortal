@@ -125,27 +125,27 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             {/* The Certificate Canvas */}
             <div
               ref={certRef}
-              className={`w-[720px] sm:w-[800px] h-[500px] sm:h-[520px] mx-auto bg-gradient-to-b from-white via-slate-50 to-white dark:from-[#0B0F19] dark:via-[#070A12] dark:to-[#0D121F] border-4 border-[#58CC02] dark:border-cyan-500/40 rounded-2xl p-8 sm:p-10 relative flex flex-col justify-between shadow-2xl text-center select-none transition-all ${
+              className={`w-[720px] sm:w-[800px] h-[500px] sm:h-[520px] mx-auto bg-gradient-to-b from-white via-slate-50 to-white dark:from-[#0B0F19] dark:via-[#070A12] dark:to-[#0D121F] border-4 border-amber-500/30 dark:border-amber-400/30 rounded-2xl p-8 sm:p-10 relative flex flex-col justify-between shadow-2xl text-center select-none transition-all ${
                 !isUnlocked ? 'filter blur-[5px] opacity-60 pointer-events-none' : ''
               }`}
             >
               {/* Ambient Background Accents */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 dark:bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 dark:bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 dark:bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
 
               {/* Certificate Header */}
               <div className="space-y-2 relative z-10">
                 <div className="flex items-center justify-center space-x-2">
-                  <Sparkles className="w-6 h-6 text-[#58CC02] dark:text-cyan-400" />
+                  <Sparkles className="w-6 h-6 text-amber-500 dark:text-amber-400" />
                   <span className="text-lg font-extrabold text-slate-900 dark:text-white tracking-wider">WAYNAUTIC ACADEMY</span>
                 </div>
-                <p className="text-xs font-mono uppercase tracking-widest text-[#1899D6] dark:text-cyan-400 font-bold">Verified Developer Certification</p>
+                <p className="text-xs font-mono uppercase tracking-widest text-slate-600 dark:text-slate-400 font-bold">Verified Developer Certification</p>
               </div>
 
               {/* Recipient Info */}
               <div className="space-y-3 my-auto relative z-10">
                 <p className="text-xs uppercase text-slate-500 dark:text-slate-400 tracking-wider font-semibold">This credential certifies that</p>
-                <h1 className="text-3xl font-extrabold text-[#58CC02] dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-cyan-300 dark:via-white dark:to-violet-300">
+                <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                   {userName || 'Developer Extraordinaire'}
                 </h1>
                 <p className="text-xs text-slate-600 dark:text-slate-300 max-w-md mx-auto font-medium leading-relaxed">
@@ -207,10 +207,10 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
 
                   <button
                     onClick={onClose}
-                    className="w-full py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs transition-all flex items-center justify-center space-x-2"
+                    className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs transition-all flex items-center justify-center space-x-2 shadow-sm"
                   >
                     <span>Continue Learning ({remainingTopics} Left)</span>
-                    <ArrowRight className="w-4 h-4 text-white" />
+                    <ArrowRight className="w-4 h-4 text-current" />
                   </button>
                 </div>
               </div>
@@ -227,7 +227,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               : `🔒 ${remainingTopics} topic(s) remaining before certificate download is unlocked.`}
           </div>
 
-          <div className="flex items-center space-x-3 w-full sm:w-auto justify-end">
+          <div className="flex items-center space-x-2.5 w-full sm:w-auto justify-end">
             <button
               onClick={onClose}
               className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
@@ -239,9 +239,9 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               <button
                 onClick={handleDownloadPDF}
                 disabled={isGenerating}
-                className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs transition-all min-h-[42px]"
+                className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs transition-all min-h-[42px] shadow-sm"
               >
-                <Download className="w-4 h-4 text-white" />
+                <Download className="w-4 h-4 text-current" />
                 <span>{isGenerating ? 'Generating PDF...' : 'Download PDF Certificate'}</span>
               </button>
             ) : (

@@ -484,12 +484,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             {/* Ambient Animated Glow */}
             <div className="absolute inset-0 bg-gradient-to-tr from-sky-500/15 via-cyan-500/10 to-indigo-600/15 backdrop-blur-[2px] pointer-events-none" />
 
-            {/* Play Button Trigger with Duolingo Style 3D Press */}
+            {/* Play Button Trigger */}
             <button
               aria-label="Play Lesson Video"
-              className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#58CC02] hover:bg-[#61E002] border-4 border-[#58A700] shadow-[0_6px_0_0_#58A700] active:translate-y-1.5 active:shadow-none transition-all duration-150 flex items-center justify-center group-hover:scale-105"
+              className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/95 hover:bg-white text-slate-900 shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center ring-4 ring-white/20"
             >
-              <Play className="w-9 h-9 sm:w-11 sm:h-11 text-white fill-white ml-1.5" />
+              <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-slate-900 ml-1" />
             </button>
 
             <h3 className="relative z-10 mt-5 text-base sm:text-xl font-extrabold text-white max-w-xl px-4 drop-shadow-md">

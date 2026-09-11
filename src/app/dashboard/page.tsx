@@ -193,7 +193,7 @@ function DashboardContent() {
           <div className="flex items-center space-x-3 shrink-0">
             <Link
               href="/login?redirectTo=/dashboard"
-              className="px-4 py-2 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border border-[#58A700] text-white text-xs font-extrabold shadow-sm transition-all"
+              className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold shadow-sm transition-all"
             >
               Log In
             </Link>
@@ -414,9 +414,9 @@ function DashboardContent() {
             </div>
             <Link
               href={getResumeLearningUrl(profile)}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 shrink-0 min-h-[44px]"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 shrink-0 min-h-[42px] shadow-sm"
             >
-              <Play className="w-4 h-4 fill-white" />
+              <Play className="w-4 h-4 fill-current" />
               <span>{isBrandNewStudent ? 'Start Topic 01' : 'Resume Topic'}</span>
             </Link>
           </div>
@@ -541,7 +541,13 @@ function DashboardContent() {
                         <span className="text-xs font-mono font-bold text-sky-600 dark:text-cyan-400">
                           Module 0{mod.orderIndex}
                         </span>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border ${
+                          mod.difficulty === 'Beginner'
+                            ? 'badge-diff-beginner'
+                            : mod.difficulty === 'Intermediate'
+                            ? 'badge-diff-intermediate'
+                            : 'badge-diff-advanced'
+                        }`}>
                           {mod.difficulty}
                         </span>
                       </div>
@@ -792,14 +798,14 @@ function DashboardContent() {
                         )}
                       </div>
 
-                      <Link
-                        href={`/curriculum/${topic.moduleSlug}/${topic.slug}?tab=quiz`}
-                        className={`px-4 py-2 rounded-xl font-extrabold text-xs transition-all flex items-center space-x-1.5 ${
-                          hasAttempted
-                            ? 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700'
-                            : 'bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] text-white shadow-sm'
-                        }`}
-                      >
+                          <Link
+                            href={`/curriculum/${topic.moduleSlug}/${topic.slug}?tab=quiz`}
+                            className={`px-4 py-2 rounded-xl font-bold text-xs transition-all flex items-center space-x-1.5 ${
+                              hasAttempted
+                                ? 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700'
+                                : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 shadow-sm'
+                            }`}
+                          >
                         <Play className="w-3.5 h-3.5" />
                         <span>{hasAttempted ? 'Retake Quiz' : 'Take Quiz'}</span>
                       </Link>
@@ -948,9 +954,9 @@ function DashboardContent() {
               <div className="pt-2">
                 <Link
                   href="/curriculum"
-                  className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs sm:text-sm transition-all"
+                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm transition-all shadow-sm"
                 >
-                  <BookOpen className="w-4 h-4 text-white" />
+                  <BookOpen className="w-4 h-4 text-current" />
                   <span>Browse Curriculum Syllabus</span>
                 </Link>
               </div>
@@ -999,9 +1005,9 @@ function DashboardContent() {
 
                       <Link
                         href={`/curriculum/${topic.moduleSlug}/${topic.slug}?tab=watch`}
-                        className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-[#58CC02] hover:bg-[#61E002] border-2 border-[#58A700] shadow-[0_3px_0_0_#58A700] text-white font-extrabold text-xs transition-all text-center flex items-center justify-center space-x-1.5 min-h-[42px]"
+                        className="flex-1 sm:flex-none px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all text-center flex items-center justify-center space-x-1.5 min-h-[40px] shadow-sm"
                       >
-                        <Play className="w-3.5 h-3.5 fill-white" />
+                        <Play className="w-3.5 h-3.5 fill-current" />
                         <span>Open Lesson</span>
                       </Link>
                     </div>

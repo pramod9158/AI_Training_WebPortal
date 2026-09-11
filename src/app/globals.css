@@ -62,35 +62,35 @@ html.dark ::-webkit-scrollbar-thumb {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #58CC02;
+  background: #0284C7;
 }
 html.dark ::-webkit-scrollbar-thumb:hover {
   background: #06B6D4;
 }
 
 /* ==========================================================================
-   DUOLINGO LIGHT THEME ENGINE (html:not(.dark))
+   PROFESSIONAL LIGHT THEME ENGINE (html:not(.dark))
    Guarantees:
    1. All dark background boxes, cards, and gradients turn clean white (#FFFFFF)
-      or crisp Duolingo light surfaces (#F7F7F7, #DDF4FF).
-   2. All text colors are dark and sharp (#4B4B4B / #777777 / #1899D6) - NO
+      or crisp light surfaces (#F8FAFC, #F1F5F9).
+   2. All text colors are dark and sharp (#0F172A / #334155 / #0284C7) - NO
       invisible white-on-light text anywhere.
-   3. Exact Duolingo 3D Button style (#58CC02 green, #1CB0F6 blue).
+   3. Subtle, executive, professional button and surface styles.
    ========================================================================== */
 
 html:not(.dark) {
   /* Canvas Background */
   body {
     background-color: #FFFFFF !important;
-    color: #4B4B4B !important;
+    color: #0F172A !important;
   }
 
   /* Reset Ambient Orbs in Light Mode */
   .blur-\[120px\],
   .blur-3xl,
   .blur-2xl {
-    opacity: 0.12 !important;
-    background: radial-gradient(circle, rgba(88, 204, 2, 0.25) 0%, rgba(28, 176, 246, 0.25) 100%) !important;
+    opacity: 0.10 !important;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.18) 0%, rgba(99, 102, 241, 0.18) 100%) !important;
   }
 
   /* --------------------------------------------------------------------------
@@ -249,9 +249,9 @@ html:not(.dark) {
 
   /* Video Play Center Trigger */
   .aspect-video button {
-    background: #58CC02 !important;
-    border: 2px solid #58A700 !important;
-    box-shadow: 0 4px 0 0 #58A700 !important;
+    background: #0F172A !important;
+    border: 2px solid #334155 !important;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2) !important;
   }
   .aspect-video button .bg-\[\#0B0F19\] {
     background-color: transparent !important;
@@ -269,17 +269,17 @@ html:not(.dark) {
   .w-\[750px\],
   .sm\:w-\[800px\] {
     background-image: none !important;
-    background: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%) !important;
-    border: 4px solid #58CC02 !important;
-    box-shadow: 0 10px 30px rgba(88, 204, 2, 0.12) !important;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%) !important;
+    border: 3px solid #CBD5E1 !important;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08) !important;
   }
 
   /* Certificate Typography */
   div[ref*="certRef"] h1,
   .w-\[750px\] h1,
   .sm\:w-\[800px\] h1 {
-    color: #58CC02 !important;
-    -webkit-text-fill-color: #58CC02 !important;
+    color: #0F172A !important;
+    -webkit-text-fill-color: #0F172A !important;
     font-weight: 900 !important;
   }
 
@@ -330,7 +330,7 @@ html:not(.dark) {
 
   /* Brand Gradient Headings */
   .bg-clip-text {
-    background: linear-gradient(135deg, #58CC02 0%, #1CB0F6 100%) !important;
+    background: linear-gradient(135deg, #0F172A 0%, #334155 100%) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
   }
@@ -340,13 +340,13 @@ html:not(.dark) {
   .text-cyan-300,
   .text-cyan-200,
   .text-cyan-500 {
-    color: #1899D6 !important;
+    color: #0284C7 !important;
   }
 
   .text-emerald-400,
   .text-emerald-300,
   .text-emerald-500 {
-    color: #3D7D00 !important;
+    color: #059669 !important;
   }
 
   .text-amber-400,
@@ -358,17 +358,17 @@ html:not(.dark) {
   .text-violet-400,
   .text-violet-300,
   .text-violet-500 {
-    color: #9333EA !important;
+    color: #7C3AED !important;
   }
 
   .text-rose-400,
   .text-rose-300,
   .text-rose-500 {
-    color: #EA2B2B !important;
+    color: #E11D48 !important;
   }
 
   /* --------------------------------------------------------------------------
-     4. Duolingo Buttons (Feather Green Primary CTA & Crisp White Secondary CTA)
+     4. Professional Buttons (Subtle, Clean & Executive)
      -------------------------------------------------------------------------- */
   
   /* Primary Action Buttons: Start Learning, Retake, Resume, Save, Submit */
@@ -378,32 +378,30 @@ html:not(.dark) {
   .bg-gradient-to-r.from-cyan-500.via-blue-600.to-violet-600,
   .bg-gradient-to-r.from-cyan-500.to-blue-600,
   .bg-gradient-to-r.from-cyan-500.to-violet-600 {
-    background: #58CC02 !important;
-    border: 2px solid #58A700 !important;
-    border-bottom: 4px solid #58A700 !important;
+    background: #0F172A !important;
+    border: 1px solid #1E293B !important;
     color: #FFFFFF !important;
-    font-weight: 800 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    box-shadow: 0 4px 0 0 #58A700 !important;
-    transition: all 0.1s ease-in-out !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.01em;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.15s ease-in-out !important;
   }
 
   button.bg-gradient-to-r:hover,
   a.bg-gradient-to-r:not([class*="from-slate-900"]):hover,
   button.bg-cyan-500:hover {
-    background: #61E002 !important;
+    background: #1E293B !important;
+    border-color: #334155 !important;
   }
 
   button.bg-gradient-to-r:active,
   a.bg-gradient-to-r:not([class*="from-slate-900"]):active,
   button.bg-cyan-500:active {
-    transform: translateY(2px) !important;
-    box-shadow: 0 1px 0 0 #58A700 !important;
-    border-bottom-width: 2px !important;
+    transform: translateY(1px) !important;
+    box-shadow: none !important;
   }
 
-  /* Icons and text inside solid primary green CTA buttons */
+  /* Icons and text inside solid primary CTA buttons */
   button.bg-gradient-to-r span,
   button.bg-gradient-to-r svg,
   a.bg-gradient-to-r:not([class*="from-slate-900"]) span,
@@ -421,29 +419,28 @@ html:not(.dark) {
   button.bg-slate-900:not(.aspect-video button) {
     background-image: none !important;
     background-color: #FFFFFF !important;
-    border: 2px solid #E5E5E5 !important;
-    border-bottom: 4px solid #E5E5E5 !important;
-    color: #1CB0F6 !important;
-    font-weight: 800 !important;
-    box-shadow: 0 2px 0 0 #E5E5E5 !important;
+    border: 1px solid #E2E8F0 !important;
+    color: #0F172A !important;
+    font-weight: 700 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
   }
 
   a.bg-slate-900\/80:hover,
   button.bg-slate-900\/80:hover,
   a.bg-slate-900:hover,
   button.bg-slate-900:hover {
-    background-color: #F7F7F7 !important;
-    color: #1899D6 !important;
+    background-color: #F8FAFC !important;
+    color: #0284C7 !important;
+    border-color: #CBD5E1 !important;
   }
 
   /* Active Tabs (Watch Video / Read Notes / Take Quiz) */
   button.bg-cyan-500.text-black,
   button.bg-cyan-500 {
-    background: #1CB0F6 !important;
-    border: 2px solid #1899D6 !important;
-    border-bottom: 4px solid #1899D6 !important;
+    background: #0284C7 !important;
+    border: 1px solid #0369A1 !important;
     color: #FFFFFF !important;
-    box-shadow: 0 3px 0 0 #1899D6 !important;
+    box-shadow: 0 1px 3px rgba(2, 132, 199, 0.2) !important;
   }
 
   /* --------------------------------------------------------------------------
@@ -598,4 +595,58 @@ html:not(.dark) {
     border: 2px solid #E5E5E5 !important;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
   }
+}
+
+/* ==========================================================================
+   SUBTLE PROFESSIONAL DIFFICULTY BADGES & BUTTON TOKENS
+   ========================================================================== */
+
+/* Beginner: Subtle Soft Sage / Emerald */
+.badge-diff-beginner {
+  background-color: rgba(16, 185, 129, 0.08);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+html.dark .badge-diff-beginner {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #34D399;
+  border-color: rgba(16, 185, 129, 0.28);
+}
+
+/* Intermediate: Subtle Refined Slate-Blue / Sky */
+.badge-diff-intermediate {
+  background-color: rgba(2, 132, 199, 0.08);
+  color: #0369A1;
+  border: 1px solid rgba(2, 132, 199, 0.25);
+}
+html.dark .badge-diff-intermediate {
+  background-color: rgba(2, 132, 199, 0.12);
+  color: #38BDF8;
+  border-color: rgba(2, 132, 199, 0.28);
+}
+
+/* Advanced: Subtle Muted Iris / Amethyst */
+.badge-diff-advanced {
+  background-color: rgba(147, 51, 234, 0.08);
+  color: #6D28D9;
+  border: 1px solid rgba(147, 51, 234, 0.25);
+}
+html.dark .badge-diff-advanced {
+  background-color: rgba(147, 51, 234, 0.12);
+  color: #C084FC;
+  border-color: rgba(147, 51, 234, 0.28);
+}
+
+/* Unified Button Heights for Mobile Symmetry */
+.btn-touch-sm {
+  min-height: 38px;
+  height: 38px;
+}
+.btn-touch-md {
+  min-height: 42px;
+  height: 42px;
+}
+.btn-touch-lg {
+  min-height: 46px;
+  height: 46px;
 }
