@@ -67,7 +67,7 @@ export function ModuleClient() {
   ) || moduleTopics[0];
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-8">
+    <div className="min-h-screen py-6 sm:py-12 px-3 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-6 sm:space-y-8">
       
       {/* Back Link */}
       <Link
@@ -79,7 +79,7 @@ export function ModuleClient() {
       </Link>
 
       {/* Module Hero Banner */}
-      <div className="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl relative overflow-hidden space-y-6">
+      <div className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl relative overflow-hidden space-y-6">
         
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="flex items-center space-x-4">
@@ -120,7 +120,8 @@ export function ModuleClient() {
               aria-label="Download Module Guide PDF"
             >
               <Download className="w-4 h-4 text-slate-400 shrink-0" />
-              <span>Download Module Guide (PDF)</span>
+              <span className="hidden sm:inline">Download Module Guide (PDF)</span>
+              <span className="sm:hidden">Module Guide (PDF)</span>
             </button>
 
             {firstUncompleted && (

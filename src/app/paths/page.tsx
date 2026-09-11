@@ -38,7 +38,7 @@ export default function PathsPage() {
   };
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
+    <div className="min-h-screen py-6 sm:py-12 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-12">
       
       {/* Certificate Modal Trigger */}
       <CertificateModal
@@ -66,12 +66,12 @@ export default function PathsPage() {
       </div>
 
       {/* Path Selector Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 max-w-4xl mx-auto">
         
         {/* Path A */}
         <div
           onClick={() => handleSelectPath('path-a')}
-          className={`cursor-pointer p-6 sm:p-8 rounded-3xl border-2 transition-all duration-300 space-y-4 ${
+          className={`cursor-pointer p-5 sm:p-8 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 space-y-4 ${
             activePathSlug === 'path-a'
               ? 'bg-sky-50 dark:bg-gradient-to-br dark:from-cyan-950/50 dark:via-slate-900 dark:to-slate-900 border-sky-400 dark:border-cyan-500/60 shadow-xl dark:shadow-cyan-500/15 ring-2 ring-sky-300 dark:ring-cyan-500/30'
               : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
@@ -105,7 +105,7 @@ export default function PathsPage() {
         {/* Path B */}
         <div
           onClick={() => handleSelectPath('path-b')}
-          className={`cursor-pointer p-6 sm:p-8 rounded-3xl border-2 transition-all duration-300 space-y-4 ${
+          className={`cursor-pointer p-5 sm:p-8 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 space-y-4 ${
             activePathSlug === 'path-b'
               ? 'bg-purple-50 dark:bg-gradient-to-br dark:from-violet-950/50 dark:via-slate-900 dark:to-slate-900 border-purple-400 dark:border-violet-500/60 shadow-xl dark:shadow-violet-500/15 ring-2 ring-purple-300 dark:ring-violet-500/30'
               : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'

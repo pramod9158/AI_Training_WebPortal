@@ -130,7 +130,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               alt="Waynautic"
               width={180}
               height={44}
-              className="h-8 sm:h-9 md:h-10 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+              className="h-7 sm:h-8 md:h-9 w-auto object-contain transition-transform group-hover:scale-[1.02]"
               priority
             />
           </Link>

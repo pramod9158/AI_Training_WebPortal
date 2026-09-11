@@ -306,10 +306,10 @@ function DashboardContent() {
         {/* 4 Interactive Metric Cards (7 columns) */}
         <div className="lg:col-span-7 grid grid-cols-2 gap-3 sm:gap-4">
           
-          {/* Metric 1: Per-Module Bars Navigation */}
+          {/* Metric 1: Modules Progress Navigation */}
           <button
             onClick={() => setActiveTab('overview')}
-            className={`text-left p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 transition-all space-y-2 shadow-sm ${
+            className={`text-left p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border-2 transition-all space-y-2 shadow-sm ${
               activeTab === 'overview'
                 ? 'border-sky-500 dark:border-cyan-400 ring-2 ring-sky-400/20'
                 : 'border-slate-200 dark:border-slate-800 hover:border-sky-300 dark:hover:border-slate-700'
@@ -321,18 +321,18 @@ function DashboardContent() {
                 <BookOpen className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+            <div className="text-xl sm:text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
               {moduleStats.filter(m => m.status === 'completed').length} <span className="text-xs font-normal text-slate-400">/ 10 Done</span>
             </div>
-            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              View per-module progress bars →
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate">
+              View module bars →
             </div>
           </button>
 
           {/* Metric 2: Quiz Scores Navigation */}
           <button
             onClick={() => setActiveTab('quizzes')}
-            className={`text-left p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 transition-all space-y-2 shadow-sm ${
+            className={`text-left p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border-2 transition-all space-y-2 shadow-sm ${
               activeTab === 'quizzes'
                 ? 'border-emerald-500 dark:border-emerald-400 ring-2 ring-emerald-400/20'
                 : 'border-slate-200 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-slate-700'
@@ -344,10 +344,10 @@ function DashboardContent() {
                 <CheckCircle2 className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+            <div className="text-xl sm:text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
               {overallStats.totalQuizzesAttempted} <span className="text-xs font-normal text-slate-400">Quizzes</span>
             </div>
-            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate">
               {overallStats.quizzesPassed} passed ({overallStats.averageQuizScore !== null ? `${overallStats.averageQuizScore}% avg` : '0%'}) →
             </div>
           </button>
@@ -355,7 +355,7 @@ function DashboardContent() {
           {/* Metric 3: Badges Earned Navigation */}
           <button
             onClick={() => setActiveTab('badges')}
-            className={`text-left p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 transition-all space-y-2 shadow-sm ${
+            className={`text-left p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border-2 transition-all space-y-2 shadow-sm ${
               activeTab === 'badges'
                 ? 'border-purple-500 dark:border-violet-400 ring-2 ring-purple-400/20'
                 : 'border-slate-200 dark:border-slate-800 hover:border-purple-300 dark:hover:border-slate-700'
@@ -367,27 +367,27 @@ function DashboardContent() {
                 <Award className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-purple-700 dark:text-violet-400">
+            <div className="text-xl sm:text-2xl sm:text-3xl font-black text-purple-700 dark:text-violet-400">
               {unlockedBadgeCount} <span className="text-xs font-normal text-slate-400">/ {badgeCatalog.length}</span>
             </div>
-            <div className="text-[11px] text-purple-700/80 dark:text-slate-400 font-medium">
-              Explore badge milestones →
+            <div className="text-[11px] text-purple-700/80 dark:text-slate-400 font-medium truncate">
+              Explore badges →
             </div>
           </button>
 
           {/* Metric 4: Streak */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-amber-50/60 dark:bg-amber-950/20 border-2 border-amber-300 dark:border-amber-500/30 space-y-2 shadow-sm">
+          <div className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-amber-50/60 dark:bg-amber-950/20 border-2 border-amber-300 dark:border-amber-500/30 space-y-2 shadow-sm">
             <div className="flex items-center justify-between">
               <span className="text-[10px] sm:text-xs font-mono text-amber-700 dark:text-amber-400 uppercase font-bold">Learning Streak</span>
               <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700 flex items-center justify-center text-amber-600 dark:text-amber-400">
                 <Flame className="w-4 h-4 fill-amber-500" />
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400">
+            <div className="text-xl sm:text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400">
               {streak.currentStreak} <span className="text-xs font-normal text-amber-700/70 dark:text-slate-400">Days</span>
             </div>
-            <div className="text-[11px] text-amber-800/80 dark:text-slate-400 font-medium">
-              Best record: {streak.longestStreak} days
+            <div className="text-[11px] text-amber-800/80 dark:text-slate-400 font-medium truncate">
+              Best: {streak.longestStreak} days
             </div>
           </div>
 
@@ -425,27 +425,27 @@ function DashboardContent() {
       )}
 
       {/* Tabs Filter Bar */}
-      <div id="dashboard-tabs" className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none border-b-2 border-slate-200 dark:border-slate-800">
+      <div id="dashboard-tabs" className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none border-b-2 border-slate-200 dark:border-slate-800 -webkit-overflow-scrolling-touch">
         
         {/* Tab 1: Module Breakdown */}
         <button
           onClick={() => setActiveTab('overview')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-extrabold font-mono uppercase transition-all shrink-0 flex items-center space-x-1.5 ${
+          className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold font-mono uppercase transition-all shrink-0 flex items-center space-x-1.5 ${
             activeTab === 'overview'
-              ? 'bg-[#1CB0F6] text-white border-2 border-[#1899D6] shadow-[0_2px_0_0_#1899D6]'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <BookOpen className="w-3.5 h-3.5" />
-          <span>Module Progress Bars</span>
+          <span>Module Progress</span>
         </button>
 
         {/* Tab 2: Quiz Scores */}
         <button
           onClick={() => setActiveTab('quizzes')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-extrabold font-mono uppercase transition-all shrink-0 flex items-center space-x-1.5 ${
+          className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold font-mono uppercase transition-all shrink-0 flex items-center space-x-1.5 ${
             activeTab === 'quizzes'
-              ? 'bg-[#1CB0F6] text-white border-2 border-[#1899D6] shadow-[0_2px_0_0_#1899D6]'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
@@ -456,22 +456,22 @@ function DashboardContent() {
         {/* Tab 3: Badges */}
         <button
           onClick={() => setActiveTab('badges')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-extrabold font-mono uppercase transition-all shrink-0 flex items-center space-x-1.5 ${
+          className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold font-mono uppercase transition-all shrink-0 flex items-center space-x-1.5 ${
             activeTab === 'badges'
-              ? 'bg-[#1CB0F6] text-white border-2 border-[#1899D6] shadow-[0_2px_0_0_#1899D6]'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Award className="w-3.5 h-3.5" />
-          <span>Badges Earned ({unlockedBadgeCount}/{badgeCatalog.length})</span>
+          <span>Badges ({unlockedBadgeCount}/{badgeCatalog.length})</span>
         </button>
 
         {/* Tab 4: Saved Bookmarks */}
         <button
           onClick={() => setActiveTab('bookmarks')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-extrabold font-mono uppercase transition-all shrink-0 flex items-center space-x-1.5 ${
+          className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold font-mono uppercase transition-all shrink-0 flex items-center space-x-1.5 ${
             activeTab === 'bookmarks'
-              ? 'bg-[#1CB0F6] text-white border-2 border-[#1899D6] shadow-[0_2px_0_0_#1899D6]'
+              ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >

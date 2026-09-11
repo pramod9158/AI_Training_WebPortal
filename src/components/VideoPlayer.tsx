@@ -484,12 +484,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             {/* Play Button Trigger */}
             <button
               aria-label="Play Lesson Video"
-              className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/95 hover:bg-white text-slate-900 shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center ring-4 ring-white/20"
+              className="relative z-10 w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-white/95 hover:bg-white text-slate-900 shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center ring-4 ring-white/20"
             >
-              <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-slate-900 ml-1" />
+              <Play className="w-6 h-6 sm:w-8 sm:h-8 fill-slate-900 ml-0.5" />
             </button>
 
-            <h3 className="relative z-10 mt-5 text-base sm:text-xl font-extrabold text-white max-w-xl px-4 drop-shadow-md">
+            <h3 className="relative z-10 mt-4 text-sm sm:text-xl font-extrabold text-white max-w-xl px-4 drop-shadow-md">
               {title}
             </h3>
 
@@ -509,7 +509,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
         {/* Resumed From Toast Overlay */}
         {showResumeToast && resumedFrom && (
-          <div className="absolute top-4 left-4 z-30 flex items-center space-x-3 px-3.5 py-2 rounded-2xl bg-slate-900/95 border border-sky-500/40 shadow-xl backdrop-blur-md animate-in fade-in slide-in-from-top-3">
+          <div className="absolute top-3 left-3 right-3 sm:right-auto sm:max-w-md z-30 flex items-center justify-between space-x-2 px-3 py-1.5 rounded-2xl bg-slate-900/95 border border-sky-500/40 shadow-xl backdrop-blur-md animate-in fade-in slide-in-from-top-3">
             <Clock className="w-4 h-4 text-sky-400 shrink-0" />
             <span className="text-xs text-slate-200 font-medium">
               Resumed from <strong className="text-sky-400 font-mono">{formatTime(resumedFrom)}</strong>
@@ -538,7 +538,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
         {/* 90% Watched Celebration Banner */}
         {completionCelebration && (
-          <div className="absolute top-4 right-4 z-30 flex items-center space-x-2.5 px-4 py-2.5 rounded-2xl bg-emerald-950/95 border-2 border-emerald-500/70 shadow-2xl backdrop-blur-md text-emerald-300 animate-in zoom-in-95 duration-300">
+          <div className="absolute top-3 left-3 right-3 sm:left-auto sm:right-4 sm:max-w-md z-30 flex items-center space-x-2.5 px-3.5 py-2 rounded-2xl bg-emerald-950/95 border-2 border-emerald-500/70 shadow-2xl backdrop-blur-md text-emerald-300 animate-in zoom-in-95 duration-300">
             <Sparkles className="w-5 h-5 text-emerald-400 shrink-0 animate-bounce" />
             <div>
               <div className="text-xs font-black uppercase tracking-wider text-emerald-300">Topic Completed! 🎉</div>

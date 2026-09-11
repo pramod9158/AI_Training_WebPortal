@@ -541,7 +541,7 @@ export default function ProfilePage() {
           <button
             type="button"
             onClick={() => setCertModalOpen(true)}
-            className={`px-6 py-3 rounded-xl border-2 font-extrabold text-xs sm:text-sm transition-all flex items-center space-x-2 min-h-[44px] ${
+            className={`w-full sm:w-auto px-6 py-2.5 rounded-xl border-2 font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 min-h-[42px] ${
               isUnlocked
                 ? 'bg-amber-50 hover:bg-amber-100 dark:bg-slate-800 text-amber-700 dark:text-amber-300 border-amber-400 dark:border-amber-500/30'
                 : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200'

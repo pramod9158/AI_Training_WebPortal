@@ -250,7 +250,7 @@ export function TopicWorkspaceClient() {
   };
 
   return (
-    <div className="min-h-screen py-6 sm:py-8 px-3 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-6 pb-24 sm:pb-12">
+    <div className="min-h-screen py-6 sm:py-8 px-3 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-6 pb-28 sm:pb-12">
       
       {/* Top Breadcrumbs & Topic Action Bar */}
       <nav aria-label="Breadcrumb" className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-slate-200 dark:border-slate-800 pb-4">
@@ -258,15 +258,15 @@ export function TopicWorkspaceClient() {
         <div className="flex items-center flex-wrap gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-mono">
           <Link href="/curriculum" className="hover:text-sky-600 dark:hover:text-cyan-400 transition-colors focus-visible:ring-1 focus-visible:ring-sky-500 focus-visible:outline-none rounded">Curriculum</Link>
           <span>/</span>
-          <Link href={`/curriculum/${moduleSlug}`} className="hover:text-sky-600 dark:hover:text-cyan-400 transition-colors truncate max-w-[140px] sm:max-w-none focus-visible:ring-1 focus-visible:ring-sky-500 focus-visible:outline-none rounded">{moduleData.title}</Link>
+          <Link href={`/curriculum/${moduleSlug}`} className="hover:text-sky-600 dark:hover:text-cyan-400 transition-colors truncate max-w-[120px] sm:max-w-none focus-visible:ring-1 focus-visible:ring-sky-500 focus-visible:outline-none rounded">{moduleData.title}</Link>
           <span>/</span>
-          <span className="text-sky-600 dark:text-cyan-400 font-bold truncate max-w-[160px] sm:max-w-[240px]">{topic.title}</span>
+          <span className="text-sky-600 dark:text-cyan-400 font-bold truncate max-w-[130px] sm:max-w-[240px]">{topic.title}</span>
         </div>
 
         <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           
           {/* Streak Tracker Pill */}
-          <div className="h-10 flex items-center justify-center">
+          <div className="h-10 w-full sm:w-auto flex items-center justify-center">
             <StreakTracker variant="compact" />
           </div>
 

@@ -118,7 +118,7 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
               {/* Module Card */}
               <Link
                 href={`/curriculum/${mod.slug}`}
-                className={`group relative flex-1 flex flex-col justify-between p-6 rounded-3xl border-2 transition-all duration-300 ${
+                className={`group relative flex-1 flex flex-col justify-between p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 ${
                   isCompleted
                     ? 'bg-white dark:bg-slate-900/80 border-emerald-400/80 dark:border-emerald-500/40 hover:border-emerald-500 shadow-md'
                     : isInProgress

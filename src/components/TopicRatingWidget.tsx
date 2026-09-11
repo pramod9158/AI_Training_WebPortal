@@ -289,7 +289,7 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
             </div>
 
             {/* 5-Star Interactive Rating: DEFAULT UNCOLORED, FILLS ON HOVER / RATE */}
-            <div className="flex items-center space-x-1.5 bg-slate-50 dark:bg-slate-800/80 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <div className="w-full sm:w-auto flex items-center justify-center space-x-1.5 bg-slate-50 dark:bg-slate-800/80 px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700">
               <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 mr-1.5">
                 {starRating > 0 ? `Your Rating (${starRating}★):` : 'Rate:'}
               </span>

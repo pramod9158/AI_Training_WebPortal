@@ -64,7 +64,7 @@ export function StreakTracker({ variant = 'full' }: StreakTrackerProps) {
 
   if (variant === 'compact') {
     return (
-      <div className={`inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition-all ${
+      <div className={`w-full h-full min-h-[40px] inline-flex items-center justify-center space-x-2 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition-all ${
         isStreakAtRisk
           ? 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700 animate-pulse'
           : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800'

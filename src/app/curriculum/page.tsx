@@ -26,7 +26,7 @@ export default function CurriculumPage() {
   const overallPercent = Math.round((completedTopicsCount / totalTopicsCount) * 100);
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="min-h-screen py-6 sm:py-12 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       
       {/* Page Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
