@@ -1140,7 +1140,7 @@ export async function sendReEngagementNudge(
 
   const title = nudgeType === 'streak_warning' 
     ? '🔥 Streak at Risk Alert!' 
-    : '👋 We miss you at Waynautic Academy!';
+    : 'We miss you at Waynautic Academy!';
 
   const message = nudgeType === 'streak_warning'
     ? `Hey ${candidate?.displayName || 'Learner'}, your learning streak is at risk! Log in today to keep your streak alive.${customNote ? ` Note: ${customNote}` : ''}`
