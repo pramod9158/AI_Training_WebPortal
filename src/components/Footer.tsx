@@ -23,10 +23,6 @@ export const Footer: React.FC = () => {
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
               Empowering modern software developers with production-grade AI, Prompt Engineering, RAG, and Vector Database skills.
             </p>
-            <div className="flex items-center space-x-2 text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Production Protocol 2.4 Active</span>
-            </div>
           </div>
 
           {/* Col 2: Learning Modules */}
