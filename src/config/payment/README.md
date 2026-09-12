@@ -22,7 +22,7 @@ Open `upiConfig.ts` in your code editor and change:
 ```typescript
 upiId: 'your-new-upi-id@bank',
 payeeName: 'Your New Payee Name',
-amount: 999.00,
+amount: 10000.00,
 ```
 
 ### 2. To Update the QR Code Image

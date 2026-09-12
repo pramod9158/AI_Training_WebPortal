@@ -315,12 +315,12 @@ export default function ProfilePage() {
               </div>
               <div>
                 <h3 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg">
-                  {isPro ? 'Waynautic Pro AI Pass (Lifetime Access)' : 'Waynautic Free Candidate Account'}
+                  {isPro ? 'Waynautic Pro AI Pass (1 Year Access)' : 'Waynautic Free Candidate Account'}
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400">
                   {isPro 
                     ? 'All 10 curriculum modules, quizzes, and verified certification unlocked.' 
-                    : 'Upgrade for ₹999 to unlock all 10 specialized modules & verified certificate.'}
+                    : 'Upgrade for ₹10,000/year to unlock all 10 specialized modules & verified certificate.'}
                 </p>
               </div>
             </div>
@@ -332,7 +332,7 @@ export default function ProfilePage() {
                 className="px-4 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30 font-bold text-xs sm:text-sm flex items-center space-x-2 shrink-0 transition-all min-h-[40px]"
               >
                 <QrCode className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                <span>Upgrade to Pro (₹999)</span>
+                <span>Upgrade to Pro (₹10,000/yr)</span>
               </button>
             ) : (
               <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-black">

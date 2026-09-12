@@ -170,7 +170,7 @@ create table if not exists public.barcode_configs (
   title text not null,
   upi_id text not null,
   payee_name text not null,
-  amount numeric(10,2) not null default 999.00,
+  amount numeric(10,2) not null default 10000.00,
   currency text not null default 'INR',
   qr_image_url text,
   description text,

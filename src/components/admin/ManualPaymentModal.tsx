@@ -24,7 +24,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
 }) => {
   const [candidateEmail, setCandidateEmail] = useState('');
   const [candidateName, setCandidateName] = useState('');
-  const [amount, setAmount] = useState('999');
+  const [amount, setAmount] = useState('10000');
   const [paymentMethod, setPaymentMethod] = useState<'barcode_qr' | 'upi' | 'cash' | 'card' | 'bank_transfer'>('barcode_qr');
   const [transactionReference, setTransactionReference] = useState('');
   const [planToGrant, setPlanToGrant] = useState<'pro' | 'enterprise'>('pro');
@@ -50,7 +50,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
       const res = await recordManualPayment({
         candidateEmail: candidateEmail.trim(),
         candidateName: candidateName.trim(),
-        amount: Number(amount) || 999,
+        amount: Number(amount) || 10000,
         paymentMethod,
         transactionReference: ref,
         planToGrant,
@@ -193,7 +193,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
                 onChange={(e: any) => setPlanToGrant(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               >
-                <option value="pro">Pro AI Pass (Lifetime)</option>
+                <option value="pro">Pro AI Pass (1 Year)</option>
                 <option value="enterprise">Enterprise VIP</option>
               </select>
             </div>

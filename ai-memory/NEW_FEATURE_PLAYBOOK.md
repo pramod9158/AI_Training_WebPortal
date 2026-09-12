@@ -144,7 +144,7 @@ export interface Flashcard {
 | :--- | :--- | :--- |
 | **Add a new Topic / Curriculum unit** | `src/data/seedTopics.ts`, `src/lib/curriculumService.ts` | Ensure unique `id`, `slug`, `moduleSlug`, estimated minutes, markdown text, and quiz array. |
 | **Add a new Quiz or Question** | `src/data/seedModules.ts` or Admin Quiz Editor | Use `QuizQuestion` format with `correctOptionIndex` (0–3) and detailed `explanation`. |
-| **Change Payment / Pricing Gateway** | `src/config/payment/upiConfig.ts`, `PaymentBarcodeModal.tsx` | Update UPI ID, payee merchant name, and course fee (`amount: 999.00`). |
+| **Change Payment / Pricing Gateway** | `src/config/payment/upiConfig.ts`, `PaymentBarcodeModal.tsx` | Update UPI ID, payee merchant name, and course fee (`amount: 10000.00` per year). |
 | **Modify Admin Verification Logic** | `src/lib/adminService.ts` | Remember to deduplicate verified records by user plan and auto-reconcile redundant requests. |
 | **Modify Video Player Behavior** | `src/components/VideoPlayer.tsx` | Supports YouTube (iframe postMessage API) and Bunny.net Stream. Preserve auto-completion at 90% watch milestone. |
 | **Modify Topic Lesson Layout** | `src/components/TopicWorkspaceClient.tsx` | Top breadcrumbs, video embed, tab switcher (`watch` / `read` / `quiz`), rating widget, and comments. |

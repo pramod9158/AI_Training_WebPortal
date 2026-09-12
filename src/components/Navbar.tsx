@@ -497,7 +497,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
                 <span>Upgrade to Pro Pass</span>
               </div>
-              <span className="text-[11px] bg-amber-500/20 px-2 py-0.5 rounded-md font-mono font-bold">₹999</span>
+              <span className="text-[11px] bg-amber-500/20 px-2 py-0.5 rounded-md font-mono font-bold">₹10,000/yr</span>
             </button>
           )}
 

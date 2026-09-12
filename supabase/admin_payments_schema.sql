@@ -26,7 +26,7 @@ create table if not exists public.barcode_configs (
   title text not null,
   upi_id text not null,
   payee_name text not null,
-  amount numeric(10,2) not null default 999.00,
+  amount numeric(10,2) not null default 10000.00,
   currency text not null default 'INR',
   qr_image_url text,
   description text,
@@ -39,10 +39,10 @@ create table if not exists public.barcode_configs (
 insert into public.barcode_configs (id, title, upi_id, payee_name, amount, currency, description, is_active)
 values (
   'waynautic_pro_upi',
-  'Waynautic Pro AI Pass (Lifetime Access)',
+  'Waynautic Pro AI Pass (1 Year Access)',
   'waynautic@upi',
   'Waynautic Academy',
-  999.00,
+  10000.00,
   'INR',
   'Scan with Google Pay, PhonePe, Paytm, BHIM or any UPI banking app.',
   true

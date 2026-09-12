@@ -265,7 +265,7 @@ export const PaymentActionModal: React.FC<PaymentActionModalProps> = ({
                     <div className="flex flex-wrap gap-1.5">
                       {[
                         'UTR reference not found in bank ledger',
-                        'Payment amount is less than ₹999 required',
+                        'Payment amount is less than ₹10,000 required',
                         'Duplicate transaction reference already used',
                         'Payment reference or screenshot invalid'
                       ].map((preset) => (

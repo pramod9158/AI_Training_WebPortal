@@ -41,14 +41,14 @@ export const MASTER_PAYMENT_CONFIG: UpiPaymentConfig = {
   // 2. Beneficiary / Merchant Name
   payeeName: 'Pramod Kalyan',
 
-  // 3. Pro Lifetime Course Fee
-  amount: 999.00,
+  // 3. Pro Annual Course Fee
+  amount: 10000.00,
 
   // 4. Currency
   currency: 'INR',
 
   // 5. Pass Title
-  title: 'Waynautic Pro AI Pass (Lifetime Access)',
+  title: 'Waynautic Pro AI Pass (1 Year Access)',
 
   // 6. Candidate Instructions
   description: 'Scan with PhonePe, Google Pay, Paytm, BHIM, or any UPI banking app. Enter the 12-digit UTR/Ref number below for instant verification.',

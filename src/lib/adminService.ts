@@ -488,7 +488,7 @@ export async function approvePayment(
         await supabase.from('user_notifications').insert({
           user_id: targetUserId,
           title: 'Payment Approved! Pro Unlocked 🎉',
-          message: 'Your payment verification was approved by the admissions team! Waynautic Pro AI Pass is now active with unlimited access to all 10 modules & lifetime certification.',
+          message: 'Your payment verification was approved by the admissions team! Waynautic Pro AI Pass is now active with unlimited access to all 10 modules & 1-year certification.',
           type: 'system',
           link_url: '/profile',
           is_read: false
@@ -936,7 +936,7 @@ export async function updateCandidatePlanByEmail(
       progressPercent: 0,
       quizzesAttempted: 0,
       averageQuizScore: 0,
-      totalSpent: plan === 'pro' ? 999 : 0,
+      totalSpent: plan === 'pro' ? 10000 : 0,
       paymentCount: 1
     };
     updated.unshift(newCand);

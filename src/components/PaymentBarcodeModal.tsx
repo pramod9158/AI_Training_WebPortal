@@ -358,7 +358,7 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Plan to Grant:</span>
-                  <span className="font-bold text-amber-500">Waynautic Pro Pass (Lifetime)</span>
+                  <span className="font-bold text-amber-500">Waynautic Pro Pass (1 Year)</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Amount:</span>
@@ -449,7 +449,7 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                         ₹{config.amount}
                       </span>
                       <span className="text-[10px] font-bold text-slate-500 uppercase">
-                        {config.currency} / Lifetime
+                        {config.currency} / Year
                       </span>
                     </div>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400">
@@ -618,7 +618,7 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                     </div>
                     <div className="flex items-center space-x-1">
                       <Check className="w-3 h-3 text-emerald-500 shrink-0" />
-                      <span>Lifetime Portal Access</span>
+                      <span>1-Year Portal Access</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <Check className="w-3 h-3 text-emerald-500 shrink-0" />
