@@ -2,85 +2,152 @@
 -- WAYNAUTIC ACADEMY: SUPABASE CURRICULUM & QUIZ CLOUD SYNCHRONIZATION
 -- Run this script in the Supabase SQL Editor (https://supabase.com/dashboard)
 -- This script fixes the schema and RLS policies for topics and quiz_questions
--- to allow seamless synchronization between Admin Portal and Academy Portal.
+-- to allow seamless synchronization across all devices and user profiles.
 -- =========================================================================
 
--- 1. TOPICS TABLE ADJUSTMENTS
--- Ensure topics table exists and supports text IDs (e.g. 't-1', 't-custom-...')
+-- =========================================================================
+-- STEP 1: DROP ALL FOREIGN KEY CONSTRAINTS ON quiz_questions
+-- (Must happen before ANY type changes, regardless of constraint name)
+-- =========================================================================
+do $$
+declare
+  r record;
+begin
+  -- Drop every FK constraint on quiz_questions that references topics
+  for r in
+    select tc.constraint_name
+    from information_schema.table_constraints tc
+    join information_schema.referential_constraints rc
+      on tc.constraint_name = rc.constraint_name
+    join information_schema.table_constraints tc2
+      on rc.unique_constraint_name = tc2.constraint_name
+    where tc.table_schema = 'public'
+      and tc.table_name = 'quiz_questions'
+      and tc2.table_name = 'topics'
+      and tc.constraint_type = 'FOREIGN KEY'
+  loop
+    execute format('alter table public.quiz_questions drop constraint if exists %I', r.constraint_name);
+  end loop;
+
+  -- Also drop any FK on quiz_questions referencing itself or other tables (belt & suspenders)
+  for r in
+    select tc.constraint_name
+    from information_schema.table_constraints tc
+    where tc.table_schema = 'public'
+      and tc.table_name = 'quiz_questions'
+      and tc.constraint_type = 'FOREIGN KEY'
+  loop
+    execute format('alter table public.quiz_questions drop constraint if exists %I', r.constraint_name);
+  end loop;
+end $$;
+
+-- =========================================================================
+-- STEP 2: CREATE TABLES IF THEY DON'T EXIST (with text PKs from the start)
+-- =========================================================================
+
 create table if not exists public.topics (
-  id text primary key,
-  module_id uuid,
-  module_slug text not null default 'llms',
-  slug text unique not null,
-  title text not null,
-  description text not null,
-  video_url text not null default 'https://www.youtube.com/embed/zxQyTK8ckyY',
-  video_provider text not null default 'youtube',
-  order_index integer not null default 1,
-  text_content text not null default '',
+  id            text        primary key,
+  module_id     uuid,
+  module_slug   text        not null default 'llms',
+  slug          text        not null,
+  title         text        not null,
+  description   text        not null default '',
+  video_url     text        not null default 'https://www.youtube.com/embed/zxQyTK8ckyY',
+  video_provider text       not null default 'youtube',
+  order_index   integer     not null default 1,
+  text_content  text        not null default '',
   estimated_minutes integer not null default 15,
-  chapters jsonb default '[]'::jsonb,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
+  chapters      jsonb               default '[]'::jsonb,
+  created_at    timestamptz         default now(),
+  updated_at    timestamptz         default now()
 );
 
--- If topics table already exists with uuid id or missing columns, adapt columns safely:
+create table if not exists public.quiz_questions (
+  id                   text    primary key,
+  topic_id             text    not null,
+  question_text        text    not null,
+  options              jsonb   not null,
+  correct_option_index integer not null default 0,
+  explanation          text    not null default '',
+  created_at           timestamptz default now(),
+  updated_at           timestamptz default now()
+);
+
+-- =========================================================================
+-- STEP 3: ALTER EXISTING COLUMNS (safe because FKs are already dropped)
+-- =========================================================================
 do $$
 begin
-  -- Add module_slug column if missing
-  if not exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'topics' and column_name = 'module_slug') then
+  -- Convert topics.id from uuid -> text (if it's still uuid)
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'topics'
+      and column_name = 'id' and data_type = 'uuid'
+  ) then
+    alter table public.topics alter column id type text using id::text;
+  end if;
+
+  -- Add module_slug if missing
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'topics' and column_name = 'module_slug'
+  ) then
     alter table public.topics add column module_slug text not null default 'llms';
   end if;
 
-  -- Add updated_at column if missing
-  if not exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'topics' and column_name = 'updated_at') then
-    alter table public.topics add column updated_at timestamptz default now();
-  end if;
-
-  -- Add chapters column if missing
-  if not exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'topics' and column_name = 'chapters') then
+  -- Add chapters if missing
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'topics' and column_name = 'chapters'
+  ) then
     alter table public.topics add column chapters jsonb default '[]'::jsonb;
   end if;
 
-  -- If id is UUID, alter to text to support 't-1', 't-custom-...'
-  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'topics' and column_name = 'id' and data_type = 'uuid') then
-    alter table public.topics alter column id type text using id::text;
+  -- Add updated_at if missing
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'topics' and column_name = 'updated_at'
+  ) then
+    alter table public.topics add column updated_at timestamptz default now();
   end if;
-end $$;
 
--- 2. QUIZ_QUESTIONS TABLE ADJUSTMENTS
-create table if not exists public.quiz_questions (
-  id text primary key,
-  topic_id text not null,
-  question_text text not null,
-  options jsonb not null, -- Array of strings e.g. ["Option A", "Option B", "Option C", "Option D"]
-  correct_option_index integer not null default 0,
-  explanation text not null default '',
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
-);
-
-do $$
-begin
-  -- If id is UUID in quiz_questions, alter to text
-  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quiz_questions' and column_name = 'id' and data_type = 'uuid') then
-    -- Drop foreign key constraint if it exists to allow text id
-    alter table public.quiz_questions drop constraint if exists quiz_questions_topic_id_fkey;
+  -- Convert quiz_questions.id from uuid -> text
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'quiz_questions'
+      and column_name = 'id' and data_type = 'uuid'
+  ) then
     alter table public.quiz_questions alter column id type text using id::text;
+  end if;
+
+  -- Convert quiz_questions.topic_id from uuid -> text
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'quiz_questions'
+      and column_name = 'topic_id' and data_type = 'uuid'
+  ) then
     alter table public.quiz_questions alter column topic_id type text using topic_id::text;
   end if;
 
-  if not exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'quiz_questions' and column_name = 'updated_at') then
+  -- Add updated_at on quiz_questions if missing
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'quiz_questions' and column_name = 'updated_at'
+  ) then
     alter table public.quiz_questions add column updated_at timestamptz default now();
   end if;
 end $$;
 
--- 3. ROW LEVEL SECURITY (RLS) POLICIES FOR TOPICS & QUIZZES
+-- =========================================================================
+-- STEP 4: ROW LEVEL SECURITY — allow all reads and writes via anon key
+-- =========================================================================
+
 alter table public.topics enable row level security;
-drop policy if exists "Allow public read access on topics" on public.topics;
-drop policy if exists "Allow all on topics" on public.topics;
-drop policy if exists "Allow all read on topics" on public.topics;
-drop policy if exists "Allow all write on topics" on public.topics;
+
+drop policy if exists "Allow public read access on topics"   on public.topics;
+drop policy if exists "Allow all on topics"                  on public.topics;
+drop policy if exists "Allow all read on topics"             on public.topics;
+drop policy if exists "Allow all write on topics"            on public.topics;
 
 create policy "Allow all on topics"
   on public.topics for all
@@ -88,12 +155,18 @@ create policy "Allow all on topics"
   with check (true);
 
 alter table public.quiz_questions enable row level security;
+
 drop policy if exists "Allow public read access on quiz_questions" on public.quiz_questions;
-drop policy if exists "Allow all on quiz_questions" on public.quiz_questions;
-drop policy if exists "Allow all read on quiz_questions" on public.quiz_questions;
-drop policy if exists "Allow all write on quiz_questions" on public.quiz_questions;
+drop policy if exists "Allow all on quiz_questions"                on public.quiz_questions;
+drop policy if exists "Allow all read on quiz_questions"           on public.quiz_questions;
+drop policy if exists "Allow all write on quiz_questions"          on public.quiz_questions;
 
 create policy "Allow all on quiz_questions"
   on public.quiz_questions for all
   using (true)
   with check (true);
+
+-- =========================================================================
+-- STEP 5: RELOAD POSTGREST SCHEMA CACHE
+-- =========================================================================
+notify pgrst, 'reload schema';

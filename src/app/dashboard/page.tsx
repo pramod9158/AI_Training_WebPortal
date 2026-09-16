@@ -24,7 +24,6 @@ import {
   Loader2
 } from 'lucide-react';
 import { MODULES } from '@/data/seedModules';
-import { TOPICS } from '@/data/seedTopics';
 import { useWaynauticStore, fetchAndSyncCloudUser } from '@/lib/store';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { getResumeLearningUrl, getResumeTopic, getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';

@@ -1,10 +1,9 @@
-'use client';
-
 import React, { useState, useEffect, useRef } from 'react';
-import { MODULES, Topic } from '@/data/seedModules';
-import { saveTopic, deleteTopic } from '@/lib/curriculumService';
+import { MODULES, Topic, QuizQuestion } from '@/data/seedModules';
+import { saveTopic, deleteTopic, saveTopicQuiz, getTopicQuiz } from '@/lib/curriculumService';
 import { verifyAdminPasskey, isAdminAuthenticated } from '@/lib/adminService';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
+import { parseQuizMarkdown } from '@/lib/quizParser';
 import { 
   X, 
   Save, 
@@ -22,7 +21,9 @@ import {
   Upload, 
   Play, 
   Eye, 
-  Code 
+  Code,
+  HelpCircle,
+  AlertCircle
 } from 'lucide-react';
 
 interface TopicEditorModalProps {
@@ -62,6 +63,12 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
   const [textContent, setTextContent] = useState('');
   const [notesFileName, setNotesFileName] = useState('');
   const [notesPreviewMode, setNotesPreviewMode] = useState<'editor' | 'preview'>('editor');
+
+  // Quiz Upload & Questions State
+  const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
+  const [quizFileName, setQuizFileName] = useState('');
+  const [showQuizPreview, setShowQuizPreview] = useState(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -69,6 +76,7 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
   // File Input References
   const videoFileInputRef = useRef<HTMLInputElement>(null);
   const notesFileInputRef = useRef<HTMLInputElement>(null);
+  const quizFileInputRef = useRef<HTMLInputElement>(null);
 
   const isEditing = Boolean(topic?.id);
 
@@ -85,6 +93,7 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
       setVideoFileName('');
       setNotesFileName('');
       setNotesPreviewMode('editor');
+      setShowQuizPreview(false);
 
       if (topic) {
         setModuleSlug(topic.moduleSlug);
@@ -94,6 +103,10 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
         setVideoUrl(topic.videoUrl);
         setEstimatedMinutes(topic.estimatedMinutes || 15);
         setTextContent(topic.textContent || '');
+
+        const existingQuiz = getTopicQuiz(topic.id, topic.title);
+        setQuizQuestions(existingQuiz);
+        setQuizFileName(existingQuiz.length > 0 ? `Loaded platform quiz (${existingQuiz.length} questions)` : '');
       } else {
         setModuleSlug(defaultModuleSlug || 'llms');
         setTitle('');
@@ -102,6 +115,8 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
         setVideoUrl('https://www.youtube.com/embed/zxQyTK8ckyY');
         setEstimatedMinutes(15);
         setTextContent('# Lesson Title\n\n## Overview\nExplain the technical foundations here.\n\n```python\n# Code Example\nprint("Hello Waynautic")\n```\n');
+        setQuizQuestions([]);
+        setQuizFileName('');
       }
     }
   }, [topic, defaultModuleSlug, isOpen]);
@@ -195,6 +210,30 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
     }
   };
 
+  // Quiz Markdown (.md) File Upload Handler
+  const handleQuizFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const text = event.target?.result as string;
+        if (text) {
+          const parsed = parseQuizMarkdown(text, topic?.id || 'temp-topic');
+          if (parsed.length === 0) {
+            setErrorMessage(`Could not parse questions from "${file.name}". Please ensure standard quiz markdown formatting (Questions, options A/B/C/D, Correct: X).`);
+          } else {
+            setQuizQuestions(parsed);
+            setQuizFileName(`${file.name} (${parsed.length} questions parsed)`);
+            setSuccessMessage(`Loaded ${parsed.length} quiz questions from "${file.name}".`);
+            setShowQuizPreview(true);
+            setTimeout(() => setSuccessMessage(''), 4000);
+          }
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
   // Auto-fill slug from title if creating new topic
   const handleTitleChange = (val: string) => {
     setTitle(val);
@@ -237,7 +276,17 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
         textContent
       });
 
-      setSuccessMessage('Topic saved successfully!');
+      // If quiz questions were uploaded or modified, associate and save with this topic
+      if (quizQuestions && quizQuestions.length > 0) {
+        const mappedQuestions = quizQuestions.map((q, idx) => ({
+          ...q,
+          id: q.id.startsWith('q-') ? q.id : `q-${saved.id}-${idx + 1}`,
+          topicId: saved.id
+        }));
+        await saveTopicQuiz(saved.id, mappedQuestions);
+      }
+
+      setSuccessMessage('Topic and associated curriculum assets saved successfully!');
       if (onSaved) onSaved(saved);
       setTimeout(() => {
         onClose();
@@ -684,6 +733,124 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
                   ) : (
                     <pre className="font-mono whitespace-pre-wrap">{textContent}</pre>
                   )}
+                </div>
+              )}
+            </div>
+
+            {/* Hidden File Inputs */}
+            <input 
+              type="file" 
+              ref={videoFileInputRef} 
+              accept="video/mp4,video/webm" 
+              onChange={handleVideoFileUpload} 
+              className="hidden" 
+            />
+            <input 
+              type="file" 
+              ref={notesFileInputRef} 
+              accept=".md,.markdown,.html,.txt" 
+              onChange={handleNotesFileUpload} 
+              className="hidden" 
+            />
+            <input 
+              type="file" 
+              ref={quizFileInputRef} 
+              accept=".md,.markdown,.txt" 
+              onChange={handleQuizFileUpload} 
+              className="hidden" 
+            />
+
+            {/* Topic Quiz Assessment (.MD File Upload) */}
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/90 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <label className="text-xs font-mono uppercase font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                    <HelpCircle className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
+                    <span>Topic Quiz Questions (Upload .MD Quiz File)</span>
+                  </label>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    Upload a markdown quiz file with multiple choice questions, options, and explanations.
+                  </p>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  {quizQuestions.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowQuizPreview(!showQuizPreview)}
+                      className="px-2.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 flex items-center space-x-1 transition-colors"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>{showQuizPreview ? 'Hide Preview' : `Preview (${quizQuestions.length})`}</span>
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => quizFileInputRef.current?.click()}
+                    className="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold flex items-center space-x-1.5 shadow-sm transition-all"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Upload Quiz .MD</span>
+                  </button>
+                </div>
+              </div>
+
+              {quizFileName && (
+                <div className="flex items-center justify-between text-xs text-sky-700 dark:text-cyan-400 bg-sky-50 dark:bg-cyan-950/40 px-3 py-2 rounded-lg border border-sky-200 dark:border-cyan-800/60 font-mono">
+                  <div className="flex items-center space-x-2">
+                    <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                    <span>Active quiz: <strong>{quizFileName}</strong> ({quizQuestions.length} questions ready)</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setQuizQuestions([]);
+                      setQuizFileName('');
+                      setShowQuizPreview(false);
+                    }}
+                    className="text-rose-500 hover:text-rose-700 text-[11px] font-sans font-bold hover:underline shrink-0 ml-2"
+                  >
+                    Clear
+                  </button>
+                </div>
+              )}
+
+              {/* Collapsible Questions Preview */}
+              {showQuizPreview && quizQuestions.length > 0 && (
+                <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 max-h-60 overflow-y-auto space-y-3">
+                  {quizQuestions.map((q, qIdx) => (
+                    <div key={q.id || qIdx} className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 space-y-1.5">
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="font-bold text-xs text-slate-900 dark:text-white">
+                          Q{qIdx + 1}. {q.questionText}
+                        </span>
+                        <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800 shrink-0 font-bold">
+                          Answer: {String.fromCharCode(65 + q.correctOptionIndex)}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] font-mono">
+                        {q.options.map((opt, optIdx) => (
+                          <div 
+                            key={optIdx} 
+                            className={`p-1.5 rounded flex items-center space-x-1.5 ${
+                              optIdx === q.correctOptionIndex 
+                                ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' 
+                                : 'text-slate-600 dark:text-slate-400'
+                            }`}
+                          >
+                            <span className="font-bold">{String.fromCharCode(65 + optIdx)})</span>
+                            <span className="truncate">{opt}</span>
+                          </div>
+                        ))}
+                      </div>
+                      {q.explanation && (
+                        <p className="text-[10px] text-slate-500 italic pt-1 border-t border-slate-100 dark:border-slate-800">
+                          {q.explanation}
+                        </p>
+                      )}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>

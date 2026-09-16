@@ -8,6 +8,7 @@ import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { SearchModal } from './SearchModal';
 import { useWaynauticStore, getStoredTheme } from '@/lib/store';
+import { fetchCurriculumUpdates } from '@/lib/curriculumService';
 
 export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -25,6 +26,7 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const isAdminPage = pathname?.startsWith('/admin');
 
+  // 1. Sync theme across app
   useEffect(() => {
     if (typeof document !== 'undefined') {
       const activeTheme = profile.theme || getStoredTheme();
@@ -35,6 +37,21 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
       }
     }
   }, [profile.theme]);
+
+  // 2. Global curriculum and quiz synchronization on mount and window focus
+  useEffect(() => {
+    // Initial fetch from cloud/Supabase
+    fetchCurriculumUpdates();
+
+    const handleFocus = () => {
+      fetchCurriculumUpdates();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
 
   if (isAdminPage) {
     return (

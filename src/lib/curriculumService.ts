@@ -187,11 +187,11 @@ export async function fetchCurriculumUpdates(): Promise<Topic[]> {
     console.warn('[CurriculumService] Server API sync error:', apiErr);
   }
 
-  // 2. If Supabase is configured, check Supabase topics
+  // 2. If Supabase is configured, check Supabase topics & quizzes
   if (isSupabaseConfigured) {
     try {
-      const { data: supaTopics, error } = await supabase.from('topics').select('*');
-      if (!error && supaTopics && supaTopics.length > 0) {
+      const { data: supaTopics, error: topicErr } = await supabase.from('topics').select('*');
+      if (!topicErr && supaTopics && supaTopics.length > 0) {
         const mappedTopics: Topic[] = supaTopics.map((row: any) => ({
           id: row.id,
           moduleId: row.module_id || '11111111-1111-4111-a111-111111111111',
@@ -218,8 +218,43 @@ export async function fetchCurriculumUpdates(): Promise<Topic[]> {
           hasUpdates = true;
         }
       }
+
+      // Sync all custom quiz questions from Supabase
+      const { data: supaQuestions, error: quizErr } = await supabase.from('quiz_questions').select('*');
+      if (!quizErr && supaQuestions && supaQuestions.length > 0) {
+        const customQuizzes: Record<string, QuizQuestion[]> = JSON.parse(
+          localStorage.getItem(CUSTOM_QUIZZES_STORAGE_KEY) || '{}'
+        );
+        let quizUpdated = false;
+        supaQuestions.forEach((q: any) => {
+          const tId = q.topic_id;
+          if (!customQuizzes[tId]) {
+            customQuizzes[tId] = [];
+          }
+          const existingIdx = customQuizzes[tId].findIndex((item) => item.id === q.id);
+          const mappedQ: QuizQuestion = {
+            id: q.id,
+            topicId: q.topic_id,
+            questionText: q.question_text,
+            options: Array.isArray(q.options) ? q.options : [],
+            correctOptionIndex: q.correct_option_index,
+            explanation: q.explanation || ''
+          };
+          if (existingIdx !== -1) {
+            customQuizzes[tId][existingIdx] = mappedQ;
+          } else {
+            customQuizzes[tId].push(mappedQ);
+          }
+          quizUpdated = true;
+        });
+
+        if (quizUpdated) {
+          localStorage.setItem(CUSTOM_QUIZZES_STORAGE_KEY, JSON.stringify(customQuizzes));
+          hasUpdates = true;
+        }
+      }
     } catch (supaErr) {
-      console.warn('[CurriculumService] Supabase topics sync warning:', supaErr);
+      console.warn('[CurriculumService] Supabase sync warning:', supaErr);
     }
   }
 
@@ -328,7 +363,10 @@ export async function saveTopic(topicData: {
         payload.chapters = updatedTopic.chapters;
       }
 
-      await supabase.from('topics').upsert(payload);
+      const { error: supaErr } = await supabase.from('topics').upsert(payload);
+      if (supaErr) {
+        console.error('[CurriculumService] Supabase topic save error:', supaErr);
+      }
     } catch (supaErr) {
       console.warn('[CurriculumService] Supabase topic save warning:', supaErr);
     }
@@ -371,6 +409,7 @@ export async function deleteTopic(topicId: string): Promise<boolean> {
   if (isSupabaseConfigured) {
     try {
       await supabase.from('topics').delete().eq('id', topicId);
+      await supabase.from('quiz_questions').delete().eq('topic_id', topicId);
     } catch (e) {
       console.warn('[CurriculumService] Supabase delete warning:', e);
     }
@@ -495,7 +534,7 @@ export async function saveTopicQuiz(topicId: string, questions: QuizQuestion[]):
   if (isSupabaseConfigured) {
     try {
       for (const q of questions) {
-        await supabase.from('quiz_questions').upsert({
+        const { error: quizErr } = await supabase.from('quiz_questions').upsert({
           id: q.id,
           topic_id: q.topicId || topicId,
           question_text: q.questionText,
@@ -503,6 +542,9 @@ export async function saveTopicQuiz(topicId: string, questions: QuizQuestion[]):
           correct_option_index: q.correctOptionIndex,
           explanation: q.explanation
         });
+        if (quizErr) {
+          console.error('[CurriculumService] Supabase quiz upsert error:', quizErr);
+        }
       }
     } catch (e) {
       console.warn('[CurriculumService] Supabase quiz upsert warning:', e);

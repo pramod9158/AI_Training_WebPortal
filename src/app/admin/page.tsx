@@ -37,7 +37,6 @@ import {
   HelpCircle,
   Plus,
   FileCode,
-  RotateCcw,
   Lock
 } from 'lucide-react';
 import { 
@@ -47,7 +46,7 @@ import {
   AdminMetrics
 } from '@/lib/adminTypes';
 import { MODULES, Topic } from '@/data/seedModules';
-import { getAllTopics, resetCurriculumToDefault, fetchCurriculumUpdates } from '@/lib/curriculumService';
+import { getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { 
   isAdminAuthenticated, 
   clearAdminSession, 
@@ -61,7 +60,7 @@ import {
   exportPaymentsToCSV,
   updateCandidatePlan
 } from '@/lib/adminService';
-import { CandidateDetailModal } from '@/components/admin/CandidateDetailModal';
+
 import { PaymentActionModal } from '@/components/admin/PaymentActionModal';
 import { ManualPaymentModal } from '@/components/admin/ManualPaymentModal';
 import { TopicEditorModal } from '@/components/admin/TopicEditorModal';
@@ -103,7 +102,7 @@ export default function AdminDashboardPage() {
   const [payStatusFilter, setPayStatusFilter] = useState('all');
 
   // Modal States
-  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
+
   const [selectedPayment, setSelectedPayment] = useState<PaymentRecord | null>(null);
   const [manualPaymentOpen, setManualPaymentOpen] = useState(false);
 
@@ -693,8 +692,7 @@ export default function AdminDashboardPage() {
                   {candidates.slice(0, 6).map((c) => (
                     <div
                       key={c.id}
-                      onClick={() => setSelectedCandidateId(c.id)}
-                      className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 hover:border-indigo-500 transition-all cursor-pointer group space-y-2"
+                      className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 transition-all group space-y-2"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2.5">
@@ -794,17 +792,13 @@ export default function AdminDashboardPage() {
                     <tr>
                       <th className="py-3.5 px-4">Candidate</th>
                       <th className="py-3.5 px-4">Plan Tier</th>
-                      <th className="py-3.5 px-4">Curriculum Progress</th>
-                      <th className="py-3.5 px-4">Quiz Score</th>
-                      <th className="py-3.5 px-4">Streak</th>
                       <th className="py-3.5 px-4">Joined Date</th>
-                      <th className="py-3.5 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-slate-700 dark:text-slate-300">
                     {filteredCandidates.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="py-12 text-center text-slate-400">
+                        <td colSpan={3} className="py-12 text-center text-slate-400">
                           No candidate records found matching your filters.
                         </td>
                       </tr>
@@ -835,7 +829,7 @@ export default function AdminDashboardPage() {
                               <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider w-fit ${
                                 c.plan === 'pro'
                                   ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                                  : c.plan === 'enterprise'
+                                  : (c.plan as string) === 'enterprise'
                                   ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
                                   : 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20'
                               }`}>
@@ -844,52 +838,11 @@ export default function AdminDashboardPage() {
                             </div>
                           </td>
 
-                          <td className="py-3.5 px-4 min-w-[140px]">
-                            <div className="space-y-1">
-                              <div className="flex justify-between text-[11px]">
-                                <span className="font-bold text-slate-900 dark:text-white">{c.progressPercent}%</span>
-                                <span className="text-slate-400">{c.completedTopicsCount}/{c.totalTopicsCount}</span>
-                              </div>
-                              <div className="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                                <div
-                                  className={`h-full rounded-full ${
-                                    c.progressPercent === 100 ? 'bg-emerald-500' : 'bg-sky-500'
-                                  }`}
-                                  style={{ width: `${c.progressPercent}%` }}
-                                />
-                              </div>
-                            </div>
-                          </td>
-
-                          <td className="py-3.5 px-4 font-mono font-bold">
-                            {c.quizzesAttempted > 0 ? (
-                              <span className="text-slate-900 dark:text-white">
-                                {c.averageQuizScore}% <span className="text-[10px] text-slate-400 font-sans">({c.quizzesAttempted}Q)</span>
-                              </span>
-                            ) : (
-                              <span className="text-slate-400 text-[11px]">No attempts</span>
-                            )}
-                          </td>
-
-                          <td className="py-3.5 px-4 font-mono font-bold">
-                            <span className="inline-flex items-center space-x-1 text-amber-500">
-                              <Flame className="w-3.5 h-3.5 fill-amber-500" />
-                              <span>{c.streakDays}d</span>
-                            </span>
-                          </td>
-
                           <td className="py-3.5 px-4 text-slate-500 font-mono text-[11px]">
                             {new Date(c.createdAt).toLocaleDateString()}
                           </td>
 
-                          <td className="py-3.5 px-4 text-right">
-                            <button
-                              onClick={() => setSelectedCandidateId(c.id)}
-                              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold transition-colors"
-                            >
-                              Dossier
-                            </button>
-                          </td>
+
                         </tr>
                       ))
                     )}
@@ -1078,22 +1031,6 @@ export default function AdminDashboardPage() {
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add New Topic</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const confirm = window.confirm('Reset all curriculum topics and quizzes back to original platform seed data?');
-                      if (confirm) {
-                        resetCurriculumToDefault();
-                        setAllTopics(getAllTopics());
-                        showNotice('Curriculum reset to default seed data.');
-                      }
-                    }}
-                    className="p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                    title="Reset to Platform Seed Data"
-                  >
-                    <RotateCcw className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -1362,12 +1299,7 @@ export default function AdminDashboardPage() {
 
       </main>
 
-      {/* Candidate Detail Modal */}
-      <CandidateDetailModal
-        candidateId={selectedCandidateId}
-        onClose={() => setSelectedCandidateId(null)}
-        onUpdated={loadPlatformData}
-      />
+
 
       {/* Payment Action Modal */}
       <PaymentActionModal

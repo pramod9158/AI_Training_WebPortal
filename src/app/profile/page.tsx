@@ -25,11 +25,12 @@ import {
   Code2, 
   Terminal, 
   Flame, 
+  Clock,
   KeyRound 
 } from 'lucide-react';
 import { CertificateModal } from '@/components/CertificateModal';
 import { PaymentBarcodeModal } from '@/components/PaymentBarcodeModal';
-import { TOPICS } from '@/data/seedTopics';
+import { getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { LEARNING_PATHS } from '@/data/seedModules';
 import { AVATAR_PRESETS, getAvatarPreset } from '@/data/avatarPresets';
 
@@ -44,6 +45,16 @@ export default function ProfilePage() {
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [certModalOpen, setCertModalOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+
+  // Dynamic topics synchronized with admin additions and Supabase
+  const [topics, setTopics] = useState(() => getAllTopics());
+
+  useEffect(() => {
+    fetchCurriculumUpdates().then((updated) => setTopics(updated));
+    const handleCurriculumChange = () => setTopics(getAllTopics());
+    window.addEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+    return () => window.removeEventListener('waynautic_curriculum_changed', handleCurriculumChange);
+  }, []);
 
   useEffect(() => {
     setName(profile.displayName || 'Developer');
@@ -94,7 +105,7 @@ export default function ProfilePage() {
   const isPro = profile.plan === 'pro' || profile.plan === 'enterprise';
 
   const selectedPathObj = LEARNING_PATHS.find(p => p.id === (profile.selectedPath || 'path-a')) || LEARNING_PATHS[0];
-  const pathTopics = TOPICS.filter(t => selectedPathObj.moduleSlugs.includes(t.moduleSlug));
+  const pathTopics = topics.filter(t => selectedPathObj.moduleSlugs.includes(t.moduleSlug));
   const completedPathTopics = pathTopics.filter(t => progress[t.id]?.status === 'completed');
   const isUnlocked = completedPathTopics.length === pathTopics.length && pathTopics.length > 0;
   const pathPercent = Math.round((completedPathTopics.length / Math.max(pathTopics.length, 1)) * 100);
