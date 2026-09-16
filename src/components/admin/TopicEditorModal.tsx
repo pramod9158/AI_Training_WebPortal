@@ -600,29 +600,10 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
 
             {/* Video File Upload & URL Configuration */}
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/90 space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <label className="text-xs font-mono uppercase font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
-                  <Video className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
-                  <span>Video Content (Upload Video File or Paste Embed URL)</span>
-                </label>
-
-                {/* Upload Video Button */}
-                <button
-                  type="button"
-                  onClick={() => videoFileInputRef.current?.click()}
-                  className="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold flex items-center space-x-1.5 shadow-sm transition-all"
-                >
-                  <Upload className="w-3.5 h-3.5" />
-                  <span>Upload Video File (.mp4, .webm)</span>
-                </button>
-              </div>
-
-              {videoFileName && (
-                <div className="flex items-center space-x-2 text-xs text-sky-700 dark:text-cyan-400 bg-sky-50 dark:bg-cyan-950/40 px-3 py-1.5 rounded-lg border border-sky-200 dark:border-cyan-800/60 font-mono">
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>Uploaded file active: <strong>{videoFileName}</strong></span>
-                </div>
-              )}
+              <label className="text-xs font-mono uppercase font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                <Video className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
+                <span>Video Content (Paste Embed URL)</span>
+              </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="sm:col-span-2 space-y-1">
@@ -738,13 +719,6 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
             </div>
 
             {/* Hidden File Inputs */}
-            <input 
-              type="file" 
-              ref={videoFileInputRef} 
-              accept="video/mp4,video/webm" 
-              onChange={handleVideoFileUpload} 
-              className="hidden" 
-            />
             <input 
               type="file" 
               ref={notesFileInputRef} 

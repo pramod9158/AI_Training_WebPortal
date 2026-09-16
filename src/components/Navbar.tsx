@@ -158,12 +158,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           {/* Compact Search Trigger */}
           <button
             onClick={onOpenSearch}
-            className="flex items-center space-x-1.5 p-2 sm:px-2.5 sm:py-1.5 bg-slate-100/90 dark:bg-slate-800/80 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 rounded-lg text-xs text-slate-500 dark:text-slate-400 transition-colors shrink-0"
+            className="flex items-center space-x-1.5 px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-xs text-slate-700 dark:text-slate-200 transition-colors shrink-0"
             title="Search topics (Cmd+K)"
           >
-            <Search className="w-3.5 h-3.5 shrink-0" />
-            <span className="hidden xl:inline text-xs font-medium">Search...</span>
-            <kbd className="hidden sm:inline px-1 py-0.5 bg-white dark:bg-slate-900 rounded text-[10px] font-mono border border-slate-200 dark:border-slate-700">⌘K</kbd>
+            <Search className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400 shrink-0" />
+            <span className="hidden xl:inline text-xs font-semibold">Search...</span>
+            <kbd className="hidden sm:inline px-1 py-0.5 bg-white dark:bg-slate-900 rounded text-[10px] font-mono border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">⌘K</kbd>
           </button>
 
           {/* Upgrade to Pro Pill (for Free users) */}
@@ -451,11 +451,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold transition-colors min-h-[44px] ${
                     isActive
-                      ? 'text-sky-600 dark:text-cyan-400 bg-sky-50 dark:bg-cyan-950/50 border border-sky-300 dark:border-cyan-500/30'
+                      ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
                       : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                   }`}
                 >
-                  <Icon className="w-5 h-5 text-sky-600 dark:text-cyan-400" />
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-sky-600 dark:text-cyan-400' : 'text-slate-500 dark:text-slate-400'}`} />
                   <span>{link.label}</span>
                 </Link>
               );
@@ -466,9 +466,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <Link
                 href={`/curriculum/${lastTopic.moduleSlug}/${lastTopic.slug}`}
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-sky-700 dark:text-cyan-300 bg-sky-50 dark:bg-cyan-950/30 border border-sky-300 dark:border-cyan-500/30 min-h-[44px]"
+                className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 min-h-[44px] transition-colors"
               >
-                <PlayCircle className="w-5 h-5 text-sky-600 dark:text-cyan-400 shrink-0" />
+                <PlayCircle className="w-5 h-5 text-slate-500 dark:text-slate-400 shrink-0" />
                 <span className="truncate">Resume ({lastTopic.title})</span>
               </Link>
             )}
@@ -498,9 +498,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <Link
                 href="/onboarding"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-sky-600 dark:text-cyan-400 bg-sky-500/10 dark:bg-cyan-950/40 border border-sky-500/20 dark:border-cyan-500/30 min-h-[44px]"
+                className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 min-h-[44px] transition-colors"
               >
-                <Sparkles className="w-5 h-5 text-sky-600 dark:text-cyan-400" />
+                <Sparkles className="w-5 h-5 text-slate-500 dark:text-slate-400" />
                 <span>Interactive Guided Tour</span>
               </Link>
             )}

@@ -64,7 +64,7 @@ import {
 import { PaymentActionModal } from '@/components/admin/PaymentActionModal';
 import { ManualPaymentModal } from '@/components/admin/ManualPaymentModal';
 import { TopicEditorModal } from '@/components/admin/TopicEditorModal';
-import { QuizEditorModal } from '@/components/admin/QuizEditorModal';
+
 import { useWaynauticStore } from '@/lib/store';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 
@@ -91,7 +91,7 @@ export default function AdminDashboardPage() {
   const [topicSearch, setTopicSearch] = useState('');
   const [editingTopic, setEditingTopic] = useState<Topic | null>(null);
   const [topicModalOpen, setTopicModalOpen] = useState(false);
-  const [quizModalTopic, setQuizModalTopic] = useState<{ id: string; title: string } | null>(null);
+
 
   // Candidate Filters
   const [candSearch, setCandSearch] = useState('');
@@ -1127,23 +1127,6 @@ export default function AdminDashboardPage() {
                                   <span>Edit</span>
                                 </button>
 
-                                <button
-                                  type="button"
-                                  onClick={() => setQuizModalTopic({ id: t.id, title: t.title })}
-                                  className="px-2.5 py-1.5 rounded-lg bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-700 dark:text-purple-300 font-bold text-[11px] flex items-center space-x-1 transition-colors border border-purple-200 dark:border-purple-800"
-                                >
-                                  <HelpCircle className="w-3 h-3" />
-                                  <span>Quiz</span>
-                                </button>
-
-                                <Link
-                                  href={`/curriculum/${t.moduleSlug}/${t.slug}`}
-                                  target="_blank"
-                                  className="p-1.5 rounded-lg text-slate-400 hover:text-sky-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                                  title="Open Lesson in Academy"
-                                >
-                                  <ExternalLink className="w-3.5 h-3.5" />
-                                </Link>
                               </div>
                             </td>
                           </tr>
@@ -1334,17 +1317,7 @@ export default function AdminDashboardPage() {
         }}
       />
 
-      {/* Topic Quiz Editor Modal */}
-      <QuizEditorModal
-        isOpen={Boolean(quizModalTopic)}
-        onClose={() => setQuizModalTopic(null)}
-        topicId={quizModalTopic?.id || ''}
-        topicTitle={quizModalTopic?.title || ''}
-        onSaved={() => {
-          showNotice('Quiz questions updated successfully!');
-          setAllTopics(getAllTopics());
-        }}
-      />
+
 
     </div>
   );

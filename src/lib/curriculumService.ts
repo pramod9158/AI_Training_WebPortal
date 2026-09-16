@@ -161,30 +161,43 @@ export async function fetchCurriculumUpdates(): Promise<Topic[]> {
 
   let hasUpdates = false;
 
-  // 1. Fetch from server API
-  try {
-    const res = await fetch('/api/curriculum', { cache: 'no-store' });
-    if (res.ok) {
-      const data = await res.json();
-      if (data && Array.isArray(data.customTopics)) {
-        const localCustom: Topic[] = JSON.parse(localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]');
-        const localDeleted: string[] = JSON.parse(localStorage.getItem(DELETED_TOPICS_STORAGE_KEY) || '[]');
+  // 1. Fetch from server API — only merge, NEVER overwrite local with empty remote
+  //    Skip entirely when Supabase is configured (Supabase is the real source of truth)
+  if (!isSupabaseConfigured) {
+    try {
+      const res = await fetch('/api/curriculum', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.customTopics) && data.customTopics.length > 0) {
+          const localCustom: Topic[] = JSON.parse(localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]');
+          const localDeleted: string[] = JSON.parse(localStorage.getItem(DELETED_TOPICS_STORAGE_KEY) || '[]');
 
-        const remoteCustom: Topic[] = data.customTopics;
-        const remoteDeleted: string[] = Array.isArray(data.deletedTopicIds) ? data.deletedTopicIds : [];
+          const remoteCustom: Topic[] = data.customTopics;
+          const remoteDeleted: string[] = Array.isArray(data.deletedTopicIds) ? data.deletedTopicIds : [];
 
-        if (
-          JSON.stringify(localCustom) !== JSON.stringify(remoteCustom) ||
-          JSON.stringify(localDeleted) !== JSON.stringify(remoteDeleted)
-        ) {
-          localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, JSON.stringify(remoteCustom));
-          localStorage.setItem(DELETED_TOPICS_STORAGE_KEY, JSON.stringify(remoteDeleted));
-          hasUpdates = true;
+          // Merge: remote overrides local by ID, but local topics absent from remote are KEPT
+          const mergedMap = new Map<string, Topic>();
+          localCustom.forEach((t) => mergedMap.set(t.id, t));
+          remoteCustom.forEach((t) => mergedMap.set(t.id, t));
+          const mergedTopics = Array.from(mergedMap.values());
+
+          // Union of deleted IDs
+          const mergedDeleted = Array.from(new Set([...localDeleted, ...remoteDeleted]));
+
+          const topicsChanged = JSON.stringify(localCustom) !== JSON.stringify(mergedTopics);
+          const deletedChanged = JSON.stringify(localDeleted) !== JSON.stringify(mergedDeleted);
+
+          if (topicsChanged || deletedChanged) {
+            localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, JSON.stringify(mergedTopics));
+            localStorage.setItem(DELETED_TOPICS_STORAGE_KEY, JSON.stringify(mergedDeleted));
+            hasUpdates = true;
+          }
         }
+        // If remote returns empty, do nothing — keep local data intact
       }
+    } catch (apiErr) {
+      console.warn('[CurriculumService] Server API sync error:', apiErr);
     }
-  } catch (apiErr) {
-    console.warn('[CurriculumService] Server API sync error:', apiErr);
   }
 
   // 2. If Supabase is configured, check Supabase topics & quizzes

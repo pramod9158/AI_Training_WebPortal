@@ -103,7 +103,7 @@ export default function HomePage() {
         </div>
 
         {/* "Continue Learning" Quick Action Banner (If Student Active) */}
-        {continueTopic && (
+        {isLoggedIn && continueTopic && (
           <div className="mt-12 max-w-3xl mx-auto">
             <Link
               href={resumeUrl}
@@ -135,103 +135,107 @@ export default function HomePage() {
 
       </section>
 
-      {/* Feature Highlights Grid */}
-      <section className="py-12 bg-slate-950/50 border-y border-slate-800/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-cyan-950/80 border border-cyan-800/50 flex items-center justify-center text-cyan-400">
-                <Play className="w-5 h-5 text-cyan-400" />
-              </div>
-              <h3 className="text-lg font-bold text-white">Video & Interactive Notes</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                1:1 dedicated HD video lessons paired with comprehensive markdown notes and copyable code snippets.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-violet-950/80 border border-violet-800/50 flex items-center justify-center text-violet-400">
-                <Sparkles className="w-5 h-5 text-violet-400" />
-              </div>
-              <h3 className="text-lg font-bold text-white">Instant Quiz Feedback</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                4-6 MCQs per topic unit with real-time scoring, explanations, attempt history, and celebratory completion bursts.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-950/80 border border-emerald-800/50 flex items-center justify-center text-emerald-400">
-                <ShieldCheck className="w-5 h-5 text-emerald-400" />
-              </div>
-              <h3 className="text-lg font-bold text-white">Verifiable Certificates</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Complete learning paths to auto-generate downloadable PDF credentials showcasing your AI engineering expertise.
-              </p>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Modules Overview */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 space-y-4 md:space-y-0">
-          <div>
-            <span className="text-xs font-mono uppercase tracking-widest text-cyan-400">Structured Curriculum</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white">10 Core Modules</h2>
-          </div>
-          <Link
-            href="/curriculum"
-            className="inline-flex items-center space-x-2 text-sm font-bold text-cyan-400 hover:text-cyan-300"
-          >
-            <span>Explore Visual Skill Map</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MODULES.map((mod) => {
-            const modTopics = TOPICS.filter((t) => t.moduleSlug === mod.slug);
-            return (
-              <Link
-                key={mod.id}
-                href={`/curriculum/${mod.slug}`}
-                className="group p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-cyan-500/40 hover:bg-slate-900 transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-mono text-cyan-400">Module 0{mod.orderIndex}</span>
-                    <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${
-                      mod.difficulty === 'Beginner'
-                        ? 'badge-diff-beginner'
-                        : mod.difficulty === 'Intermediate'
-                        ? 'badge-diff-intermediate'
-                        : 'badge-diff-advanced'
-                    }`}>
-                      {mod.difficulty}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">
-                    {mod.title}
-                  </h3>
-                  <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">
-                    {mod.description}
-                  </p>
+      {/* Feature Highlights Grid — logged-in users only */}
+      {isLoggedIn && (
+        <section className="py-12 bg-slate-950/50 border-y border-slate-800/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              
+              <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-950/80 border border-cyan-800/50 flex items-center justify-center text-cyan-400">
+                  <Play className="w-5 h-5 text-cyan-400" />
                 </div>
+                <h3 className="text-lg font-bold text-white">Video &amp; Interactive Notes</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  1:1 dedicated HD video lessons paired with comprehensive markdown notes and copyable code snippets.
+                </p>
+              </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                  <span>{modTopics.length} Lessons</span>
-                  <div className="flex items-center space-x-1 text-cyan-400 font-bold group-hover:translate-x-1 transition-transform">
-                    <span>View Module</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </div>
+              <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-violet-950/80 border border-violet-800/50 flex items-center justify-center text-violet-400">
+                  <Sparkles className="w-5 h-5 text-violet-400" />
                 </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
+                <h3 className="text-lg font-bold text-white">Instant Quiz Feedback</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  4-6 MCQs per topic unit with real-time scoring, explanations, attempt history, and celebratory completion bursts.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-950/80 border border-emerald-800/50 flex items-center justify-center text-emerald-400">
+                  <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                </div>
+                <h3 className="text-lg font-bold text-white">Verifiable Certificates</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Complete learning paths to auto-generate downloadable PDF credentials showcasing your AI engineering expertise.
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Modules Overview — logged-in users only */}
+      {isLoggedIn && (
+        <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 space-y-4 md:space-y-0">
+            <div>
+              <span className="text-xs font-mono uppercase tracking-widest text-cyan-400">Structured Curriculum</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white">10 Core Modules</h2>
+            </div>
+            <Link
+              href="/curriculum"
+              className="inline-flex items-center space-x-2 text-sm font-bold text-cyan-400 hover:text-cyan-300"
+            >
+              <span>Explore Visual Skill Map</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {MODULES.map((mod) => {
+              const modTopics = TOPICS.filter((t) => t.moduleSlug === mod.slug);
+              return (
+                <Link
+                  key={mod.id}
+                  href={`/curriculum/${mod.slug}`}
+                  className="group p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-cyan-500/40 hover:bg-slate-900 transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xs font-mono text-cyan-400">Module 0{mod.orderIndex}</span>
+                      <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${
+                        mod.difficulty === 'Beginner'
+                          ? 'badge-diff-beginner'
+                          : mod.difficulty === 'Intermediate'
+                          ? 'badge-diff-intermediate'
+                          : 'badge-diff-advanced'
+                      }`}>
+                        {mod.difficulty}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">
+                      {mod.title}
+                    </h3>
+                    <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">
+                      {mod.description}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                    <span>{modTopics.length} Lessons</span>
+                    <div className="flex items-center space-x-1 text-cyan-400 font-bold group-hover:translate-x-1 transition-transform">
+                      <span>View Module</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
     </div>
   );
