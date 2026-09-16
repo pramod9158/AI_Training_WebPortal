@@ -27,7 +27,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
   const [amount, setAmount] = useState('10000');
   const [paymentMethod, setPaymentMethod] = useState<'barcode_qr' | 'upi' | 'cash' | 'card' | 'bank_transfer'>('barcode_qr');
   const [transactionReference, setTransactionReference] = useState('');
-  const [planToGrant, setPlanToGrant] = useState<'pro' | 'enterprise'>('pro');
+  const [planToGrant, setPlanToGrant] = useState<'pro'>('pro');
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -194,7 +194,6 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
                 className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               >
                 <option value="pro">Pro AI Pass (1 Year)</option>
-                <option value="enterprise">Enterprise VIP</option>
               </select>
             </div>
           </div>

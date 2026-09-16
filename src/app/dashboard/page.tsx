@@ -20,11 +20,13 @@ import {
   Lock,
   Clock,
   Check,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 import { MODULES } from '@/data/seedModules';
 import { TOPICS } from '@/data/seedTopics';
-import { useWaynauticStore } from '@/lib/store';
+import { useWaynauticStore, fetchAndSyncCloudUser } from '@/lib/store';
+import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { getResumeLearningUrl, getResumeTopic, getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { StreakTracker } from '@/components/StreakTracker';
 import { 
@@ -39,6 +41,152 @@ function DashboardContent() {
 
   const { profile, progress, streak, bookmarks, badges, toggleBookmarkTopic } = useWaynauticStore();
   const isLoggedIn = Boolean(profile.userId || profile.email);
+
+  const [isAuthenticating, setIsAuthenticating] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const hash = window.location.hash;
+    const search = window.location.search;
+    return (
+      hash.includes('access_token') ||
+      search.includes('code=') ||
+      search.includes('token_hash=') ||
+      hash.includes('error_code=otp_expired')
+    );
+  });
+  const [authBanner, setAuthBanner] = useState<{
+    type: 'warning' | 'error' | 'success';
+    message: string;
+    actionText?: string;
+    actionHref?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !isSupabaseConfigured) {
+      setIsAuthenticating(false);
+      return;
+    }
+
+    let isMounted = true;
+
+    async function handleIncomingAuth() {
+      const hash = window.location.hash;
+      const search = window.location.search;
+      const hashParams = new URLSearchParams(hash.replace(/^#/, ''));
+      const errorCode = hashParams.get('error_code') || searchParams.get('error_code');
+      const errorDesc = hashParams.get('error_description') || searchParams.get('error_description');
+
+      // 1. Handle error in URL (such as otp_expired from email scanners)
+      if (errorCode || errorDesc) {
+        // Check if user has an active session regardless
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          await fetchAndSyncCloudUser(session.user);
+          window.history.replaceState(null, '', window.location.pathname);
+          if (isMounted) {
+            setIsAuthenticating(false);
+          }
+          return;
+        }
+
+        // Clear hash from address bar so user isn't stuck with an ugly error fragment
+        window.history.replaceState(null, '', window.location.pathname);
+        if (isMounted) {
+          setIsAuthenticating(false);
+          if (errorCode === 'otp_expired' || errorDesc?.toLowerCase().includes('expired')) {
+            setAuthBanner({
+              type: 'warning',
+              message: 'Your email confirmation link was processed or expired. If your email was confirmed, please log in with your password to continue.',
+              actionText: 'Log In Now',
+              actionHref: '/login?verified=true'
+            });
+          } else {
+            setAuthBanner({
+              type: 'error',
+              message: errorDesc ? decodeURIComponent(errorDesc.replace(/\+/g, ' ')) : 'Authentication link is invalid or expired.',
+              actionText: 'Go to Log In',
+              actionHref: '/login'
+            });
+          }
+        }
+        return;
+      }
+
+      // 2. Handle implicit flow (#access_token=...&refresh_token=...)
+      const accessToken = hashParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token');
+      if (accessToken && refreshToken) {
+        try {
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+          if (data?.session?.user) {
+            await fetchAndSyncCloudUser(data.session.user);
+            window.history.replaceState(null, '', window.location.pathname);
+            if (isMounted) {
+              setIsAuthenticating(false);
+            }
+            return;
+          }
+        } catch (err) {
+          console.error('Error setting Supabase session from URL hash:', err);
+        }
+      }
+
+      // 3. Handle PKCE code (?code=...)
+      const code = searchParams.get('code');
+      if (code) {
+        try {
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+          if (data?.session?.user) {
+            await fetchAndSyncCloudUser(data.session.user);
+            window.history.replaceState(null, '', window.location.pathname);
+            if (isMounted) {
+              setIsAuthenticating(false);
+            }
+            return;
+          }
+        } catch (err) {
+          console.error('Error exchanging PKCE code:', err);
+        }
+      }
+
+      // 4. Handle token_hash (?token_hash=...&type=...)
+      const tokenHash = searchParams.get('token_hash');
+      const type = (searchParams.get('type') || 'email') as 'email' | 'signup' | 'recovery' | 'magiclink';
+      if (tokenHash) {
+        try {
+          const { data, error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
+          if (data?.session?.user) {
+            await fetchAndSyncCloudUser(data.session.user);
+            window.history.replaceState(null, '', window.location.pathname);
+            if (isMounted) {
+              setIsAuthenticating(false);
+            }
+            return;
+          }
+        } catch (err) {
+          console.error('Error verifying OTP token_hash:', err);
+        }
+      }
+
+      // 5. Fallback session check: If Supabase has active session but local store is still guest
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user && (!profile.userId || !profile.email)) {
+        await fetchAndSyncCloudUser(session.user);
+      }
+
+      if (isMounted) {
+        setIsAuthenticating(false);
+      }
+    }
+
+    handleIncomingAuth();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   type TabType = 'overview' | 'quizzes' | 'badges' | 'bookmarks';
   const [activeTab, setActiveTab] = useState<TabType>(() => {
@@ -150,6 +298,26 @@ function DashboardContent() {
 
   const unlockedBadgeCount = useMemo(() => badgeCatalog.filter(b => b.isUnlocked).length, [badgeCatalog]);
 
+  if (isAuthenticating) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-6 animate-in fade-in duration-300">
+          <div className="w-16 h-16 mx-auto rounded-3xl bg-cyan-100 dark:bg-cyan-950/80 border-2 border-cyan-300 dark:border-cyan-500/40 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shadow-lg">
+            <Loader2 className="w-8 h-8 animate-spin" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
+              Authenticating Session
+            </h2>
+            <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">
+              Verifying your credentials and preparing your student dashboard...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen py-6 sm:py-10 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-8">
       
@@ -175,6 +343,31 @@ function DashboardContent() {
           </Link>
         </div>
       </div>
+
+      {/* Auth Banner Notice if URL had expired link/error */}
+      {authBanner && (
+        <div className={`p-4 sm:p-5 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm animate-in fade-in ${
+          authBanner.type === 'warning'
+            ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-500/40 text-amber-900 dark:text-amber-200'
+            : 'bg-rose-50 dark:bg-rose-950/30 border-rose-300 dark:border-rose-500/40 text-rose-900 dark:text-rose-200'
+        }`}>
+          <div className="flex items-start space-x-3">
+            <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider">Account Verification</p>
+              <p className="text-xs sm:text-sm mt-0.5 font-medium">{authBanner.message}</p>
+            </div>
+          </div>
+          {authBanner.actionText && authBanner.actionHref && (
+            <Link
+              href={authBanner.actionHref}
+              className="px-4 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 rounded-xl transition-all shadow-sm shrink-0"
+            >
+              {authBanner.actionText}
+            </Link>
+          )}
+        </div>
+      )}
 
       {/* Streak At Risk Banner if inactive today */}
       <StreakTracker variant="banner" />

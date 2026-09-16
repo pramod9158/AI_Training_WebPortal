@@ -629,7 +629,7 @@ export async function recordManualPayment(data: {
   amount: number;
   paymentMethod: 'barcode_qr' | 'upi' | 'cash' | 'card' | 'bank_transfer';
   transactionReference: string;
-  planToGrant: 'pro' | 'enterprise';
+  planToGrant: 'pro';
   notes?: string;
 }): Promise<{ success: boolean; message: string; payment: PaymentRecord }> {
   const now = new Date().toISOString();
@@ -879,7 +879,7 @@ export async function getCandidateDetails(candidateId: string): Promise<Candidat
 
 export async function updateCandidatePlan(
   candidateId: string,
-  plan: 'free' | 'pro' | 'enterprise'
+  plan: 'free' | 'pro'
 ): Promise<void> {
   if (isSupabaseConfigured) {
     try {
@@ -896,7 +896,7 @@ export async function updateCandidatePlan(
 
 export async function updateCandidatePlanByEmail(
   email: string,
-  plan: 'free' | 'pro' | 'enterprise'
+  plan: 'free' | 'pro'
 ): Promise<void> {
   const cleanEmail = email.toLowerCase().trim();
   
@@ -953,7 +953,7 @@ export async function getAdminMetrics(): Promise<AdminMetrics> {
   const payments = await getPayments();
 
   const totalCandidates = candidates.length;
-  const proCandidates = candidates.filter((c) => c.plan === 'pro' || c.plan === 'enterprise').length;
+  const proCandidates = candidates.filter((c) => c.plan === 'pro').length;
   
   const verifiedPayments = payments.filter((p) => p.status === 'verified');
   

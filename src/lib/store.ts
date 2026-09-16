@@ -100,12 +100,17 @@ export async function saveProfile(profile: Partial<UserProfileState>) {
 
   if (isSupabaseConfigured) {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
+      let user = (await supabase.auth.getSession()).data.session?.user;
+      if (!user) {
+        user = (await supabase.auth.getUser()).data.user || undefined;
+      }
+      const targetUserId = user?.id || updated.userId || current.userId;
+      if (targetUserId) {
+        const avatarToSave = updated.avatarUrl?.trim() || (updated.avatarPreset ? `preset:${updated.avatarPreset}` : '');
         const payload: Record<string, string | undefined> = {
-          id: session.user.id,
+          id: targetUserId,
           display_name: updated.displayName,
-          avatar_url: updated.avatarUrl,
+          avatar_url: avatarToSave,
           selected_path: updated.selectedPath,
           last_accessed_topic_id: updated.lastAccessedTopicId,
           last_accessed_tab: updated.lastAccessedTab,
@@ -621,12 +626,25 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
     }
 
     if (profileData) {
+      let avatarUrl = '';
+      let avatarPreset = 'ai-architect';
+
+      if (profileData.avatar_url) {
+        if (profileData.avatar_url.startsWith('preset:')) {
+          avatarPreset = profileData.avatar_url.replace('preset:', '');
+          avatarUrl = '';
+        } else {
+          avatarUrl = profileData.avatar_url;
+          avatarPreset = 'ai-architect';
+        }
+      }
+
       const dbProfileState: UserProfileState = {
         userId: user.id,
         email: user.email || profileData.email,
         displayName: profileData.display_name || user.email?.split('@')[0] || 'Developer',
-        avatarUrl: profileData.avatar_url || '',
-        avatarPreset: profileData.avatar_url ? undefined : 'ai-architect',
+        avatarUrl,
+        avatarPreset,
         selectedPath: profileData.selected_path || 'path-a',
         role: profileData.role || 'candidate',
         plan: effectivePlan,
@@ -638,6 +656,8 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
         theme: (typeof window !== 'undefined' && localStorage.getItem('waynautic_theme') === 'dark') ? 'dark' : 'light'
       };
       localStorage.setItem(PROFILE_KEY, JSON.stringify(dbProfileState));
+      // Eagerly notify components immediately when profile data arrives
+      window.dispatchEvent(new Event('waynautic_storage_change'));
     } else {
       // Initialize profile if not present
       await supabase.from('user_profiles').upsert({
@@ -1352,6 +1372,13 @@ export function useWaynauticStore() {
         )
         .subscribe();
     };
+
+    // Eager instant sync on hard refresh / mount:
+    const cachedProfile = loadProfile();
+    if (cachedProfile.userId && isSupabaseConfigured) {
+      fetchAndSyncCloudUser({ id: cachedProfile.userId, email: cachedProfile.email });
+      setupRealtimeSync(cachedProfile.userId, cachedProfile.email);
+    }
 
     // Sync with Supabase on mount if logged in
     if (isSupabaseConfigured) {

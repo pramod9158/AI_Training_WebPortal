@@ -773,7 +773,6 @@ export default function AdminDashboardPage() {
                   <option value="all">All Plans</option>
                   <option value="free">Free Tier</option>
                   <option value="pro">Pro AI Pass</option>
-                  <option value="enterprise">Enterprise</option>
                 </select>
 
                 <button

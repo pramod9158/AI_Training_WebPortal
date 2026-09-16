@@ -10,9 +10,7 @@ import {
   Save, 
   Sparkles, 
   Check, 
-  Clock, 
   LogOut, 
-  Database, 
   Lock, 
   User, 
   Camera, 
@@ -33,16 +31,7 @@ import { CertificateModal } from '@/components/CertificateModal';
 import { PaymentBarcodeModal } from '@/components/PaymentBarcodeModal';
 import { TOPICS } from '@/data/seedTopics';
 import { LEARNING_PATHS } from '@/data/seedModules';
-
-// 6 Curated Tech Avatar Presets
-const AVATAR_PRESETS = [
-  { id: 'ai-architect', label: 'AI Architect', icon: Bot, gradient: 'from-cyan-500 to-blue-600' },
-  { id: 'neural-coder', label: 'Neural Coder', icon: Cpu, gradient: 'from-purple-500 to-indigo-600' },
-  { id: 'prompt-engineer', label: 'Prompt Craftsman', icon: Sparkles, gradient: 'from-amber-500 to-orange-600' },
-  { id: 'cyber-dev', label: 'Cyber Systems', icon: Terminal, gradient: 'from-emerald-500 to-teal-600' },
-  { id: 'fullstack-ai', label: 'Full-Stack Dev', icon: Code2, gradient: 'from-rose-500 to-pink-600' },
-  { id: 'master-researcher', label: 'Lead Researcher', icon: Flame, gradient: 'from-violet-500 to-fuchsia-600' },
-];
+import { AVATAR_PRESETS, getAvatarPreset } from '@/data/avatarPresets';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -226,18 +215,6 @@ export default function ProfilePage() {
                 <p className="text-[11px] text-sky-600 dark:text-cyan-400 font-semibold mt-1">
                   Preset: {activePreset.label}
                 </p>
-              </div>
-            </div>
-
-            {/* Cloud Sync Status */}
-            <div className="flex flex-col items-start sm:items-end space-y-1">
-              <div className="flex items-center space-x-2 text-xs font-mono text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/30 px-3 py-1 rounded-full font-bold">
-                <Database className="w-3.5 h-3.5" />
-                <span>{isSupabaseConfigured ? 'Supabase DB Synced' : 'Local Persistence Mode'}</span>
-              </div>
-              <div className="flex items-center space-x-1.5 text-[11px] font-mono text-slate-500 dark:text-slate-400 font-medium">
-                <Clock className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
-                <span>8-Hour Session Protection Active</span>
               </div>
             </div>
           </div>

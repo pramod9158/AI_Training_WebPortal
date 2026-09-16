@@ -8,8 +8,6 @@ import {
   Flame, 
   Bookmark, 
   Search, 
-  Sun, 
-  Moon, 
   Menu, 
   X, 
   Compass, 
@@ -27,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useWaynauticStore } from '@/lib/store';
 import { getAllTopics, getResumeLearningUrl } from '@/lib/curriculumService';
+import { getAvatarPreset } from '@/data/avatarPresets';
 import dynamic from 'next/dynamic';
 import { NotificationDrawer } from './NotificationDrawer';
 
@@ -89,16 +88,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       if (activeTopic && !bookmarks.includes(activeTopic.id)) {
         await toggleBookmarkTopic(activeTopic.id);
       }
-    }
-  };
-
-  const toggleTheme = () => {
-    const nextTheme = profile.theme === 'dark' ? 'light' : 'dark';
-    updateProfile({ theme: nextTheme });
-    if (nextTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
     }
   };
 
@@ -191,16 +180,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           {/* Notification Bell (Logged-in only) */}
           {isLoggedIn && <NotificationDrawer />}
 
-          {/* Theme Toggle (Desktop / Tablet; also in mobile drawer) */}
-          <button
-            onClick={toggleTheme}
-            className="hidden sm:flex p-2 text-slate-500 dark:text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 rounded-lg transition-colors shrink-0"
-            title="Toggle theme"
-            aria-label="Toggle theme"
-          >
-            {profile.theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
-          </button>
-
           {/* Consolidated User Profile Menu (Desktop; on mobile user accesses profile in drawer) */}
           {isLoggedIn ? (
             <div className="relative hidden md:block" ref={userMenuRef}>
@@ -219,6 +198,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                       decoding="async"
                       className="w-full h-full object-cover rounded-full bg-slate-900" 
                     />
+                  ) : profile.avatarPreset ? (
+                    (() => {
+                      const preset = getAvatarPreset(profile.avatarPreset);
+                      const PresetIcon = preset.icon;
+                      return (
+                        <div className={`w-full h-full rounded-full bg-gradient-to-tr ${preset.gradient} flex items-center justify-center`}>
+                          <PresetIcon className="w-3.5 h-3.5 text-white" />
+                        </div>
+                      );
+                    })()
                   ) : (
                     <div className="w-full h-full bg-white dark:bg-slate-900 rounded-full flex items-center justify-center text-xs font-bold text-sky-600 dark:text-cyan-300">
                       {profile.displayName ? profile.displayName.charAt(0).toUpperCase() : <User className="w-3.5 h-3.5" />}
@@ -373,6 +362,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                       decoding="async"
                       className="w-full h-full object-cover rounded-full bg-slate-900" 
                     />
+                  ) : profile.avatarPreset ? (
+                    (() => {
+                      const preset = getAvatarPreset(profile.avatarPreset);
+                      const PresetIcon = preset.icon;
+                      return (
+                        <div className={`w-full h-full rounded-full bg-gradient-to-tr ${preset.gradient} flex items-center justify-center`}>
+                          <PresetIcon className="w-5 h-5 text-white" />
+                        </div>
+                      );
+                    })()
                   ) : (
                     <div className="w-full h-full bg-white dark:bg-slate-900 rounded-full flex items-center justify-center text-sm font-extrabold text-sky-600 dark:text-cyan-300">
                       {profile.displayName ? profile.displayName.charAt(0).toUpperCase() : 'D'}
@@ -517,26 +516,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <Search className="w-4 h-4 text-sky-600 dark:text-cyan-400" />
               <span>Search Topics</span>
             </button>
-
-            {isLoggedIn && (
-              <button
-                onClick={toggleTheme}
-                className="flex items-center space-x-1.5 px-3 py-2.5 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 min-h-[42px]"
-                title="Toggle theme"
-              >
-                {profile.theme === 'dark' ? (
-                  <>
-                    <Sun className="w-4 h-4 text-amber-400" />
-                    <span>Light</span>
-                  </>
-                ) : (
-                  <>
-                    <Moon className="w-4 h-4 text-indigo-500" />
-                    <span>Dark</span>
-                  </>
-                )}
-              </button>
-            )}
           </div>
         </div>
       )}

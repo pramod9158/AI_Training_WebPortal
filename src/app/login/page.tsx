@@ -3,7 +3,7 @@
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Mail, Lock, ShieldCheck, Clock, Eye, EyeOff, CheckCircle2, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Mail, Lock, ShieldCheck, Eye, EyeOff, CheckCircle2, ArrowLeft, RefreshCw } from 'lucide-react';
 import { signInWithEmail, sendPasswordResetEmail, resendVerificationEmail } from '@/lib/supabaseAuth';
 import { fetchAndSyncCloudUser, useWaynauticStore } from '@/lib/store';
 import { clearAdminSession } from '@/lib/adminService';
@@ -12,9 +12,11 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirectTo') || '/';
+  const isVerified = searchParams.get('verified') === 'true';
+  const emailParam = searchParams.get('email') || '';
 
   const { updateProfile } = useWaynauticStore();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(emailParam);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -221,11 +223,17 @@ function LoginForm() {
         </p>
       </div>
 
-      {/* 8-Hour Inactivity Info Chip */}
-      <div className="flex items-center justify-center space-x-2 py-2 px-3 bg-sky-50 dark:bg-cyan-950/40 border border-sky-300 dark:border-cyan-500/20 rounded-xl text-[11px] text-sky-800 dark:text-cyan-300 font-mono font-bold">
-        <Clock className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
-        <span>Session protected for 8 hrs of inactivity</span>
-      </div>
+      {isVerified && !errorMsg && (
+        <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/40 text-emerald-800 dark:text-emerald-300 text-xs font-medium space-y-1 animate-in fade-in">
+          <div className="flex items-center space-x-2 font-bold">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>Email Verified Successfully!</span>
+          </div>
+          <p className="text-emerald-700 dark:text-emerald-300/90 pl-6 text-[11px]">
+            Your email is confirmed and your account is active. Enter your password to log in.
+          </p>
+        </div>
+      )}
 
       {errorMsg && (
         <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/80 border-2 border-rose-300 dark:border-rose-500/30 text-rose-800 dark:text-rose-300 text-xs font-mono font-bold space-y-2.5">

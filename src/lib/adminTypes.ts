@@ -6,7 +6,7 @@ export interface CandidateRecord {
   displayName: string;
   avatarUrl?: string;
   role: 'candidate' | 'admin' | 'instructor';
-  plan: 'free' | 'pro' | 'enterprise';
+  plan: 'free' | 'pro';
   accountStatus: 'active' | 'suspended';
   selectedPath: string;
   createdAt: string;
@@ -60,7 +60,7 @@ export interface PaymentRecord {
   proofUrl?: string;
   notes?: string;
   rejectionReason?: string;
-  planGranted: 'free' | 'pro' | 'enterprise';
+  planGranted: 'free' | 'pro';
   verifiedAt?: string;
   verifiedBy?: string;
   createdAt: string;

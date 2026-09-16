@@ -70,7 +70,7 @@ export const CandidateDetailModal: React.FC<CandidateDetailModalProps> = ({
 
   if (!candidateId) return null;
 
-  const handlePlanChange = async (newPlan: 'free' | 'pro' | 'enterprise') => {
+  const handlePlanChange = async (newPlan: 'free' | 'pro') => {
     if (!candidate) return;
     setIsUpdating(true);
     try {
@@ -134,8 +134,6 @@ export const CandidateDetailModal: React.FC<CandidateDetailModalProps> = ({
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
                     candidate.plan === 'pro'
                       ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                      : candidate.plan === 'enterprise'
-                      ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20'
                       : 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20'
                   }`}>
                     {candidate.plan}
@@ -275,15 +273,6 @@ export const CandidateDetailModal: React.FC<CandidateDetailModalProps> = ({
                       }`}
                     >
                       Grant Pro
-                    </button>
-                    <button
-                      disabled={isUpdating}
-                      onClick={() => handlePlanChange('enterprise')}
-                      className={`px-2.5 py-1 rounded-lg font-bold transition-colors ${
-                        candidate.plan === 'enterprise' ? 'bg-purple-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
-                      }`}
-                    >
-                      Enterprise
                     </button>
                   </div>
                 </div>

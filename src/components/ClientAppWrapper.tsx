@@ -20,7 +20,8 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
     pathname === '/reset-password' || 
     pathname?.startsWith('/login') || 
     pathname?.startsWith('/signup') || 
-    pathname?.startsWith('/reset-password');
+    pathname?.startsWith('/reset-password') ||
+    pathname?.startsWith('/auth');
 
   const isAdminPage = pathname?.startsWith('/admin');
 

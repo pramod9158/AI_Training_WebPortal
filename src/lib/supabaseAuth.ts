@@ -45,7 +45,7 @@ export async function signUpWithEmail(email: string, password: string, displayNa
     return { data: { user: { id: 'demo-user-id', email }, session: null }, error: null };
   }
 
-  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined;
+  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined;
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -144,7 +144,7 @@ export async function resendVerificationEmail(email: string) {
   if (!isSupabaseConfigured) {
     return { data: {}, error: null };
   }
-  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined;
+  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined;
   return await supabase.auth.resend({
     type: 'signup',
     email,
