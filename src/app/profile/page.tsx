@@ -35,7 +35,7 @@ import { AVATAR_PRESETS, getAvatarPreset } from '@/data/avatarPresets';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { profile, progress, badges, updateProfile, signOut } = useWaynauticStore();
+  const { profile, progress, badges, updateProfile, signOut, setTheme } = useWaynauticStore();
   
   const [name, setName] = useState(profile.displayName || 'Developer');
   const [avatarPreset, setAvatarPreset] = useState<string>(profile.avatarPreset || 'ai-architect');
@@ -111,8 +111,8 @@ export default function ProfilePage() {
     setTimeout(() => setSavedSuccess(false), 2500);
   };
 
-  const handleThemeChange = async (newTheme: 'light' | 'dark') => {
-    await updateProfile({ theme: newTheme });
+  const handleThemeChange = (newTheme: 'light' | 'dark') => {
+    setTheme(newTheme);
   };
 
   const handleSignOut = async () => {

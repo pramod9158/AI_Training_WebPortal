@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Sparkles, Clock, CheckCircle2, ArrowRight, BookOpen } from 'lucide-react';
 import { Topic, MODULES } from '@/data/seedModules';
-import { getRecommendedTopics } from '@/lib/curriculumService';
+import { getRecommendedTopics, getAllTopics } from '@/lib/curriculumService';
 import { useWaynauticStore } from '@/lib/store';
 
 interface RecommendedTopicsProps {
@@ -14,6 +14,7 @@ interface RecommendedTopicsProps {
 export function RecommendedTopics({ currentTopic }: RecommendedTopicsProps) {
   const { progress } = useWaynauticStore();
   const recommendations = getRecommendedTopics(currentTopic, undefined, 3);
+  const allTopics = getAllTopics();
 
   if (recommendations.length === 0) return null;
 
@@ -39,6 +40,15 @@ export function RecommendedTopics({ currentTopic }: RecommendedTopicsProps) {
           const mod = MODULES.find((m) => m.slug === topic.moduleSlug);
           const isDone = progress[topic.id]?.status === 'completed';
 
+          const moduleTopics = allTopics.filter((t) => t.moduleSlug === topic.moduleSlug);
+          const topicIdx = moduleTopics.findIndex((t) => t.id === topic.id);
+          const topicNum = topicIdx !== -1 ? topicIdx + 1 : (topic.orderIndex || 1);
+          const topicNumStr = topicNum < 10 ? `0${topicNum}` : String(topicNum);
+          const modOrder = mod?.orderIndex || 1;
+          const modNumStr = modOrder < 10 ? `0${modOrder}` : String(modOrder);
+
+          const badgeLabel = `Module ${modNumStr} • Topic ${topicNumStr}${mod?.title ? ` • ${mod.title}` : ''}`;
+
           return (
             <Link
               key={topic.id}
@@ -46,9 +56,12 @@ export function RecommendedTopics({ currentTopic }: RecommendedTopicsProps) {
               className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border-2 border-slate-200 dark:border-slate-800 hover:border-sky-400 dark:hover:border-cyan-500/50 transition-all flex flex-col justify-between space-y-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
             >
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold text-sky-600 dark:text-cyan-400 uppercase tracking-wider bg-sky-50 dark:bg-cyan-950/60 border border-sky-200 dark:border-cyan-800 px-2 py-0.5 rounded-md truncate max-w-[150px]">
-                    Module 0{mod?.orderIndex || 1} • {mod?.title}
+                <div className="flex items-center justify-between gap-2">
+                  <span 
+                    title={badgeLabel}
+                    className="text-[10px] font-mono font-bold text-sky-600 dark:text-cyan-400 uppercase tracking-wider bg-sky-50 dark:bg-cyan-950/60 border border-sky-200 dark:border-cyan-800 px-2 py-0.5 rounded-md truncate"
+                  >
+                    {badgeLabel}
                   </span>
                   {isDone && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />}
                 </div>

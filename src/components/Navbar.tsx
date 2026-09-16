@@ -21,9 +21,11 @@ import {
   QrCode,
   Shield,
   ChevronDown,
-  Trophy
+  Trophy,
+  Sun,
+  Moon
 } from 'lucide-react';
-import { useWaynauticStore } from '@/lib/store';
+import { useWaynauticStore, setStoredTheme } from '@/lib/store';
 import { getAllTopics, getResumeLearningUrl } from '@/lib/curriculumService';
 import { getAvatarPreset } from '@/data/avatarPresets';
 import dynamic from 'next/dynamic';
@@ -176,6 +178,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <span className="sm:hidden">Upgrade</span>
             </button>
           )}
+
+          {/* Laptop / Desktop Theme Toggle Button */}
+          <button
+            onClick={() => {
+              const nextTheme = profile.theme === 'dark' ? 'light' : 'dark';
+              setStoredTheme(nextTheme);
+            }}
+            className="hidden md:flex items-center justify-center p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
+            title={profile.theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label="Toggle theme appearance"
+          >
+            {profile.theme === 'dark' ? (
+              <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
+            ) : (
+              <Moon className="w-4 h-4 text-slate-600 hover:-rotate-12 transition-transform" />
+            )}
+          </button>
 
           {/* Notification Bell (Logged-in only) */}
           {isLoggedIn && <NotificationDrawer />}

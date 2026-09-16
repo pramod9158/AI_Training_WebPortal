@@ -26,47 +26,11 @@ function SignupForm() {
   const [isConfirmationPending, setIsConfirmationPending] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
 
-  // 6-Digit OTP code verification state
-  const [otpCode, setOtpCode] = useState('');
-  const [otpVerifying, setOtpVerifying] = useState(false);
-  const [otpError, setOtpError] = useState('');
-
   // Resend verification state
   const [resendLoading, setResendLoading] = useState(false);
   const [resendStatus, setResendStatus] = useState<'idle' | 'sent' | 'error'>('idle');
   const [resendMsg, setResendMsg] = useState('');
   const [countdown, setCountdown] = useState(0);
-
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!otpCode.trim() || otpVerifying || !registeredEmail) return;
-    setOtpVerifying(true);
-    setOtpError('');
-    try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        email: registeredEmail,
-        token: otpCode.trim(),
-        type: 'signup'
-      });
-      if (error) {
-        setOtpError(error.message);
-        setOtpVerifying(false);
-        return;
-      }
-      if (data?.session?.user) {
-        await fetchAndSyncCloudUser(data.session.user);
-        router.push(redirectTo || '/dashboard');
-      } else if (data?.user) {
-        await fetchAndSyncCloudUser(data.user);
-        router.push(redirectTo || '/dashboard');
-      } else {
-        router.push('/login?verified=true');
-      }
-    } catch (err: unknown) {
-      setOtpError(err instanceof Error ? err.message : 'Invalid code.');
-      setOtpVerifying(false);
-    }
-  };
 
   React.useEffect(() => {
     if (countdown > 0) {
@@ -202,35 +166,6 @@ function SignupForm() {
           </div>
         )}
 
-        {/* Or verify with 6-digit code */}
-        <form onSubmit={handleVerifyOtp} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3 text-left">
-          <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between">
-            <span>Or Enter 6-Digit Code</span>
-            <span className="text-[10px] font-mono text-slate-500">Instant Activation</span>
-          </div>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={otpCode}
-              onChange={(e) => setOtpCode(e.target.value)}
-              placeholder="e.g. 123456"
-              maxLength={10}
-              className="flex-1 px-3 py-2 text-center text-sm font-mono tracking-widest rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            />
-            <button
-              type="submit"
-              disabled={otpVerifying || !otpCode.trim()}
-              className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs rounded-xl transition-all disabled:opacity-50 flex items-center space-x-1"
-            >
-              {otpVerifying ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <span>Verify</span>}
-            </button>
-          </div>
-          {otpError && (
-            <p className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">
-              {otpError}
-            </p>
-          )}
-        </form>
 
         <div className="space-y-3 pt-2">
           <button

@@ -465,21 +465,12 @@ export function TopicWorkspaceClient() {
         )}
       </div>
 
-      {/* Topic Interactive Rating Widget (Thumbs Up/Down & 5-Star) */}
-      <TopicRatingWidget topicId={topic.id} topicTitle={topic.title} />
-
-      {/* Lightweight Community Q&A & Comments Thread */}
-      <TopicComments topicId={topic.id} topicTitle={topic.title} />
-
-      {/* Feature 1: 'You Might Also Like' Block */}
-      <RecommendedTopics currentTopic={topic} />
-
-      {/* Previous / Next Lesson Navigation Footer */}
-      <div className="pt-8 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {/* Previous / Next Lesson Navigation (Control Flow button just below video/content) */}
+      <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
         {prevTopic ? (
           <Link
             href={`/curriculum/${prevTopic.moduleSlug}/${prevTopic.slug}?tab=watch`}
-            className="w-full p-3.5 sm:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-left transition-colors flex items-center space-x-3 group focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
+            className="w-full p-3.5 sm:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-left transition-colors flex items-center space-x-3 group focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none shadow-sm"
           >
             <ArrowLeft className="w-4 h-4 text-slate-400 group-hover:-translate-x-0.5 transition-transform shrink-0" />
             <div className="min-w-0">
@@ -496,7 +487,7 @@ export function TopicWorkspaceClient() {
         {nextTopic && (
           <Link
             href={`/curriculum/${nextTopic.moduleSlug}/${nextTopic.slug}?tab=watch`}
-            className="w-full p-3.5 sm:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-right transition-colors flex items-center justify-end space-x-3 group focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none sm:col-start-2"
+            className="w-full p-3.5 sm:p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-right transition-colors flex items-center justify-end space-x-3 group focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none sm:col-start-2 shadow-sm"
           >
             <div className="min-w-0">
               <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase font-bold">
@@ -510,6 +501,15 @@ export function TopicWorkspaceClient() {
           </Link>
         )}
       </div>
+
+      {/* Topic Interactive Rating Widget (Thumbs Up/Down & 5-Star) */}
+      <TopicRatingWidget topicId={topic.id} topicTitle={topic.title} />
+
+      {/* Lightweight Community Q&A & Comments Thread */}
+      <TopicComments topicId={topic.id} topicTitle={topic.title} />
+
+      {/* Feature 1: 'You Might Also Like' Block */}
+      <RecommendedTopics currentTopic={topic} />
 
       {/* Sticky Mobile Bottom Tab Bar (<640px viewports) with safe area support */}
       <div 

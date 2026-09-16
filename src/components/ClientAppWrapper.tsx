@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { SearchModal } from './SearchModal';
-import { useWaynauticStore } from '@/lib/store';
+import { useWaynauticStore, getStoredTheme } from '@/lib/store';
 
 export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -27,10 +27,11 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      if (profile.theme === 'light') {
-        document.documentElement.classList.remove('dark');
-      } else {
+      const activeTheme = profile.theme || getStoredTheme();
+      if (activeTheme === 'dark') {
         document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
       }
     }
   }, [profile.theme]);

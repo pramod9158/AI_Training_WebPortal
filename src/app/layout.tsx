@@ -34,6 +34,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var t = localStorage.getItem('waynautic_theme');
+                if (t === 'dark') {
+                  document.documentElement.classList.add('dark');
+                } else if (t === 'light') {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <body className="font-sans antialiased min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
         <ClientAppWrapper>{children}</ClientAppWrapper>
         <Analytics />

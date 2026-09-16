@@ -15,6 +15,48 @@ const PROFILE_KEY = 'waynautic_user_profile';
 const COMMENTS_KEY = 'waynautic_topic_comments';
 const RATINGS_KEY = 'waynautic_topic_ratings';
 const NOTIFICATIONS_KEY = 'waynautic_user_notifications';
+export const THEME_KEY = 'waynautic_theme';
+
+export function getStoredTheme(): 'light' | 'dark' {
+  if (typeof window === 'undefined') return 'light';
+  try {
+    const stored = localStorage.getItem(THEME_KEY);
+    if (stored === 'dark' || stored === 'light') return stored;
+    // Fallback: check profile key if previously stored there
+    const profileSaved = localStorage.getItem(PROFILE_KEY);
+    if (profileSaved) {
+      const parsed = JSON.parse(profileSaved);
+      if (parsed.theme === 'dark' || parsed.theme === 'light') {
+        localStorage.setItem(THEME_KEY, parsed.theme);
+        return parsed.theme;
+      }
+    }
+  } catch (e) {
+    console.warn('Error reading stored theme:', e);
+  }
+  return 'light';
+}
+
+export function setStoredTheme(theme: 'light' | 'dark') {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+    // Apply immediately to HTML root element
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    // Update cached profile representation
+    const current = loadProfile();
+    const updated = { ...current, theme };
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(updated));
+    window.dispatchEvent(new Event('waynautic_storage_change'));
+    window.dispatchEvent(new CustomEvent('waynautic_theme_change', { detail: theme }));
+  } catch (e) {
+    console.error('Failed to set stored theme:', e);
+  }
+}
 
 export function getTodayDateString(): string {
   const d = new Date();
@@ -34,13 +76,14 @@ export function getYesterdayDateString(): string {
 }
 
 export function loadProfile(): UserProfileState {
+  const activeTheme = getStoredTheme();
   if (typeof window === 'undefined') {
     return {
       displayName: 'Guest',
       avatarUrl: '',
       selectedPath: 'path-a',
       hasCompletedOnboarding: false,
-      theme: 'light'
+      theme: activeTheme
     };
   }
   const saved = localStorage.getItem(PROFILE_KEY);
@@ -51,7 +94,7 @@ export function loadProfile(): UserProfileState {
       return {
         ...parsed,
         displayName: isAuth ? (parsed.displayName || 'Developer') : 'Guest',
-        theme: parsed.theme || 'light'
+        theme: activeTheme
       };
     } catch (e) {
       console.error('Failed to parse profile', e);
@@ -62,7 +105,7 @@ export function loadProfile(): UserProfileState {
     avatarUrl: '',
     selectedPath: 'path-a',
     hasCompletedOnboarding: false,
-    theme: 'light'
+    theme: activeTheme
   };
 }
 
@@ -84,8 +127,11 @@ export function resetGuestProfile() {
 
 export function saveLocalProfile(profile: Partial<UserProfileState>) {
   if (typeof window === 'undefined') return;
+  if (profile.theme) {
+    setStoredTheme(profile.theme);
+  }
   const current = loadProfile();
-  const updated = { ...current, ...profile };
+  const updated = { ...current, ...profile, theme: getStoredTheme() };
   localStorage.setItem(PROFILE_KEY, JSON.stringify(updated));
   window.dispatchEvent(new Event('waynautic_storage_change'));
 }
@@ -93,8 +139,11 @@ export function saveLocalProfile(profile: Partial<UserProfileState>) {
 export async function saveProfile(profile: Partial<UserProfileState>) {
   if (typeof window === 'undefined') return;
   recordUserActivity();
+  if (profile.theme) {
+    setStoredTheme(profile.theme);
+  }
   const current = loadProfile();
-  const updated = { ...current, ...profile };
+  const updated = { ...current, ...profile, theme: getStoredTheme() };
   localStorage.setItem(PROFILE_KEY, JSON.stringify(updated));
   window.dispatchEvent(new Event('waynautic_storage_change'));
 
@@ -639,6 +688,7 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
         }
       }
 
+      const activeTheme = getStoredTheme();
       const dbProfileState: UserProfileState = {
         userId: user.id,
         email: user.email || profileData.email,
@@ -653,7 +703,7 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
         lastAccessedTab: profileData.last_accessed_tab || undefined,
         lastAccessedAt: profileData.last_accessed_at || undefined,
         hasCompletedOnboarding: true,
-        theme: (typeof window !== 'undefined' && localStorage.getItem('waynautic_theme') === 'dark') ? 'dark' : 'light'
+        theme: activeTheme
       };
       localStorage.setItem(PROFILE_KEY, JSON.stringify(dbProfileState));
       // Eagerly notify components immediately when profile data arrives
@@ -675,7 +725,7 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
         selectedPath: 'path-a',
         plan: effectivePlan,
         hasCompletedOnboarding: true,
-        theme: 'light'
+        theme: getStoredTheme()
       };
       localStorage.setItem(PROFILE_KEY, JSON.stringify(initialProfile));
     }
@@ -1485,6 +1535,7 @@ export function useWaynauticStore() {
     markNotificationRead,
     sendNudgeNotification,
     signOut: signOutUser,
+    setTheme: setStoredTheme,
     refresh: reloadData
   };
 }
