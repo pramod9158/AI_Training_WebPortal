@@ -9,7 +9,7 @@ import {
   CheckCircle2, 
   AlertCircle 
 } from 'lucide-react';
-import { recordManualPayment } from '@/lib/adminService';
+import { recordManualPayment, EMAIL_REGEX } from '@/lib/adminService';
 
 interface ManualPaymentModalProps {
   isOpen: boolean;
@@ -38,8 +38,9 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
     e.preventDefault();
     setErrorMessage('');
 
-    if (!candidateEmail.trim() || !candidateEmail.includes('@')) {
-      setErrorMessage('Please provide a valid candidate email address.');
+    const cleanEmail = candidateEmail.trim();
+    if (!cleanEmail || !EMAIL_REGEX.test(cleanEmail)) {
+      setErrorMessage('Please provide a valid candidate email address (e.g. name@domain.com).');
       return;
     }
 

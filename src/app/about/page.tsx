@@ -9,7 +9,8 @@ import {
   Code2, 
   Cpu, 
   ShieldCheck, 
-  HeartHandshake
+  HeartHandshake,
+  Mail
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -99,6 +100,69 @@ export default function AboutPage() {
       <div className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-16 sm:space-y-24 relative z-10">
 
         {/* ==================================================================== */}
+        {/* RECOGNIZED FOR EXCELLENCE (Innovation Certificate & Award)           */}
+        {/* ==================================================================== */}
+        <section className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-slate-900/90 border-2 border-amber-300/60 dark:border-amber-500/30 shadow-xl dark:shadow-amber-500/5">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
+            
+            {/* Left: Certificate Image */}
+            <div className="md:col-span-6 flex justify-center">
+              <a
+                href="https://lnkd.in/p/dPmtiGUF"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative block rounded-2xl overflow-hidden border-2 border-amber-200 dark:border-amber-500/30 shadow-lg transition-transform hover:scale-[1.02]"
+              >
+                <Image
+                  src="/Innovation-Certificate.jpg"
+                  alt="Winner of the Best AI/ML Testing Strategy 2025 at the GenAI and ML Awards"
+                  width={600}
+                  height={420}
+                  className="w-full h-auto object-cover"
+                />
+                <div className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/20 transition-colors flex items-center justify-center">
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity px-3.5 py-1.5 rounded-full bg-black/80 text-white text-xs font-mono font-bold shadow-lg">
+                    View on LinkedIn ↗
+                  </span>
+                </div>
+              </a>
+            </div>
+
+            {/* Right: Award Text & LinkedIn Link */}
+            <div className="md:col-span-6 space-y-4 text-left">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 border border-amber-300 dark:border-amber-500/40 text-amber-800 dark:text-amber-300 text-xs font-mono font-bold">
+                <span className="text-sm">🌟</span>
+                <span>Recognized for Excellence</span>
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
+                Winner of the Best AI/ML Testing Strategy 2025 at the GenAI and ML Awards.
+              </h2>
+
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                We are setting new industry benchmarks for AI reliability and strategy.
+              </p>
+
+              <div className="pt-2">
+                <a
+                  href="https://lnkd.in/p/dPmtiGUF"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-2 px-5 py-3 rounded-xl bg-[#0A66C2] hover:bg-[#004182] text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5"
+                >
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                  </svg>
+                  <span>View Announcement on LinkedIn</span>
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ==================================================================== */}
         {/* WHY WE STARTED (Single concise paragraph)                            */}
         {/* ==================================================================== */}
         <section className="max-w-3xl mx-auto text-center space-y-5">
@@ -186,7 +250,6 @@ export default function AboutPage() {
 
         {/* ==================================================================== */}
         {/* CALL TO ACTION (Ready to Accelerate Your Career in AI?)               */}
-        {/* Start Learning button highlighted                                     */}
         {/* ==================================================================== */}
         <section className="p-8 sm:p-12 rounded-3xl bg-gradient-to-tr from-sky-600 via-blue-600 to-violet-700 text-white shadow-2xl relative overflow-hidden text-center space-y-6">
           <div className="max-w-2xl mx-auto space-y-3">
@@ -198,7 +261,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="flex items-center justify-center pt-2">
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link
               href="/curriculum"
               className="px-8 py-4 rounded-xl bg-white text-slate-950 font-extrabold text-sm sm:text-base hover:bg-slate-100 shadow-2xl transition-all flex items-center space-x-2 transform hover:-translate-y-0.5"
@@ -206,6 +269,14 @@ export default function AboutPage() {
               <Zap className="w-4 h-4 text-sky-600 fill-sky-600" />
               <span>Start Learning</span>
               <ArrowRight className="w-4 h-4" />
+            </Link>
+
+            <Link
+              href="#contact"
+              className="px-8 py-4 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 text-white font-extrabold text-sm sm:text-base shadow-xl transition-all flex items-center space-x-2 transform hover:-translate-y-0.5"
+            >
+              <Mail className="w-4 h-4 text-white" />
+              <span>Contact Us</span>
             </Link>
           </div>
         </section>

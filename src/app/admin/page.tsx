@@ -49,6 +49,7 @@ import { MODULES, Topic } from '@/data/seedModules';
 import { getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { 
   isAdminAuthenticated, 
+  checkServerAdminAuth,
   clearAdminSession, 
   getAdminMetrics, 
   getCandidates, 
@@ -114,7 +115,7 @@ export default function AdminDashboardPage() {
     setTimeout(() => setActionNotice(null), 3500);
   };
 
-  // Strict Auth Guard: completely block candidate students from admin portal
+  // Strict Server-side Auth Guard: completely block candidate students or unauthenticated users from admin portal
   useEffect(() => {
     const verifyAdmin = async () => {
       // 1. If currently logged in as a candidate in student profile, deny immediately
@@ -124,8 +125,11 @@ export default function AdminDashboardPage() {
         return;
       }
 
-      // 2. Must hold active admin passkey session
-      if (!isAdminAuthenticated()) {
+      // 2. Verify cryptographically signed HTTP-only cookie on the server
+      // (This completely blocks localStorage injection bypasses)
+      const isServerAuthed = await checkServerAdminAuth();
+      if (!isServerAuthed) {
+        clearAdminSession();
         router.replace('/admin/login');
         return;
       }
@@ -148,7 +152,7 @@ export default function AdminDashboardPage() {
             }
           }
         } catch {
-          // Fall back to passkey verification
+          // Fall back to server cookie verification
         }
       }
 

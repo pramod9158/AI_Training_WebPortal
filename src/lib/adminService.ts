@@ -17,9 +17,11 @@ const BARCODE_CONFIG_KEY = 'waynautic_admin_barcode_config';
 const LOCAL_PAYMENTS_KEY = 'waynautic_admin_payments';
 const LOCAL_CANDIDATES_KEY = 'waynautic_admin_candidates';
 
-// Secure Administrative Master Key (Configurable via environment)
-export const MASTER_ADMIN_PASSKEY = process.env.NEXT_PUBLIC_ADMIN_PASSKEY || 'WN-SecOps#9824$AlphaAdmin';
 export const MASTER_ADMIN_EMAIL = 'admin@waynautic.ai';
+
+// Regular expressions for strict email and 12-digit UTR validation
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const UTR_REGEX = /^\d{12}$/;
 
 // Master Barcode / UPI configuration (Code-Only Policy: managed strictly in src/config/payment/)
 export const DEFAULT_BARCODE_CONFIG: BarcodePaymentConfig = {
@@ -43,8 +45,13 @@ const SEED_PAYMENTS: PaymentRecord[] = [];
 
 
 /* -------------------------------------------------------------
- * 1. AUTHENTICATION & ACCESS CONTROL
+ * 1. AUTHENTICATION & ACCESS CONTROL (SECURE SERVER-VERIFIED)
  * -----------------------------------------------------------*/
+
+/**
+ * Checks local fast-session flag for client rendering hints.
+ * Production route protection must always verify with checkServerAdminAuth().
+ */
 export function isAdminAuthenticated(): boolean {
   if (typeof window === 'undefined') return false;
   const session = localStorage.getItem(ADMIN_SESSION_KEY);
@@ -56,6 +63,32 @@ export function isAdminAuthenticated(): boolean {
       return false;
     }
   }
+  return false;
+}
+
+/**
+ * Verifies admin authentication against server-side HTTP-only session cookie.
+ * Clears unauthorized or manipulated localStorage sessions immediately.
+ */
+export async function checkServerAdminAuth(): Promise<boolean> {
+  if (typeof window === 'undefined') return false;
+  try {
+    const res = await fetch('/api/admin/auth', { 
+      method: 'GET',
+      cache: 'no-store' 
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.authenticated && data.role === 'admin') {
+        setAdminSession(data.email || MASTER_ADMIN_EMAIL);
+        return true;
+      }
+    }
+  } catch (err) {
+    console.warn('Server admin session verification error:', err);
+  }
+  // Server rejected or no cookie; invalidate local session
+  localStorage.removeItem(ADMIN_SESSION_KEY);
   return false;
 }
 
@@ -73,16 +106,58 @@ export function setAdminSession(email: string = MASTER_ADMIN_EMAIL): void {
 export function clearAdminSession(): void {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(ADMIN_SESSION_KEY);
+  try {
+    fetch('/api/admin/logout', { method: 'POST' }).catch(() => {});
+  } catch {
+    // Ignore network error on logout
+  }
 }
 
+/**
+ * Validates master passkey strictly on the backend server.
+ * The secret key is never leaked into frontend client bundles.
+ */
 export async function verifyAdminPasskey(passkey: string): Promise<boolean> {
-  const secret = process.env.NEXT_PUBLIC_ADMIN_PASSKEY || 'WN-SecOps#9824$AlphaAdmin';
-  const isValid = passkey.trim() === secret.trim();
-  if (isValid) {
-    setAdminSession(MASTER_ADMIN_EMAIL);
-    return true;
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ passkey: passkey.trim() })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      setAdminSession(data.email || MASTER_ADMIN_EMAIL);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error('Server admin verification error:', err);
+    return false;
   }
-  return false;
+}
+
+/**
+ * Synchronizes Supabase authenticated admin users with server-side HTTP-only session.
+ */
+export async function verifySupabaseAdminSession(supabaseToken: string, email?: string): Promise<boolean> {
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ supabaseToken, email })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      setAdminSession(data.email || email || MASTER_ADMIN_EMAIL);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error('Server supabase admin session error:', err);
+    return false;
+  }
 }
 
 /* -------------------------------------------------------------
@@ -204,10 +279,61 @@ export async function submitCandidatePayment(data: {
   const cleanTxRef = data.transactionReference.trim();
   const now = new Date().toISOString();
 
-  // 1. Try Supabase
+  // 1. Strict Email Format Validation
+  if (!cleanEmail || !EMAIL_REGEX.test(cleanEmail)) {
+    return {
+      success: false,
+      message: 'Please provide a valid email address (e.g. name@domain.com).'
+    };
+  }
+
+  // 2. Strict 12-digit Numeric UTR / Reference Validation
+  if (!cleanTxRef || !UTR_REGEX.test(cleanTxRef)) {
+    return {
+      success: false,
+      message: 'Please enter a valid 12-digit numeric UPI / UTR Transaction Reference number (e.g. 423891823901).'
+    };
+  }
+
+  // 3. Supabase Flow (with duplicate transaction reference check)
   if (isSupabaseConfigured) {
     try {
-      // Check if there is already a pending payment for this user
+      // Check if this exact 12-digit reference has already been registered in the database
+      const { data: existingRefMatch, error: refMatchErr } = await supabase
+        .from('payments')
+        .select('id, user_email, status, created_at')
+        .eq('transaction_reference', cleanTxRef)
+        .limit(1);
+
+      if (!refMatchErr && existingRefMatch && existingRefMatch.length > 0) {
+        const match = existingRefMatch[0];
+
+        // Case A: UTR already verified for an active Pro pass
+        if (match.status === 'verified') {
+          return {
+            success: false,
+            message: 'This 12-digit UTR reference has already been verified and processed for an active subscription. Duplicate submissions are not allowed.'
+          };
+        }
+
+        // Case B: UTR registered by another account
+        if (match.user_email.toLowerCase() !== cleanEmail.toLowerCase()) {
+          return {
+            success: false,
+            message: 'This 12-digit UTR reference has already been registered under another account. If you believe this is an error, please contact admissions support.'
+          };
+        }
+
+        // Case C: Same user already submitted this exact UTR and it is still pending review
+        if (match.status === 'pending') {
+          return {
+            success: false,
+            message: 'This 12-digit UTR reference has already been submitted and is currently pending verification.'
+          };
+        }
+      }
+
+      // Check if there is an existing pending payment for this user with an older/different UTR to update
       const { data: existingPending } = await supabase
         .from('payments')
         .select('id')
@@ -259,6 +385,11 @@ export async function submitCandidatePayment(data: {
             message: 'Your pending payment reference has been updated successfully! Admissions will verify shortly.',
             payment: updatedRecord
           };
+        } else if (updateErr.code === '23505') {
+          return {
+            success: false,
+            message: 'This 12-digit UTR reference has already been registered in our system. Duplicate submissions are not allowed.'
+          };
         }
       } else {
         // No existing pending payment, insert new
@@ -301,6 +432,11 @@ export async function submitCandidatePayment(data: {
             message: 'Payment reference submitted successfully! Our admissions team will verify your payment within 15 minutes.',
             payment: createdRecord
           };
+        } else if (insErr && insErr.code === '23505') {
+          return {
+            success: false,
+            message: 'This 12-digit UTR reference has already been registered in our system. Duplicate submissions are not allowed.'
+          };
         }
       }
     } catch (err) {
@@ -308,8 +444,32 @@ export async function submitCandidatePayment(data: {
     }
   }
 
-  // 2. Local Fallback / Cache
+  // 4. Local Fallback / Cache Flow
   const localList = getLocalPayments();
+
+  // Check duplicate UTR in local store
+  const localRefMatch = localList.find((p) => p.transactionReference === cleanTxRef);
+  if (localRefMatch) {
+    if (localRefMatch.status === 'verified') {
+      return {
+        success: false,
+        message: 'This 12-digit UTR reference has already been verified and processed for an active subscription. Duplicate submissions are not allowed.'
+      };
+    }
+    if (localRefMatch.userEmail.toLowerCase() !== cleanEmail.toLowerCase()) {
+      return {
+        success: false,
+        message: 'This 12-digit UTR reference has already been registered under another account.'
+      };
+    }
+    if (localRefMatch.status === 'pending') {
+      return {
+        success: false,
+        message: 'This 12-digit UTR reference has already been submitted and is currently pending verification.'
+      };
+    }
+  }
+
   const existingPendingIndex = localList.findIndex(
     (p) => p.userEmail.toLowerCase() === cleanEmail.toLowerCase() && p.status === 'pending'
   );

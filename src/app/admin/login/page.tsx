@@ -15,7 +15,11 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
-import { verifyAdminPasskey, isAdminAuthenticated, setAdminSession } from '@/lib/adminService';
+import { 
+  verifyAdminPasskey, 
+  checkServerAdminAuth, 
+  verifySupabaseAdminSession 
+} from '@/lib/adminService';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 
 export default function AdminLoginPage() {
@@ -29,10 +33,12 @@ export default function AdminLoginPage() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    // If already authenticated as admin, redirect to /admin
-    if (isAdminAuthenticated()) {
-      router.replace('/admin');
-    }
+    // Verify server-side session cookie before redirecting
+    checkServerAdminAuth().then((isAuthed) => {
+      if (isAuthed) {
+        router.replace('/admin');
+      }
+    });
   }, [router]);
 
   const handlePasskeySubmit = async (e: React.FormEvent) => {
@@ -81,7 +87,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      if (data.user) {
+      if (data.user && data.session) {
         // Check if role is admin in user_profiles
         const { data: profile } = await supabase
           .from('user_profiles')
@@ -90,7 +96,7 @@ export default function AdminLoginPage() {
           .single();
 
         if (profile?.role === 'admin') {
-          setAdminSession(data.user.email);
+          await verifySupabaseAdminSession(data.session.access_token, data.user.email);
           router.push('/admin');
         } else {
           setErrorMessage('Access Denied: Your account does not hold administrator privileges (role must be admin).');

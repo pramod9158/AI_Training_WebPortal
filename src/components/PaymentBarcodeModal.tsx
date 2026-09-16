@@ -21,7 +21,7 @@ import {
   Crown
 } from 'lucide-react';
 import { useWaynauticStore } from '@/lib/store';
-import { getBarcodeConfig, submitCandidatePayment, getCandidateLatestPayment } from '@/lib/adminService';
+import { getBarcodeConfig, submitCandidatePayment, getCandidateLatestPayment, EMAIL_REGEX, UTR_REGEX } from '@/lib/adminService';
 import { BarcodePaymentConfig, PaymentRecord } from '@/lib/adminTypes';
 import { trackPaymentModalOpened, trackPaymentSubmitted } from '@/lib/analytics';
 
@@ -95,14 +95,15 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
     e.preventDefault();
     setErrorMessage('');
 
-    if (!email.trim() || !email.includes('@')) {
-      setErrorMessage('Please provide a valid email address so we can grant Pro access to your account.');
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !EMAIL_REGEX.test(cleanEmail)) {
+      setErrorMessage('Please provide a valid email address (e.g. name@domain.com).');
       return;
     }
 
     const cleanUtr = utrNumber.trim();
-    if (cleanUtr.length < 6) {
-      setErrorMessage('Please enter a valid 12-digit UPI / UTR Transaction Reference number.');
+    if (!UTR_REGEX.test(cleanUtr)) {
+      setErrorMessage('Please enter a valid 12-digit numeric UPI / UTR Transaction Reference number (e.g. 423891823901).');
       return;
     }
 
@@ -544,19 +545,33 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-0.5">
-                      12-Digit UTR / Transaction Ref *
-                    </label>
+                    <div className="flex items-center justify-between mb-0.5">
+                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300">
+                        12-Digit UTR / Transaction Ref *
+                      </label>
+                      <span className={`text-[10px] font-mono font-bold ${
+                        utrNumber.length === 12
+                          ? 'text-emerald-600 dark:text-emerald-400'
+                          : utrNumber.length > 0
+                          ? 'text-amber-600 dark:text-amber-400'
+                          : 'text-slate-400'
+                      }`}>
+                        {utrNumber.length === 12 ? '✓ 12/12 digits' : `${utrNumber.length}/12 digits`}
+                      </span>
+                    </div>
                     <input
                       type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]{12}"
+                      maxLength={12}
                       required
                       value={utrNumber}
-                      onChange={(e) => setUtrNumber(e.target.value.toUpperCase())}
-                      placeholder="e.g. 423891823901 or UPI/..."
-                      className="w-full px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                      onChange={(e) => setUtrNumber(e.target.value.replace(/\D/g, '').slice(0, 12))}
+                      placeholder="e.g. 423891823901"
+                      className="w-full px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none tracking-wider"
                     />
                     <p className="text-[10px] text-slate-400 mt-0.5">
-                      Found in your GPay / PhonePe / Paytm payment receipt details.
+                      Enter the 12-digit numeric reference from your GPay / PhonePe / Paytm / UPI payment receipt.
                     </p>
                   </div>
 

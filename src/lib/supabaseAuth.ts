@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient';
+import { clearAdminSession } from './adminService';
 
 export const INACTIVITY_TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 Hours in milliseconds
 const LAST_ACTIVITY_KEY = 'waynautic_last_activity_time';
@@ -92,7 +93,7 @@ export async function signOutUser() {
     localStorage.removeItem('waynautic_user_bookmarks');
     localStorage.removeItem('waynautic_user_badges');
     localStorage.removeItem('waynautic_user_streak');
-    localStorage.removeItem('waynautic_admin_session');
+    clearAdminSession();
     const profileKey = 'waynautic_user_profile';
     const saved = localStorage.getItem(profileKey);
     if (saved) {
