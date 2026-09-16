@@ -19,6 +19,8 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
   const [isQuestion, setIsQuestion] = useState(false);
   const [replyingToId, setReplyingToId] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReplying, setIsReplying] = useState(false);
 
   const reloadComments = async () => {
     // Instant local cache render
@@ -32,24 +34,40 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
     reloadComments();
   }, [topicId]);
 
-  const handlePost = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newContent.trim()) return;
+  const handlePost = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const content = newContent.trim();
+    if (!content || isSubmitting) return;
 
-    await addTopicComment(topicId, newContent, isQuestion);
-    trackCommentPosted(topicId, isQuestion);
-    setNewContent('');
-    setIsQuestion(false);
-    reloadComments();
+    setIsSubmitting(true);
+    try {
+      await addTopicComment(topicId, content, isQuestion);
+      trackCommentPosted(topicId, isQuestion);
+      setNewContent('');
+      setIsQuestion(false);
+      await reloadComments();
+    } catch (err) {
+      console.error('Error posting comment:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReplySubmit = async (parentId: string) => {
-    if (!replyContent.trim()) return;
+    const content = replyContent.trim();
+    if (!content || isReplying) return;
 
-    await addTopicComment(topicId, replyContent, false, parentId);
-    setReplyContent('');
-    setReplyingToId(null);
-    reloadComments();
+    setIsReplying(true);
+    try {
+      await addTopicComment(topicId, content, false, parentId);
+      setReplyContent('');
+      setReplyingToId(null);
+      await reloadComments();
+    } catch (err) {
+      console.error('Error posting reply:', err);
+    } finally {
+      setIsReplying(false);
+    }
   };
 
   const handleDelete = async (commentId: string) => {
@@ -141,11 +159,16 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
 
           <button
             type="submit"
-            disabled={!newContent.trim()}
-            className="px-5 py-2.5 rounded-xl bg-[#1CB0F6] hover:bg-[#1899D6] disabled:opacity-50 border-2 border-[#1899D6] shadow-[0_2px_0_0_#1899D6] text-white font-extrabold text-xs transition-all flex items-center justify-center space-x-2 shrink-0 min-h-[42px]"
+            disabled={!newContent.trim() || isSubmitting}
+            onClick={(e) => {
+              if (newContent.trim()) {
+                handlePost(e);
+              }
+            }}
+            className="px-5 py-2.5 rounded-xl bg-[#1CB0F6] hover:bg-[#1899D6] active:scale-95 disabled:opacity-50 border-2 border-[#1899D6] shadow-[0_2px_0_0_#1899D6] text-white font-extrabold text-xs transition-all flex items-center justify-center space-x-2 shrink-0 min-h-[42px] touch-manipulation cursor-pointer"
           >
             <Send className="w-3.5 h-3.5" />
-            <span>{isQuestion ? 'Post Question' : 'Post Comment'}</span>
+            <span>{isSubmitting ? 'Posting...' : (isQuestion ? 'Post Question' : 'Post Comment')}</span>
           </button>
         </div>
       </form>
@@ -267,10 +290,11 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
                       </button>
                       <button
                         type="button"
+                        disabled={!replyContent.trim() || isReplying}
                         onClick={() => handleReplySubmit(comment.id)}
-                        className="px-3 py-1 rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold"
+                        className="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 active:scale-95 disabled:opacity-50 text-white text-xs font-bold transition-all touch-manipulation cursor-pointer"
                       >
-                        Send Reply
+                        {isReplying ? 'Sending...' : 'Send Reply'}
                       </button>
                     </div>
                   </div>

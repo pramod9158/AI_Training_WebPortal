@@ -4,8 +4,8 @@ import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Mail, Lock, User, ShieldCheck, Clock, CheckCircle2, ArrowRight, Eye, EyeOff } from 'lucide-react';
-import { signUpWithEmail } from '@/lib/supabaseAuth';
+import { Mail, Lock, User, ShieldCheck, Clock, CheckCircle2, ArrowRight, Eye, EyeOff, RefreshCw, AlertCircle } from 'lucide-react';
+import { signUpWithEmail, resendVerificationEmail } from '@/lib/supabaseAuth';
 import { fetchAndSyncCloudUser, useWaynauticStore } from '@/lib/store';
 import { clearAdminSession } from '@/lib/adminService';
 
@@ -21,19 +21,73 @@ function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
   const [isConfirmationPending, setIsConfirmationPending] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
+
+  // Resend verification state
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendStatus, setResendStatus] = useState<'idle' | 'sent' | 'error'>('idle');
+  const [resendMsg, setResendMsg] = useState('');
+  const [countdown, setCountdown] = useState(0);
+
+  React.useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
+  const handleResend = async () => {
+    if (countdown > 0 || resendLoading || !registeredEmail) return;
+    setResendLoading(true);
+    setResendStatus('idle');
+    setResendMsg('');
+
+    const { error } = await resendVerificationEmail(registeredEmail);
+    setResendLoading(false);
+
+    if (error) {
+      setResendStatus('error');
+      if (error.message.toLowerCase().includes('rate limit')) {
+        setResendMsg('Email rate limit reached: Supabase limits email requests to prevent abuse. Please wait 1-2 minutes before trying again.');
+      } else {
+        setResendMsg(error.message);
+      }
+    } else {
+      setResendStatus('sent');
+      setResendMsg('Verification email resent! Please check your Inbox and Spam/Junk folder.');
+      setCountdown(60);
+    }
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
+    setIsAlreadyRegistered(false);
 
     try {
       // Purge any stale admin console session
       clearAdminSession();
 
       const { data, error } = await signUpWithEmail(email, password, name.trim());
+
+      // Requirement: When already registered user creates account again, it should say "You are already registered"
+      const userAlreadyExists = 
+        Boolean(data?.user?.identities && data.user.identities.length === 0) ||
+        Boolean(error && (
+          error.message.toLowerCase().includes('already registered') ||
+          error.message.toLowerCase().includes('already exists') ||
+          error.message.toLowerCase().includes('user already registered')
+        ));
+
+      if (userAlreadyExists) {
+        setIsAlreadyRegistered(true);
+        setErrorMsg('You are already registered! Please log in with your email and password.');
+        setLoading(false);
+        return;
+      }
 
       if (error) {
         if (error.message.toLowerCase().includes('rate limit')) {
@@ -94,11 +148,40 @@ function SignupForm() {
             <span>Important: Verify Email to Log In</span>
           </div>
           <p>
-            Please check your inbox and click the verification link before logging in. If you don&apos;t see the email within a couple minutes, please check your spam or junk folder.
+            Please check your inbox and click the verification link before logging in. If you don&apos;t see the email within a couple minutes, please check your <strong>Spam or Junk folder</strong>.
           </p>
         </div>
 
+        {resendStatus === 'sent' && (
+          <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/40 text-emerald-800 dark:text-emerald-300 text-xs font-mono font-medium flex items-center space-x-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>{resendMsg}</span>
+          </div>
+        )}
+
+        {resendStatus === 'error' && (
+          <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-500/40 text-rose-800 dark:text-rose-300 text-xs font-mono font-medium">
+            {resendMsg}
+          </div>
+        )}
+
         <div className="space-y-3 pt-2">
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={resendLoading || countdown > 0}
+            className="w-full py-2.5 rounded-xl border-2 border-sky-300 dark:border-cyan-500/40 bg-sky-50/70 hover:bg-sky-100 dark:bg-cyan-950/40 dark:hover:bg-cyan-950/70 text-sky-700 dark:text-cyan-300 text-xs font-mono font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 min-h-[42px]"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${resendLoading ? 'animate-spin' : ''}`} />
+            <span>
+              {resendLoading
+                ? 'Sending Verification Link...'
+                : countdown > 0
+                ? `Resend available in ${countdown}s`
+                : 'Didn’t get the email? Resend Link'}
+            </span>
+          </button>
+
           <Link
             href={`/login${redirectTo !== '/onboarding' && redirectTo !== '/dashboard' ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`}
             className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px] shadow-sm"
@@ -112,6 +195,8 @@ function SignupForm() {
             onClick={() => {
               setIsConfirmationPending(false);
               setPassword('');
+              setResendStatus('idle');
+              setResendMsg('');
             }}
             className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white font-medium underline"
           >
@@ -138,7 +223,24 @@ function SignupForm() {
         <span>8-Hour Protected Session</span>
       </div>
 
-      {errorMsg && (
+      {isAlreadyRegistered ? (
+        <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border-2 border-amber-300 dark:border-amber-600/50 text-amber-900 dark:text-amber-200 text-xs font-medium space-y-3 animate-in fade-in">
+          <div className="flex items-center space-x-2 font-extrabold text-amber-800 dark:text-amber-300 text-sm">
+            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>You are already registered!</span>
+          </div>
+          <p className="text-xs text-amber-800/90 dark:text-amber-200/90">
+            An account already exists for <strong>{email}</strong>. Please log in with your credentials or reset your password.
+          </p>
+          <Link
+            href={`/login?email=${encodeURIComponent(email)}`}
+            className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold text-xs flex items-center justify-center space-x-1.5 transition-all shadow-sm"
+          >
+            <span>Proceed to Log In</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      ) : errorMsg ? (
         <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/80 border-2 border-rose-300 dark:border-rose-500/30 text-rose-800 dark:text-rose-300 text-xs font-mono font-bold leading-relaxed space-y-1">
           <div>{errorMsg}</div>
           {errorMsg.includes('rate limit') && (
@@ -149,7 +251,7 @@ function SignupForm() {
             </div>
           )}
         </div>
-      )}
+      ) : null}
 
       <form onSubmit={handleSignup} className="space-y-4">
         <div className="space-y-1">

@@ -139,3 +139,18 @@ export async function updateUserPassword(newPassword: string) {
     password: newPassword
   });
 }
+
+export async function resendVerificationEmail(email: string) {
+  if (!isSupabaseConfigured) {
+    return { data: {}, error: null };
+  }
+  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined;
+  return await supabase.auth.resend({
+    type: 'signup',
+    email,
+    options: {
+      emailRedirectTo: redirectTo,
+    },
+  });
+}
+

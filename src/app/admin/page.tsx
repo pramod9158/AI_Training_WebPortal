@@ -97,7 +97,6 @@ export default function AdminDashboardPage() {
   // Candidate Filters
   const [candSearch, setCandSearch] = useState('');
   const [candPlanFilter, setCandPlanFilter] = useState('all');
-  const [candStatusFilter, setCandStatusFilter] = useState('all');
 
   // Payment Filters
   const [paySearch, setPaySearch] = useState('');
@@ -209,10 +208,9 @@ export default function AdminDashboardPage() {
         c.displayName.toLowerCase().includes(candSearch.toLowerCase()) ||
         c.email.toLowerCase().includes(candSearch.toLowerCase());
       const matchesPlan = candPlanFilter === 'all' || c.plan === candPlanFilter;
-      const matchesStatus = candStatusFilter === 'all' || c.accountStatus === candStatusFilter;
-      return matchesSearch && matchesPlan && matchesStatus;
+      return matchesSearch && matchesPlan;
     });
-  }, [candidates, candSearch, candPlanFilter, candStatusFilter]);
+  }, [candidates, candSearch, candPlanFilter]);
 
   // Filtered Payments
   const filteredPayments = useMemo(() => {
@@ -778,16 +776,6 @@ export default function AdminDashboardPage() {
                   <option value="enterprise">Enterprise</option>
                 </select>
 
-                <select
-                  value={candStatusFilter}
-                  onChange={(e) => setCandStatusFilter(e.target.value)}
-                  className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none"
-                >
-                  <option value="all">All Statuses</option>
-                  <option value="active">Active Only</option>
-                  <option value="suspended">Suspended Only</option>
-                </select>
-
                 <button
                   onClick={() => exportCandidatesToCSV(filteredCandidates)}
                   className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-sm transition-colors shrink-0"
@@ -806,7 +794,7 @@ export default function AdminDashboardPage() {
                   <thead className="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                     <tr>
                       <th className="py-3.5 px-4">Candidate</th>
-                      <th className="py-3.5 px-4">Plan & Status</th>
+                      <th className="py-3.5 px-4">Plan Tier</th>
                       <th className="py-3.5 px-4">Curriculum Progress</th>
                       <th className="py-3.5 px-4">Quiz Score</th>
                       <th className="py-3.5 px-4">Streak</th>
@@ -854,11 +842,6 @@ export default function AdminDashboardPage() {
                               }`}>
                                 {c.plan}
                               </span>
-                              {c.accountStatus === 'suspended' && (
-                                <span className="text-[10px] text-rose-500 font-bold">
-                                  Suspended
-                                </span>
-                              )}
                             </div>
                           </td>
 

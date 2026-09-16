@@ -63,7 +63,7 @@ export function NotificationDrawer() {
             onClick={() => setIsOpen(false)}
           />
 
-          <div className="absolute right-0 mt-3 w-80 sm:w-96 z-50 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
+          <div className="fixed left-3 right-3 top-16 max-w-sm mx-auto sm:max-w-none sm:mx-0 sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-3 sm:w-96 z-50 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
             
             {/* Header */}
             <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-950/50">

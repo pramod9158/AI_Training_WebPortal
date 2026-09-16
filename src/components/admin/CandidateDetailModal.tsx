@@ -15,7 +15,6 @@ import {
   Download,
   CheckCircle2,
   Clock,
-  Ban,
   Check,
   Zap
 } from 'lucide-react';
@@ -23,7 +22,6 @@ import { CandidateDetailRecord } from '@/lib/adminTypes';
 import { 
   getCandidateDetails, 
   updateCandidatePlan, 
-  updateCandidateStatus,
   sendReEngagementNudge 
 } from '@/lib/adminService';
 
@@ -78,19 +76,6 @@ export const CandidateDetailModal: React.FC<CandidateDetailModalProps> = ({
     try {
       await updateCandidatePlan(candidate.id, newPlan);
       setCandidate({ ...candidate, plan: newPlan });
-      if (onUpdated) onUpdated();
-    } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  const handleStatusToggle = async () => {
-    if (!candidate) return;
-    const nextStatus = candidate.accountStatus === 'active' ? 'suspended' : 'active';
-    setIsUpdating(true);
-    try {
-      await updateCandidateStatus(candidate.id, nextStatus);
-      setCandidate({ ...candidate, accountStatus: nextStatus });
       if (onUpdated) onUpdated();
     } finally {
       setIsUpdating(false);
@@ -154,11 +139,6 @@ export const CandidateDetailModal: React.FC<CandidateDetailModalProps> = ({
                       : 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/20'
                   }`}>
                     {candidate.plan}
-                  </span>
-                )}
-                {candidate?.accountStatus === 'suspended' && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20">
-                    Suspended
                   </span>
                 )}
               </div>
@@ -306,28 +286,6 @@ export const CandidateDetailModal: React.FC<CandidateDetailModalProps> = ({
                       Enterprise
                     </button>
                   </div>
-
-                  <button
-                    disabled={isUpdating}
-                    onClick={handleStatusToggle}
-                    className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
-                      candidate.accountStatus === 'active'
-                        ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-100 border border-rose-200 dark:border-rose-900/40'
-                        : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 border border-emerald-200 dark:border-emerald-900/40'
-                    }`}
-                  >
-                    {candidate.accountStatus === 'active' ? (
-                      <>
-                        <Ban className="w-3.5 h-3.5" />
-                        <span>Suspend</span>
-                      </>
-                    ) : (
-                      <>
-                        <Check className="w-3.5 h-3.5" />
-                        <span>Reactivate</span>
-                      </>
-                    )}
-                  </button>
                 </div>
               </div>
 

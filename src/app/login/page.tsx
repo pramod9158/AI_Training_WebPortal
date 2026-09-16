@@ -3,8 +3,8 @@
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Mail, Lock, ShieldCheck, Clock, Eye, EyeOff, CheckCircle2, ArrowLeft } from 'lucide-react';
-import { signInWithEmail, sendPasswordResetEmail } from '@/lib/supabaseAuth';
+import { Mail, Lock, ShieldCheck, Clock, Eye, EyeOff, CheckCircle2, ArrowLeft, RefreshCw } from 'lucide-react';
+import { signInWithEmail, sendPasswordResetEmail, resendVerificationEmail } from '@/lib/supabaseAuth';
 import { fetchAndSyncCloudUser, useWaynauticStore } from '@/lib/store';
 import { clearAdminSession } from '@/lib/adminService';
 
@@ -19,6 +19,43 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Unconfirmed email resend state
+  const [isUnconfirmedEmail, setIsUnconfirmedEmail] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendStatus, setResendStatus] = useState<'idle' | 'sent' | 'error'>('idle');
+  const [resendMsg, setResendMsg] = useState('');
+  const [countdown, setCountdown] = useState(0);
+
+  React.useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
+  const handleResendFromLogin = async () => {
+    if (!email || countdown > 0 || resendLoading) return;
+    setResendLoading(true);
+    setResendStatus('idle');
+    setResendMsg('');
+
+    const { error } = await resendVerificationEmail(email);
+    setResendLoading(false);
+
+    if (error) {
+      setResendStatus('error');
+      if (error.message.toLowerCase().includes('rate limit')) {
+        setResendMsg('Rate limit reached: Please wait 1-2 minutes before retrying.');
+      } else {
+        setResendMsg(error.message);
+      }
+    } else {
+      setResendStatus('sent');
+      setResendMsg(`Verification link resent to ${email}! Please check your Inbox and Spam/Junk folder.`);
+      setCountdown(60);
+    }
+  };
 
   // Forgot password state
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -51,10 +88,18 @@ function LoginForm() {
       const { data, error } = await signInWithEmail(email, password);
 
       if (error) {
-        setErrorMsg(error.message);
+        if (error.message.toLowerCase().includes('email not confirmed')) {
+          setIsUnconfirmedEmail(true);
+          setErrorMsg('Your email address has not been verified yet. Please check your inbox (including Spam/Junk), or use the button below to resend the verification link.');
+        } else {
+          setIsUnconfirmedEmail(false);
+          setErrorMsg(error.message);
+        }
         setLoading(false);
         return;
       }
+
+      setIsUnconfirmedEmail(false);
 
       if (data?.user) {
         await fetchAndSyncCloudUser(data.user);
@@ -183,8 +228,34 @@ function LoginForm() {
       </div>
 
       {errorMsg && (
-        <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/80 border-2 border-rose-300 dark:border-rose-500/30 text-rose-800 dark:text-rose-300 text-xs font-mono font-bold">
-          {errorMsg}
+        <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/80 border-2 border-rose-300 dark:border-rose-500/30 text-rose-800 dark:text-rose-300 text-xs font-mono font-bold space-y-2.5">
+          <div>{errorMsg}</div>
+          {isUnconfirmedEmail && (
+            <div className="pt-2 border-t border-rose-200 dark:border-rose-800/60">
+              <button
+                type="button"
+                onClick={handleResendFromLogin}
+                disabled={resendLoading || countdown > 0 || !email}
+                className="w-full py-2 px-3 rounded-lg border border-sky-400 dark:border-cyan-500/50 bg-sky-100/80 hover:bg-sky-200 dark:bg-cyan-950/60 dark:hover:bg-cyan-900/60 text-sky-800 dark:text-cyan-200 text-xs font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-1.5"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${resendLoading ? 'animate-spin' : ''}`} />
+                <span>
+                  {resendLoading
+                    ? 'Resending verification link...'
+                    : countdown > 0
+                    ? `Resend available in ${countdown}s`
+                    : `Resend verification link to ${email || 'your email'}`}
+                </span>
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {resendStatus === 'sent' && (
+        <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-300 dark:border-emerald-500/40 text-emerald-800 dark:text-emerald-300 text-xs font-mono font-medium flex items-center space-x-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+          <span>{resendMsg}</span>
         </div>
       )}
 

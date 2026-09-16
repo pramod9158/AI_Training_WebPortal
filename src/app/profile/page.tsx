@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useWaynauticStore } from '@/lib/store';
+import { useWaynauticStore, fetchAndSyncCloudUser } from '@/lib/store';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { 
   Award, 
@@ -86,6 +86,13 @@ export default function ProfilePage() {
 
   useEffect(() => {
     loadUserPayments();
+    if (isSupabaseConfigured) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          fetchAndSyncCloudUser(session.user);
+        }
+      });
+    }
     window.addEventListener('waynautic_payments_changed', loadUserPayments);
     window.addEventListener('waynautic_storage_change', loadUserPayments);
     return () => {

@@ -621,19 +621,23 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
     }
 
     if (profileData) {
-      saveLocalProfile({
+      const dbProfileState: UserProfileState = {
         userId: user.id,
         email: user.email || profileData.email,
         displayName: profileData.display_name || user.email?.split('@')[0] || 'Developer',
         avatarUrl: profileData.avatar_url || '',
+        avatarPreset: profileData.avatar_url ? undefined : 'ai-architect',
         selectedPath: profileData.selected_path || 'path-a',
         role: profileData.role || 'candidate',
         plan: effectivePlan,
         accountStatus: profileData.account_status || 'active',
         lastAccessedTopicId: profileData.last_accessed_topic_id || undefined,
         lastAccessedTab: profileData.last_accessed_tab || undefined,
-        lastAccessedAt: profileData.last_accessed_at || undefined
-      });
+        lastAccessedAt: profileData.last_accessed_at || undefined,
+        hasCompletedOnboarding: true,
+        theme: (typeof window !== 'undefined' && localStorage.getItem('waynautic_theme') === 'dark') ? 'dark' : 'light'
+      };
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(dbProfileState));
     } else {
       // Initialize profile if not present
       await supabase.from('user_profiles').upsert({
@@ -643,82 +647,44 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
         selected_path: 'path-a',
         plan: effectivePlan
       });
-      saveLocalProfile({
+      const initialProfile: UserProfileState = {
         userId: user.id,
         email: user.email,
         displayName: user.email?.split('@')[0] || 'Developer',
         avatarUrl: '',
         selectedPath: 'path-a',
-        plan: effectivePlan
-      });
+        plan: effectivePlan,
+        hasCompletedOnboarding: true,
+        theme: 'light'
+      };
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(initialProfile));
     }
 
-    // 2. Fetch User Progress from DB (Strict user isolation: never merge with another user's local cache!)
+    // 2. Fetch User Progress directly from DB (DB is the 100% authoritative single source of truth - NO stale cache pollution)
     const { data: dbProgress, error: progressErr } = await supabase
       .from('user_progress')
       .select('topic_id, status, completed_at, score')
       .eq('user_id', user.id);
 
     if (!progressErr && dbProgress) {
-      const localProgress = loadProgress();
-      const freshProgress: Record<string, UserProgress> = { ...localProgress };
-      const topicsToSyncToDb: string[] = [];
+      const freshProgress: Record<string, UserProgress> = {};
 
       dbProgress.forEach((item: { topic_id: string; status: 'not_started' | 'in_progress' | 'completed'; completed_at?: string; score?: number }) => {
         const topicSlug = item.topic_id;
         if (topicSlug) {
-          const localItem = localProgress[topicSlug];
-          
-          // Never downgrade 'completed' back to 'in_progress'
-          let bestStatus = item.status;
-          let bestCompletedAt = item.completed_at;
-          let bestScore = item.score !== undefined && item.score !== null ? Number(item.score) : localItem?.score;
-
-          if (localItem?.status === 'completed' && item.status !== 'completed') {
-            bestStatus = 'completed';
-            bestCompletedAt = localItem.completedAt || new Date().toISOString();
-            topicsToSyncToDb.push(topicSlug);
-          } else if (localItem?.score !== undefined && (bestScore === undefined || localItem.score > bestScore)) {
-            bestScore = localItem.score;
-          }
-
           freshProgress[topicSlug] = {
             topicId: topicSlug,
-            status: bestStatus,
-            completedAt: bestCompletedAt,
-            score: bestScore
+            status: item.status,
+            completedAt: item.completed_at,
+            score: item.score !== undefined && item.score !== null ? Number(item.score) : undefined
           };
         }
       });
 
-      // Retain any local topics marked completed that aren't in DB yet
-      Object.entries(localProgress).forEach(([tid, lItem]) => {
-        if (!freshProgress[tid]) {
-          freshProgress[tid] = lItem;
-          if (lItem.status === 'completed') {
-            topicsToSyncToDb.push(tid);
-          }
-        }
-      });
-
       localStorage.setItem(PROGRESS_KEY, JSON.stringify(freshProgress));
-
-      // Push any locally completed topics to Supabase if missing or behind in DB
-      if (topicsToSyncToDb.length > 0) {
-        for (const tid of topicsToSyncToDb) {
-          const syncItem = freshProgress[tid];
-          supabase.from('user_progress').upsert({
-            user_id: user.id,
-            topic_id: tid,
-            status: syncItem.status,
-            completed_at: syncItem.completedAt || new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }, { onConflict: 'user_id,topic_id' }).then();
-        }
-      }
     }
 
-    // 3. Fetch User Bookmarks from DB (Strict user isolation)
+    // 3. Fetch User Bookmarks from DB (Strict DB truth)
     const { data: dbBookmarks } = await supabase
       .from('user_bookmarks')
       .select('topic_id')
@@ -849,12 +815,18 @@ export async function fetchTopicCommentsFromDb(topicId: string): Promise<TopicCo
         }));
 
         const all = loadAllTopicComments();
-        all[topicId] = mapped;
+        const localList = all[topicId] || [];
+        // Preserve any optimistic local comments that have not yet synced
+        const pendingLocal = localList.filter(
+          (c) => c.id.startsWith('cmt-') && !mapped.some((m) => m.content === c.content && m.userName === c.userName)
+        );
+
+        all[topicId] = [...pendingLocal, ...mapped];
         if (typeof window !== 'undefined') {
           localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
           window.dispatchEvent(new Event('waynautic_storage_change'));
         }
-        return mapped;
+        return all[topicId];
       }
     } catch (err) {
       console.warn('Error fetching topic comments from Supabase:', err);
@@ -871,15 +843,16 @@ export async function addTopicComment(
 ): Promise<TopicComment> {
   if (typeof window === 'undefined') throw new Error('Client side only');
   const profile = loadProfile();
+  const trimmed = content.trim();
   const newComment: TopicComment = {
     id: `cmt-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
     topicId,
     userId: profile.userId,
     userName: profile.displayName || 'Developer',
     userAvatar: profile.avatarUrl,
-    content: content.trim(),
+    content: trimmed,
     isQuestion,
-    parentId,
+    parentId: parentId || undefined,
     upvotes: 0,
     userUpvoted: false,
     createdAt: new Date().toISOString()
@@ -893,17 +866,29 @@ export async function addTopicComment(
 
   if (isSupabaseConfigured) {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        await supabase.from('topic_comments').insert({
+      let user = (await supabase.auth.getSession()).data.session?.user;
+      if (!user) {
+        user = (await supabase.auth.getUser()).data.user || undefined;
+      }
+
+      if (user) {
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(parentId || '');
+        const payload: any = {
           topic_id: topicId,
-          user_id: session.user.id,
-          user_name: profile.displayName || 'Developer',
-          user_avatar: profile.avatarUrl,
-          content: content.trim(),
+          user_id: user.id,
+          user_name: profile.displayName || user.user_metadata?.full_name || 'Developer',
+          user_avatar: profile.avatarUrl || user.user_metadata?.avatar_url || '',
+          content: trimmed,
           is_question: isQuestion,
-          parent_id: parentId
-        });
+        };
+        if (isUuid && parentId) {
+          payload.parent_id = parentId;
+        }
+
+        const { error } = await supabase.from('topic_comments').insert(payload);
+        if (error) {
+          console.warn('Supabase comment insert failed:', error);
+        }
       }
     } catch (err) {
       console.warn('Supabase comment insert error:', err);
@@ -971,9 +956,9 @@ export function loadTopicUserRating(topicId: string): TopicRating | null {
 export function getTopicRatingStats(topicId: string) {
   const all = loadAllTopicRatings();
   const list = all[topicId] || [];
-  const totalVotes = list.length;
   const upvotes = list.filter((r) => r.userVote === 'up').length;
   const downvotes = list.filter((r) => r.userVote === 'down').length;
+  const totalVotes = upvotes + downvotes;
   const starRatings = list
     .map((r) => r.starRating)
     .filter((s): s is number => typeof s === 'number' && s > 0);
@@ -995,6 +980,58 @@ export async function fetchTopicRatingsFromDb(topicId: string): Promise<{
   ratings: TopicRating[];
   stats: { totalVotes: number; upvotes: number; downvotes: number; avgStars: number; starRatingsCount: number };
 }> {
+  if (isSupabaseConfigured) {
+    try {
+      const { data, error } = await supabase
+        .from('topic_ratings')
+        .select('*')
+        .eq('topic_id', topicId);
+
+      if (!error && data && data.length > 0) {
+        const dbRatings: TopicRating[] = data.map((row: any) => ({
+          id: row.id || `db-${row.user_id}-${row.topic_id}`,
+          topicId: row.topic_id,
+          userId: row.user_id,
+          userName: 'Member',
+          userAvatar: '',
+          userVote: row.vote || undefined,
+          starRating: row.stars || undefined,
+          feedbackText: row.feedback || '',
+          createdAt: row.updated_at || row.created_at || new Date().toISOString()
+        }));
+
+        const all = loadAllTopicRatings();
+        const currentList = all[topicId] || [];
+        const merged = dbRatings.map((dbR) => {
+          const localMatch = currentList.find((l) => l.userId === dbR.userId);
+          if (localMatch) {
+            return {
+              ...dbR,
+              userName: localMatch.userName || dbR.userName,
+              userAvatar: localMatch.userAvatar || dbR.userAvatar
+            };
+          }
+          return dbR;
+        });
+
+        all[topicId] = merged;
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(RATINGS_KEY, JSON.stringify(all));
+          window.dispatchEvent(new Event('waynautic_storage_change'));
+        }
+        const profile = loadProfile();
+        const userRating = merged.find((r) => r.userId === profile.userId) || null;
+        return {
+          userRating,
+          ratings: merged,
+          stats: getTopicRatingStats(topicId)
+        };
+      }
+    } catch (err) {
+      console.warn('Supabase ratings fetch error:', err);
+    }
+  }
+
   try {
     const res = await fetch(`/api/ratings?topicId=${encodeURIComponent(topicId)}`);
     if (res.ok) {
@@ -1067,7 +1104,29 @@ export async function saveTopicRating(
   localStorage.setItem(RATINGS_KEY, JSON.stringify(all));
   window.dispatchEvent(new Event('waynautic_storage_change'));
 
-  // Post to server API for universal cross-member visibility
+  // 1. Direct Supabase cloud persistence with authenticated user session
+  if (isSupabaseConfigured) {
+    try {
+      let user = (await supabase.auth.getSession()).data.session?.user;
+      if (!user) {
+        user = (await supabase.auth.getUser()).data.user || undefined;
+      }
+      if (user) {
+        await supabase.from('topic_ratings').upsert({
+          topic_id: topicId,
+          user_id: user.id,
+          vote: newRating.userVote || null,
+          stars: newRating.starRating || null,
+          feedback: newRating.feedbackText || '',
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id,topic_id' });
+      }
+    } catch (err) {
+      console.warn('Direct Supabase rating upsert error:', err);
+    }
+  }
+
+  // 2. Post to server API for universal cross-member visibility
   try {
     const res = await fetch('/api/ratings', {
       method: 'POST',
@@ -1252,19 +1311,66 @@ export function useWaynauticStore() {
     window.addEventListener('storage', handleStorage);
 
     let authUnsubscribe: (() => void) | undefined;
+    let realtimeChannel: any = null;
+
+    const setupRealtimeSync = (userId: string, email?: string) => {
+      if (!isSupabaseConfigured || typeof window === 'undefined') return;
+      if (realtimeChannel) {
+        supabase.removeChannel(realtimeChannel);
+        realtimeChannel = null;
+      }
+
+      realtimeChannel = supabase
+        .channel(`user_realtime_sync_${userId}_${Date.now()}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'user_profiles', filter: `id=eq.${userId}` },
+          () => {
+            fetchAndSyncCloudUser({ id: userId, email });
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'user_progress', filter: `user_id=eq.${userId}` },
+          () => {
+            fetchAndSyncCloudUser({ id: userId, email });
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'user_bookmarks', filter: `user_id=eq.${userId}` },
+          () => {
+            fetchAndSyncCloudUser({ id: userId, email });
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'user_notifications', filter: `user_id=eq.${userId}` },
+          () => {
+            fetchAndSyncCloudUser({ id: userId, email });
+          }
+        )
+        .subscribe();
+    };
 
     // Sync with Supabase on mount if logged in
     if (isSupabaseConfigured) {
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.user) {
           fetchAndSyncCloudUser(session.user);
+          setupRealtimeSync(session.user.id, session.user.email);
         }
       });
 
       const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
         if (session?.user) {
           fetchAndSyncCloudUser(session.user);
+          setupRealtimeSync(session.user.id, session.user.email);
         } else if (event === 'SIGNED_OUT') {
+          if (realtimeChannel) {
+            supabase.removeChannel(realtimeChannel);
+            realtimeChannel = null;
+          }
           clearAllUserData();
           reloadData();
         }
@@ -1288,6 +1394,10 @@ export function useWaynauticStore() {
     window.addEventListener('focus', handleVisibility);
 
     return () => {
+      if (realtimeChannel) {
+        supabase.removeChannel(realtimeChannel);
+        realtimeChannel = null;
+      }
       if (authUnsubscribe) authUnsubscribe();
       window.removeEventListener('waynautic_storage_change', handleStorage);
       window.removeEventListener('storage', handleStorage);

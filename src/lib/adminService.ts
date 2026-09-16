@@ -945,23 +945,6 @@ export async function updateCandidatePlanByEmail(
   saveLocalCandidates(updated);
 }
 
-export async function updateCandidateStatus(
-  candidateId: string,
-  accountStatus: 'active' | 'suspended'
-): Promise<void> {
-  if (isSupabaseConfigured) {
-    try {
-      await supabase.from('user_profiles').update({ account_status: accountStatus }).eq('id', candidateId);
-    } catch (err) {
-      console.warn('Supabase update account status error:', err);
-    }
-  }
-
-  const list = getLocalCandidates();
-  const updated = list.map((c) => (c.id === candidateId ? { ...c, accountStatus } : c));
-  saveLocalCandidates(updated);
-}
-
 /* -------------------------------------------------------------
  * 5. ADMIN METRICS & KPI CALCULATIONS
  * -----------------------------------------------------------*/

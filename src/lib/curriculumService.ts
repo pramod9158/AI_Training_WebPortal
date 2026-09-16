@@ -596,27 +596,55 @@ export function getTopicChapters(topic: Topic, allTopics?: Topic[]): VideoChapte
 }
 
 /**
- * Resolves the user's exact deep-link return destination (topic + tab).
+ * Resolves the candidate Topic to resume learning.
+ * Bypasses any topic that is already completed.
+ * Returns null if all topics are completed.
  */
-export function getResumeLearningUrl(profile?: { lastAccessedTopicId?: string; lastAccessedTab?: 'watch' | 'read' | 'quiz' }): string {
+export function getResumeTopic(
+  profile?: { lastAccessedTopicId?: string },
+  progress?: Record<string, { status: string }>
+): Topic | null {
   const topics = getAllTopics();
-  const lastId = profile?.lastAccessedTopicId;
-  const lastTab = profile?.lastAccessedTab || 'watch';
+  if (!topics || topics.length === 0) return null;
 
+  // If user has completed every single topic, return null so 100% completion card is displayed
+  if (progress && topics.every((t) => progress[t.id]?.status === 'completed' || progress[t.slug]?.status === 'completed')) {
+    return null;
+  }
+
+  const lastId = profile?.lastAccessedTopicId;
   if (lastId) {
     const topic = topics.find((t) => t.id === lastId || t.slug === lastId);
-    if (topic) {
-      return `/curriculum/${topic.moduleSlug}/${topic.slug}?tab=${lastTab}`;
+    const isCompleted = topic && progress && (progress[topic.id]?.status === 'completed' || progress[topic.slug]?.status === 'completed');
+    if (topic && !isCompleted) {
+      return topic;
     }
   }
 
-  // Fallback to first available topic
-  const firstTopic = topics[0];
-  if (firstTopic) {
-    return `/curriculum/${firstTopic.moduleSlug}/${firstTopic.slug}?tab=watch`;
+  // Find first incomplete topic in curriculum sequence
+  if (progress) {
+    const nextIncomplete = topics.find((t) => progress[t.id]?.status !== 'completed' && progress[t.slug]?.status !== 'completed');
+    if (nextIncomplete) {
+      return nextIncomplete;
+    }
   }
 
-  return '/curriculum';
+  return topics[0] || null;
+}
+
+/**
+ * Resolves the user's exact deep-link return destination (topic + tab).
+ */
+export function getResumeLearningUrl(
+  profile?: { lastAccessedTopicId?: string; lastAccessedTab?: 'watch' | 'read' | 'quiz' },
+  progress?: Record<string, { status: string }>
+): string {
+  const topic = getResumeTopic(profile, progress);
+  if (!topic) {
+    return '/curriculum';
+  }
+  const lastTab = profile?.lastAccessedTab || 'watch';
+  return `/curriculum/${topic.moduleSlug}/${topic.slug}?tab=${lastTab}`;
 }
 
 /**

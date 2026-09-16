@@ -42,7 +42,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const { profile, streak, bookmarks, updateProfile, signOut, toggleBookmarkTopic } = useWaynauticStore();
+  const { profile, progress, streak, bookmarks, updateProfile, signOut, toggleBookmarkTopic } = useWaynauticStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -50,11 +50,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
   const isProUser = profile.plan === 'pro' || profile.plan === 'enterprise';
-  const resumeUrl = getResumeLearningUrl(profile);
+  const resumeUrl = getResumeLearningUrl(profile, progress);
   const allTopics = getAllTopics();
-  const lastTopic = profile.lastAccessedTopicId 
+  let resumeTopic = profile.lastAccessedTopicId 
     ? allTopics.find(t => t.id === profile.lastAccessedTopicId || t.slug === profile.lastAccessedTopicId)
     : null;
+  if (resumeTopic && progress && (progress[resumeTopic.id]?.status === 'completed' || progress[resumeTopic.slug]?.status === 'completed')) {
+    resumeTopic = allTopics.find(t => progress[t.id]?.status !== 'completed' && progress[t.slug]?.status !== 'completed') || null;
+  }
+  const lastTopic = resumeTopic;
 
   // Close menus when clicking outside
   useEffect(() => {
@@ -175,12 +179,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           {!isProUser && (
             <button
               onClick={() => setPaymentModalOpen(true)}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30 font-semibold text-xs shadow-xs transition-colors shrink-0"
-              title="Pay via UPI Barcode / QR to unlock all courses"
+              className="flex items-center space-x-1 px-2.5 sm:px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30 font-semibold text-xs shadow-xs transition-colors shrink-0"
+              title="Upgrade to Pro - unlock all courses"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
               <span className="hidden sm:inline">Upgrade to Pro</span>
-              <span className="sm:hidden">Pro</span>
+              <span className="sm:hidden">Upgrade</span>
             </button>
           )}
 

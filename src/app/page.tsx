@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { MODULES } from '@/data/seedModules';
 import { TOPICS } from '@/data/seedTopics';
+import { getAllTopics, getResumeTopic, getResumeLearningUrl } from '@/lib/curriculumService';
 import { useWaynauticStore } from '@/lib/store';
 import { OnboardingTour } from '@/components/OnboardingTour';
 
@@ -31,10 +32,9 @@ export default function HomePage() {
   const [onboardingOpen, setOnboardingOpen] = useState(false);
   const isLoggedIn = Boolean(profile.userId || profile.email);
 
-  // Find last active/in-progress topic or default to topic 1
-  const completedTopicIds = Object.keys(progress).filter(id => progress[id]?.status === 'completed');
-  const lastTopicId = completedTopicIds.length > 0 ? completedTopicIds[completedTopicIds.length - 1] : 't-1';
-  const continueTopic = TOPICS.find(t => t.id === lastTopicId) || TOPICS[0];
+  // Unified Resume Topic logic matching Dashboard
+  const continueTopic = useMemo(() => getResumeTopic(profile, progress), [profile, progress]);
+  const resumeUrl = useMemo(() => getResumeLearningUrl(profile, progress), [profile, progress]);
 
   return (
     <div className="relative overflow-hidden min-h-screen">
@@ -100,7 +100,7 @@ export default function HomePage() {
         {continueTopic && (
           <div className="mt-12 max-w-3xl mx-auto">
             <Link
-              href={`/curriculum/${continueTopic.moduleSlug}/${continueTopic.slug}`}
+              href={resumeUrl}
               className="group block p-4 sm:p-5 rounded-2xl bg-white dark:bg-gradient-to-r dark:from-slate-900 dark:via-cyan-950/40 dark:to-slate-900 border-2 border-slate-200 dark:border-cyan-500/30 hover:border-sky-400 dark:hover:border-cyan-400/60 shadow-lg dark:shadow-cyan-500/10 transition-all"
             >
               <div className="flex items-center justify-between">

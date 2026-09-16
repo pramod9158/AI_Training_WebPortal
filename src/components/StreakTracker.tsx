@@ -11,7 +11,7 @@ interface StreakTrackerProps {
 }
 
 export function StreakTracker({ variant = 'full' }: StreakTrackerProps) {
-  const { streak, profile } = useWaynauticStore();
+  const { streak, profile, progress } = useWaynauticStore();
   const today = getTodayDateString();
   const yesterday = getYesterdayDateString();
 
@@ -30,7 +30,7 @@ export function StreakTracker({ variant = 'full' }: StreakTrackerProps) {
   ];
 
   const weeklyMap = streak.weeklyActivity || {};
-  const resumeUrl = getResumeLearningUrl(profile);
+  const resumeUrl = getResumeLearningUrl(profile, progress);
 
   if (variant === 'banner') {
     if (!isStreakAtRisk) return null;

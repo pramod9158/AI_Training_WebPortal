@@ -53,10 +53,12 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
   }, [topicId]);
 
   const handleVote = async (newVote: 'up' | 'down') => {
-    const updated = await saveTopicRating(topicId, newVote, starRating > 0 ? starRating : undefined, feedback);
+    const targetStars = starRating > 0 ? starRating : (newVote === 'down' ? 1 : 5);
+    setStarRating(targetStars);
+    setVote(newVote);
+    const updated = await saveTopicRating(topicId, newVote, targetStars, feedback);
     trackRatingSubmitted(topicId, 'vote', newVote);
     setUserRating(updated.rating);
-    setVote(newVote);
     setStats(updated.stats);
     setAllReviews(updated.ratings);
     setIsEditing(false);
@@ -65,7 +67,9 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
 
   const handleStarSelect = async (stars: number) => {
     setStarRating(stars);
-    const updated = await saveTopicRating(topicId, vote, stars, feedback);
+    const targetVote = vote ? vote : (stars <= 2 ? 'down' : 'up');
+    setVote(targetVote);
+    const updated = await saveTopicRating(topicId, targetVote, stars, feedback);
     trackRatingSubmitted(topicId, 'stars', stars);
     setUserRating(updated.rating);
     setStats(updated.stats);
@@ -90,9 +94,10 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
     setTimeout(() => setSubmittedToast(false), 4000);
   };
 
-  const upvotePercent = stats.totalVotes > 0 
+  const hasVotes = stats.totalVotes > 0;
+  const upvotePercent = hasVotes 
     ? Math.round((stats.upvotes / stats.totalVotes) * 100) 
-    : 100;
+    : 0;
 
   // Filter out reviews that contain written feedback for the community feed
   const writtenReviews = allReviews.filter(
@@ -137,11 +142,26 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
 
         {/* Aggregate Ratings Metric Pills */}
         <div className="flex items-center space-x-3 text-xs font-mono text-slate-500 dark:text-slate-400">
-          <div className="flex items-center space-x-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-xl border border-emerald-200 dark:border-emerald-800">
-            <ThumbsUp className="w-3.5 h-3.5 fill-emerald-500 text-emerald-600" />
-            <span className="font-bold">{stats.totalVotes > 0 ? `${upvotePercent}% positive` : '100% positive'}</span>
-          </div>
-          <span className="text-slate-400">({stats.totalVotes} {stats.totalVotes === 1 ? 'response' : 'responses'})</span>
+          {hasVotes ? (
+            upvotePercent >= 50 ? (
+              <div className="flex items-center space-x-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                <ThumbsUp className="w-3.5 h-3.5 fill-emerald-500 text-emerald-600" />
+                <span className="font-bold">{upvotePercent}% positive</span>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-1 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 px-2.5 py-1 rounded-xl border border-rose-200 dark:border-rose-800">
+                <ThumbsDown className="w-3.5 h-3.5 fill-rose-500 text-rose-600" />
+                <span className="font-bold">{100 - upvotePercent}% needs work</span>
+              </div>
+            )
+          ) : (
+            <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700">
+              <span>No feedback votes yet</span>
+            </div>
+          )}
+          {hasVotes && (
+            <span className="text-slate-400">({stats.totalVotes} {stats.totalVotes === 1 ? 'response' : 'responses'})</span>
+          )}
         </div>
       </div>
 

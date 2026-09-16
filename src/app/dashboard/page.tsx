@@ -25,7 +25,7 @@ import {
 import { MODULES } from '@/data/seedModules';
 import { TOPICS } from '@/data/seedTopics';
 import { useWaynauticStore } from '@/lib/store';
-import { getResumeLearningUrl, getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
+import { getResumeLearningUrl, getResumeTopic, getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { StreakTracker } from '@/components/StreakTracker';
 import { 
   computeOverallStats, 
@@ -83,12 +83,12 @@ function DashboardContent() {
   const moduleStats = useMemo(() => computeModuleProgressStats(progress, topics), [progress, topics]);
   const badgeCatalog = useMemo(() => getFullBadgeCatalog(badges, progress, streak, topics), [badges, progress, streak, topics]);
 
-  // Find last active/in-progress topic or default to topic 1
-  const completedTopicIds = Object.keys(progress).filter(id => progress[id]?.status === 'completed');
+  // Requirement: Once a topic is completed, it should no longer appear under Resume Topic.
+  const isAllTopicsCompleted = topics.length > 0 && topics.every(t => progress[t.id]?.status === 'completed' || progress[t.slug]?.status === 'completed');
   const isBrandNewStudent = overallStats.completedTopics === 0 && !profile.lastAccessedTopicId;
-  const lastTopicId = profile.lastAccessedTopicId || (completedTopicIds.length > 0 ? completedTopicIds[completedTopicIds.length - 1] : 't-1');
-  const continueTopic = topics.find(t => t.id === lastTopicId || t.slug === lastTopicId) || topics[0];
-  const continueModule = MODULES.find(m => m.slug === continueTopic?.moduleSlug) || MODULES[0];
+
+  const continueTopic = useMemo(() => getResumeTopic(profile, progress), [profile, progress, topics]);
+  const continueModule = continueTopic ? (MODULES.find(m => m.slug === continueTopic.moduleSlug) || MODULES[0]) : null;
 
   // Filtered Modules
   const filteredModules = useMemo(() => {
@@ -395,8 +395,8 @@ function DashboardContent() {
 
       </div>
 
-      {/* "Continue Where You Left Off" Prominent Card */}
-      {continueTopic && (
+      {/* "Continue Where You Left Off" Prominent Card (Only shown if there is an incomplete topic to resume) */}
+      {continueTopic && continueModule && (
         <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-gradient-to-r dark:from-slate-900 dark:via-cyan-950/40 dark:to-slate-900 border-2 border-slate-200 dark:border-cyan-500/40 shadow-xl space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold flex items-center space-x-1.5">
@@ -414,11 +414,41 @@ function DashboardContent() {
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 font-medium line-clamp-2">{continueTopic.description}</p>
             </div>
             <Link
-              href={getResumeLearningUrl(profile)}
+              href={getResumeLearningUrl(profile, progress)}
               className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 shrink-0 min-h-[42px] shadow-sm"
             >
               <Play className="w-4 h-4 fill-current" />
               <span>{isBrandNewStudent ? 'Start Topic 01' : 'Resume Topic'}</span>
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Curriculum Mastery Card if all topics are 100% completed */}
+      {isAllTopicsCompleted && !continueTopic && (
+        <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 dark:from-emerald-950/40 dark:via-teal-950/30 dark:to-emerald-950/40 border-2 border-emerald-300 dark:border-emerald-500/40 shadow-xl space-y-3 sm:space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-bold flex items-center space-x-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              <span>All Topics Completed</span>
+            </span>
+            <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+              100% Curriculum Mastered
+            </span>
+          </div>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white">Waynautic AI Curriculum Mastered! 🎉</h2>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 font-medium">
+                You have successfully completed every topic across all modules. You can review past lessons, take quizzes, or claim your certificate.
+              </p>
+            </div>
+            <Link
+              href="/profile"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 shrink-0 min-h-[42px] shadow-sm"
+            >
+              <Award className="w-4 h-4" />
+              <span>View Verified Certificate</span>
             </Link>
           </div>
         </div>
@@ -485,9 +515,9 @@ function DashboardContent() {
         <div className="space-y-6">
           
           {/* Module Filter Pills */}
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center space-x-2">
-              <span className="text-xs font-mono text-slate-500 font-bold uppercase">Filter:</span>
+          <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+            <div className="flex items-center space-x-1.5 sm:space-x-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none -mx-1 px-1 sm:mx-0 sm:px-0">
+              <span className="text-xs font-mono text-slate-500 font-bold uppercase shrink-0">Filter:</span>
               {(['all', 'in_progress', 'completed', 'not_started'] as const).map(key => {
                 const labelMap = {
                   all: 'All (10)',
@@ -499,10 +529,10 @@ function DashboardContent() {
                   <button
                     key={key}
                     onClick={() => setModuleFilter(key)}
-                    className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-colors ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all shrink-0 whitespace-nowrap ${
                       moduleFilter === key
-                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
+                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
                     {labelMap[key]}
@@ -511,7 +541,7 @@ function DashboardContent() {
               })}
             </div>
 
-            <div className="text-xs font-mono text-slate-500 dark:text-slate-400">
+            <div className="text-xs font-mono text-slate-500 dark:text-slate-400 shrink-0 self-end sm:self-auto">
               Showing {filteredModules.length} Modules
             </div>
           </div>
