@@ -25,8 +25,7 @@ import {
   Code2, 
   Terminal, 
   Flame, 
-  Clock,
-  KeyRound 
+  Clock
 } from 'lucide-react';
 import { CertificateModal } from '@/components/CertificateModal';
 import { PaymentBarcodeModal } from '@/components/PaymentBarcodeModal';
@@ -40,7 +39,6 @@ export default function ProfilePage() {
   
   const [name, setName] = useState(profile.displayName || 'Developer');
   const [avatarPreset, setAvatarPreset] = useState<string>(profile.avatarPreset || 'ai-architect');
-  const [customAvatarUrl, setCustomAvatarUrl] = useState<string>(profile.avatarUrl || '');
   const [selectedPath, setSelectedPath] = useState<string>(profile.selectedPath || 'path-a');
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [certModalOpen, setCertModalOpen] = useState(false);
@@ -59,7 +57,6 @@ export default function ProfilePage() {
   useEffect(() => {
     setName(profile.displayName || 'Developer');
     setAvatarPreset(profile.avatarPreset || 'ai-architect');
-    setCustomAvatarUrl(profile.avatarUrl || '');
     setSelectedPath(profile.selectedPath || 'path-a');
   }, [profile]);
 
@@ -115,7 +112,7 @@ export default function ProfilePage() {
     await updateProfile({ 
       displayName: name.trim() || 'Developer',
       avatarPreset,
-      avatarUrl: customAvatarUrl.trim(),
+      avatarUrl: '',
       selectedPath
     });
     setSavedSuccess(true);
@@ -187,22 +184,9 @@ export default function ProfilePage() {
             {/* Live Profile Header Preview */}
             <div className="flex items-center space-x-4">
               <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr ${activePreset.gradient} p-1 shadow-lg shrink-0 flex items-center justify-center`}>
-                {customAvatarUrl ? (
-                  <div className="w-full h-full rounded-xl overflow-hidden bg-slate-950">
-                    <img 
-                      src={customAvatarUrl} 
-                      alt={name} 
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover"
-                      onError={() => setCustomAvatarUrl('')}
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full h-full rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center">
-                    <ActiveIcon className="w-8 h-8 sm:w-10 sm:h-10 text-slate-800 dark:text-white" />
-                  </div>
-                )}
+                <div className="w-full h-full rounded-xl bg-white dark:bg-slate-950 flex items-center justify-center">
+                  <ActiveIcon className="w-8 h-8 sm:w-10 sm:h-10 text-slate-800 dark:text-white" />
+                </div>
               </div>
               
               <div>
@@ -255,14 +239,13 @@ export default function ProfilePage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
               {AVATAR_PRESETS.map((preset) => {
                 const Icon = preset.icon;
-                const isSelected = avatarPreset === preset.id && !customAvatarUrl;
+                const isSelected = avatarPreset === preset.id;
                 return (
                   <button
                     key={preset.id}
                     type="button"
                     onClick={() => {
                       setAvatarPreset(preset.id);
-                      setCustomAvatarUrl('');
                     }}
                     className={`p-3 rounded-2xl border-2 flex flex-col items-center text-center space-y-2 transition-all ${
                       isSelected
@@ -284,20 +267,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Custom Avatar URL Field */}
-          <div className="space-y-2 pt-1">
-            <label className="text-xs font-mono uppercase font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
-              <KeyRound className="w-3.5 h-3.5 text-slate-500" />
-              <span>Or Paste Custom Image URL (Optional)</span>
-            </label>
-            <input
-              type="url"
-              value={customAvatarUrl}
-              onChange={(e) => setCustomAvatarUrl(e.target.value)}
-              className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 font-mono text-xs transition-colors"
-              placeholder="https://example.com/my-photo.jpg"
-            />
-          </div>
+
 
         </div>
 

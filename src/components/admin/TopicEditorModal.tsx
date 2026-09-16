@@ -23,8 +23,11 @@ import {
   Eye, 
   Code,
   HelpCircle,
-  AlertCircle
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
+import { convertMarkdownToVisualNotes } from '@/lib/visualNotesConverter';
+import { MarkdownNotes } from '@/components/MarkdownNotes';
 
 interface TopicEditorModalProps {
   isOpen: boolean;
@@ -200,9 +203,15 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
       reader.onload = (event) => {
         const text = event.target?.result as string;
         if (text) {
-          setTextContent(text);
+          const isMd = file.name.endsWith('.md') || file.name.endsWith('.markdown') || !text.trim().startsWith('<');
+          const processedText = isMd ? convertMarkdownToVisualNotes(text, title) : text;
+          setTextContent(processedText);
           setNotesFileName(`${file.name} (${Math.round(file.size / 1024)} KB)`);
-          setSuccessMessage(`Notes file "${file.name}" uploaded and loaded into editor.`);
+          setSuccessMessage(
+            isMd
+              ? `Notes file "${file.name}" uploaded and converted to Masterclass visual notes!`
+              : `Notes file "${file.name}" uploaded and loaded into editor.`
+          );
           setTimeout(() => setSuccessMessage(''), 3500);
         }
       };
@@ -679,6 +688,23 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
                     )}
                   </button>
 
+                  {/* Format as Masterclass Notes Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!textContent.trim()) return;
+                      const formatted = convertMarkdownToVisualNotes(textContent, title);
+                      setTextContent(formatted);
+                      setSuccessMessage('Notes converted to Masterclass visual format (Executive summary, Mind Map & Chapters)!');
+                      setTimeout(() => setSuccessMessage(''), 3500);
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 text-white text-xs font-extrabold flex items-center space-x-1.5 shadow-sm transition-all cursor-pointer"
+                    title="Convert plain notes into Masterclass visual notes"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Convert to Visual Notes</span>
+                  </button>
+
                   {/* Upload Notes File Button */}
                   <button
                     type="button"
@@ -686,7 +712,7 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
                     className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold flex items-center space-x-1.5 shadow-sm transition-all"
                   >
                     <Upload className="w-3.5 h-3.5" />
-                    <span>Upload Notes File (.html / .md)</span>
+                    <span>Upload Notes File (.md / .html)</span>
                   </button>
                 </div>
               </div>
@@ -694,7 +720,7 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
               {notesFileName && (
                 <div className="flex items-center space-x-2 text-xs text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-3 py-1.5 rounded-lg border border-indigo-200 dark:border-indigo-800/60 font-mono">
                   <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>File imported: <strong>{notesFileName}</strong> ({isHtmlNotes ? 'HTML Format' : 'Markdown Format'})</span>
+                  <span>File imported: <strong>{notesFileName}</strong> ({isHtmlNotes ? 'HTML Format' : 'Converted to Masterclass Visual Notes'})</span>
                 </div>
               )}
 
@@ -708,12 +734,13 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
                   className="w-full p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white font-mono text-xs leading-relaxed focus:outline-none focus:border-sky-500"
                 />
               ) : (
-                <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 max-h-60 overflow-y-auto text-xs leading-relaxed">
-                  {isHtmlNotes ? (
-                    <div dangerouslySetInnerHTML={{ __html: textContent }} />
-                  ) : (
-                    <pre className="font-mono whitespace-pre-wrap">{textContent}</pre>
-                  )}
+                <div className="rounded-2xl border border-slate-300 dark:border-slate-800 max-h-[480px] overflow-y-auto bg-slate-50 dark:bg-slate-950/50">
+                  <MarkdownNotes 
+                    content={textContent} 
+                    topicTitle={title || 'Topic Notes Preview'} 
+                    moduleTitle={defaultModuleSlug}
+                    estimatedMinutes={Number(estimatedMinutes) || 15}
+                  />
                 </div>
               )}
             </div>

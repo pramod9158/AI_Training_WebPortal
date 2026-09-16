@@ -306,6 +306,25 @@ html:not(.dark) {
     color: #9E9E9E !important;
   }
 
+  /* Ensure text inside dark or colorful primary elements stays pure, crisp white */
+  .bg-\[\#0A66C2\],
+  .bg-\[\#0A66C2\] span,
+  .bg-\[\#0A66C2\] svg,
+  .bg-\[\#5850EC\],
+  .bg-\[\#5850EC\] span,
+  .bg-\[\#5850EC\] svg,
+  button[type="submit"].bg-\[\#5850EC\],
+  button[type="submit"].bg-\[\#5850EC\] span,
+  button[type="submit"].bg-\[\#5850EC\] svg,
+  [class*="from-sky-600"] h2,
+  [class*="from-sky-600"] p,
+  [class*="from-sky-600"] .text-white,
+  .about-hero-title,
+  .about-hero-title * {
+    color: #FFFFFF !important;
+    fill: #FFFFFF !important;
+  }
+
   /* Ensure text inside light blue / purple cards is dark and readable */
   [class*="from-cyan-950"] .text-white,
   [class*="from-cyan-950"] .font-bold,
