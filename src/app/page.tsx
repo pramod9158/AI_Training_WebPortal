@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
@@ -31,6 +31,12 @@ export default function HomePage() {
   const { profile, progress, streak } = useWaynauticStore();
   const [onboardingOpen, setOnboardingOpen] = useState(false);
   const isLoggedIn = Boolean(profile.userId || profile.email);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window.location.hash.includes('error=') || window.location.hash.includes('error_code='))) {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, []);
 
   // Unified Resume Topic logic matching Dashboard
   const continueTopic = useMemo(() => getResumeTopic(profile, progress), [profile, progress]);

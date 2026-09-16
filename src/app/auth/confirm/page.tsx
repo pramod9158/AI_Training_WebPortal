@@ -81,14 +81,14 @@ function AuthConfirmContent() {
               return;
             }
 
-            setStatus('error');
-            const message = err instanceof Error ? err.message : 'Verification failed.';
-            if (message.toLowerCase().includes('expired') || message.toLowerCase().includes('otp')) {
-              setErrorMsg('This confirmation link has already been used or expired. Your email may already be verified!');
+            // If user is not logged in, redirect directly to https://ai-training-web-portal.vercel.app/ (/)
+            if (typeof window !== 'undefined') {
+              window.history.replaceState(null, '', '/');
+              window.location.replace('/');
             } else {
-              setErrorMsg(message);
+              router.replace('/');
             }
-            setVerifying(false);
+            return;
           }
           return;
         }
@@ -106,11 +106,14 @@ function AuthConfirmContent() {
         return;
       }
 
-      // If no token_hash or code provided
+      // If no token_hash or code provided and not logged in
       if (isMounted) {
-        setStatus('error');
-        setErrorMsg('No verification token found in link.');
-        setVerifying(false);
+        if (typeof window !== 'undefined') {
+          window.history.replaceState(null, '', '/');
+          window.location.replace('/');
+        } else {
+          router.replace('/');
+        }
       }
     }
 

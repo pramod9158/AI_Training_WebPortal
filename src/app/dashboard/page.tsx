@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   Trophy, 
   Flame, 
@@ -36,6 +36,7 @@ import {
 } from '@/lib/progressAnalytics';
 
 function DashboardContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
 
@@ -43,15 +44,17 @@ function DashboardContent() {
   const isLoggedIn = Boolean(profile.userId || profile.email);
 
   const [isAuthenticating, setIsAuthenticating] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === 'undefined') return true;
     const hash = window.location.hash;
     const search = window.location.search;
-    return (
+    const hasAuthParam = Boolean(
       hash.includes('access_token') ||
+      hash.includes('error') ||
       search.includes('code=') ||
       search.includes('token_hash=') ||
-      hash.includes('error_code=otp_expired')
+      search.includes('error')
     );
+    return hasAuthParam || (!profile.userId && !profile.email);
   });
   const [authBanner, setAuthBanner] = useState<{
     type: 'warning' | 'error' | 'success';
@@ -61,7 +64,14 @@ function DashboardContent() {
   } | null>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !isSupabaseConfigured) {
+    if (typeof window === 'undefined') return;
+
+    if (!isSupabaseConfigured) {
+      if (!profile.userId && !profile.email) {
+        window.history.replaceState(null, '', '/');
+        window.location.replace('/');
+        return;
+      }
       setIsAuthenticating(false);
       return;
     }
@@ -75,38 +85,27 @@ function DashboardContent() {
       const errorCode = hashParams.get('error_code') || searchParams.get('error_code');
       const errorDesc = hashParams.get('error_description') || searchParams.get('error_description');
 
-      // 1. Handle error in URL (such as otp_expired from email scanners)
+      // 1. Handle error in URL (such as otp_expired from used or expired links)
       if (errorCode || errorDesc) {
         // Check if user has an active session regardless
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
           await fetchAndSyncCloudUser(session.user);
-          window.history.replaceState(null, '', window.location.pathname);
+          if (typeof window !== 'undefined') {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
           if (isMounted) {
             setIsAuthenticating(false);
           }
           return;
         }
 
-        // Clear hash from address bar so user isn't stuck with an ugly error fragment
-        window.history.replaceState(null, '', window.location.pathname);
-        if (isMounted) {
-          setIsAuthenticating(false);
-          if (errorCode === 'otp_expired' || errorDesc?.toLowerCase().includes('expired')) {
-            setAuthBanner({
-              type: 'warning',
-              message: 'Your email confirmation link was processed or expired. If your email was confirmed, please log in with your password to continue.',
-              actionText: 'Log In Now',
-              actionHref: '/login?verified=true'
-            });
-          } else {
-            setAuthBanner({
-              type: 'error',
-              message: errorDesc ? decodeURIComponent(errorDesc.replace(/\+/g, ' ')) : 'Authentication link is invalid or expired.',
-              actionText: 'Go to Log In',
-              actionHref: '/login'
-            });
-          }
+        // If user is not logged in, redirect directly to https://ai-training-web-portal.vercel.app/ (/)
+        if (typeof window !== 'undefined') {
+          window.history.replaceState(null, '', '/');
+          window.location.replace('/');
+        } else {
+          router.replace('/');
         }
         return;
       }
@@ -122,7 +121,9 @@ function DashboardContent() {
           });
           if (data?.session?.user) {
             await fetchAndSyncCloudUser(data.session.user);
-            window.history.replaceState(null, '', window.location.pathname);
+            if (typeof window !== 'undefined') {
+              window.history.replaceState(null, '', window.location.pathname);
+            }
             if (isMounted) {
               setIsAuthenticating(false);
             }
@@ -140,7 +141,9 @@ function DashboardContent() {
           const { data, error } = await supabase.auth.exchangeCodeForSession(code);
           if (data?.session?.user) {
             await fetchAndSyncCloudUser(data.session.user);
-            window.history.replaceState(null, '', window.location.pathname);
+            if (typeof window !== 'undefined') {
+              window.history.replaceState(null, '', window.location.pathname);
+            }
             if (isMounted) {
               setIsAuthenticating(false);
             }
@@ -159,7 +162,9 @@ function DashboardContent() {
           const { data, error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
           if (data?.session?.user) {
             await fetchAndSyncCloudUser(data.session.user);
-            window.history.replaceState(null, '', window.location.pathname);
+            if (typeof window !== 'undefined') {
+              window.history.replaceState(null, '', window.location.pathname);
+            }
             if (isMounted) {
               setIsAuthenticating(false);
             }
@@ -170,10 +175,28 @@ function DashboardContent() {
         }
       }
 
-      // 5. Fallback session check: If Supabase has active session but local store is still guest
+      // 5. Check session: If Supabase has active session
       const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user && (!profile.userId || !profile.email)) {
-        await fetchAndSyncCloudUser(session.user);
+      if (session?.user) {
+        if (!profile.userId || !profile.email) {
+          await fetchAndSyncCloudUser(session.user);
+        }
+        if (isMounted) {
+          setIsAuthenticating(false);
+        }
+        return;
+      }
+
+      // 6. If user is NOT logged in in Supabase AND has no profile in local store:
+      // Redirect to https://ai-training-web-portal.vercel.app/ (/)
+      if (!profile.userId && !profile.email) {
+        if (typeof window !== 'undefined') {
+          window.history.replaceState(null, '', '/');
+          window.location.replace('/');
+        } else {
+          router.replace('/');
+        }
+        return;
       }
 
       if (isMounted) {
@@ -186,7 +209,7 @@ function DashboardContent() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [router, searchParams, profile.userId, profile.email]);
 
   type TabType = 'overview' | 'quizzes' | 'badges' | 'bookmarks';
   const [activeTab, setActiveTab] = useState<TabType>(() => {

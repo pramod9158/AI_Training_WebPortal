@@ -1300,6 +1300,87 @@ export async function sendNudgeNotification(
   return newNudge;
 }
 
+// =========================================================================
+// Realtime Sync Manager (Singleton per active user session)
+// =========================================================================
+let globalRealtimeChannel: any = null;
+let activeRealtimeUserId: string | null = null;
+let realtimeChannelCounter = 0;
+
+export function ensureRealtimeSync(userId: string, email?: string) {
+  if (!isSupabaseConfigured || typeof window === 'undefined' || !userId) return;
+
+  // Already subscribed for this active user session
+  if (activeRealtimeUserId === userId && globalRealtimeChannel) {
+    return;
+  }
+
+  // If switched user or replacing channel, cleanly remove prior channel
+  if (globalRealtimeChannel) {
+    try {
+      supabase.removeChannel(globalRealtimeChannel);
+    } catch (err) {
+      console.warn('Error removing prior realtime channel:', err);
+    }
+    globalRealtimeChannel = null;
+    activeRealtimeUserId = null;
+  }
+
+  activeRealtimeUserId = userId;
+  realtimeChannelCounter += 1;
+  const channelName = `user_sync_${userId}_${Date.now()}_${realtimeChannelCounter}`;
+
+  try {
+    const channel = supabase
+      .channel(channelName)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'user_profiles', filter: `id=eq.${userId}` },
+        () => {
+          fetchAndSyncCloudUser({ id: userId, email });
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'user_progress', filter: `user_id=eq.${userId}` },
+        () => {
+          fetchAndSyncCloudUser({ id: userId, email });
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'user_bookmarks', filter: `user_id=eq.${userId}` },
+        () => {
+          fetchAndSyncCloudUser({ id: userId, email });
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'user_notifications', filter: `user_id=eq.${userId}` },
+        () => {
+          fetchAndSyncCloudUser({ id: userId, email });
+        }
+      );
+
+    channel.subscribe();
+    globalRealtimeChannel = channel;
+  } catch (err) {
+    console.error('Failed to setup realtime sync channel:', err);
+  }
+}
+
+export function cleanupRealtimeSync() {
+  if (globalRealtimeChannel) {
+    try {
+      supabase.removeChannel(globalRealtimeChannel);
+    } catch (err) {
+      console.warn('Error cleaning up realtime channel:', err);
+    }
+    globalRealtimeChannel = null;
+    activeRealtimeUserId = null;
+  }
+}
+
 export function useWaynauticStore() {
   const [profile, setProfileState] = useState<UserProfileState>(() => loadProfile());
   const [progress, setProgressState] = useState<Record<string, UserProgress>>(() => loadProgress());
@@ -1331,53 +1412,12 @@ export function useWaynauticStore() {
     window.addEventListener('storage', handleStorage);
 
     let authUnsubscribe: (() => void) | undefined;
-    let realtimeChannel: any = null;
-
-    const setupRealtimeSync = (userId: string, email?: string) => {
-      if (!isSupabaseConfigured || typeof window === 'undefined') return;
-      if (realtimeChannel) {
-        supabase.removeChannel(realtimeChannel);
-        realtimeChannel = null;
-      }
-
-      realtimeChannel = supabase
-        .channel(`user_realtime_sync_${userId}_${Date.now()}`)
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'user_profiles', filter: `id=eq.${userId}` },
-          () => {
-            fetchAndSyncCloudUser({ id: userId, email });
-          }
-        )
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'user_progress', filter: `user_id=eq.${userId}` },
-          () => {
-            fetchAndSyncCloudUser({ id: userId, email });
-          }
-        )
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'user_bookmarks', filter: `user_id=eq.${userId}` },
-          () => {
-            fetchAndSyncCloudUser({ id: userId, email });
-          }
-        )
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'user_notifications', filter: `user_id=eq.${userId}` },
-          () => {
-            fetchAndSyncCloudUser({ id: userId, email });
-          }
-        )
-        .subscribe();
-    };
 
     // Eager instant sync on hard refresh / mount:
     const cachedProfile = loadProfile();
     if (cachedProfile.userId && isSupabaseConfigured) {
       fetchAndSyncCloudUser({ id: cachedProfile.userId, email: cachedProfile.email });
-      setupRealtimeSync(cachedProfile.userId, cachedProfile.email);
+      ensureRealtimeSync(cachedProfile.userId, cachedProfile.email);
     }
 
     // Sync with Supabase on mount if logged in
@@ -1385,19 +1425,16 @@ export function useWaynauticStore() {
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.user) {
           fetchAndSyncCloudUser(session.user);
-          setupRealtimeSync(session.user.id, session.user.email);
+          ensureRealtimeSync(session.user.id, session.user.email);
         }
       });
 
       const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
         if (session?.user) {
           fetchAndSyncCloudUser(session.user);
-          setupRealtimeSync(session.user.id, session.user.email);
+          ensureRealtimeSync(session.user.id, session.user.email);
         } else if (event === 'SIGNED_OUT') {
-          if (realtimeChannel) {
-            supabase.removeChannel(realtimeChannel);
-            realtimeChannel = null;
-          }
+          cleanupRealtimeSync();
           clearAllUserData();
           reloadData();
         }
@@ -1421,10 +1458,6 @@ export function useWaynauticStore() {
     window.addEventListener('focus', handleVisibility);
 
     return () => {
-      if (realtimeChannel) {
-        supabase.removeChannel(realtimeChannel);
-        realtimeChannel = null;
-      }
       if (authUnsubscribe) authUnsubscribe();
       window.removeEventListener('waynautic_storage_change', handleStorage);
       window.removeEventListener('storage', handleStorage);

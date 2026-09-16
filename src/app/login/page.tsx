@@ -3,8 +3,8 @@
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Mail, Lock, ShieldCheck, Eye, EyeOff, CheckCircle2, ArrowLeft, RefreshCw } from 'lucide-react';
-import { signInWithEmail, sendPasswordResetEmail, resendVerificationEmail } from '@/lib/supabaseAuth';
+import { Mail, Lock, ShieldCheck, Eye, EyeOff, CheckCircle2, ArrowLeft, ArrowRight, RefreshCw, AlertCircle } from 'lucide-react';
+import { signInWithEmail, sendPasswordResetEmail, resendVerificationEmail, checkUserAccountExists } from '@/lib/supabaseAuth';
 import { fetchAndSyncCloudUser, useWaynauticStore } from '@/lib/store';
 import { clearAdminSession } from '@/lib/adminService';
 
@@ -65,6 +65,7 @@ function LoginForm() {
   const [resetLoading, setResetLoading] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
   const [resetError, setResetError] = useState('');
+  const [showUserNotFoundModal, setShowUserNotFoundModal] = useState(false);
 
   // If user lands on login with recovery parameters (from previous link or default Supabase redirect),
   // automatically forward them to /reset-password with all tokens preserved.
@@ -124,9 +125,26 @@ function LoginForm() {
     e.preventDefault();
     setResetLoading(true);
     setResetError('');
+    setShowUserNotFoundModal(false);
 
     try {
-      const { error } = await sendPasswordResetEmail(resetEmail || email);
+      const targetEmail = (resetEmail || email).trim().toLowerCase();
+      if (!targetEmail) {
+        setResetError('Please provide an email address.');
+        setResetLoading(false);
+        return;
+      }
+
+      // 1. Check in database if account is registered
+      const accountExists = await checkUserAccountExists(targetEmail);
+      if (accountExists === false) {
+        setResetLoading(false);
+        setShowUserNotFoundModal(true);
+        setResetError('User account does not exist.');
+        return;
+      }
+
+      const { error } = await sendPasswordResetEmail(targetEmail);
       if (error) {
         setResetError(error.message);
         setResetLoading(false);
@@ -144,6 +162,43 @@ function LoginForm() {
   if (showForgotPassword) {
     return (
       <div className="w-full max-w-md bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 animate-in fade-in duration-200">
+        {/* User Account Does Not Exist Pop-up Modal */}
+        {showUserNotFoundModal && (
+          <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-4 flex items-center justify-center animate-in fade-in duration-200">
+            <div className="relative w-full max-w-sm bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl text-center space-y-5 animate-in zoom-in-95 duration-200">
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-rose-100 dark:bg-rose-950/80 border-2 border-rose-300 dark:border-rose-500/40 flex items-center justify-center text-rose-600 dark:text-rose-400 shadow-md">
+                <AlertCircle className="w-7 h-7" />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
+                  User Account Does Not Exist
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                  We could not find any registered account for <span className="font-mono font-bold text-slate-900 dark:text-white">{resetEmail || email}</span>. Please verify your email or create a new student account.
+                </p>
+              </div>
+
+              <div className="space-y-2.5 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowUserNotFoundModal(false)}
+                  className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all"
+                >
+                  Try Another Email
+                </button>
+                <Link
+                  href="/signup"
+                  className="w-full py-2.5 rounded-xl border border-sky-300 dark:border-cyan-500/40 bg-sky-50 dark:bg-cyan-950/40 text-sky-700 dark:text-cyan-300 font-bold text-xs hover:bg-sky-100 dark:hover:bg-cyan-900/50 transition-all flex items-center justify-center space-x-1.5"
+                >
+                  <span>Create New Account</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="text-center space-y-1.5">
           <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Reset Password</h2>
           <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">

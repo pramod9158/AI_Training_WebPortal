@@ -47,15 +47,12 @@ function AuthCallbackContent() {
             return;
           }
 
-          if (isMounted) {
-            setStatus('error');
-            if (errorCode === 'otp_expired' || errorDesc?.toLowerCase().includes('expired')) {
-              setMessage('Your email confirmation link was already used or expired.');
-              setErrorDetails('Your email is likely already verified! Please sign in with your password to access your dashboard.');
-            } else {
-              setMessage('Authentication link error');
-              setErrorDetails(errorDesc || 'The authentication link is invalid or has expired.');
-            }
+          // If user is not logged in, redirect directly to https://ai-training-web-portal.vercel.app/ (/)
+          if (typeof window !== 'undefined') {
+            window.history.replaceState(null, '', '/');
+            window.location.replace('/');
+          } else {
+            router.replace('/');
           }
           return;
         }

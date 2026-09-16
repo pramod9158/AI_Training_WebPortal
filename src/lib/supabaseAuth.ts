@@ -121,6 +121,50 @@ export async function getCurrentAuthUser() {
   return session?.user || null;
 }
 
+export async function checkUserAccountExists(email: string): Promise<boolean | null> {
+  if (!isSupabaseConfigured) return true;
+  const cleanEmail = email.trim().toLowerCase();
+  if (!cleanEmail) return false;
+
+  // 1. Try Supabase RPC check_user_exists
+  try {
+    const { data, error } = await supabase.rpc('check_user_exists', { lookup_email: cleanEmail });
+    if (!error && typeof data === 'boolean') {
+      return data;
+    }
+  } catch (err) {
+    console.warn('check_user_exists RPC error:', err);
+  }
+
+  // 2. Fallback: check user_profiles table (if email column is populated)
+  try {
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('id')
+      .ilike('email', cleanEmail)
+      .limit(1);
+    if (!error && data && data.length > 0) {
+      return true;
+    }
+  } catch {
+    // email column might not exist yet
+  }
+
+  // 3. Fallback: check payments table
+  try {
+    const { data, error } = await supabase
+      .from('payments')
+      .select('id')
+      .ilike('user_email', cleanEmail)
+      .limit(1);
+    if (!error && data && data.length > 0) {
+      return true;
+    }
+  } catch {}
+
+  return null;
+}
+
 export async function sendPasswordResetEmail(email: string) {
   if (!isSupabaseConfigured) {
     return { data: {}, error: null };
