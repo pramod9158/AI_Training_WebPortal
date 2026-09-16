@@ -12,7 +12,6 @@ import {
   CheckCircle2, 
   Flame, 
   Compass, 
-  ShieldCheck,
   Terminal,
   Brain,
   Code2,
@@ -25,33 +24,6 @@ import { TOPICS } from '@/data/seedTopics';
 import { getAllTopics, getResumeTopic, getResumeLearningUrl } from '@/lib/curriculumService';
 import { useWaynauticStore } from '@/lib/store';
 import { OnboardingTour } from '@/components/OnboardingTour';
-
-const FEATURE_CHIPS = [
-  {
-    icon: Play,
-    label: 'Video & Interactive Notes',
-    detail: 'HD Lessons & Notes',
-    badgeClass: 'bg-sky-50 dark:bg-cyan-500/10 text-sky-800 dark:text-cyan-300 border-sky-200 dark:border-cyan-500/30 hover:border-sky-400 dark:hover:border-cyan-400 shadow-sm',
-    iconClass: 'text-sky-600 dark:text-cyan-400 fill-sky-600 dark:fill-cyan-400',
-    href: '/curriculum',
-  },
-  {
-    icon: Sparkles,
-    label: 'Instant Quiz Feedback',
-    detail: 'Real-Time Scoring & Explanations',
-    badgeClass: 'bg-violet-50 dark:bg-violet-500/10 text-violet-800 dark:text-violet-300 border-violet-200 dark:border-violet-500/30 hover:border-violet-400 dark:hover:border-violet-400 shadow-sm',
-    iconClass: 'text-violet-600 dark:text-violet-400',
-    href: '/curriculum',
-  },
-  {
-    icon: ShieldCheck,
-    label: 'Verifiable Certificates',
-    detail: 'Official PDF Credentials',
-    badgeClass: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30 hover:border-emerald-400 dark:hover:border-emerald-400 shadow-sm',
-    iconClass: 'text-emerald-600 dark:text-emerald-400',
-    href: '/dashboard',
-  },
-];
 
 export default function HomePage() {
   const router = useRouter();
@@ -87,54 +59,7 @@ export default function HomePage() {
       {/* Onboarding Tour Overlay */}
       <OnboardingTour isOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
 
-      {/* Right-to-Left Passing Chips Ticker — Logged-in users, placed immediately below header */}
-      {isLoggedIn && (
-        <div className="relative w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/90 dark:bg-[#0c1222]/90 backdrop-blur-md overflow-hidden py-2.5 z-20">
-          {/* Edge gradient masks for seamless enter/exit */}
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-r from-white dark:from-[#0B0F19] to-transparent z-10" />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-l from-white dark:from-[#0B0F19] to-transparent z-10" />
 
-          <div className="animate-marquee-left flex items-center">
-            {/* Track 1 */}
-            <div className="flex items-center gap-3 sm:gap-4 pr-3 sm:pr-4 shrink-0">
-              {FEATURE_CHIPS.concat(FEATURE_CHIPS, FEATURE_CHIPS).map((chip, idx) => {
-                const Icon = chip.icon;
-                return (
-                  <Link
-                    key={`chip-a-${idx}`}
-                    href={chip.href}
-                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-semibold whitespace-nowrap backdrop-blur-md transition-transform hover:scale-[1.02] active:scale-95 ${chip.badgeClass}`}
-                  >
-                    <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${chip.iconClass}`} />
-                    <span>{chip.label}</span>
-                    <span className="opacity-30">·</span>
-                    <span className="text-[11px] sm:text-xs font-normal opacity-85">{chip.detail}</span>
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Track 2 (Identical for seamless infinite right-to-left loop) */}
-            <div className="flex items-center gap-3 sm:gap-4 pr-3 sm:pr-4 shrink-0" aria-hidden="true">
-              {FEATURE_CHIPS.concat(FEATURE_CHIPS, FEATURE_CHIPS).map((chip, idx) => {
-                const Icon = chip.icon;
-                return (
-                  <Link
-                    key={`chip-b-${idx}`}
-                    href={chip.href}
-                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-semibold whitespace-nowrap backdrop-blur-md transition-transform hover:scale-[1.02] active:scale-95 ${chip.badgeClass}`}
-                  >
-                    <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${chip.iconClass}`} />
-                    <span>{chip.label}</span>
-                    <span className="opacity-30">·</span>
-                    <span className="text-[11px] sm:text-xs font-normal opacity-85">{chip.detail}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Hero Section */}
       <section className="relative pt-12 pb-20 sm:pt-20 sm:pb-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
