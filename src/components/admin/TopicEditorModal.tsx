@@ -204,12 +204,33 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
         const text = event.target?.result as string;
         if (text) {
           const isMd = file.name.endsWith('.md') || file.name.endsWith('.markdown') || !text.trim().startsWith('<');
-          const processedText = isMd ? convertMarkdownToVisualNotes(text, title) : text;
+          
+          // Determine best topic title from file or heading if empty
+          let activeTitle = title.trim();
+          if (!activeTitle) {
+            const firstHeading = text.match(/^#\s+(.+)$/m);
+            if (firstHeading) {
+              activeTitle = firstHeading[1].replace(/^[🧠📖⚡🛠️🎯🚀🔬💡🛡️\s]+/, '').trim();
+            } else {
+              activeTitle = file.name
+                .replace(/\.[^/.]+$/, '')
+                .replace(/[-_]/g, ' ')
+                .replace(/\b\w/g, (c) => c.toUpperCase());
+            }
+            setTitle(activeTitle);
+            if (!slug) {
+              setSlug(activeTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
+            }
+          }
+
+          const processedText = isMd ? convertMarkdownToVisualNotes(text, activeTitle) : text;
           setTextContent(processedText);
           setNotesFileName(`${file.name} (${Math.round(file.size / 1024)} KB)`);
+          // Automatically switch to Live Preview so admin sees the visual notes immediately
+          setNotesPreviewMode('preview');
           setSuccessMessage(
             isMd
-              ? `Notes file "${file.name}" uploaded and converted to Masterclass visual notes!`
+              ? `Notes file "${file.name}" converted into Masterclass visual notes with Mind Map!`
               : `Notes file "${file.name}" uploaded and loaded into editor.`
           );
           setTimeout(() => setSuccessMessage(''), 3500);
@@ -273,6 +294,13 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
 
     setIsSubmitting(true);
     try {
+      // Auto-format markdown notes into full Masterclass visual format
+      let finalNotes = textContent.trim();
+      const isMd = !finalNotes.startsWith('<!DOCTYPE') && !finalNotes.startsWith('<html') && !finalNotes.startsWith('<div');
+      if (isMd && finalNotes.length > 0) {
+        finalNotes = convertMarkdownToVisualNotes(finalNotes, title);
+      }
+
       const saved = await saveTopic({
         id: topic?.id,
         moduleSlug,
@@ -282,7 +310,7 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
         videoUrl,
         videoProvider: 'youtube',
         estimatedMinutes: Number(estimatedMinutes) || 15,
-        textContent
+        textContent: finalNotes
       });
 
       // If quiz questions were uploaded or modified, associate and save with this topic
