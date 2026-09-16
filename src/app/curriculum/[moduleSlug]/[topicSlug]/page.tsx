@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { MODULES } from '@/data/seedModules';
-import { getTopicBySlugs } from '@/lib/curriculumService';
+import { getTopicBySlugs, getTopicBySlugsAsync } from '@/lib/curriculumService';
 import { TopicWorkspaceClient } from '@/components/TopicWorkspaceClient';
 
 interface PageProps {
@@ -24,7 +24,7 @@ function extractYouTubeId(url: string): string | null {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const moduleData = MODULES.find((m) => m.slug === resolvedParams.moduleSlug);
-  const topic = getTopicBySlugs(resolvedParams.moduleSlug, resolvedParams.topicSlug);
+  const topic = await getTopicBySlugsAsync(resolvedParams.moduleSlug, resolvedParams.topicSlug);
 
   if (!moduleData || !topic) {
     return {
@@ -115,7 +115,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function TopicWorkspacePage({ params }: PageProps) {
   const resolvedParams = await params;
   const moduleData = MODULES.find((m) => m.slug === resolvedParams.moduleSlug);
-  const topic = getTopicBySlugs(resolvedParams.moduleSlug, resolvedParams.topicSlug);
+  const topic = await getTopicBySlugsAsync(resolvedParams.moduleSlug, resolvedParams.topicSlug);
 
   const videoId = topic ? extractYouTubeId(topic.videoUrl) : null;
   const thumbnailUrl = videoId 

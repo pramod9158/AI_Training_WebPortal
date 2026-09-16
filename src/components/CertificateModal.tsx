@@ -119,105 +119,110 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         )}
 
         {/* Certificate Display Frame with Blur Wrapper when Locked */}
-        <div className="overflow-x-auto p-1 relative rounded-2xl">
-          <div className="relative w-fit mx-auto">
+        {!isUnlocked ? (
+          <div className="w-full rounded-2xl bg-gradient-to-b from-slate-50 via-amber-500/5 to-slate-100 dark:from-slate-900/80 dark:via-amber-500/5 dark:to-slate-950/80 border-2 border-amber-500/30 dark:border-amber-500/40 p-4 sm:p-8 relative overflow-hidden flex items-center justify-center shadow-lg">
             
-            {/* The Certificate Canvas */}
-            <div
-              ref={certRef}
-              className={`w-[720px] sm:w-[800px] h-[500px] sm:h-[520px] mx-auto bg-gradient-to-b from-white via-slate-50 to-white dark:from-[#0B0F19] dark:via-[#070A12] dark:to-[#0D121F] border-4 border-amber-500/30 dark:border-amber-400/30 rounded-2xl p-8 sm:p-10 relative flex flex-col justify-between shadow-2xl text-center select-none transition-all ${
-                !isUnlocked ? 'filter blur-[5px] opacity-60 pointer-events-none' : ''
-              }`}
-            >
-              {/* Ambient Background Accents */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 dark:bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 dark:bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
+            {/* Ambient Background Accents */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/10 dark:bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/10 dark:bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
 
-              {/* Certificate Header */}
-              <div className="space-y-2 relative z-10">
-                <div className="flex items-center justify-center space-x-2">
-                  <Sparkles className="w-6 h-6 text-amber-500 dark:text-amber-400" />
-                  <span className="text-lg font-extrabold text-slate-900 dark:text-white tracking-wider">WAYNAUTIC ACADEMY</span>
-                </div>
-                <p className="text-xs font-mono uppercase tracking-widest text-slate-600 dark:text-slate-400 font-bold">Verified Developer Certification</p>
+            {/* Responsive Lock Overlay Card */}
+            <div className="relative w-full max-w-md mx-auto p-5 sm:p-7 rounded-2xl bg-white/95 dark:bg-[#0D121F]/95 backdrop-blur-md border border-amber-300 dark:border-amber-500/50 shadow-xl space-y-4 text-center">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 mx-auto rounded-2xl bg-amber-100 dark:bg-amber-950/80 border-2 border-amber-300 dark:border-amber-600/60 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-md">
+                <Lock className="w-6 h-6 sm:w-7 sm:h-7" />
               </div>
-
-              {/* Recipient Info */}
-              <div className="space-y-3 my-auto relative z-10">
-                <p className="text-xs uppercase text-slate-500 dark:text-slate-400 tracking-wider font-semibold">This credential certifies that</p>
-                <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                  {userName || 'Developer Extraordinaire'}
-                </h1>
-                <p className="text-xs text-slate-600 dark:text-slate-300 max-w-md mx-auto font-medium leading-relaxed">
-                  has successfully completed all requirements, practical exercises, and quizzes for the learning path:
+              
+              <div className="space-y-1">
+                <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">Certificate Locked</h3>
+                <p className="text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                  Complete all {totalCount} topics in <strong className="text-slate-900 dark:text-white">{pathTitle}</strong> to unlock and generate your official certificate.
                 </p>
-                <div className="inline-block px-6 py-2 rounded-xl bg-sky-50 dark:bg-cyan-950/60 border-2 border-sky-300 dark:border-cyan-500/40 text-sky-800 dark:text-cyan-300 font-extrabold text-base sm:text-lg shadow-sm">
-                  {pathTitle}
+              </div>
+
+              {/* Progress Meter Bar */}
+              <div className="space-y-1.5 pt-1">
+                <div className="flex items-center justify-between text-[11px] sm:text-xs font-mono font-bold text-slate-600 dark:text-slate-400">
+                  <span>Progress</span>
+                  <span className="text-amber-600 dark:text-amber-400">{completedCount} / {totalCount} Topics ({percent}%)</span>
+                </div>
+                <div className="w-full bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-300"
+                    style={{ width: `${percent}%` }}
+                  />
                 </div>
               </div>
 
-              {/* Footer Signatures & Date */}
-              <div className="pt-6 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between relative z-10 text-left">
-                <div>
-                  <div className="text-[10px] uppercase font-mono text-slate-400 dark:text-slate-500 font-bold">Date Issued</div>
-                  <div className="text-xs font-bold text-slate-700 dark:text-slate-300">{completionDate}</div>
-                </div>
-
-                <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 text-xs font-mono font-bold">
-                  <ShieldCheck className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
-                  <span>Verification ID: WAC-{verificationId}</span>
-                </div>
-
-                <div className="text-right">
-                  <div className="text-[10px] uppercase font-mono text-slate-400 dark:text-slate-500 font-bold">Issued By</div>
-                  <div className="text-xs font-bold text-sky-600 dark:text-cyan-400">Waynautic Academic Board</div>
-                </div>
-              </div>
-
+              <button
+                onClick={onClose}
+                className="w-full py-2.5 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs transition-all flex items-center justify-center space-x-2 shadow-sm"
+              >
+                <span>Continue Learning ({remainingTopics} Left)</span>
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-current" />
+              </button>
             </div>
 
-            {/* Lock Overlay Card When Incomplete */}
-            {!isUnlocked && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-20">
-                <div className="p-6 sm:p-8 rounded-3xl bg-white/90 dark:bg-[#0D121F]/90 backdrop-blur-md border-2 border-amber-400 dark:border-amber-500/60 shadow-2xl max-w-md space-y-4">
-                  <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-100 dark:bg-amber-950 border-2 border-amber-300 dark:border-amber-600 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-md">
-                    <Lock className="w-7 h-7" />
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">Certificate Locked</h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
-                      Complete all {totalCount} topics in <strong className="text-slate-900 dark:text-white">{pathTitle}</strong> to unlock and generate your official certificate.
-                    </p>
-                  </div>
-
-                  {/* Progress Meter Bar */}
-                  <div className="space-y-1.5 pt-1">
-                    <div className="flex items-center justify-between text-xs font-mono font-bold text-slate-600 dark:text-slate-400">
-                      <span>Progress</span>
-                      <span className="text-amber-600 dark:text-amber-400">{completedCount} / {totalCount} Topics ({percent}%)</span>
-                    </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                      <div 
-                        className="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-300"
-                        style={{ width: `${percent}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={onClose}
-                    className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs transition-all flex items-center justify-center space-x-2 shadow-sm"
-                  >
-                    <span>Continue Learning ({remainingTopics} Left)</span>
-                    <ArrowRight className="w-4 h-4 text-current" />
-                  </button>
-                </div>
-              </div>
-            )}
+            {/* Hidden certRef canvas when locked so ref never breaks if probed */}
+            <div ref={certRef} className="hidden" aria-hidden="true" />
 
           </div>
-        </div>
+        ) : (
+          <div className="overflow-x-auto p-1 relative rounded-2xl">
+            <div className="relative w-fit mx-auto">
+              {/* The Certificate Canvas */}
+              <div
+                ref={certRef}
+                className="w-[720px] sm:w-[800px] h-[500px] sm:h-[520px] mx-auto bg-gradient-to-b from-white via-slate-50 to-white dark:from-[#0B0F19] dark:via-[#070A12] dark:to-[#0D121F] border-4 border-amber-500/30 dark:border-amber-400/30 rounded-2xl p-8 sm:p-10 relative flex flex-col justify-between shadow-2xl text-center select-none"
+              >
+                {/* Ambient Background Accents */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 dark:bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 dark:bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
+
+                {/* Certificate Header */}
+                <div className="space-y-2 relative z-10">
+                  <div className="flex items-center justify-center space-x-2">
+                    <Sparkles className="w-6 h-6 text-amber-500 dark:text-amber-400" />
+                    <span className="text-lg font-extrabold text-slate-900 dark:text-white tracking-wider">WAYNAUTIC ACADEMY</span>
+                  </div>
+                  <p className="text-xs font-mono uppercase tracking-widest text-slate-600 dark:text-slate-400 font-bold">Verified Developer Certification</p>
+                </div>
+
+                {/* Recipient Info */}
+                <div className="space-y-3 my-auto relative z-10">
+                  <p className="text-xs uppercase text-slate-500 dark:text-slate-400 tracking-wider font-semibold">This credential certifies that</p>
+                  <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                    {userName || 'Developer Extraordinaire'}
+                  </h1>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 max-w-md mx-auto font-medium leading-relaxed">
+                    has successfully completed all requirements, practical exercises, and quizzes for the learning path:
+                  </p>
+                  <div className="inline-block px-6 py-2 rounded-xl bg-sky-50 dark:bg-cyan-950/60 border-2 border-sky-300 dark:border-cyan-500/40 text-sky-800 dark:text-cyan-300 font-extrabold text-base sm:text-lg shadow-sm">
+                    {pathTitle}
+                  </div>
+                </div>
+
+                {/* Footer Signatures & Date */}
+                <div className="pt-6 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between relative z-10 text-left">
+                  <div>
+                    <div className="text-[10px] uppercase font-mono text-slate-400 dark:text-slate-500 font-bold">Date Issued</div>
+                    <div className="text-xs font-bold text-slate-700 dark:text-slate-300">{completionDate}</div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 text-xs font-mono font-bold">
+                    <ShieldCheck className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+                    <span>Verification ID: WAC-{verificationId}</span>
+                  </div>
+
+                  <div className="text-right">
+                    <div className="text-[10px] uppercase font-mono text-slate-400 dark:text-slate-500 font-bold">Issued By</div>
+                    <div className="text-xs font-bold text-sky-600 dark:text-cyan-400">Waynautic Academic Board</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Action Controls */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">

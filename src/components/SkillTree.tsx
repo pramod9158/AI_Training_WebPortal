@@ -101,7 +101,7 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
                     {index + 1}
                   </div>
                   <span className="text-[11px] font-mono tracking-wider uppercase text-slate-500 dark:text-slate-400 font-semibold">
-                    Step 0{index + 1}
+                    Module {String(index + 1).padStart(2, '0')}
                   </span>
                 </div>
                 <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${
@@ -131,29 +131,26 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
 
                 <div>
                   {/* Module Icon Badge */}
-                  <div className={`w-12 h-12 rounded-xl p-[2px] flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${
+                  <div className={`w-12 h-12 shrink-0 rounded-xl p-[2px] flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${
                     isCompleted
                       ? 'bg-gradient-to-tr from-emerald-400 to-teal-600 shadow-lg shadow-emerald-500/20'
                       : 'bg-gradient-to-tr from-cyan-500 via-blue-600 to-violet-600 shadow-lg shadow-cyan-500/20'
                   }`}>
                     <div className="w-full h-full bg-slate-50 dark:bg-[#0B0F19] rounded-[10px] flex items-center justify-center">
-                      <Icon className={`w-6 h-6 ${isCompleted ? 'text-emerald-500 dark:text-emerald-400' : 'text-sky-600 dark:text-cyan-400'}`} />
+                      <Icon className={`w-6 h-6 shrink-0 ${isCompleted ? 'text-emerald-500 dark:text-emerald-400' : 'text-sky-600 dark:text-cyan-400'}`} />
                     </div>
                   </div>
 
                   {/* Card Title & Description */}
                   <div className="mt-4 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-mono text-sky-600 dark:text-cyan-400 uppercase tracking-widest font-semibold">
-                        Module {index + 1}
-                      </span>
-                      {isCompleted && (
+                    {isCompleted && (
+                      <div className="flex justify-end">
                         <span className="inline-flex items-center space-x-1 text-[10px] text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-500/30">
                           <CheckCircle2 className="w-3 h-3" />
                           <span>Done</span>
                         </span>
-                      )}
-                    </div>
+                      </div>
+                    )}
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-cyan-300 transition-colors line-clamp-1">
                       {mod.title}
                     </h3>

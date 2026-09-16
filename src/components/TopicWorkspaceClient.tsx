@@ -78,10 +78,15 @@ export function TopicWorkspaceClient() {
   const [topicsVersion, setTopicsVersion] = useState(0);
   const [showAutoCompletedToast, setShowAutoCompletedToast] = useState(false);
 
+  const [initialLoading, setInitialLoading] = useState(true);
+
   // Background fetch latest curriculum and quiz from cloud API/Supabase
   useEffect(() => {
     fetchCurriculumUpdates().then(() => {
       setTopicsVersion((v) => v + 1);
+      setInitialLoading(false);
+    }).catch(() => {
+      setInitialLoading(false);
     });
   }, []);
 
@@ -125,7 +130,19 @@ export function TopicWorkspaceClient() {
     }
   }, [topicId, currentTab, isLoggedIn, saveLastAccessedTopic]);
 
-  if (!moduleData || !topic) {
+  if (!moduleData) {
+    notFound();
+  }
+
+  if (!topic) {
+    if (initialLoading) {
+      return (
+        <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-4">
+          <div className="w-10 h-10 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
+          <p className="text-sm font-mono text-slate-400">Loading topic workspace...</p>
+        </div>
+      );
+    }
     notFound();
   }
 
@@ -340,7 +357,7 @@ export function TopicWorkspaceClient() {
       {/* Topic Title Header */}
       <div className="space-y-2">
         <div className="flex items-center flex-wrap gap-2 text-xs font-mono font-bold text-slate-600 dark:text-slate-400">
-          <span>Module 0{moduleData.orderIndex}</span>
+          <span>Module {String(moduleData.orderIndex).padStart(2, '0')}</span>
           <span>•</span>
           <span>Topic {topicIndexStr}</span>
           <span>•</span>

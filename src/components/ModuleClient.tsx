@@ -82,15 +82,17 @@ export function ModuleClient() {
       <div className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl relative overflow-hidden space-y-6">
         
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-violet-600 p-[2px] shadow-lg shadow-cyan-500/20">
+          <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-2xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-violet-600 p-[2px] shadow-lg shadow-cyan-500/20">
               <div className="w-full h-full bg-[#0B0F19] rounded-[14px] flex items-center justify-center">
-                <Icon className="w-8 h-8 text-cyan-400" />
+                <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400 shrink-0" />
               </div>
             </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest">Module 0{moduleData.orderIndex}</span>
+            <div className="min-w-0">
+              <div className="flex items-center space-x-2 flex-wrap">
+                <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest">
+                  Module {String(moduleData.orderIndex).padStart(2, '0')}
+                </span>
                 <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${
                   moduleData.difficulty === 'Beginner' ? 'badge-diff-beginner' :
                   moduleData.difficulty === 'Intermediate' ? 'badge-diff-intermediate' :
@@ -99,7 +101,7 @@ export function ModuleClient() {
                   {moduleData.difficulty}
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-4xl font-extrabold text-white mt-1">
+              <h1 className="text-2xl sm:text-4xl font-extrabold text-white mt-1 break-words">
                 {moduleData.title}
               </h1>
             </div>
@@ -172,24 +174,27 @@ export function ModuleClient() {
               <Link
                 key={topic.id}
                 href={`/curriculum/${moduleSlug}/${topic.slug}`}
-                className={`group flex items-center justify-between p-5 rounded-2xl border transition-all duration-200 focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
+                className={`group flex items-center justify-between p-4 sm:p-5 rounded-2xl border transition-all duration-200 focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none ${
                   isCompleted
                     ? 'bg-slate-900/40 border-emerald-500/30 hover:border-emerald-400/60'
                     : 'bg-slate-900/80 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900'
                 }`}
               >
-                <div className="flex items-center space-x-4">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-mono font-bold text-xs ${
-                    isCompleted
-                      ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                      : 'bg-slate-800 text-slate-400 border border-slate-700'
-                  }`}>
-                    {isCompleted ? <CheckCircle2 className="w-5 h-5 text-emerald-400" /> : index + 1}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-white group-hover:text-cyan-300 text-base transition-colors">
-                      {topic.title}
-                    </h3>
+                <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
+                  <span className={`font-mono font-bold text-sm sm:text-base shrink-0 w-6 text-left ${
+                    isCompleted ? 'text-emerald-400' : 'text-slate-400 group-hover:text-cyan-400'
+                  } transition-colors`}>
+                    {index + 1}.
+                  </span>
+                  <div className="min-w-0">
+                    <div className="flex items-center space-x-2">
+                      <h3 className="font-bold text-white group-hover:text-cyan-300 text-sm sm:text-base transition-colors truncate sm:whitespace-normal">
+                        {topic.title}
+                      </h3>
+                      {isCompleted && (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      )}
+                    </div>
                     <p className="text-xs text-slate-400 line-clamp-1 mt-0.5">
                       {topic.description}
                     </p>

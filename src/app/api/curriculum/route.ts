@@ -19,7 +19,8 @@ function getServerSupabase() {
 // Filesystem fallback (only used when Supabase is NOT configured)
 import fs from 'fs';
 import path from 'path';
-import { Topic } from '@/data/seedModules';
+import { Topic, MODULES } from '@/data/seedModules';
+import { TOPICS } from '@/data/seedTopics';
 
 const STORAGE_FILE = path.join(process.cwd(), 'src', 'data', 'custom_curriculum.json');
 
@@ -62,23 +63,29 @@ export async function GET() {
       const sb = getServerSupabase();
       const { data: rows, error } = await sb.from('topics').select('*');
       if (!error && rows) {
-        const customTopics: Topic[] = rows.map((row: any) => ({
-          id: row.id,
-          moduleId: row.module_id || '',
-          moduleSlug: row.module_slug || 'llms',
-          slug: row.slug,
-          title: row.title,
-          description: row.description || '',
-          videoUrl: row.video_url || 'https://www.youtube.com/embed/zxQyTK8ckyY',
-          videoProvider: row.video_provider || 'youtube',
-          orderIndex: row.order_index || 1,
-          estimatedMinutes: row.estimated_minutes || 15,
-          textContent: row.text_content || '',
-          chapters: Array.isArray(row.chapters) ? row.chapters : undefined
-        }));
+        const customTopics: Topic[] = rows
+          .filter((row: any) => row.title !== '__DELETED__' && row.description !== '__DELETED__')
+          .map((row: any) => ({
+            id: row.id,
+            moduleId: row.module_id || '11111111-1111-4111-a111-111111111111',
+            moduleSlug: row.module_slug || 'llms',
+            slug: row.slug,
+            title: row.title,
+            description: row.description || '',
+            videoUrl: row.video_url || 'https://www.youtube.com/embed/zxQyTK8ckyY',
+            videoProvider: row.video_provider || 'youtube',
+            orderIndex: row.order_index || 1,
+            estimatedMinutes: row.estimated_minutes || 15,
+            textContent: row.text_content || '',
+            chapters: Array.isArray(row.chapters) ? row.chapters : undefined
+          }));
+        const deletedTopicIds: string[] = rows
+          .filter((row: any) => row.title === '__DELETED__' || row.description === '__DELETED__')
+          .map((row: any) => row.id);
+
         return NextResponse.json({
           customTopics,
-          deletedTopicIds: [],
+          deletedTopicIds,
           updatedAt: new Date().toISOString()
         });
       }
@@ -106,18 +113,23 @@ export async function POST(req: NextRequest) {
     if (isSupabaseReady) {
       try {
         const sb = getServerSupabase();
+        const targetModule = MODULES.find((m) => m.slug === topic.moduleSlug) || MODULES[0];
+        const moduleId = topic.moduleId || targetModule.id;
+
         const { error } = await sb.from('topics').upsert({
           id: topic.id,
-          module_slug: topic.moduleSlug,
+          module_id: moduleId,
+          module_slug: topic.moduleSlug || targetModule.slug,
           slug: topic.slug,
           title: topic.title,
-          description: topic.description,
-          video_url: topic.videoUrl,
-          video_provider: topic.videoProvider,
-          order_index: topic.orderIndex,
-          estimated_minutes: topic.estimatedMinutes,
-          text_content: topic.textContent,
-          chapters: topic.chapters || null
+          description: topic.description || '',
+          video_url: topic.videoUrl || 'https://www.youtube.com/embed/zxQyTK8ckyY',
+          video_provider: topic.videoProvider || 'youtube',
+          order_index: topic.orderIndex || 1,
+          estimated_minutes: topic.estimatedMinutes || 15,
+          text_content: topic.textContent || '',
+          chapters: topic.chapters || [],
+          updated_at: new Date().toISOString()
         });
         if (error) {
           console.error('[API Curriculum POST] Supabase upsert error:', error);
@@ -156,12 +168,32 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Missing topic id' }, { status: 400 });
     }
 
-    // Primary: delete from Supabase
+    // Primary: delete or mark tombstone in Supabase
     if (isSupabaseReady) {
       try {
         const sb = getServerSupabase();
-        await sb.from('quiz_questions').delete().eq('topic_id', id);
-        await sb.from('topics').delete().eq('id', id);
+        if (id.startsWith('t-custom-')) {
+          await sb.from('quiz_questions').delete().eq('topic_id', id);
+          await sb.from('topics').delete().eq('id', id);
+        } else {
+          const targetTopic = TOPICS.find((t) => t.id === id);
+          const targetModule = MODULES.find((m) => m.slug === targetTopic?.moduleSlug) || MODULES[0];
+          await sb.from('topics').upsert({
+            id: id,
+            module_id: targetModule.id,
+            module_slug: targetTopic?.moduleSlug || 'llms',
+            slug: `deleted-${id}`,
+            title: '__DELETED__',
+            description: '__DELETED__',
+            video_url: '',
+            video_provider: 'youtube',
+            order_index: 999,
+            estimated_minutes: 0,
+            text_content: '',
+            chapters: [],
+            updated_at: new Date().toISOString()
+          });
+        }
         return NextResponse.json({ success: true, deletedId: id, updatedAt: new Date().toISOString() });
       } catch (err) {
         console.error('[API Curriculum DELETE] Supabase error:', err);

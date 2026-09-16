@@ -40,6 +40,23 @@ if (typeof window !== 'undefined') {
   });
 }
 
+// Multi-device cloud realtime synchronization listener
+if (typeof window !== 'undefined' && isSupabaseConfigured) {
+  try {
+    supabase
+      .channel('waynautic_curriculum_cloud_realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'topics' }, () => {
+        fetchCurriculumUpdates();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'quiz_questions' }, () => {
+        fetchCurriculumUpdates();
+      })
+      .subscribe();
+  } catch (err) {
+    console.warn('[CurriculumService] Supabase Realtime setup warning:', err);
+  }
+}
+
 /**
  * Notifies all tabs and components on the client that curriculum data changed.
  */
@@ -154,58 +171,69 @@ export function getTopicBySlugs(moduleSlug: string, topicSlug: string): Topic | 
 }
 
 /**
- * Fetches latest curriculum updates from the server API & Supabase and merges into client cache.
+ * Asynchronously finds a topic by module and topic slugs, querying Supabase Cloud if not yet cached.
+ * Critical for direct SSR navigation, cross-device deep links, and dynamic topics.
+ */
+export async function getTopicBySlugsAsync(moduleSlug: string, topicSlug: string): Promise<Topic | undefined> {
+  const local = getTopicBySlugs(moduleSlug, topicSlug);
+  if (local) return local;
+
+  if (isSupabaseConfigured) {
+    try {
+      const { data: rows } = await supabase
+        .from('topics')
+        .select('*')
+        .or(`slug.eq.${topicSlug},id.eq.${topicSlug}`);
+      
+      if (rows && rows.length > 0) {
+        const row = rows[0];
+        if (row.title !== '__DELETED__' && row.description !== '__DELETED__') {
+          return {
+            id: row.id,
+            moduleId: row.module_id || '11111111-1111-4111-a111-111111111111',
+            moduleSlug: row.module_slug || moduleSlug,
+            slug: row.slug,
+            title: row.title,
+            description: row.description || '',
+            videoUrl: row.video_url || 'https://www.youtube.com/embed/zxQyTK8ckyY',
+            videoProvider: row.video_provider || 'youtube',
+            orderIndex: row.order_index || 1,
+            estimatedMinutes: row.estimated_minutes || 15,
+            textContent: row.text_content || '',
+            chapters: Array.isArray(row.chapters) ? row.chapters : undefined
+          };
+        }
+      }
+    } catch (err) {
+      console.warn('[CurriculumService] getTopicBySlugsAsync error:', err);
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Fetches latest curriculum updates from Supabase Cloud / server API and synchronizes client cache.
  */
 export async function fetchCurriculumUpdates(): Promise<Topic[]> {
   if (typeof window === 'undefined') return getAllTopics();
 
   let hasUpdates = false;
 
-  // 1. Fetch from server API — only merge, NEVER overwrite local with empty remote
-  //    Skip entirely when Supabase is configured (Supabase is the real source of truth)
-  if (!isSupabaseConfigured) {
-    try {
-      const res = await fetch('/api/curriculum', { cache: 'no-store' });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && Array.isArray(data.customTopics) && data.customTopics.length > 0) {
-          const localCustom: Topic[] = JSON.parse(localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]');
-          const localDeleted: string[] = JSON.parse(localStorage.getItem(DELETED_TOPICS_STORAGE_KEY) || '[]');
-
-          const remoteCustom: Topic[] = data.customTopics;
-          const remoteDeleted: string[] = Array.isArray(data.deletedTopicIds) ? data.deletedTopicIds : [];
-
-          // Merge: remote overrides local by ID, but local topics absent from remote are KEPT
-          const mergedMap = new Map<string, Topic>();
-          localCustom.forEach((t) => mergedMap.set(t.id, t));
-          remoteCustom.forEach((t) => mergedMap.set(t.id, t));
-          const mergedTopics = Array.from(mergedMap.values());
-
-          // Union of deleted IDs
-          const mergedDeleted = Array.from(new Set([...localDeleted, ...remoteDeleted]));
-
-          const topicsChanged = JSON.stringify(localCustom) !== JSON.stringify(mergedTopics);
-          const deletedChanged = JSON.stringify(localDeleted) !== JSON.stringify(mergedDeleted);
-
-          if (topicsChanged || deletedChanged) {
-            localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, JSON.stringify(mergedTopics));
-            localStorage.setItem(DELETED_TOPICS_STORAGE_KEY, JSON.stringify(mergedDeleted));
-            hasUpdates = true;
-          }
-        }
-        // If remote returns empty, do nothing — keep local data intact
-      }
-    } catch (apiErr) {
-      console.warn('[CurriculumService] Server API sync error:', apiErr);
-    }
-  }
-
-  // 2. If Supabase is configured, check Supabase topics & quizzes
+  // 1. Primary Cloud Source: Supabase
   if (isSupabaseConfigured) {
     try {
       const { data: supaTopics, error: topicErr } = await supabase.from('topics').select('*');
-      if (!topicErr && supaTopics && supaTopics.length > 0) {
-        const mappedTopics: Topic[] = supaTopics.map((row: any) => ({
+      if (!topicErr && supaTopics) {
+        const deletedFromDb: string[] = supaTopics
+          .filter((row: any) => row.title === '__DELETED__' || row.description === '__DELETED__')
+          .map((row: any) => row.id);
+
+        const activeSupaTopics = supaTopics.filter(
+          (row: any) => row.title !== '__DELETED__' && row.description !== '__DELETED__'
+        );
+
+        const mappedTopics: Topic[] = activeSupaTopics.map((row: any) => ({
           id: row.id,
           moduleId: row.module_id || '11111111-1111-4111-a111-111111111111',
           moduleSlug: row.module_slug || 'llms',
@@ -220,54 +248,111 @@ export async function fetchCurriculumUpdates(): Promise<Topic[]> {
           chapters: row.chapters && Array.isArray(row.chapters) ? row.chapters : undefined
         }));
 
-        const existingCustom: Topic[] = JSON.parse(localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]');
-        const mergedCustomMap = new Map<string, Topic>();
-        existingCustom.forEach((t) => mergedCustomMap.set(t.id, t));
-        mappedTopics.forEach((t) => mergedCustomMap.set(t.id, t));
+        // Check if there are local custom topics in this browser that failed to sync to Supabase in past attempts
+        const localCustom: Topic[] = JSON.parse(localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]');
+        const supaIds = new Set(supaTopics.map((r: any) => r.id));
+        const unsyncedLocal = localCustom.filter((t) => !supaIds.has(t.id) && !deletedFromDb.includes(t.id));
 
-        const updatedList = Array.from(mergedCustomMap.values());
-        if (JSON.stringify(existingCustom) !== JSON.stringify(updatedList)) {
-          localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, JSON.stringify(updatedList));
+        if (unsyncedLocal.length > 0) {
+          // Auto-migrate/sync unsynced local topics to Supabase with proper module_id
+          for (const unsynced of unsyncedLocal) {
+            const targetMod = MODULES.find((m) => m.slug === unsynced.moduleSlug) || MODULES[0];
+            const { error: upsertErr } = await supabase.from('topics').upsert({
+              id: unsynced.id,
+              module_id: unsynced.moduleId || targetMod.id,
+              module_slug: unsynced.moduleSlug || targetMod.slug,
+              slug: unsynced.slug,
+              title: unsynced.title,
+              description: unsynced.description || '',
+              video_url: unsynced.videoUrl || 'https://www.youtube.com/embed/zxQyTK8ckyY',
+              video_provider: unsynced.videoProvider || 'youtube',
+              order_index: unsynced.orderIndex || 1,
+              estimated_minutes: unsynced.estimatedMinutes || 15,
+              text_content: unsynced.textContent || '',
+              chapters: unsynced.chapters || [],
+              updated_at: new Date().toISOString()
+            });
+            if (!upsertErr) {
+              mappedTopics.push(unsynced);
+            }
+          }
+        }
+
+        // Update local deleted topics list
+        const localDeleted: string[] = JSON.parse(localStorage.getItem(DELETED_TOPICS_STORAGE_KEY) || '[]');
+        const mergedDeleted = Array.from(new Set([...localDeleted, ...deletedFromDb]));
+        localStorage.setItem(DELETED_TOPICS_STORAGE_KEY, JSON.stringify(mergedDeleted));
+
+        // Update local custom topics list from cloud
+        const prevJson = localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]';
+        const newJson = JSON.stringify(mappedTopics);
+        if (prevJson !== newJson) {
+          localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, newJson);
           hasUpdates = true;
         }
       }
 
-      // Sync all custom quiz questions from Supabase
+      // Sync all quiz questions from Supabase
       const { data: supaQuestions, error: quizErr } = await supabase.from('quiz_questions').select('*');
-      if (!quizErr && supaQuestions && supaQuestions.length > 0) {
-        const customQuizzes: Record<string, QuizQuestion[]> = JSON.parse(
-          localStorage.getItem(CUSTOM_QUIZZES_STORAGE_KEY) || '{}'
-        );
-        let quizUpdated = false;
+      if (!quizErr && supaQuestions) {
+        const customQuizzes: Record<string, QuizQuestion[]> = {};
         supaQuestions.forEach((q: any) => {
           const tId = q.topic_id;
           if (!customQuizzes[tId]) {
             customQuizzes[tId] = [];
           }
-          const existingIdx = customQuizzes[tId].findIndex((item) => item.id === q.id);
-          const mappedQ: QuizQuestion = {
+          customQuizzes[tId].push({
             id: q.id,
             topicId: q.topic_id,
             questionText: q.question_text,
             options: Array.isArray(q.options) ? q.options : [],
             correctOptionIndex: q.correct_option_index,
             explanation: q.explanation || ''
-          };
-          if (existingIdx !== -1) {
-            customQuizzes[tId][existingIdx] = mappedQ;
-          } else {
-            customQuizzes[tId].push(mappedQ);
-          }
-          quizUpdated = true;
+          });
         });
 
-        if (quizUpdated) {
-          localStorage.setItem(CUSTOM_QUIZZES_STORAGE_KEY, JSON.stringify(customQuizzes));
+        const prevQuizJson = localStorage.getItem(CUSTOM_QUIZZES_STORAGE_KEY) || '{}';
+        const newQuizJson = JSON.stringify(customQuizzes);
+        if (prevQuizJson !== newQuizJson) {
+          localStorage.setItem(CUSTOM_QUIZZES_STORAGE_KEY, newQuizJson);
           hasUpdates = true;
         }
       }
     } catch (supaErr) {
       console.warn('[CurriculumService] Supabase sync warning:', supaErr);
+    }
+  } else {
+    // Fallback: Fetch from server API when Supabase is not configured
+    try {
+      const res = await fetch('/api/curriculum', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.customTopics) && data.customTopics.length > 0) {
+          const localCustom: Topic[] = JSON.parse(localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]');
+          const localDeleted: string[] = JSON.parse(localStorage.getItem(DELETED_TOPICS_STORAGE_KEY) || '[]');
+
+          const remoteCustom: Topic[] = data.customTopics;
+          const remoteDeleted: string[] = Array.isArray(data.deletedTopicIds) ? data.deletedTopicIds : [];
+
+          const mergedMap = new Map<string, Topic>();
+          localCustom.forEach((t) => mergedMap.set(t.id, t));
+          remoteCustom.forEach((t) => mergedMap.set(t.id, t));
+          const mergedTopics = Array.from(mergedMap.values());
+
+          const mergedDeleted = Array.from(new Set([...localDeleted, ...remoteDeleted]));
+
+          const topicsChanged = JSON.stringify(localCustom) !== JSON.stringify(mergedTopics);
+          const deletedChanged = JSON.stringify(localDeleted) !== JSON.stringify(mergedDeleted);
+
+          if (topicsChanged || deletedChanged) {
+            localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, JSON.stringify(mergedTopics));
+            localStorage.setItem(DELETED_TOPICS_STORAGE_KEY, JSON.stringify(mergedDeleted));
+            hasUpdates = true;
+          }
+        }
+      }
+    } catch (apiErr) {
+      console.warn('[CurriculumService] Server API sync error:', apiErr);
     }
   }
 
@@ -343,22 +428,13 @@ export async function saveTopic(topicData: {
     }
   }
 
-  // 2. Asynchronously sync to Server API
-  try {
-    await fetch('/api/curriculum', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedTopic)
-    });
-  } catch (apiErr) {
-    console.warn('[CurriculumService] Server API save warning:', apiErr);
-  }
-
-  // 3. Asynchronously sync to Supabase if configured
+  // 2. Sync to Supabase Cloud if configured (Guaranteed persistence across all devices)
   if (isSupabaseConfigured) {
     try {
       const payload: Record<string, any> = {
         id: updatedTopic.id,
+        module_id: updatedTopic.moduleId || targetModule.id,
+        module_slug: updatedTopic.moduleSlug || targetModule.slug,
         slug: updatedTopic.slug,
         title: updatedTopic.title,
         description: updatedTopic.description,
@@ -366,15 +442,10 @@ export async function saveTopic(topicData: {
         video_provider: updatedTopic.videoProvider,
         order_index: updatedTopic.orderIndex,
         estimated_minutes: updatedTopic.estimatedMinutes,
-        text_content: updatedTopic.textContent
+        text_content: updatedTopic.textContent,
+        chapters: updatedTopic.chapters || [],
+        updated_at: new Date().toISOString()
       };
-
-      if (updatedTopic.moduleSlug) {
-        payload.module_slug = updatedTopic.moduleSlug;
-      }
-      if (updatedTopic.chapters) {
-        payload.chapters = updatedTopic.chapters;
-      }
 
       const { error: supaErr } = await supabase.from('topics').upsert(payload);
       if (supaErr) {
@@ -385,6 +456,18 @@ export async function saveTopic(topicData: {
     }
   }
 
+  // 3. Asynchronously sync to Server API (filesystem backup)
+  try {
+    await fetch('/api/curriculum', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedTopic)
+    });
+  } catch (apiErr) {
+    console.warn('[CurriculumService] Server API save warning:', apiErr);
+  }
+
+  notifyCurriculumChange();
   return updatedTopic;
 }
 
@@ -411,21 +494,43 @@ export async function deleteTopic(topicId: string): Promise<boolean> {
     return false;
   }
 
+  // Sync delete to Supabase if configured
+  if (isSupabaseConfigured) {
+    try {
+      if (topicId.startsWith('t-custom-')) {
+        // Custom topic: delete row from topics and quiz_questions
+        await supabase.from('quiz_questions').delete().eq('topic_id', topicId);
+        await supabase.from('topics').delete().eq('id', topicId);
+      } else {
+        // Seed topic (e.g. t-1): store tombstone row in topics table so all devices know it's deleted
+        const targetTopic = TOPICS.find((t) => t.id === topicId);
+        const targetModule = MODULES.find((m) => m.slug === targetTopic?.moduleSlug) || MODULES[0];
+        await supabase.from('topics').upsert({
+          id: topicId,
+          module_id: targetModule.id,
+          module_slug: targetTopic?.moduleSlug || 'llms',
+          slug: `deleted-${topicId}`,
+          title: '__DELETED__',
+          description: '__DELETED__',
+          video_url: '',
+          video_provider: 'youtube',
+          order_index: 999,
+          estimated_minutes: 0,
+          text_content: '',
+          chapters: [],
+          updated_at: new Date().toISOString()
+        });
+      }
+    } catch (e) {
+      console.warn('[CurriculumService] Supabase delete warning:', e);
+    }
+  }
+
   // Sync delete to Server API
   try {
     await fetch(`/api/curriculum?id=${encodeURIComponent(topicId)}`, { method: 'DELETE' });
   } catch (err) {
     console.warn('[CurriculumService] Server API delete warning:', err);
-  }
-
-  // Sync delete to Supabase if configured
-  if (isSupabaseConfigured) {
-    try {
-      await supabase.from('topics').delete().eq('id', topicId);
-      await supabase.from('quiz_questions').delete().eq('topic_id', topicId);
-    } catch (e) {
-      console.warn('[CurriculumService] Supabase delete warning:', e);
-    }
   }
 
   return true;
@@ -532,7 +637,34 @@ export async function saveTopicQuiz(topicId: string, questions: QuizQuestion[]):
     console.error('Failed to save quiz in storage:', err);
   }
 
-  // 2. Sync to Server API
+  // 2. Sync to Supabase Cloud in batch if configured
+  if (isSupabaseConfigured) {
+    try {
+      // First delete existing questions for this topic to remove any deleted questions
+      await supabase.from('quiz_questions').delete().eq('topic_id', topicId);
+
+      // Insert all questions in single batch
+      if (questions.length > 0) {
+        const rows = questions.map((q, idx) => ({
+          id: q.id || `q-${topicId}-${idx + 1}`,
+          topic_id: q.topicId || topicId,
+          question_text: q.questionText,
+          options: q.options,
+          correct_option_index: q.correctOptionIndex,
+          explanation: q.explanation || '',
+          updated_at: new Date().toISOString()
+        }));
+        const { error: quizErr } = await supabase.from('quiz_questions').upsert(rows);
+        if (quizErr) {
+          console.error('[CurriculumService] Supabase quiz batch upsert error:', quizErr);
+        }
+      }
+    } catch (e) {
+      console.warn('[CurriculumService] Supabase quiz upsert warning:', e);
+    }
+  }
+
+  // 3. Sync to Server API
   try {
     await fetch('/api/curriculum/quiz', {
       method: 'POST',
@@ -543,26 +675,7 @@ export async function saveTopicQuiz(topicId: string, questions: QuizQuestion[]):
     console.warn('[CurriculumService] Quiz server sync error:', err);
   }
 
-  // 3. Attempt Supabase sync if configured
-  if (isSupabaseConfigured) {
-    try {
-      for (const q of questions) {
-        const { error: quizErr } = await supabase.from('quiz_questions').upsert({
-          id: q.id,
-          topic_id: q.topicId || topicId,
-          question_text: q.questionText,
-          options: q.options,
-          correct_option_index: q.correctOptionIndex,
-          explanation: q.explanation
-        });
-        if (quizErr) {
-          console.error('[CurriculumService] Supabase quiz upsert error:', quizErr);
-        }
-      }
-    } catch (e) {
-      console.warn('[CurriculumService] Supabase quiz upsert warning:', e);
-    }
-  }
+  notifyCurriculumChange();
 }
 
 /**

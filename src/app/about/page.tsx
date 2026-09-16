@@ -3,22 +3,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { 
-  Sparkles, 
-  Target, 
-  Zap, 
-  Users, 
-  Award, 
-  BookOpen, 
-  ShieldCheck, 
-  Cpu, 
-  ArrowRight, 
-  CheckCircle2, 
-  Code2, 
-  GraduationCap, 
   Compass,
-  Lightbulb,
-  HeartHandshake,
-  TrendingUp
+  ArrowRight, 
+  Zap, 
+  Code2, 
+  Cpu, 
+  ShieldCheck, 
+  HeartHandshake
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -38,142 +29,95 @@ export default function AboutPage() {
       {/* ================================================================ */}
       {/* HERO: Full-width team photo at top (iStudio-inspired)            */}
       {/* ================================================================ */}
-      <section className="relative w-full overflow-hidden" style={{ maxHeight: '92vh', minHeight: '420px' }}>
-        <Image
-          src="/WaynauticTeam.webp"
-          alt="Waynautic Technologies Team and Educators"
-          width={1600}
-          height={900}
-          priority
-          sizes="100vw"
-          className="w-full object-cover object-center"
-          style={{ maxHeight: '92vh', minHeight: '420px' }}
-        />
-        {/* Gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent pointer-events-none" />
+      <section className="relative w-full overflow-hidden bg-slate-950">
+        <div className="relative w-full aspect-[4/3] sm:aspect-auto sm:min-h-[480px] sm:max-h-[85vh]">
+          <Image
+            src="/WaynauticTeam.webp"
+            alt="Waynautic Technologies Team and Educators"
+            width={1600}
+            height={1200}
+            priority
+            sizes="100vw"
+            className="w-full h-full object-contain sm:object-cover object-center"
+          />
 
-        {/* Bottom text overlay */}
-        <div className="absolute bottom-0 left-0 right-0 px-6 sm:px-12 pb-8 sm:pb-12">
-          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-end justify-between gap-4">
-            <div className="space-y-2">
-              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white text-xs font-bold font-mono">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Waynautic Technologies Core Team</span>
+          {/* Badge: Kept on top of the image in both mobile and desktop view */}
+          <div className="absolute top-3 left-3 sm:top-6 sm:left-8 z-10">
+            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-white text-[11px] sm:text-xs font-bold font-mono shadow-md">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Waynautic Technologies Core Team</span>
+            </div>
+          </div>
+
+          {/* Desktop/Tablet text overlay at bottom of image */}
+          <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/35 to-transparent pointer-events-none" />
+          <div className="hidden sm:block absolute bottom-0 left-0 right-0 px-8 lg:px-12 pb-10 sm:pb-12 z-10">
+            <div className="max-w-6xl mx-auto flex items-end justify-between gap-6">
+              <div className="space-y-2">
+                <h1 className="text-4xl lg:text-6xl font-black text-white leading-tight drop-shadow-xl">
+                  We have the solution for<br />
+                  <span className="text-sky-400">AI upskilling.</span>
+                </h1>
+                <p className="text-base text-slate-200 font-medium max-w-xl drop-shadow-md">
+                  Building the future of developer education, one module at a time.
+                </p>
               </div>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-tight drop-shadow-xl">
-                We have the solution for<br />
-                <span className="text-sky-400">AI upskilling.</span>
-              </h1>
-              <p className="text-sm sm:text-base text-slate-200 font-medium max-w-xl drop-shadow-md">
-                Building the future of developer education, one module at a time.
-              </p>
+              <div className="shrink-0">
+                <Link
+                  href="/curriculum"
+                  className="px-7 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm shadow-xl transition-all flex items-center space-x-2 transform hover:-translate-y-0.5"
+                >
+                  <span>Explore Curriculum</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
-            <div className="shrink-0 flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/curriculum"
-                className="px-6 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm shadow-lg transition-all flex items-center space-x-2"
-              >
-                <span>Explore Curriculum</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/signup"
-                className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-bold text-sm transition-all"
-              >
-                Get Started Free
-              </Link>
-            </div>
+          </div>
+        </div>
+
+        {/* Mobile View: Text & Explore Curriculum button placed cleanly below image to never obstruct team faces */}
+        <div className="block sm:hidden px-5 py-6 bg-slate-950 text-left space-y-3.5 border-b border-slate-800">
+          <h1 className="text-2xl xs:text-3xl font-black text-white leading-tight">
+            We have the solution for<br />
+            <span className="text-sky-400">AI upskilling.</span>
+          </h1>
+          <p className="text-xs text-slate-300 font-medium leading-relaxed">
+            Building the future of developer education, one module at a time.
+          </p>
+          <div className="pt-1">
+            <Link
+              href="/curriculum"
+              className="inline-flex items-center justify-center space-x-2 w-full py-3.5 px-6 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm shadow-lg transition-all"
+            >
+              <span>Explore Curriculum</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
 
-      <div className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-16 sm:space-y-24 relative z-10">
+      <div className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-16 sm:space-y-24 relative z-10">
 
         {/* ==================================================================== */}
-        {/* 3. THE PROBLEM & WHY WAYNAUTIC (Origin Story)                        */}
+        {/* WHY WE STARTED (Single concise paragraph)                            */}
         {/* ==================================================================== */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          <div className="space-y-5">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 text-xs font-mono font-bold">
-              <Compass className="w-3.5 h-3.5" />
-              <span>Why We Started</span>
-            </div>
-
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">
-              Bridging the Divide Between Theory and Real Production AI
-            </h2>
-
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              Software engineering is experiencing its most seismic transition in decades. Generative models, autonomous agent frameworks, vector search systems, and Model Context Protocols (MCP) have made traditional computer science curricula dangerously incomplete.
-            </p>
-
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              Too many tutorials stop at API calls or toy notebooks. In contrast, tech enterprises need engineers who understand <strong className="text-slate-900 dark:text-white font-semibold">token economics, low-latency inferencing, vector indexing, evaluation benchmarks, and defensive prompt security</strong>.
-            </p>
-
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              Waynautic was born with a singular conviction: to create an ecosystem that mirrors the standards of leading tech giants and empowers developers to build, deploy, and scale systems with complete mastery.
-            </p>
+        <section className="max-w-3xl mx-auto text-center space-y-5">
+          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 text-xs font-mono font-bold">
+            <Compass className="w-3.5 h-3.5" />
+            <span>Why We Started</span>
           </div>
 
-          <div className="p-7 sm:p-9 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
-            <div className="flex items-center space-x-3 text-sky-600 dark:text-cyan-400 font-bold text-lg">
-              <Award className="w-6 h-6" />
-              <span>The Waynautic Difference</span>
-            </div>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">
+            Bridging the Divide Between Theory and Real Production AI
+          </h2>
 
-            <ul className="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-              <li className="flex items-start space-x-3">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                <span><strong className="text-slate-900 dark:text-white">Curriculum that Compounds:</strong> Designed from foundational fundamentals (Python & Git) all the way to autonomous swarms and cloud clusters.</span>
-              </li>
-              <li className="flex items-start space-x-3">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                <span><strong className="text-slate-900 dark:text-white">Production-Ready Architecture:</strong> Focus on real systems, Docker containers, Kubernetes deployments, and enterprise guardrails.</span>
-              </li>
-              <li className="flex items-start space-x-3">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                <span><strong className="text-slate-900 dark:text-white">Interactive Tri-Mode Learning:</strong> Every lesson incorporates high-definition video walkthroughs, deep-dive technical notes, and rigorous quiz evaluations.</span>
-              </li>
-              <li className="flex items-start space-x-3">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                <span><strong className="text-slate-900 dark:text-white">Community & Peer Collaboration:</strong> Ask questions, post insights, and collaborate with like-minded builders inside every lesson.</span>
-              </li>
-            </ul>
-          </div>
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
+            Software engineering is experiencing its most seismic transition in decades. While traditional tutorials stop at simple API calls, modern tech enterprises need engineers who truly master generative models, token economics, low-latency inferencing, vector databases, and production agentic pipelines. Waynautic was founded to bridge this divide—creating an ecosystem that mirrors the standards of leading tech giants and empowers developers to build, deploy, and scale production AI systems with confidence.
+          </p>
         </section>
 
         {/* ==================================================================== */}
-        {/* 4. MISSION & VISION (Inspired by Scaler's North Star)                */}
-        {/* ==================================================================== */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-8 rounded-3xl bg-gradient-to-br from-sky-500/10 via-slate-50 to-white dark:from-cyan-950/40 dark:via-slate-900 dark:to-slate-900/80 border-2 border-sky-200/80 dark:border-cyan-800/60 shadow-lg space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-sky-500 dark:bg-cyan-500 text-white dark:text-slate-950 flex items-center justify-center shadow-md">
-              <Target className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-              Our Mission
-            </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              To transform and upskill ambitious software developers into world-class AI engineers by providing rigorous, hands-on curriculum, architectural blueprints, and actionable mentorship that creates profound, measurable career impact.
-            </p>
-          </div>
-
-          <div className="p-8 rounded-3xl bg-gradient-to-br from-violet-500/10 via-slate-50 to-white dark:from-violet-950/40 dark:via-slate-900 dark:to-slate-900/80 border-2 border-violet-200/80 dark:border-violet-800/60 shadow-lg space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-violet-600 dark:bg-violet-500 text-white dark:text-slate-950 flex items-center justify-center shadow-md">
-              <GraduationCap className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-              Our Vision
-            </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              To be the world’s foremost learning ecosystem for practical Artificial Intelligence — fostering a global community of innovators who build safe, ethical, and scalable intelligence systems that solve humanity’s toughest challenges.
-            </p>
-          </div>
-        </section>
-
-        {/* ==================================================================== */}
-        {/* 5. CORE PILLARS & VALUES                                             */}
+        {/* CORE PILLARS & VALUES (Kept as is)                                    */}
         {/* ==================================================================== */}
         <section className="space-y-8">
           <div className="text-center space-y-3 max-w-2xl mx-auto">
@@ -240,10 +184,9 @@ export default function AboutPage() {
           </div>
         </section>
 
-
-
         {/* ==================================================================== */}
-        {/* 7. CALL TO ACTION (Inspired by Scaler's Conversion Funnel)          */}
+        {/* CALL TO ACTION (Ready to Accelerate Your Career in AI?)               */}
+        {/* Start Learning button highlighted                                     */}
         {/* ==================================================================== */}
         <section className="p-8 sm:p-12 rounded-3xl bg-gradient-to-tr from-sky-600 via-blue-600 to-violet-700 text-white shadow-2xl relative overflow-hidden text-center space-y-6">
           <div className="max-w-2xl mx-auto space-y-3">
@@ -255,20 +198,14 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-            <Link
-              href="/signup"
-              className="px-8 py-3.5 rounded-xl bg-white text-slate-950 font-extrabold text-sm hover:bg-slate-100 shadow-xl transition-all flex items-center space-x-2 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
-            >
-              <span>Get Started Free</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-
+          <div className="flex items-center justify-center pt-2">
             <Link
               href="/curriculum"
-              className="px-8 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-extrabold text-sm transition-all focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+              className="px-8 py-4 rounded-xl bg-white text-slate-950 font-extrabold text-sm sm:text-base hover:bg-slate-100 shadow-2xl transition-all flex items-center space-x-2 transform hover:-translate-y-0.5"
             >
-              <span>Browse 56 Lessons</span>
+              <Zap className="w-4 h-4 text-sky-600 fill-sky-600" />
+              <span>Start Learning</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </section>

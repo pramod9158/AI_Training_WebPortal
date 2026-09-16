@@ -87,6 +87,14 @@ begin
     alter table public.topics alter column id type text using id::text;
   end if;
 
+  -- Make module_id nullable so omissions never violate NOT NULL
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'topics' and column_name = 'module_id'
+  ) then
+    alter table public.topics alter column module_id drop not null;
+  end if;
+
   -- Add module_slug if missing
   if not exists (
     select 1 from information_schema.columns

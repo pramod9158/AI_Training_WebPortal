@@ -285,7 +285,7 @@ export function getFullBadgeCatalog(
         description: `Master all topic lessons in the ${mod.title} module.`,
         category: 'Modules' as const,
         iconName: 'CheckCircle2',
-        requirementText: `Complete ${modTopics.length}/${modTopics.length} topics in Module 0${mod.orderIndex}`,
+        requirementText: `Complete ${modTopics.length}/${modTopics.length} topics in Module ${String(mod.orderIndex).padStart(2, '0')}`,
         currentValue: doneCount,
         targetValue: modTopics.length,
         progressPercent: modTopics.length > 0 ? Math.round((doneCount / modTopics.length) * 100) : 0,

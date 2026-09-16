@@ -650,3 +650,25 @@ html.dark .badge-diff-advanced {
   min-height: 46px;
   height: 46px;
 }
+
+/* Right-to-Left Infinite Chip Marquee */
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: marquee-left 28s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-left:hover {
+  animation-play-state: paused;
+}
+

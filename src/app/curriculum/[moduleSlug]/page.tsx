@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const title = `Module 0${moduleData.orderIndex}: ${moduleData.title} | Waynautic AI Academy`;
+  const title = `Module ${String(moduleData.orderIndex).padStart(2, '0')}: ${moduleData.title} | Waynautic AI Academy`;
   const description = moduleData.description || `Master ${moduleData.title} with video lectures, code notes, and interactive quizzes.`;
   const url = `https://waynautic-academy.com/curriculum/${resolvedParams.moduleSlug}`;
 

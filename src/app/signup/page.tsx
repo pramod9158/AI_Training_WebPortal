@@ -15,7 +15,7 @@ function SignupForm() {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirectTo') || '/onboarding';
 
-  const { updateProfile } = useWaynauticStore();
+  const { profile, updateProfile } = useWaynauticStore();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,6 +25,20 @@ function SignupForm() {
   const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
   const [isConfirmationPending, setIsConfirmationPending] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
+
+  // Requirement: If authenticated user lands on signup from anywhere, redirect to main page
+  React.useEffect(() => {
+    if (profile.userId || profile.email) {
+      router.replace('/');
+      return;
+    }
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        router.replace('/');
+      }
+    });
+  }, [profile.userId, profile.email, router]);
 
   // Resend verification state
   const [resendLoading, setResendLoading] = useState(false);
@@ -120,6 +134,10 @@ function SignupForm() {
       setLoading(false);
     }
   };
+
+  if (profile.userId || profile.email) {
+    return null;
+  }
 
   if (isConfirmationPending) {
     return (

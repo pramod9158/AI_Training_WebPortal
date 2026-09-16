@@ -619,7 +619,7 @@ function DashboardContent() {
               <span>{isBrandNewStudent ? 'Start Your Learning Journey' : 'Continue Where You Left Off'}</span>
             </span>
             <span className="text-xs font-mono text-slate-500 dark:text-slate-400 font-medium">
-              Module 0{continueModule.orderIndex}: {continueModule.title}
+              Module {String(continueModule.orderIndex).padStart(2, '0')}: {continueModule.title}
             </span>
           </div>
 
@@ -785,7 +785,7 @@ function DashboardContent() {
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">
                         <span className="text-xs font-mono font-bold text-sky-600 dark:text-cyan-400">
-                          Module 0{mod.orderIndex}
+                          Module {String(mod.orderIndex).padStart(2, '0')}
                         </span>
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border ${
                           mod.difficulty === 'Beginner'
@@ -998,7 +998,7 @@ function DashboardContent() {
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">
                         <span className="text-[10px] font-mono font-bold text-sky-600 dark:text-cyan-400 bg-sky-50 dark:bg-cyan-950/60 border border-sky-200 dark:border-cyan-800 px-2 py-0.5 rounded-md">
-                          Module 0{mod?.orderIndex || 1} • {mod?.title}
+                          Module {String(mod?.orderIndex || 1).padStart(2, '0')} • {mod?.title}
                         </span>
                         
                         {isMastered && (
@@ -1223,7 +1223,7 @@ function DashboardContent() {
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">
                         <span className="text-[11px] font-mono font-bold text-sky-600 dark:text-cyan-400 bg-sky-50 dark:bg-cyan-950/60 border border-sky-200 dark:border-cyan-800 px-2 py-0.5 rounded-md">
-                          Module 0{mod?.orderIndex || 1}
+                          Module {String(mod?.orderIndex || 1).padStart(2, '0')}
                         </span>
                         {isCompleted && (
                           <span className="inline-flex items-center space-x-1 text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-md">

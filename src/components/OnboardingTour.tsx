@@ -417,12 +417,12 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
               <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 space-y-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 rounded-xl bg-sky-500 text-white dark:bg-cyan-500/10 dark:text-cyan-400 border border-sky-400 dark:border-cyan-500/30 flex items-center justify-center font-bold">
-                      <ModuleIcon className="w-6 h-6" />
+                    <div className="w-12 h-12 shrink-0 rounded-xl bg-sky-500 text-white dark:bg-cyan-500/10 dark:text-cyan-400 border border-sky-400 dark:border-cyan-500/30 flex items-center justify-center font-bold">
+                      <ModuleIcon className="w-6 h-6 shrink-0" />
                     </div>
                     <div>
                       <div className="flex items-center space-x-2 text-xs font-mono text-sky-600 dark:text-cyan-400 font-bold uppercase">
-                        <span>Module 0{activeModule.orderIndex}</span>
+                        <span>Module {String(activeModule.orderIndex).padStart(2, '0')}</span>
                         <span>•</span>
                         <span className="text-slate-500">{activeModule.difficulty}</span>
                       </div>
