@@ -151,8 +151,8 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
             </div>
           </div>
 
-          {/* Overlay: softens contrast so login card pops */}
-          <div className="absolute inset-0 bg-white/60 dark:bg-[#0B0F19]/70 backdrop-blur-[2px]" />
+          {/* Overlay: 40% white = 60% transparency so hero glows show through */}
+          <div className="absolute inset-0 bg-white/40 dark:bg-[#0B0F19]/50 backdrop-blur-[4px]" />
         </div>
 
         {/* ── Auth UI layer (sits above the blurred background) ────────────── */}
