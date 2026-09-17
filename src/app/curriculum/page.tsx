@@ -42,18 +42,18 @@ export default function CurriculumPage() {
         </p>
 
         {/* Overall Completion Progress Ring Card */}
-        <div className="pt-4 max-w-md mx-auto">
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between shadow-xl">
+        <div className="pt-2 sm:pt-4 max-w-md mx-auto">
+          <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 shadow-xl">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
                 <Trophy className="w-5 h-5" />
               </div>
               <div className="text-left">
-                <div className="text-xs text-slate-400 font-mono">Overall Academy Completion</div>
-                <div className="text-base font-bold text-white">{completedTopicsCount} of {totalTopicsCount} Topics Completed</div>
+                <div className="text-[11px] text-slate-400 font-mono">Overall Academy Completion</div>
+                <div className="text-sm sm:text-base font-bold text-white leading-snug">{completedTopicsCount} of {totalTopicsCount} Topics Completed</div>
               </div>
             </div>
-            <div className="text-right font-mono font-bold text-lg text-cyan-400">
+            <div className="self-end xs:self-auto text-right font-mono font-bold text-base sm:text-lg text-cyan-400 shrink-0">
               {overallPercent}%
             </div>
           </div>

@@ -113,7 +113,7 @@ export const PaymentActionModal: React.FC<PaymentActionModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-5">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto">
           {errorMessage && (
             <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 text-xs flex items-start space-x-2">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -148,13 +148,13 @@ export const PaymentActionModal: React.FC<PaymentActionModalProps> = ({
               Transaction Reference (UTR)
             </label>
             <div className="flex items-center justify-between p-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono text-sm">
-              <span className="font-bold text-slate-900 dark:text-white select-all">
+              <span className="font-bold text-slate-900 dark:text-white select-all break-all pr-2">
                 {payment.transactionReference}
               </span>
               <button
                 type="button"
                 onClick={() => handleCopy(payment.transactionReference)}
-                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-sky-600 text-xs font-bold shadow-sm transition-colors"
+                className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-sky-600 text-xs font-bold shadow-sm transition-colors shrink-0 min-h-[34px]"
               >
                 {copied ? (
                   <>
@@ -172,7 +172,7 @@ export const PaymentActionModal: React.FC<PaymentActionModalProps> = ({
           </div>
 
           {/* Details Grid */}
-          <div className="grid grid-cols-2 gap-3 text-xs">
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 text-xs">
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800">
               <span className="text-slate-400 text-[10px] uppercase font-bold block mb-0.5">
                 Candidate Account
@@ -221,15 +221,15 @@ export const PaymentActionModal: React.FC<PaymentActionModalProps> = ({
                       value={adminNotes}
                       onChange={(e) => setAdminNotes(e.target.value)}
                       placeholder="e.g., Matched in HDFC Bank UPI statements"
-                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base sm:text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 pt-1">
+                  <div className="grid grid-cols-1 xs:grid-cols-2 gap-2.5 sm:gap-3 pt-1">
                     <button
                       disabled={loading}
                       onClick={handleApprove}
-                      className="flex items-center justify-center space-x-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition-all disabled:opacity-50"
+                      className="flex items-center justify-center space-x-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition-all disabled:opacity-50 min-h-[42px]"
                     >
                       <CheckCircle2 className="w-4 h-4" />
                       <span>Approve & Grant Pro</span>
@@ -238,7 +238,7 @@ export const PaymentActionModal: React.FC<PaymentActionModalProps> = ({
                     <button
                       disabled={loading}
                       onClick={() => setShowRejectInput(true)}
-                      className="flex items-center justify-center space-x-2 py-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-100 border border-rose-200 dark:border-rose-900/50 font-extrabold text-xs transition-colors disabled:opacity-50"
+                      className="flex items-center justify-center space-x-2 py-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-100 border border-rose-200 dark:border-rose-900/50 font-extrabold text-xs transition-colors disabled:opacity-50 min-h-[42px]"
                     >
                       <XCircle className="w-4 h-4" />
                       <span>Reject Submission</span>
@@ -291,25 +291,25 @@ export const PaymentActionModal: React.FC<PaymentActionModalProps> = ({
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
                     placeholder="Provide specific reason why payment could not be verified..."
-                    className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-rose-300 dark:border-rose-800 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-rose-300 dark:border-rose-800 text-slate-900 dark:text-white text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-rose-500"
                   />
 
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
                     ℹ️ The student will see this reason in their app along with the support hotline number <strong className="text-slate-800 dark:text-slate-200">9158998226</strong> to resolve payment discrepancies.
                   </p>
 
-                  <div className="flex space-x-2 pt-1">
+                  <div className="flex flex-col xs:flex-row gap-2 pt-1">
                     <button
                       disabled={loading || !rejectionReason.trim()}
                       onClick={handleReject}
-                      className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs transition-colors disabled:opacity-50 shadow-md shadow-rose-600/20 cursor-pointer"
+                      className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs transition-colors disabled:opacity-50 shadow-md shadow-rose-600/20 cursor-pointer min-h-[42px]"
                     >
                       {loading ? 'Declining...' : 'Confirm Decline & Notify Student'}
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowRejectInput(false)}
-                      className="px-4 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
+                      className="px-4 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors min-h-[42px]"
                     >
                       Cancel
                     </button>

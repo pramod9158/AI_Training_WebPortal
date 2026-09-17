@@ -341,12 +341,18 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
     if (!confirm) return;
 
     setIsSubmitting(true);
+    setErrorMessage('');
     try {
-      await deleteTopic(topic.id);
-      if (onDeleted) onDeleted(topic.id);
-      onClose();
-    } catch {
-      setErrorMessage('Failed to delete topic.');
+      const topicId = topic.id;
+      const success = await deleteTopic(topicId);
+      if (success) {
+        if (onDeleted) onDeleted(topicId);
+        onClose();
+      } else {
+        setErrorMessage('Failed to delete topic from storage. Please verify admin permissions.');
+      }
+    } catch (err: any) {
+      setErrorMessage(err?.message || 'Failed to delete topic.');
     } finally {
       setIsSubmitting(false);
     }
@@ -885,13 +891,13 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
             </div>
 
             {/* Footer Actions */}
-            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
               {isEditing ? (
                 <button
                   type="button"
                   onClick={handleDelete}
                   disabled={isSubmitting}
-                  className="px-3.5 py-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-xs font-bold flex items-center space-x-1.5 transition-colors"
+                  className="w-full sm:w-auto px-3.5 py-2.5 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors min-h-[42px]"
                 >
                   <Trash2 className="w-4 h-4" />
                   <span>Delete Topic</span>
@@ -900,12 +906,12 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
                 <div />
               )}
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={onClose}
                   disabled={isSubmitting}
-                  className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors min-h-[42px] flex items-center justify-center"
                 >
                   Cancel
                 </button>
@@ -913,7 +919,7 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 rounded-xl bg-[#1CB0F6] hover:bg-[#1899D6] border-2 border-[#1899D6] shadow-[0_2px_0_0_#1899D6] text-white text-xs font-extrabold flex items-center space-x-1.5 transition-all active:scale-95 disabled:opacity-50"
+                  className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-[#1CB0F6] hover:bg-[#1899D6] border-2 border-[#1899D6] shadow-[0_2px_0_0_#1899D6] text-white text-xs font-extrabold flex items-center justify-center space-x-1.5 transition-all active:scale-95 disabled:opacity-50 min-h-[42px]"
                 >
                   <Save className="w-4 h-4" />
                   <span>{isSubmitting ? 'Saving...' : 'Save Topic Changes'}</span>

@@ -203,21 +203,21 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
             <button
               key={idx}
               onClick={() => handleSelectOption(idx)}
-              className={`w-full text-left p-3.5 sm:p-4 rounded-2xl border-2 text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-between min-h-[48px] ${
+              className={`w-full text-left p-3 sm:p-4 rounded-2xl border-2 text-xs sm:text-sm font-bold transition-all duration-200 flex items-start sm:items-center justify-between min-h-[48px] gap-2 ${
                 isSelected
                   ? 'bg-sky-50 dark:bg-cyan-950/60 border-sky-400 dark:border-cyan-500 text-sky-950 dark:text-cyan-200 shadow-md ring-2 ring-sky-300 dark:ring-cyan-500/20'
                   : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50'
               }`}
             >
-              <div className="flex items-center space-x-3">
-                <span className={`w-7 h-7 rounded-xl text-xs font-mono font-bold flex items-center justify-center shrink-0 border ${
+              <div className="flex items-start sm:items-center space-x-2.5 sm:space-x-3 flex-1 min-w-0">
+                <span className={`w-7 h-7 rounded-xl text-xs font-mono font-bold flex items-center justify-center shrink-0 border mt-0.5 sm:mt-0 ${
                   isSelected ? 'bg-sky-500 text-white border-sky-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
                 }`}>
                   {String.fromCharCode(65 + idx)}
                 </span>
-                <span className="leading-snug">{option}</span>
+                <span className="leading-snug break-words flex-1">{option}</span>
               </div>
-              {isSelected && <CheckCircle2 className="w-5 h-5 text-sky-600 dark:text-cyan-400 shrink-0 ml-2" />}
+              {isSelected && <CheckCircle2 className="w-5 h-5 text-sky-600 dark:text-cyan-400 shrink-0 ml-1 mt-0.5 sm:mt-0" />}
             </button>
           );
         })}
@@ -247,7 +247,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
         <button
           disabled={!isAnswered}
           onClick={handleNext}
-          className={`w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all min-h-[42px] ${
+          className={`w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all min-h-[44px] ${
             isAnswered
               ? 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 shadow-sm'
               : 'bg-slate-100 dark:bg-slate-850 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-800 cursor-not-allowed'

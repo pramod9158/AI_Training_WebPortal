@@ -101,7 +101,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
         </div>
 
         {/* Content Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-3.5 sm:space-y-4 overflow-y-auto">
           {errorMessage && (
             <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 text-xs flex items-start space-x-2">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -120,7 +120,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
                 value={candidateEmail}
                 onChange={(e) => setCandidateEmail(e.target.value)}
                 placeholder="student@example.com"
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base sm:text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
 
@@ -133,7 +133,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
                 value={candidateName}
                 onChange={(e) => setCandidateName(e.target.value)}
                 placeholder="Full Name"
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base sm:text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
           </div>
@@ -149,7 +149,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
                 min="0"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base sm:text-xs font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
 
@@ -160,7 +160,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
               <select
                 value={paymentMethod}
                 onChange={(e: any) => setPaymentMethod(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base sm:text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               >
                 <option value="barcode_qr">Barcode / QR Scan</option>
                 <option value="upi">Direct UPI Transfer</option>
@@ -181,7 +181,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
                 value={transactionReference}
                 onChange={(e) => setTransactionReference(e.target.value)}
                 placeholder="Auto-generated if left blank"
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base sm:text-xs font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
 
@@ -192,7 +192,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
               <select
                 value={planToGrant}
                 onChange={(e: any) => setPlanToGrant(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base sm:text-xs font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               >
                 <option value="pro">Pro AI Pass (1 Year)</option>
               </select>
@@ -208,7 +208,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="e.g. Scanned in-person at Bangalore campus"
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base sm:text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             />
           </div>
 
@@ -216,7 +216,7 @@ export const ManualPaymentModal: React.FC<ManualPaymentModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center space-x-2 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 disabled:opacity-50 transition-all cursor-pointer"
+              className="w-full flex items-center justify-center space-x-2 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 disabled:opacity-50 transition-all cursor-pointer min-h-[46px]"
             >
               {loading ? (
                 <>

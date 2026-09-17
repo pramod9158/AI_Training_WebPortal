@@ -84,7 +84,7 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-8 shadow-xl text-slate-800 dark:text-slate-200 overflow-hidden">
+    <div className="w-full bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-3.5 sm:p-8 shadow-xl text-slate-800 dark:text-slate-200 overflow-hidden">
       
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 mb-4 sm:mb-6 border-b-2 border-slate-200 dark:border-slate-800">
@@ -96,7 +96,7 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
         <button
           onClick={handleDownloadPdf}
           disabled={isGeneratingPdf}
-          className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 dark:bg-cyan-950/60 dark:hover:bg-cyan-900/80 border border-sky-300 dark:border-cyan-500/40 text-sky-700 dark:text-cyan-300 text-xs font-bold transition-all shadow-sm active:scale-95 self-start sm:self-auto min-h-[34px]"
+          className="inline-flex items-center space-x-2 px-3.5 py-2 sm:py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 dark:bg-cyan-950/60 dark:hover:bg-cyan-900/80 border border-sky-300 dark:border-cyan-500/40 text-sky-700 dark:text-cyan-300 text-xs font-bold transition-all shadow-sm active:scale-95 self-start sm:self-auto min-h-[38px] sm:min-h-[34px]"
           title="Download formatted PDF notes for offline study"
         >
           {isGeneratingPdf ? (
@@ -122,12 +122,12 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
               // Masterclass Header Card (h1)
               h1({ children }) {
                 return (
-                  <div className="my-5 p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-sky-50 via-indigo-50/50 to-violet-50 dark:from-cyan-950/40 dark:via-blue-950/30 dark:to-violet-950/40 border-2 border-sky-200/80 dark:border-cyan-500/30 shadow-md">
+                  <div className="my-5 p-3.5 sm:p-6 rounded-2xl bg-gradient-to-r from-sky-50 via-indigo-50/50 to-violet-50 dark:from-cyan-950/40 dark:via-blue-950/30 dark:to-violet-950/40 border-2 border-sky-200/80 dark:border-cyan-500/30 shadow-md">
                     <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-sky-500/10 dark:bg-cyan-400/10 border border-sky-400/30 dark:border-cyan-400/30 text-sky-700 dark:text-cyan-300 text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider mb-2">
                       <Sparkles className="w-3 h-3 text-sky-600 dark:text-cyan-400" />
                       <span>Masterclass Technical Guide</span>
                     </div>
-                    <h1 className="text-xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight m-0 tracking-tight">
+                    <h1 className="text-lg xs:text-xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight m-0 tracking-tight break-words">
                       {children}
                     </h1>
                   </div>
@@ -140,7 +140,7 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
                   <div className="mt-8 mb-4 pt-2">
                     <div className="flex items-center space-x-3 pb-2 border-b-2 border-slate-200 dark:border-slate-800">
                       <div className="w-1.5 h-6 sm:h-7 rounded-full bg-gradient-to-b from-sky-500 to-indigo-600 dark:from-cyan-400 dark:to-blue-600 shrink-0" />
-                      <h2 className="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight m-0 flex items-center gap-2">
+                      <h2 className="text-base xs:text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight m-0 flex items-center gap-2 break-words">
                         {children}
                       </h2>
                     </div>
@@ -369,7 +369,7 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
                       <button
                         type="button"
                         onClick={() => handleCopy(codeString)}
-                        className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700/80 transition-colors text-xs font-medium"
+                        className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700/80 transition-colors text-xs font-medium min-h-[32px]"
                         title="Copy code or diagram"
                       >
                         {copiedCode === codeString ? (
@@ -385,7 +385,7 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
                         )}
                       </button>
                     </div>
-                    <pre className="notes-code-pre p-4 sm:p-5 overflow-x-auto text-xs sm:text-sm font-mono text-slate-100 bg-[#0A0F1D] m-0 leading-relaxed scrollbar-thin">
+                    <pre className="notes-code-pre p-3 sm:p-5 overflow-x-auto text-xs sm:text-sm font-mono text-slate-100 bg-[#0A0F1D] m-0 leading-relaxed scrollbar-thin">
                       <code className="font-mono leading-relaxed block tracking-normal whitespace-pre text-slate-100">
                         {renderHighlighted()}
                       </code>

@@ -71,14 +71,14 @@ export default function PathsPage() {
         {/* Path A */}
         <div
           onClick={() => handleSelectPath('path-a')}
-          className={`cursor-pointer p-5 sm:p-8 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 space-y-4 ${
+          className={`cursor-pointer p-4 xs:p-5 sm:p-8 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 space-y-3.5 sm:space-y-4 ${
             activePathSlug === 'path-a'
               ? 'bg-sky-50 dark:bg-gradient-to-br dark:from-cyan-950/50 dark:via-slate-900 dark:to-slate-900 border-sky-400 dark:border-cyan-500/60 shadow-xl dark:shadow-cyan-500/15 ring-2 ring-sky-300 dark:ring-cyan-500/30'
               : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className={`w-10 h-10 rounded-xl flex items-center justify-center font-mono font-bold ${
+            <span className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-mono font-bold ${
               activePathSlug === 'path-a'
                 ? 'bg-sky-500 text-white dark:bg-cyan-500/10 dark:text-cyan-400 border border-sky-400 dark:border-cyan-500/30'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
@@ -91,13 +91,13 @@ export default function PathsPage() {
               </span>
             )}
           </div>
-          <h2 className={`text-2xl font-extrabold ${activePathSlug === 'path-a' ? 'text-sky-950 dark:text-white' : 'text-slate-900 dark:text-white'}`}>
+          <h2 className={`text-xl sm:text-2xl font-extrabold ${activePathSlug === 'path-a' ? 'text-sky-950 dark:text-white' : 'text-slate-900 dark:text-white'}`}>
             New to AI Development
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
             Foundational sequence covering Python, Git, LLM principles, Prompt Engineering, Model APIs, and AI-powered IDEs.
           </p>
-          <div className="text-xs font-mono text-sky-600 dark:text-cyan-400 font-bold pt-2">
+          <div className="text-xs font-mono text-sky-600 dark:text-cyan-400 font-bold pt-1 sm:pt-2">
             6 Modules • 35 Lesson Units
           </div>
         </div>
@@ -105,14 +105,14 @@ export default function PathsPage() {
         {/* Path B */}
         <div
           onClick={() => handleSelectPath('path-b')}
-          className={`cursor-pointer p-5 sm:p-8 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 space-y-4 ${
+          className={`cursor-pointer p-4 xs:p-5 sm:p-8 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 space-y-3.5 sm:space-y-4 ${
             activePathSlug === 'path-b'
               ? 'bg-purple-50 dark:bg-gradient-to-br dark:from-violet-950/50 dark:via-slate-900 dark:to-slate-900 border-purple-400 dark:border-violet-500/60 shadow-xl dark:shadow-violet-500/15 ring-2 ring-purple-300 dark:ring-violet-500/30'
               : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className={`w-10 h-10 rounded-xl flex items-center justify-center font-mono font-bold ${
+            <span className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-mono font-bold ${
               activePathSlug === 'path-b'
                 ? 'bg-purple-500 text-white dark:bg-violet-500/10 dark:text-violet-400 border border-purple-400 dark:border-violet-500/30'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
@@ -125,13 +125,13 @@ export default function PathsPage() {
               </span>
             )}
           </div>
-          <h2 className={`text-2xl font-extrabold ${activePathSlug === 'path-b' ? 'text-purple-950 dark:text-white' : 'text-slate-900 dark:text-white'}`}>
+          <h2 className={`text-xl sm:text-2xl font-extrabold ${activePathSlug === 'path-b' ? 'text-purple-950 dark:text-white' : 'text-slate-900 dark:text-white'}`}>
             Building Production AI Systems
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
             Advanced track focused on local runtimes, MCP protocol, high-scale Vector Databases, and complex RAG pipelines.
           </p>
-          <div className="text-xs font-mono text-purple-600 dark:text-violet-400 font-bold pt-2">
+          <div className="text-xs font-mono text-purple-600 dark:text-violet-400 font-bold pt-1 sm:pt-2">
             4 Modules • 21 Lesson Units
           </div>
         </div>
@@ -139,17 +139,17 @@ export default function PathsPage() {
       </div>
 
       {/* Path Completion Meter & Certificate CTA */}
-      <div className="max-w-4xl mx-auto p-6 rounded-2xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
+      <div className="max-w-4xl mx-auto p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 shadow-lg">
         <div>
           <div className="text-xs font-mono uppercase text-sky-600 dark:text-cyan-400 font-bold">Roadmap Completion</div>
-          <div className="text-lg font-extrabold text-slate-900 dark:text-white">{selectedPathObj.title}</div>
+          <div className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">{selectedPathObj.title}</div>
           <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">{completedPathTopics.length} of {pathTopics.length} Topics Mastered ({pathPercent}%)</div>
         </div>
 
         <div className="w-full sm:w-auto flex items-center justify-center sm:justify-end">
           <button
             onClick={() => setCertModalOpen(true)}
-            className={`w-full sm:w-auto px-6 py-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center space-x-2 min-h-[44px] shadow-sm ${
+            className={`w-full sm:w-auto px-5 sm:px-6 py-3 rounded-xl border text-xs sm:text-sm font-bold transition-all flex items-center justify-center space-x-2 min-h-[44px] shadow-sm ${
               isPathCompleted
                 ? 'bg-slate-900 hover:bg-slate-800 text-white border-slate-900 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 dark:border-white'
                 : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200'

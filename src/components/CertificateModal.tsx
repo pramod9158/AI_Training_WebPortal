@@ -72,19 +72,19 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
   return (
     <div 
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-200 cursor-pointer overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 xs:p-4 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-200 cursor-pointer overflow-y-auto"
     >
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-4xl bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-cyan-500/30 rounded-3xl p-5 sm:p-8 shadow-2xl space-y-5 text-slate-800 dark:text-slate-200 cursor-default my-auto"
+        className="relative w-full max-w-4xl max-h-[94vh] bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-cyan-500/30 rounded-3xl p-4 xs:p-5 sm:p-8 shadow-2xl space-y-4 sm:space-y-5 text-slate-800 dark:text-slate-200 cursor-default my-auto overflow-y-auto"
       >
         
         {/* Header Bar */}
         <div className="flex items-center justify-between border-b-2 border-slate-200 dark:border-slate-800 pb-4">
           <div className="flex items-center space-x-2">
-            <Award className={`w-6 h-6 ${isUnlocked ? 'text-amber-500' : 'text-slate-400'}`} />
+            <Award className={`w-6 h-6 shrink-0 ${isUnlocked ? 'text-amber-500' : 'text-slate-400'}`} />
             <div>
-              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
+              <h2 className="text-base sm:text-xl font-extrabold text-slate-900 dark:text-white leading-tight">
                 Official Certificate of Completion
               </h2>
               {!isUnlocked && (
@@ -97,7 +97,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -105,7 +105,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
 
         {/* Locked Warning Alert Banner */}
         {(!isUnlocked || showLockedWarning) && (
-          <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-500/40 flex items-start space-x-3 text-xs sm:text-sm text-amber-900 dark:text-amber-200 animate-in fade-in duration-200">
+          <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-500/40 flex items-start space-x-3 text-xs sm:text-sm text-amber-900 dark:text-amber-200 animate-in fade-in duration-200">
             <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
             <div className="space-y-1">
               <div className="font-extrabold text-amber-800 dark:text-amber-300">
@@ -127,13 +127,13 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/10 dark:bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
 
             {/* Responsive Lock Overlay Card */}
-            <div className="relative w-full max-w-md mx-auto p-5 sm:p-7 rounded-2xl bg-white/95 dark:bg-[#0D121F]/95 backdrop-blur-md border border-amber-300 dark:border-amber-500/50 shadow-xl space-y-4 text-center">
+            <div className="relative w-full max-w-md mx-auto p-4 xs:p-5 sm:p-7 rounded-2xl bg-white/95 dark:bg-[#0D121F]/95 backdrop-blur-md border border-amber-300 dark:border-amber-500/50 shadow-xl space-y-4 text-center">
               <div className="w-12 h-12 sm:w-14 sm:h-14 mx-auto rounded-2xl bg-amber-100 dark:bg-amber-950/80 border-2 border-amber-300 dark:border-amber-600/60 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-md">
                 <Lock className="w-6 h-6 sm:w-7 sm:h-7" />
               </div>
               
               <div className="space-y-1">
-                <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">Certificate Locked</h3>
+                <h3 className="text-base sm:text-xl font-extrabold text-slate-900 dark:text-white">Certificate Locked</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
                   Complete all {totalCount} topics in <strong className="text-slate-900 dark:text-white">{pathTitle}</strong> to unlock and generate your official certificate.
                 </p>
@@ -155,7 +155,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
 
               <button
                 onClick={onClose}
-                className="w-full py-2.5 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs transition-all flex items-center justify-center space-x-2 shadow-sm"
+                className="w-full py-2.5 sm:py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs transition-all flex items-center justify-center space-x-2 shadow-sm min-h-[44px]"
               >
                 <span>Continue Learning ({remainingTopics} Left)</span>
                 <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-current" />
@@ -168,6 +168,9 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
           </div>
         ) : (
           <div className="overflow-x-auto p-1 relative rounded-2xl">
+            <div className="sm:hidden text-center text-[11px] font-mono font-bold text-sky-600 dark:text-cyan-400 pb-1.5 flex items-center justify-center space-x-1">
+              <span>↔ Swipe sideways to view full certificate</span>
+            </div>
             <div className="relative w-fit mx-auto">
               {/* The Certificate Canvas */}
               <div
@@ -225,17 +228,17 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
         )}
 
         {/* Action Controls */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
           <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             {isUnlocked 
               ? '✓ All course requirements verified. Ready to download.' 
               : `🔒 ${remainingTopics} topic(s) remaining before certificate download is unlocked.`}
           </div>
 
-          <div className="flex items-center space-x-2.5 w-full sm:w-auto justify-end">
+          <div className="flex flex-col-reverse xs:flex-row items-stretch xs:items-center gap-2 w-full sm:w-auto justify-end">
             <button
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors min-h-[44px] flex items-center justify-center"
             >
               Close
             </button>
@@ -244,7 +247,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               <button
                 onClick={handleDownloadPDF}
                 disabled={isGenerating}
-                className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs transition-all min-h-[42px] shadow-sm"
+                className="inline-flex items-center justify-center space-x-2 px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs transition-all min-h-[44px] shadow-sm w-full xs:w-auto"
               >
                 <Download className="w-4 h-4 text-current" />
                 <span>{isGenerating ? 'Generating PDF...' : 'Download PDF Certificate'}</span>
@@ -252,7 +255,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             ) : (
               <button
                 onClick={() => setShowLockedWarning(true)}
-                className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-bold text-xs cursor-not-allowed min-h-[42px]"
+                className="inline-flex items-center justify-center space-x-2 px-6 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-bold text-xs cursor-not-allowed min-h-[44px] w-full xs:w-auto"
                 title={`Complete all topics to unlock certificate (${percent}% complete)`}
               >
                 <Lock className="w-4 h-4" />

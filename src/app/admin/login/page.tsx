@@ -114,10 +114,10 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex flex-col justify-between bg-[#F8FAFC] dark:bg-[#080C14] text-slate-900 dark:text-slate-100 p-4 sm:p-6 transition-colors">
       
       {/* Top Header */}
-      <header className="w-full max-w-6xl mx-auto flex items-center justify-between py-4">
+      <header className="w-full max-w-6xl mx-auto flex flex-col xs:flex-row items-center justify-between gap-2.5 py-4">
         <Link 
           href="/" 
-          className="inline-flex items-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-semibold transition-colors"
+          className="inline-flex items-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-semibold transition-colors min-h-[36px]"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Return to Academy</span>
@@ -129,8 +129,8 @@ export default function AdminLoginPage() {
       </header>
 
       {/* Center Login Container */}
-      <main className="w-full max-w-md mx-auto my-auto py-6 sm:py-8">
-        <div className="bg-white dark:bg-[#0D121F] border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-200/40 dark:shadow-none relative overflow-hidden">
+      <main className="w-full max-w-md mx-auto my-auto py-4 sm:py-8">
+        <div className="bg-white dark:bg-[#0D121F] border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 sm:p-8 shadow-xl shadow-slate-200/40 dark:shadow-none relative overflow-hidden">
           
           {/* Subtle Ambient Glow */}
           <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 dark:bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
@@ -159,7 +159,7 @@ export default function AdminLoginPage() {
                 setLoginMode('passkey');
                 setErrorMessage('');
               }}
-              className={`py-2 rounded-lg transition-all ${
+              className={`py-2.5 rounded-lg transition-all min-h-[40px] flex items-center justify-center ${
                 loginMode === 'passkey'
                   ? 'bg-white dark:bg-indigo-600 text-indigo-700 dark:text-white shadow-sm'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
@@ -173,7 +173,7 @@ export default function AdminLoginPage() {
                 setLoginMode('supabase');
                 setErrorMessage('');
               }}
-              className={`py-2 rounded-lg transition-all ${
+              className={`py-2.5 rounded-lg transition-all min-h-[40px] flex items-center justify-center ${
                 loginMode === 'supabase'
                   ? 'bg-white dark:bg-indigo-600 text-indigo-700 dark:text-white shadow-sm'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
@@ -209,7 +209,7 @@ export default function AdminLoginPage() {
                     value={passkey}
                     onChange={(e) => setPasskey(e.target.value)}
                     placeholder="Enter security passkey..."
-                    className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 text-xs font-mono focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
+                    className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs font-mono focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
                   />
                   <button
                     type="button"
@@ -228,7 +228,7 @@ export default function AdminLoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center space-x-2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md shadow-indigo-600/20 disabled:opacity-50 transition-all cursor-pointer"
+                className="w-full flex items-center justify-center space-x-2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md shadow-indigo-600/20 disabled:opacity-50 transition-all cursor-pointer min-h-[46px]"
               >
                 {loading ? (
                   <>
@@ -260,7 +260,7 @@ export default function AdminLoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="admin@waynautic.ai"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 text-xs focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -279,7 +279,7 @@ export default function AdminLoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 text-xs focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -287,7 +287,7 @@ export default function AdminLoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center space-x-2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md shadow-indigo-600/20 disabled:opacity-50 transition-all cursor-pointer"
+                className="w-full flex items-center justify-center space-x-2 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md shadow-indigo-600/20 disabled:opacity-50 transition-all cursor-pointer min-h-[46px]"
               >
                 {loading ? (
                   <>

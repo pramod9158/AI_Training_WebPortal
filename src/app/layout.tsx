@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Space_Grotesk, Inter } from 'next/font/google';
 import './globals.css';
 import { ClientAppWrapper } from '@/components/ClientAppWrapper';
@@ -14,6 +14,12 @@ const inter = Inter({
   variable: '--font-body',
   display: 'swap',
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
 
 export const metadata: Metadata = {
   title: 'Waynautic Academy | AI & Software Engineering Mastery',
@@ -50,7 +56,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans antialiased min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
+      <body className="font-sans antialiased min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black w-full max-w-full overflow-x-hidden">
         <ClientAppWrapper>{children}</ClientAppWrapper>
         <Analytics />
       </body>

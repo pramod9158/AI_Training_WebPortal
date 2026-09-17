@@ -19,10 +19,10 @@ export default function SearchPage() {
       );
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-8">
+    <div className="min-h-screen py-6 sm:py-12 px-3 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-6 sm:space-y-8">
       
-      <div className="text-center space-y-4 max-w-2xl mx-auto">
-        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">Search Academy Topics</h1>
+      <div className="text-center space-y-3 sm:space-y-4 max-w-2xl mx-auto">
+        <h1 className="text-2xl xs:text-3xl font-extrabold text-slate-900 dark:text-white break-words">Search Academy Topics</h1>
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">Fuzzy search across all 56 lesson units, quizzes, and code notes.</p>
         
         <div className="relative pt-2">
@@ -32,8 +32,8 @@ export default function SearchPage() {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search topics (e.g. Python, Vector DBs, Prompt Injection)..."
-            className="w-full py-4 pl-12 pr-4 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 text-base font-semibold shadow-sm"
+            placeholder="Search topics (e.g. Python, Vector DBs)..."
+            className="w-full py-3.5 sm:py-4 pl-12 pr-4 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 text-base font-semibold shadow-sm min-h-[48px]"
           />
         </div>
       </div>
@@ -43,14 +43,14 @@ export default function SearchPage() {
           Showing {filteredTopics.length} Topics
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
           {filteredTopics.map((topic) => {
             const mod = MODULES.find((m) => m.slug === topic.moduleSlug);
             return (
               <Link
                 key={topic.id}
                 href={`/curriculum/${topic.moduleSlug}/${topic.slug}?tab=watch`}
-                className="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 hover:border-sky-400 dark:hover:border-cyan-500/40 shadow-sm transition-all flex flex-col justify-between group"
+                className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 hover:border-sky-400 dark:hover:border-cyan-500/40 shadow-sm transition-all flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-center justify-between text-xs font-mono text-sky-600 dark:text-cyan-400 font-bold mb-1">

@@ -440,7 +440,7 @@ function DashboardContent() {
           </div>
 
           {/* Radial / Gauge Visualization & Center Metric */}
-          <div className="flex items-center justify-around gap-4 py-2">
+          <div className="flex flex-col xs:flex-row items-center justify-around gap-4 py-2">
             <div className="relative w-36 h-36 flex items-center justify-center shrink-0">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
                 <circle
@@ -840,7 +840,7 @@ function DashboardContent() {
                   {/* Topic Mini Stepper Preview */}
                   <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80">
                     <div className="text-[10px] font-mono text-slate-400 uppercase font-bold mb-2">Lessons & Quiz Scores</div>
-                    <div className="grid grid-cols-2 sm:grid-cols-2 gap-1.5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                       {topics.map((t, idx) => {
                         const isDone = progress[t.id]?.status === 'completed';
                         const score = progress[t.id]?.score;
@@ -849,7 +849,7 @@ function DashboardContent() {
                           <Link
                             key={t.id}
                             href={`/curriculum/${mod.slug}/${t.slug}?tab=watch`}
-                            className={`p-2 rounded-xl border text-xs font-medium flex items-center justify-between gap-1.5 transition-colors ${
+                            className={`p-2.5 sm:p-2 rounded-xl border text-xs font-medium flex items-center justify-between gap-1.5 transition-colors min-h-[38px] ${
                               isDone
                                 ? 'bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/50 text-emerald-900 dark:text-emerald-200 hover:border-emerald-400'
                                 : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-sky-400'
@@ -1026,7 +1026,7 @@ function DashboardContent() {
                       </p>
                     </div>
 
-                    <div className="flex items-center space-x-4 w-full sm:w-auto shrink-0 justify-between sm:justify-end">
+                    <div className="flex flex-col xs:flex-row items-start xs:items-center gap-3 w-full sm:w-auto shrink-0 justify-between sm:justify-end">
                       <div className="text-left sm:text-right">
                         {hasAttempted ? (
                           <>
@@ -1044,14 +1044,14 @@ function DashboardContent() {
                         )}
                       </div>
 
-                          <Link
-                            href={`/curriculum/${topic.moduleSlug}/${topic.slug}?tab=quiz`}
-                            className={`px-4 py-2 rounded-xl font-bold text-xs transition-all flex items-center space-x-1.5 ${
-                              hasAttempted
-                                ? 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700'
-                                : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 shadow-sm'
-                            }`}
-                          >
+                      <Link
+                        href={`/curriculum/${topic.moduleSlug}/${topic.slug}?tab=quiz`}
+                        className={`w-full xs:w-auto px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center space-x-1.5 min-h-[42px] ${
+                          hasAttempted
+                            ? 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700'
+                            : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 shadow-sm'
+                        }`}
+                      >
                         <Play className="w-3.5 h-3.5" />
                         <span>{hasAttempted ? 'Retake Quiz' : 'Take Quiz'}</span>
                       </Link>

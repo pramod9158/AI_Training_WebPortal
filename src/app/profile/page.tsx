@@ -224,7 +224,7 @@ export default function ProfilePage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 font-semibold text-sm transition-colors"
+              className="w-full p-3 sm:p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 font-semibold text-base sm:text-sm transition-colors min-h-[44px]"
               placeholder="e.g., Alex Mercer"
             />
           </div>
@@ -236,7 +236,7 @@ export default function ProfilePage() {
               <span>Choose Your Engineer Avatar</span>
             </label>
             
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
               {AVATAR_PRESETS.map((preset) => {
                 const Icon = preset.icon;
                 const isSelected = avatarPreset === preset.id;
@@ -247,18 +247,18 @@ export default function ProfilePage() {
                     onClick={() => {
                       setAvatarPreset(preset.id);
                     }}
-                    className={`p-3 rounded-2xl border-2 flex flex-col items-center text-center space-y-2 transition-all ${
+                    className={`p-2 sm:p-3 rounded-2xl border-2 flex flex-col items-center text-center space-y-1.5 sm:space-y-2 transition-all min-h-[72px] ${
                       isSelected
                         ? 'border-sky-500 dark:border-cyan-400 bg-sky-50 dark:bg-cyan-950/40 shadow-md scale-105'
                         : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${preset.gradient} p-0.5 flex items-center justify-center text-white shadow-sm`}>
+                    <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr ${preset.gradient} p-0.5 flex items-center justify-center text-white shadow-sm`}>
                       <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[10px] flex items-center justify-center">
-                        <Icon className="w-5 h-5 text-slate-800 dark:text-white" />
+                        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-slate-800 dark:text-white" />
                       </div>
                     </div>
-                    <span className="text-[11px] font-extrabold text-slate-800 dark:text-slate-200 leading-tight">
+                    <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-800 dark:text-slate-200 leading-tight">
                       {preset.label}
                     </span>
                   </button>

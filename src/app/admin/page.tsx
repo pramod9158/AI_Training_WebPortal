@@ -761,7 +761,7 @@ export default function AdminDashboardPage() {
                   value={candSearch}
                   onChange={(e) => setCandSearch(e.target.value)}
                   placeholder="Search by name or email..."
-                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-base sm:text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none min-h-[38px]"
                 />
               </div>
 
@@ -770,7 +770,7 @@ export default function AdminDashboardPage() {
                 <select
                   value={candPlanFilter}
                   onChange={(e) => setCandPlanFilter(e.target.value)}
-                  className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none"
+                  className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-base sm:text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none min-h-[38px]"
                 >
                   <option value="all">All Plans</option>
                   <option value="free">Free Tier</option>
@@ -779,7 +779,7 @@ export default function AdminDashboardPage() {
 
                 <button
                   onClick={() => exportCandidatesToCSV(filteredCandidates)}
-                  className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-sm transition-colors shrink-0"
+                  className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-sm transition-colors shrink-0 min-h-[38px]"
                   title="Export Candidates to CSV"
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -875,7 +875,7 @@ export default function AdminDashboardPage() {
                   value={paySearch}
                   onChange={(e) => setPaySearch(e.target.value)}
                   placeholder="Search by UTR or email..."
-                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-base sm:text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none min-h-[38px]"
                 />
               </div>
 
@@ -884,7 +884,7 @@ export default function AdminDashboardPage() {
                 <select
                   value={payStatusFilter}
                   onChange={(e) => setPayStatusFilter(e.target.value)}
-                  className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none"
+                  className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-base sm:text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none min-h-[38px]"
                 >
                   <option value="all">All Statuses</option>
                   <option value="pending">Pending Only</option>
@@ -894,7 +894,7 @@ export default function AdminDashboardPage() {
 
                 <button
                   onClick={() => setManualPaymentOpen(true)}
-                  className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm transition-colors shrink-0"
+                  className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm transition-colors shrink-0 min-h-[38px]"
                 >
                   <PlusCircle className="w-3.5 h-3.5" />
                   <span>Manual Payment</span>
@@ -902,7 +902,7 @@ export default function AdminDashboardPage() {
 
                 <button
                   onClick={() => exportPaymentsToCSV(filteredPayments)}
-                  className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-sm transition-colors shrink-0"
+                  className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-sm transition-colors shrink-0 min-h-[38px]"
                   title="Export Payments Ledger CSV"
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -1048,7 +1048,7 @@ export default function AdminDashboardPage() {
                     value={topicSearch}
                     onChange={(e) => setTopicSearch(e.target.value)}
                     placeholder="Search by topic title, slug, or summary..."
-                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 font-medium"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-base sm:text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 font-medium min-h-[38px]"
                   />
                 </div>
 
@@ -1057,7 +1057,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={topicModuleFilter}
                     onChange={(e) => setTopicModuleFilter(e.target.value)}
-                    className="p-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-white font-bold focus:outline-none focus:border-indigo-500 w-full sm:w-auto"
+                    className="p-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-base sm:text-xs text-slate-800 dark:text-white font-bold focus:outline-none focus:border-indigo-500 w-full sm:w-auto min-h-[38px]"
                   >
                     <option value="all">All 10 Modules</option>
                     {MODULES.map((m) => (
@@ -1315,9 +1315,10 @@ export default function AdminDashboardPage() {
           showNotice('Curriculum topic saved successfully!');
           setAllTopics(getAllTopics());
         }}
-        onDeleted={() => {
+        onDeleted={(deletedId) => {
           showNotice('Topic removed from active curriculum.');
-          setAllTopics(getAllTopics());
+          setAllTopics((prev) => prev.filter((t) => t.id !== deletedId));
+          fetchCurriculumUpdates().then((fresh) => setAllTopics(fresh));
         }}
       />
 

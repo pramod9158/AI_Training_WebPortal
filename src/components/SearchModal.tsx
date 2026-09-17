@@ -109,9 +109,15 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
         </div>
 
         {/* Footer Shortcut Bar */}
-        <div className="px-4 py-2.5 bg-slate-50 dark:bg-slate-950/80 border-t-2 border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-mono font-medium">
-          <span>Navigate with ⬆⬇ and ENTER</span>
-          <span>ESC to close</span>
+        <div className="px-3.5 sm:px-4 py-2.5 bg-slate-50 dark:bg-slate-950/80 border-t-2 border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 font-mono font-medium">
+          <span>
+            <span className="hidden sm:inline">Navigate with ⬆⬇ and ENTER</span>
+            <span className="sm:hidden">Tap topic to open</span>
+          </span>
+          <span>
+            <span className="hidden sm:inline">ESC to close</span>
+            <span className="sm:hidden">Tap ✕ to close</span>
+          </span>
         </div>
       </div>
     </div>

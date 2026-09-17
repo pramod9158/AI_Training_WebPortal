@@ -625,12 +625,12 @@ Explanation: LangGraph enables cyclic state machine agents.`}
             </div>
 
             {/* Fixed Modal Footer */}
-            <div className="shrink-0 px-4 sm:px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900/60 backdrop-blur-sm flex items-center justify-end space-x-2">
+            <div className="shrink-0 px-4 sm:px-6 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900/60 backdrop-blur-sm flex items-center justify-end space-x-2 w-full">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors min-h-[42px] flex items-center justify-center"
               >
                 Cancel
               </button>
@@ -638,7 +638,7 @@ Explanation: LangGraph enables cyclic state machine agents.`}
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold flex items-center space-x-1.5 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold flex items-center justify-center space-x-1.5 transition-all shadow-sm active:scale-95 disabled:opacity-50 min-h-[42px]"
               >
                 <Save className="w-4 h-4" />
                 <span>{isSubmitting ? 'Saving Questions...' : 'Save All Quiz Questions'}</span>

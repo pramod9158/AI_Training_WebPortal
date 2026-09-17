@@ -165,14 +165,14 @@ export default function AboutPage() {
                   href="https://lnkd.in/p/dPmtiGUF"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-2 px-5 py-3 rounded-xl bg-[#0A66C2] hover:bg-[#004182] text-white !text-white font-extrabold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5"
+                  className="flex sm:inline-flex items-center justify-center space-x-2 w-full sm:w-auto px-4 xs:px-5 py-3 rounded-xl bg-[#0A66C2] hover:bg-[#004182] text-white !text-white font-extrabold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 min-h-[44px]"
                   style={{ color: '#FFFFFF', backgroundColor: '#0A66C2' }}
                 >
                   <svg className="w-4 h-4 fill-white shrink-0" viewBox="0 0 24 24" style={{ fill: '#FFFFFF', color: '#FFFFFF' }}>
                     <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
                   </svg>
-                  <span className="text-white !text-white font-extrabold" style={{ color: '#FFFFFF' }}>View Announcement on LinkedIn</span>
-                  <ArrowRight className="w-4 h-4 text-white !text-white" style={{ color: '#FFFFFF' }} />
+                  <span className="text-white !text-white font-extrabold text-center" style={{ color: '#FFFFFF' }}>View Announcement on LinkedIn</span>
+                  <ArrowRight className="w-4 h-4 text-white !text-white shrink-0" style={{ color: '#FFFFFF' }} />
                 </a>
               </div>
             </div>
@@ -270,7 +270,7 @@ export default function AboutPage() {
         {/* CALL TO ACTION (Ready to Accelerate Your Career in AI?)               */}
         {/* ==================================================================== */}
         <section 
-          className="p-8 sm:p-12 rounded-3xl bg-gradient-to-tr from-sky-600 via-blue-600 to-violet-700 text-white shadow-2xl relative overflow-hidden text-center space-y-6"
+          className="p-6 xs:p-8 sm:p-12 rounded-3xl bg-gradient-to-tr from-sky-600 via-blue-600 to-violet-700 text-white shadow-2xl relative overflow-hidden text-center space-y-6"
           style={{ background: 'linear-gradient(135deg, #0284C7 0%, #2563EB 50%, #6D28D9 100%)' }}
         >
           <div className="max-w-2xl mx-auto space-y-3">
@@ -281,17 +281,17 @@ export default function AboutPage() {
               Ready to Accelerate Your Career in AI?
             </h2>
             <p 
-              className="text-sm sm:text-base text-sky-100 !text-sky-100 leading-relaxed font-medium"
+              className="text-xs sm:text-base text-sky-100 !text-sky-100 leading-relaxed font-medium"
               style={{ color: '#E0E7FF' }}
             >
               Join thousands of engineers upskilling in Python, Generative AI, LangChain, MCP, and Autonomous Agents. Your journey starts today.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+          <div className="flex flex-col xs:flex-row items-stretch xs:items-center justify-center gap-3 sm:gap-4 pt-2">
             <Link
               href="/curriculum"
-              className="px-8 py-4 rounded-xl bg-white text-slate-950 !text-slate-950 font-extrabold text-sm sm:text-base hover:bg-slate-100 shadow-2xl transition-all flex items-center space-x-2 transform hover:-translate-y-0.5"
+              className="w-full xs:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-white text-slate-950 !text-slate-950 font-extrabold text-sm sm:text-base hover:bg-slate-100 shadow-2xl transition-all flex items-center justify-center space-x-2 transform hover:-translate-y-0.5 min-h-[46px]"
               style={{ color: '#0F172A', backgroundColor: '#FFFFFF' }}
             >
               <Zap className="w-4 h-4 text-sky-600 fill-sky-600" />
@@ -301,7 +301,7 @@ export default function AboutPage() {
 
             <Link
               href="#contact"
-              className="px-8 py-4 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 text-white !text-white font-extrabold text-sm sm:text-base shadow-xl transition-all flex items-center space-x-2 transform hover:-translate-y-0.5 cursor-pointer"
+              className="w-full xs:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 text-white !text-white font-extrabold text-sm sm:text-base shadow-xl transition-all flex items-center justify-center space-x-2 transform hover:-translate-y-0.5 cursor-pointer min-h-[46px]"
               style={{ color: '#FFFFFF' }}
             >
               <Mail className="w-4 h-4 text-white" style={{ color: '#FFFFFF' }} />

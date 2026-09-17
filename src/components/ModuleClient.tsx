@@ -180,40 +180,41 @@ export function ModuleClient() {
                     : 'bg-slate-900/80 border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900'
                 }`}
               >
-                <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
-                  <span className={`font-mono font-bold text-sm sm:text-base shrink-0 w-6 text-left ${
+                <div className="flex items-center space-x-2.5 sm:space-x-4 min-w-0 flex-1">
+                  <span className={`font-mono font-bold text-xs sm:text-base shrink-0 w-5 sm:w-6 text-left ${
                     isCompleted ? 'text-emerald-400' : 'text-slate-400 group-hover:text-cyan-400'
                   } transition-colors`}>
                     {index + 1}.
                   </span>
-                  <div className="min-w-0">
-                    <div className="flex items-center space-x-2">
-                      <h3 className="font-bold text-white group-hover:text-cyan-300 text-sm sm:text-base transition-colors truncate sm:whitespace-normal">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center space-x-1.5 sm:space-x-2">
+                      <h3 className="font-bold text-white group-hover:text-cyan-300 text-xs sm:text-base transition-colors truncate">
                         {topic.title}
                       </h3>
                       {isCompleted && (
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400 shrink-0" />
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 line-clamp-1 mt-0.5">
+                    <p className="text-[11px] sm:text-xs text-slate-400 line-clamp-1 mt-0.5">
+                      <span className="sm:hidden font-mono text-[10px] text-slate-500 mr-1.5">{topic.estimatedMinutes}m •</span>
                       {topic.description}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 sm:space-x-4 shrink-0 ml-2">
                   <div className="hidden sm:flex items-center space-x-1 text-xs text-slate-400 font-mono">
                     <Clock className="w-3.5 h-3.5 text-slate-500" />
                     <span>{topic.estimatedMinutes}m</span>
                   </div>
 
                   {score !== undefined && (
-                    <span className="hidden sm:inline-block px-2.5 py-0.5 text-[10px] font-mono font-bold rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800">
-                      Quiz: {score}%
+                    <span className="px-2 sm:px-2.5 py-0.5 text-[9px] sm:text-[10px] font-mono font-bold rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800 shrink-0">
+                      <span className="hidden sm:inline">Quiz: </span>{score}%
                     </span>
                   )}
 
-                  <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-1 transition-transform" />
                 </div>
               </Link>
             );

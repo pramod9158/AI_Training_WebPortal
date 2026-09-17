@@ -171,7 +171,7 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           
           {/* Question Checkbox Toggle */}
-          <label className="flex items-center space-x-2 text-xs font-mono text-slate-700 dark:text-slate-300 font-bold cursor-pointer select-none">
+          <label className="flex items-center space-x-2 text-xs font-mono text-slate-700 dark:text-slate-300 font-bold cursor-pointer select-none py-1">
             <input
               type="checkbox"
               checked={isQuestion}
@@ -191,7 +191,7 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
                 handlePost(e);
               }
             }}
-            className="px-5 py-2.5 rounded-xl bg-[#1CB0F6] hover:bg-[#1899D6] active:scale-95 disabled:opacity-50 border-2 border-[#1899D6] shadow-[0_2px_0_0_#1899D6] text-white font-extrabold text-xs transition-all flex items-center justify-center space-x-2 shrink-0 min-h-[42px] touch-manipulation cursor-pointer"
+            className="px-5 py-2.5 rounded-xl bg-[#1CB0F6] hover:bg-[#1899D6] active:scale-95 disabled:opacity-50 border-2 border-[#1899D6] shadow-[0_2px_0_0_#1899D6] text-white font-extrabold text-xs transition-all flex items-center justify-center space-x-2 shrink-0 min-h-[44px] w-full sm:w-auto touch-manipulation cursor-pointer"
           >
             <Send className="w-3.5 h-3.5" />
             <span>{isSubmitting ? 'Posting...' : (isQuestion ? 'Post Question' : 'Post Comment')}</span>
@@ -226,8 +226,8 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
                 }`}
               >
                 {/* Author Info & Badges */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center space-x-2.5 min-w-0">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
                       {comment.userAvatar ? (
                         <img src={comment.userAvatar} alt={comment.userName} loading="lazy" decoding="async" className="w-full h-full rounded-full object-cover" />
@@ -235,47 +235,47 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
                         comment.userName.slice(0, 2).toUpperCase()
                       )}
                     </div>
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs font-extrabold text-slate-900 dark:text-white">
+                    <div className="min-w-0">
+                      <div className="flex items-center flex-wrap gap-1.5">
+                        <span className="text-xs font-extrabold text-slate-900 dark:text-white truncate">
                           {comment.userName}
                         </span>
                         {comment.isQuestion && (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200">
+                          <span className="px-1.5 py-0.5 rounded text-[9px] xs:text-[10px] font-mono font-bold bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200">
                             QUESTION
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] font-mono text-slate-400">
+                      <span className="text-[10px] font-mono text-slate-400 block truncate">
                         {new Date(comment.createdAt).toLocaleString()}
                       </span>
                     </div>
                   </div>
 
                   {/* Actions (Delete if author) */}
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 shrink-0">
                     {isAuthor && (
                       <button
                         onClick={() => handleDelete(comment.id)}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                        className="p-2 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
                         title="Delete comment"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     )}
                   </div>
                 </div>
 
                 {/* Comment Content */}
-                <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-medium leading-relaxed whitespace-pre-wrap pl-1">
+                <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-medium leading-relaxed whitespace-pre-wrap break-words pl-1">
                   {comment.content}
                 </p>
 
                 {/* Reply Trigger & Collapsible Replies Toggle */}
-                <div className="pt-1 flex items-center justify-between text-xs">
+                <div className="pt-1 flex items-center justify-between gap-2 text-xs">
                   <button
                     onClick={() => setReplyingToId(replyingToId === comment.id ? null : comment.id)}
-                    className="text-sky-600 dark:text-cyan-400 font-bold font-mono hover:underline flex items-center space-x-1"
+                    className="text-sky-600 dark:text-cyan-400 font-bold font-mono hover:underline flex items-center space-x-1 min-h-[36px] py-1"
                   >
                     <CornerDownRight className="w-3.5 h-3.5" />
                     <span>Reply</span>
@@ -285,30 +285,30 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
                     <button
                       type="button"
                       onClick={() => toggleReplies(comment.id)}
-                      className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex items-center space-x-1 px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 transition-colors"
+                      className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 transition-colors min-h-[36px]"
                     >
-                      <MessageCircle className="w-3 h-3" />
+                      <MessageCircle className="w-3.5 h-3.5" />
                       <span>{collapsedReplies[comment.id] ? `Show ${replies.length} ${replies.length === 1 ? 'reply' : 'replies'}` : `Hide ${replies.length} ${replies.length === 1 ? 'reply' : 'replies'}`}</span>
-                      <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${collapsedReplies[comment.id] ? '-rotate-90' : 'rotate-0'}`} />
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${collapsedReplies[comment.id] ? '-rotate-90' : 'rotate-0'}`} />
                     </button>
                   )}
                 </div>
 
                 {/* Inline Reply Form */}
                 {replyingToId === comment.id && (
-                  <div className="pl-4 border-l-2 border-sky-400 space-y-2 pt-2 animate-in fade-in">
+                  <div className="pl-3 sm:pl-4 border-l-2 border-sky-400 space-y-2 pt-2 animate-in fade-in">
                     <input
                       type="text"
                       value={replyContent}
                       onChange={(e) => setReplyContent(e.target.value)}
                       placeholder={`Reply to ${comment.userName}...`}
-                      className="w-full p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-medium focus:outline-none focus:border-sky-500"
+                      className="w-full p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-medium focus:outline-none focus:border-sky-500 min-h-[40px]"
                     />
                     <div className="flex justify-end space-x-2">
                       <button
                         type="button"
                         onClick={() => setReplyingToId(null)}
-                        className="px-3 py-1 text-xs font-bold text-slate-500 hover:text-slate-700"
+                        className="px-3 py-1.5 text-xs font-bold text-slate-500 hover:text-slate-700 min-h-[36px]"
                       >
                         Cancel
                       </button>
@@ -316,7 +316,7 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
                         type="button"
                         disabled={!replyContent.trim() || isReplying}
                         onClick={() => handleReplySubmit(comment.id)}
-                        className="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 active:scale-95 disabled:opacity-50 text-white text-xs font-bold transition-all touch-manipulation cursor-pointer"
+                        className="px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 active:scale-95 disabled:opacity-50 text-white text-xs font-bold transition-all touch-manipulation cursor-pointer min-h-[36px]"
                       >
                         {isReplying ? 'Sending...' : 'Send Reply'}
                       </button>

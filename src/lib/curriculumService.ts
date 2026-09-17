@@ -97,9 +97,10 @@ export function getAllTopics(): Topic[] {
         const newTopics: Topic[] = [];
 
         customTopics.forEach((ct) => {
+          if (deletedIds.includes(ct.id)) return;
           if (TOPICS.some((t) => t.id === ct.id)) {
             customMap.set(ct.id, ct);
-          } else if (!deletedIds.includes(ct.id)) {
+          } else {
             newTopics.push(ct);
           }
         });
@@ -123,9 +124,10 @@ export function getAllTopics(): Topic[] {
     const newTopics: Topic[] = [];
 
     customTopics.forEach((ct) => {
+      if (deletedIds.includes(ct.id)) return;
       if (TOPICS.some((t) => t.id === ct.id)) {
         customMap.set(ct.id, ct);
-      } else if (!deletedIds.includes(ct.id)) {
+      } else {
         newTopics.push(ct);
       }
     });
@@ -229,8 +231,16 @@ export async function fetchCurriculumUpdates(): Promise<Topic[]> {
           .filter((row: any) => row.title === '__DELETED__' || row.description === '__DELETED__')
           .map((row: any) => row.id);
 
+        // Update local deleted topics list
+        const localDeleted: string[] = JSON.parse(localStorage.getItem(DELETED_TOPICS_STORAGE_KEY) || '[]');
+        const mergedDeleted = Array.from(new Set([...localDeleted, ...deletedFromDb]));
+        localStorage.setItem(DELETED_TOPICS_STORAGE_KEY, JSON.stringify(mergedDeleted));
+
         const activeSupaTopics = supaTopics.filter(
-          (row: any) => row.title !== '__DELETED__' && row.description !== '__DELETED__'
+          (row: any) =>
+            row.title !== '__DELETED__' &&
+            row.description !== '__DELETED__' &&
+            !mergedDeleted.includes(row.id)
         );
 
         const mappedTopics: Topic[] = activeSupaTopics.map((row: any) => ({
@@ -249,9 +259,11 @@ export async function fetchCurriculumUpdates(): Promise<Topic[]> {
         }));
 
         // Check if there are local custom topics in this browser that failed to sync to Supabase in past attempts
+        // Strictly exclude any topics known to be deleted so we NEVER resurrect deleted topics!
         const localCustom: Topic[] = JSON.parse(localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]');
+        const cleanLocalCustom = localCustom.filter((t) => !mergedDeleted.includes(t.id));
         const supaIds = new Set(supaTopics.map((r: any) => r.id));
-        const unsyncedLocal = localCustom.filter((t) => !supaIds.has(t.id) && !deletedFromDb.includes(t.id));
+        const unsyncedLocal = cleanLocalCustom.filter((t) => !supaIds.has(t.id) && !mergedDeleted.includes(t.id));
 
         if (unsyncedLocal.length > 0) {
           // Auto-migrate/sync unsynced local topics to Supabase with proper module_id
@@ -278,14 +290,10 @@ export async function fetchCurriculumUpdates(): Promise<Topic[]> {
           }
         }
 
-        // Update local deleted topics list
-        const localDeleted: string[] = JSON.parse(localStorage.getItem(DELETED_TOPICS_STORAGE_KEY) || '[]');
-        const mergedDeleted = Array.from(new Set([...localDeleted, ...deletedFromDb]));
-        localStorage.setItem(DELETED_TOPICS_STORAGE_KEY, JSON.stringify(mergedDeleted));
-
-        // Update local custom topics list from cloud
+        // Update local custom topics list from cloud, strictly excluding deleted topics
+        const finalMappedTopics = mappedTopics.filter((t) => !mergedDeleted.includes(t.id));
         const prevJson = localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]';
-        const newJson = JSON.stringify(mappedTopics);
+        const newJson = JSON.stringify(finalMappedTopics);
         if (prevJson !== newJson) {
           localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, newJson);
           hasUpdates = true;
@@ -334,19 +342,25 @@ export async function fetchCurriculumUpdates(): Promise<Topic[]> {
           const remoteCustom: Topic[] = data.customTopics;
           const remoteDeleted: string[] = Array.isArray(data.deletedTopicIds) ? data.deletedTopicIds : [];
 
-          const mergedMap = new Map<string, Topic>();
-          localCustom.forEach((t) => mergedMap.set(t.id, t));
-          remoteCustom.forEach((t) => mergedMap.set(t.id, t));
-          const mergedTopics = Array.from(mergedMap.values());
-
           const mergedDeleted = Array.from(new Set([...localDeleted, ...remoteDeleted]));
 
-          const topicsChanged = JSON.stringify(localCustom) !== JSON.stringify(mergedTopics);
-          const deletedChanged = JSON.stringify(localDeleted) !== JSON.stringify(mergedDeleted);
+          const mergedMap = new Map<string, Topic>();
+          localCustom.forEach((t) => {
+            if (!mergedDeleted.includes(t.id)) mergedMap.set(t.id, t);
+          });
+          remoteCustom.forEach((t) => {
+            if (!mergedDeleted.includes(t.id)) mergedMap.set(t.id, t);
+          });
+          const mergedTopics = Array.from(mergedMap.values()).filter((t) => !mergedDeleted.includes(t.id));
 
-          if (topicsChanged || deletedChanged) {
-            localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, JSON.stringify(mergedTopics));
-            localStorage.setItem(DELETED_TOPICS_STORAGE_KEY, JSON.stringify(mergedDeleted));
+          const prevCustomJson = localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]';
+          const newCustomJson = JSON.stringify(mergedTopics);
+          const prevDeletedJson = localStorage.getItem(DELETED_TOPICS_STORAGE_KEY) || '[]';
+          const newDeletedJson = JSON.stringify(mergedDeleted);
+
+          if (prevCustomJson !== newCustomJson || prevDeletedJson !== newDeletedJson) {
+            localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, newCustomJson);
+            localStorage.setItem(DELETED_TOPICS_STORAGE_KEY, newDeletedJson);
             hasUpdates = true;
           }
         }
@@ -477,6 +491,8 @@ export async function saveTopic(topicData: {
 export async function deleteTopic(topicId: string): Promise<boolean> {
   if (typeof window === 'undefined') return false;
 
+  let localTopic: Topic | undefined;
+
   try {
     const deletedIds: string[] = JSON.parse(localStorage.getItem(DELETED_TOPICS_STORAGE_KEY) || '[]');
     if (!deletedIds.includes(topicId)) {
@@ -485,6 +501,7 @@ export async function deleteTopic(topicId: string): Promise<boolean> {
     }
 
     const customTopics: Topic[] = JSON.parse(localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY) || '[]');
+    localTopic = customTopics.find((t) => t.id === topicId) || TOPICS.find((t) => t.id === topicId);
     const remaining = customTopics.filter((t) => t.id !== topicId);
     localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, JSON.stringify(remaining));
 
@@ -497,30 +514,33 @@ export async function deleteTopic(topicId: string): Promise<boolean> {
   // Sync delete to Supabase if configured
   if (isSupabaseConfigured) {
     try {
-      if (topicId.startsWith('t-custom-')) {
-        // Custom topic: delete row from topics and quiz_questions
-        await supabase.from('quiz_questions').delete().eq('topic_id', topicId);
-        await supabase.from('topics').delete().eq('id', topicId);
-      } else {
-        // Seed topic (e.g. t-1): store tombstone row in topics table so all devices know it's deleted
-        const targetTopic = TOPICS.find((t) => t.id === topicId);
-        const targetModule = MODULES.find((m) => m.slug === targetTopic?.moduleSlug) || MODULES[0];
-        await supabase.from('topics').upsert({
-          id: topicId,
-          module_id: targetModule.id,
-          module_slug: targetTopic?.moduleSlug || 'llms',
-          slug: `deleted-${topicId}`,
-          title: '__DELETED__',
-          description: '__DELETED__',
-          video_url: '',
-          video_provider: 'youtube',
-          order_index: 999,
-          estimated_minutes: 0,
-          text_content: '',
-          chapters: [],
-          updated_at: new Date().toISOString()
-        });
-      }
+      // 1. Delete associated quiz questions
+      await supabase.from('quiz_questions').delete().eq('topic_id', topicId);
+
+      // 2. Identify module metadata with safe fallbacks
+      const allCurrent = getAllTopics();
+      const targetTopic = localTopic || allCurrent.find((t) => t.id === topicId) || TOPICS.find((t) => t.id === topicId);
+      const targetModule = MODULES.find((m) => m.slug === targetTopic?.moduleSlug) || MODULES[0];
+      const moduleId = targetTopic?.moduleId || targetModule.id;
+      const moduleSlug = targetTopic?.moduleSlug || targetModule.slug;
+
+      // 3. Upsert persistent tombstone for ALL topics (custom or seed)
+      // This guarantees cloud awareness across all devices and prevents local resurrection
+      await supabase.from('topics').upsert({
+        id: topicId,
+        module_id: moduleId,
+        module_slug: moduleSlug,
+        slug: `deleted-${topicId}`,
+        title: '__DELETED__',
+        description: '__DELETED__',
+        video_url: '',
+        video_provider: 'youtube',
+        order_index: 999,
+        estimated_minutes: 0,
+        text_content: '',
+        chapters: [],
+        updated_at: new Date().toISOString()
+      });
     } catch (e) {
       console.warn('[CurriculumService] Supabase delete warning:', e);
     }
@@ -533,6 +553,7 @@ export async function deleteTopic(topicId: string): Promise<boolean> {
     console.warn('[CurriculumService] Server API delete warning:', err);
   }
 
+  notifyCurriculumChange();
   return true;
 }
 

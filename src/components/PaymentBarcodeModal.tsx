@@ -487,7 +487,7 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                   {/* Mobile Deep Link */}
                   <a
                     href={upiDeepLink}
-                    className="sm:hidden flex items-center justify-center space-x-1.5 w-full py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-sm transition-colors"
+                    className="sm:hidden flex items-center justify-center space-x-1.5 w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-sm transition-colors min-h-[44px]"
                   >
                     <span>Open in UPI App</span>
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -526,7 +526,7 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@example.com"
-                        className="w-full px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                        className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base sm:text-xs min-h-[40px] focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       />
                     </div>
 
@@ -539,7 +539,7 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         placeholder="Learner Name"
-                        className="w-full px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                        className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base sm:text-xs min-h-[40px] focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -568,7 +568,7 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                       value={utrNumber}
                       onChange={(e) => setUtrNumber(e.target.value.replace(/\D/g, '').slice(0, 12))}
                       placeholder="e.g. 423891823901"
-                      className="w-full px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none tracking-wider"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-mono text-slate-900 dark:text-white text-base sm:text-xs min-h-[40px] focus:ring-2 focus:ring-sky-500 focus:outline-none tracking-wider"
                     />
                     <p className="text-[10px] text-slate-400 mt-0.5">
                       Enter the 12-digit numeric reference from your GPay / PhonePe / Paytm / UPI payment receipt.
@@ -584,7 +584,7 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="e.g. Paid from HDFC account"
-                      className="w-full px-2.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-base sm:text-xs min-h-[40px] focus:ring-2 focus:ring-sky-500 focus:outline-none"
                     />
                   </div>
 
@@ -592,7 +592,7 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full flex items-center justify-center space-x-2 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-extrabold text-xs shadow-md shadow-sky-600/20 disabled:opacity-50 transition-all cursor-pointer"
+                      className="w-full flex items-center justify-center space-x-2 py-3 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-extrabold text-xs shadow-md shadow-sky-600/20 disabled:opacity-50 transition-all cursor-pointer min-h-[44px]"
                     >
                       {isSubmitting ? (
                         <>

@@ -83,6 +83,15 @@ export async function GET() {
           .filter((row: any) => row.title === '__DELETED__' || row.description === '__DELETED__')
           .map((row: any) => row.id);
 
+        // Keep filesystem in sync with Supabase for SSR server components
+        try {
+          saveToFilesystem({
+            customTopics,
+            deletedTopicIds,
+            updatedAt: new Date().toISOString()
+          });
+        } catch {}
+
         return NextResponse.json({
           customTopics,
           deletedTopicIds,
@@ -133,15 +142,13 @@ export async function POST(req: NextRequest) {
         });
         if (error) {
           console.error('[API Curriculum POST] Supabase upsert error:', error);
-        } else {
-          return NextResponse.json({ success: true, topic, updatedAt: new Date().toISOString() });
         }
       } catch (err) {
         console.error('[API Curriculum POST] Supabase error:', err);
       }
     }
 
-    // Fallback: filesystem
+    // Filesystem sync: keep server SSR in sync as well
     const current = loadFromFilesystem();
     const filtered = current.customTopics.filter((t) => t.id !== topic.id);
     filtered.push(topic);
@@ -168,39 +175,38 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Missing topic id' }, { status: 400 });
     }
 
-    // Primary: delete or mark tombstone in Supabase
+    // Primary: mark persistent tombstone and clear quizzes in Supabase
     if (isSupabaseReady) {
       try {
         const sb = getServerSupabase();
-        if (id.startsWith('t-custom-')) {
-          await sb.from('quiz_questions').delete().eq('topic_id', id);
-          await sb.from('topics').delete().eq('id', id);
-        } else {
-          const targetTopic = TOPICS.find((t) => t.id === id);
-          const targetModule = MODULES.find((m) => m.slug === targetTopic?.moduleSlug) || MODULES[0];
-          await sb.from('topics').upsert({
-            id: id,
-            module_id: targetModule.id,
-            module_slug: targetTopic?.moduleSlug || 'llms',
-            slug: `deleted-${id}`,
-            title: '__DELETED__',
-            description: '__DELETED__',
-            video_url: '',
-            video_provider: 'youtube',
-            order_index: 999,
-            estimated_minutes: 0,
-            text_content: '',
-            chapters: [],
-            updated_at: new Date().toISOString()
-          });
-        }
-        return NextResponse.json({ success: true, deletedId: id, updatedAt: new Date().toISOString() });
+        await sb.from('quiz_questions').delete().eq('topic_id', id);
+
+        const targetTopic = TOPICS.find((t) => t.id === id);
+        const targetModule = MODULES.find((m) => m.slug === targetTopic?.moduleSlug) || MODULES[0];
+        const moduleId = targetTopic?.moduleId || targetModule.id;
+        const moduleSlug = targetTopic?.moduleSlug || targetModule.slug;
+
+        await sb.from('topics').upsert({
+          id: id,
+          module_id: moduleId,
+          module_slug: moduleSlug,
+          slug: `deleted-${id}`,
+          title: '__DELETED__',
+          description: '__DELETED__',
+          video_url: '',
+          video_provider: 'youtube',
+          order_index: 999,
+          estimated_minutes: 0,
+          text_content: '',
+          chapters: [],
+          updated_at: new Date().toISOString()
+        });
       } catch (err) {
         console.error('[API Curriculum DELETE] Supabase error:', err);
       }
     }
 
-    // Fallback: filesystem
+    // Filesystem sync: remove from custom topics, add to deletedTopicIds
     const current = loadFromFilesystem();
     const updatedData: CurriculumStorageData = {
       customTopics: current.customTopics.filter((t) => t.id !== id),

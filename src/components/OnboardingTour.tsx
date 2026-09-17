@@ -148,22 +148,24 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
         className="relative w-full max-w-3xl bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-cyan-500/30 rounded-3xl shadow-2xl overflow-hidden text-slate-800 dark:text-slate-200 cursor-default my-auto"
       >
         {/* Top Header Bar */}
-        <div className="flex items-center justify-between px-6 py-4 border-b-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60">
-          <div className="flex items-center space-x-2 text-xs font-mono font-bold text-sky-600 dark:text-cyan-400 uppercase tracking-wider">
-            <Sparkles className="w-4 h-4 text-sky-600 dark:text-cyan-400" />
-            <span>Interactive Platform Tour • Step {currentStageIndex + 1} of {TOUR_STAGES.length}</span>
+        <div className="flex items-center justify-between px-3.5 sm:px-6 py-3 sm:py-4 border-b-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60">
+          <div className="flex items-center space-x-2 text-xs font-mono font-bold text-sky-600 dark:text-cyan-400 uppercase tracking-wider truncate mr-2">
+            <Sparkles className="w-4 h-4 text-sky-600 dark:text-cyan-400 shrink-0" />
+            <span className="truncate">
+              <span className="hidden xs:inline">Interactive Platform Tour • </span>Step {currentStageIndex + 1} of {TOUR_STAGES.length}
+            </span>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5 shrink-0">
             <button
               onClick={handleSkip}
-              className="text-xs font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white px-2.5 py-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+              className="text-xs font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors min-h-[36px] flex items-center"
             >
               Skip Tour
             </button>
             <button
               onClick={handleSkip}
-              className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
               title="Close tour (ESC)"
             >
               <X className="w-5 h-5" />
@@ -172,7 +174,7 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
         </div>
 
         {/* Stage Progress Stepper Indicator */}
-        <div className="px-6 pt-4 pb-2 border-b border-slate-100 dark:border-slate-800/80 bg-white dark:bg-[#0D121F]">
+        <div className="px-3.5 sm:px-6 pt-3 sm:pt-4 pb-2 border-b border-slate-100 dark:border-slate-800/80 bg-white dark:bg-[#0D121F]">
           <div className="flex items-center justify-between gap-1 overflow-x-auto pb-1 scrollbar-none">
             {TOUR_STAGES.map((stage, idx) => {
               const isPassed = idx < currentStageIndex;
@@ -203,7 +205,7 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
         </div>
 
         {/* Main Stage Content Area */}
-        <div className="p-6 sm:p-8 min-h-[460px] max-h-[64vh] overflow-y-auto">
+        <div className="p-4 sm:p-8 min-h-[380px] sm:min-h-[460px] max-h-[66vh] overflow-y-auto">
           
           {/* STAGE 1: WELCOME */}
           {currentStage.id === 'welcome' && (
@@ -594,7 +596,7 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
               <div className="pt-2">
                 <button
                   onClick={handleComplete}
-                  className="w-full sm:w-auto px-8 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-sm transition-all inline-flex items-center justify-center space-x-2 shadow-sm"
+                  className="w-full sm:w-auto px-6 sm:px-8 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-sm transition-all inline-flex items-center justify-center space-x-2 shadow-sm min-h-[44px]"
                 >
                   <span>Start First Lesson Now</span>
                   <ArrowRight className="w-4 h-4 text-current" />
@@ -606,11 +608,11 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
         </div>
 
         {/* Bottom Navigation Footer Controls */}
-        <div className="flex items-center justify-between px-6 py-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60">
+        <div className="flex items-center justify-between px-3.5 sm:px-6 py-3 sm:py-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60">
           <button
             onClick={handlePrev}
             disabled={currentStageIndex === 0}
-            className={`inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            className={`inline-flex items-center space-x-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all min-h-[42px] ${
               currentStageIndex === 0
                 ? 'opacity-40 cursor-not-allowed text-slate-400'
                 : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
@@ -620,11 +622,11 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
             <span>Back</span>
           </button>
 
-          <div className="flex items-center space-x-2.5">
+          <div className="flex items-center space-x-2 sm:space-x-2.5">
             {currentStageIndex < TOUR_STAGES.length - 1 ? (
               <button
                 onClick={handleNext}
-                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all shadow-sm"
+                className="inline-flex items-center space-x-2 px-4 sm:px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all shadow-sm min-h-[42px]"
               >
                 <span>Next Step</span>
                 <ArrowRight className="w-4 h-4 text-current" />
@@ -632,7 +634,7 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onClose 
             ) : (
               <button
                 onClick={handleComplete}
-                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all shadow-sm"
+                className="inline-flex items-center space-x-2 px-4 sm:px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all shadow-sm min-h-[42px]"
               >
                 <span>Start Learning</span>
                 <Zap className="w-4 h-4 text-current fill-current" />

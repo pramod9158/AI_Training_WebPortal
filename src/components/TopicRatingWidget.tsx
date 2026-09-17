@@ -141,7 +141,7 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
         </div>
 
         {/* Aggregate Ratings Metric Pills */}
-        <div className="flex items-center space-x-3 text-xs font-mono text-slate-500 dark:text-slate-400">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
           {hasVotes ? (
             upvotePercent >= 50 ? (
               <div className="flex items-center space-x-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-xl border border-emerald-200 dark:border-emerald-800">
@@ -227,7 +227,7 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
             </div>
 
             {userRating?.feedbackText && (
-              <p className="text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/80 p-3 rounded-xl border border-slate-200 dark:border-slate-800 mt-1 max-w-xl">
+              <p className="text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/80 p-3 rounded-xl border border-slate-200 dark:border-slate-800 mt-1 max-w-xl break-words">
                 &quot;{userRating.feedbackText}&quot;
               </p>
             )}
@@ -239,7 +239,7 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
               setIsEditing(true);
               setShowFeedbackInput(Boolean(userRating?.feedbackText));
             }}
-            className="px-4 py-2 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-xs font-bold text-sky-600 dark:text-cyan-400 flex items-center space-x-1.5 transition-all shadow-sm self-start sm:self-center shrink-0 min-h-[40px] active:scale-95"
+            className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-xs font-bold text-sky-600 dark:text-cyan-400 flex items-center justify-center space-x-1.5 transition-all shadow-sm w-full sm:w-auto shrink-0 min-h-[44px] active:scale-95"
             title="Edit your feedback for this topic"
           >
             <Edit className="w-3.5 h-3.5" />
@@ -270,48 +270,48 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
                     setFeedback(userRating.feedbackText || '');
                   }
                 }}
-                className="text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white underline ml-2"
+                className="text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white underline ml-2 py-1"
               >
                 Cancel
               </button>
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
             
             {/* Thumbs Up / Down Quick Buttons */}
-            <div className="flex items-center space-x-3 w-full sm:w-auto">
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={() => handleVote('up')}
-                className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-2xl border-2 text-xs font-extrabold transition-all flex items-center justify-center space-x-2 min-h-[42px] ${
+                className={`flex-1 sm:flex-initial px-2.5 xs:px-4 py-2.5 rounded-2xl border-2 text-[11px] xs:text-xs font-extrabold transition-all flex items-center justify-center space-x-1.5 xs:space-x-2 min-h-[44px] ${
                   vote === 'up'
                     ? 'bg-emerald-500 text-white border-emerald-600 shadow-[0_2px_0_0_#047857]'
                     : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-emerald-400'
                 }`}
               >
-                <ThumbsUp className={`w-4 h-4 ${vote === 'up' ? 'fill-white' : ''}`} />
+                <ThumbsUp className={`w-4 h-4 shrink-0 ${vote === 'up' ? 'fill-white' : ''}`} />
                 <span>Thumbs Up ({stats.upvotes})</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleVote('down')}
-                className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-2xl border-2 text-xs font-extrabold transition-all flex items-center justify-center space-x-2 min-h-[42px] ${
+                className={`flex-1 sm:flex-initial px-2.5 xs:px-4 py-2.5 rounded-2xl border-2 text-[11px] xs:text-xs font-extrabold transition-all flex items-center justify-center space-x-1.5 xs:space-x-2 min-h-[44px] ${
                   vote === 'down'
                     ? 'bg-rose-500 text-white border-rose-600 shadow-[0_2px_0_0_#BE123C]'
                     : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-rose-400'
                 }`}
               >
-                <ThumbsDown className={`w-4 h-4 ${vote === 'down' ? 'fill-white' : ''}`} />
+                <ThumbsDown className={`w-4 h-4 shrink-0 ${vote === 'down' ? 'fill-white' : ''}`} />
                 <span>Needs Work ({stats.downvotes})</span>
               </button>
             </div>
 
             {/* 5-Star Interactive Rating: DEFAULT UNCOLORED, FILLS ON HOVER / RATE */}
-            <div className="w-full sm:w-auto flex items-center justify-center space-x-1.5 bg-slate-50 dark:bg-slate-800/80 px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700">
-              <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 mr-1.5">
-                {starRating > 0 ? `Your Rating (${starRating}★):` : 'Rate:'}
+            <div className="w-full sm:w-auto flex items-center justify-center space-x-1.5 bg-slate-50 dark:bg-slate-800/80 px-3 xs:px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 min-h-[44px]">
+              <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 mr-1">
+                {starRating > 0 ? `${starRating}★` : 'Rate:'}
               </span>
               {[1, 2, 3, 4, 5].map((star) => {
                 const isFilled = (hoverStar || starRating) >= star;
@@ -322,7 +322,7 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
                     onMouseEnter={() => setHoverStar(star)}
                     onMouseLeave={() => setHoverStar(0)}
                     onClick={() => handleStarSelect(star)}
-                    className="p-1 transition-transform hover:scale-125 focus:outline-none"
+                    className="p-1.5 transition-transform hover:scale-125 focus:outline-none min-w-[32px] min-h-[32px] flex items-center justify-center"
                     title={`Rate ${star} star${star > 1 ? 's' : ''}`}
                   >
                     <Star
@@ -345,7 +345,7 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
               <button
                 type="button"
                 onClick={() => setShowFeedbackInput(true)}
-                className="text-sky-600 dark:text-cyan-400 font-bold font-mono hover:underline flex items-center space-x-1"
+                className="text-sky-600 dark:text-cyan-400 font-bold font-mono hover:underline flex items-center space-x-1 min-h-[36px]"
               >
                 <MessageSquare className="w-3.5 h-3.5" />
                 <span>{feedback ? 'Edit your review' : '+ Write a review for this topic'}</span>
@@ -364,13 +364,13 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
                 <button
                   type="button"
                   onClick={() => setShowFeedbackInput(false)}
-                  className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 min-h-[42px]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold shadow-sm transition-all"
+                  className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold shadow-sm transition-all min-h-[42px]"
                 >
                   Submit & Lock Feedback
                 </button>
