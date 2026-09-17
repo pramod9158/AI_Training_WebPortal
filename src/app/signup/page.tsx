@@ -141,7 +141,7 @@ function SignupForm() {
 
   if (isConfirmationPending) {
     return (
-      <div className="w-full max-w-md bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-center animate-in fade-in duration-300">
+    <div className="w-full max-w-md bg-white/90 dark:bg-[#0D121F]/90 backdrop-blur-2xl border-2 border-slate-200/80 dark:border-slate-700/60 rounded-3xl p-6 sm:p-8 shadow-[0_32px_80px_-12px_rgba(0,0,0,0.18)] dark:shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] ring-1 ring-white/60 dark:ring-white/5 space-y-6 text-center animate-in fade-in duration-300">
         <div className="w-16 h-16 mx-auto rounded-3xl bg-sky-100 dark:bg-cyan-950/80 border-2 border-sky-300 dark:border-cyan-500/40 flex items-center justify-center text-sky-600 dark:text-cyan-400 shadow-md">
           <Mail className="w-8 h-8" />
         </div>
@@ -228,7 +228,7 @@ function SignupForm() {
   }
 
   return (
-    <div className="w-full max-w-md bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-4 xs:p-6 sm:p-8 shadow-2xl space-y-5 sm:space-y-6">
+    <div className="w-full max-w-md bg-white/90 dark:bg-[#0D121F]/90 backdrop-blur-2xl border-2 border-slate-200/80 dark:border-slate-700/60 rounded-2xl sm:rounded-3xl p-4 xs:p-6 sm:p-8 shadow-[0_32px_80px_-12px_rgba(0,0,0,0.18)] dark:shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] ring-1 ring-white/60 dark:ring-white/5 space-y-5 sm:space-y-6">
       
       <div className="text-center space-y-1.5">
         <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Create Student Account</h2>

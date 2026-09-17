@@ -161,7 +161,7 @@ function LoginForm() {
 
   if (showForgotPassword) {
     return (
-      <div className="w-full max-w-md bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 animate-in fade-in duration-200">
+      <div className="w-full max-w-md bg-white/90 dark:bg-[#0D121F]/90 backdrop-blur-2xl border-2 border-slate-200/80 dark:border-slate-700/60 rounded-3xl p-6 sm:p-8 shadow-[0_32px_80px_-12px_rgba(0,0,0,0.18)] dark:shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] ring-1 ring-white/60 dark:ring-white/5 space-y-6 animate-in fade-in duration-200">
         {/* User Account Does Not Exist Pop-up Modal */}
         {showUserNotFoundModal && (
           <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-4 flex items-center justify-center animate-in fade-in duration-200">
@@ -269,7 +269,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-4 xs:p-6 sm:p-8 shadow-2xl space-y-5 sm:space-y-6">
+    <div className="w-full max-w-md bg-white/90 dark:bg-[#0D121F]/90 backdrop-blur-2xl border-2 border-slate-200/80 dark:border-slate-700/60 rounded-2xl sm:rounded-3xl p-4 xs:p-6 sm:p-8 shadow-[0_32px_80px_-12px_rgba(0,0,0,0.18)] dark:shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] ring-1 ring-white/60 dark:ring-white/5 space-y-5 sm:space-y-6">
       
       <div className="text-center space-y-1.5">
         <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Student Login</h2>
