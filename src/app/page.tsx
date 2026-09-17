@@ -898,12 +898,12 @@ export default function HomePage() {
                 Chat on WhatsApp
               </a>
               <a
-                href="mailto:pramodgogadare@gmail.com?subject=Enquiry%20-%20Waynautic%20Academy%20AI%20Program&body=Hi%20Pramod%2C%0A%0AI%20am%20interested%20in%20learning%20more%20about%20the%20Waynautic%20Academy%20AI%20Engineering%20Program.%0A%0APlease%20share%20more%20details.%0A%0AThank%20you"
+                href="mailto:pramod.gogadare@waynautic.com?subject=Enquiry%20-%20Waynautic%20Academy%20AI%20Program&body=Hi%20Pramod%2C%0A%0AI%20am%20interested%20in%20learning%20more%20about%20the%20Waynautic%20Academy%20AI%20Engineering%20Program.%0A%0APlease%20share%20more%20details.%0A%0AThank%20you"
                 onClick={(e) => {
                   // Fallback: if mailto doesn't open within 500ms, open Gmail compose
                   const timeout = setTimeout(() => {
                     window.open(
-                      'https://mail.google.com/mail/?view=cm&to=pramodgogadare@gmail.com&su=Enquiry%20-%20Waynautic%20Academy%20AI%20Program&body=Hi%20Pramod%2C%0A%0AI%20am%20interested%20in%20learning%20more%20about%20the%20Waynautic%20Academy%20AI%20Engineering%20Program.%0A%0APlease%20share%20more%20details.',
+                      'https://mail.google.com/mail/?view=cm&to=pramod.gogadare@waynautic.com&su=Enquiry%20-%20Waynautic%20Academy%20AI%20Program&body=Hi%20Pramod%2C%0A%0AI%20am%20interested%20in%20learning%20more%20about%20the%20Waynautic%20Academy%20AI%20Engineering%20Program.%0A%0APlease%20share%20more%20details.',
                       '_blank'
                     );
                   }, 500);
