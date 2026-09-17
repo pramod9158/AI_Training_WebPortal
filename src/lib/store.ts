@@ -75,6 +75,29 @@ export function getYesterdayDateString(): string {
   return `${year}-${month}-${day}`;
 }
 
+export function toLocalDateString(dateInput: string | Date | null | undefined): string {
+  if (!dateInput) return '';
+  const d = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+  if (isNaN(d.getTime())) return '';
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+export function getCalendarDayDiff(fromDateStr: string, toDateStr: string): number {
+  if (!fromDateStr || !toDateStr) return -1;
+  const parts1 = fromDateStr.split('-').map(Number);
+  const parts2 = toDateStr.split('-').map(Number);
+  if (parts1.length !== 3 || parts2.length !== 3) return -1;
+  const [y1, m1, d1] = parts1;
+  const [y2, m2, d2] = parts2;
+  if (!y1 || !m1 || !d1 || !y2 || !m2 || !d2) return -1;
+  const utcd1 = Date.UTC(y1, m1 - 1, d1);
+  const utcd2 = Date.UTC(y2, m2 - 1, d2);
+  return Math.round((utcd2 - utcd1) / (1000 * 60 * 60 * 24));
+}
+
 export function loadProfile(): UserProfileState {
   const activeTheme = getStoredTheme();
   if (typeof window === 'undefined') {
@@ -185,6 +208,7 @@ export function saveLastAccessedTopic(topicId: string, tab?: 'watch' | 'read' | 
     lastAccessedTab: tab || 'watch',
     lastAccessedAt: now
   });
+  recordActivity();
 }
 
 export function loadProgress(): Record<string, UserProgress> {
@@ -328,7 +352,6 @@ export function loadStreak(): UserStreak {
   }
   const saved = localStorage.getItem(STREAK_KEY);
   const today = getTodayDateString();
-  const yesterday = getYesterdayDateString();
 
   if (saved) {
     try {
@@ -336,24 +359,25 @@ export function loadStreak(): UserStreak {
       if (!data.lastActiveDate) {
         return { currentStreak: 0, longestStreak: 0, lastActiveDate: '', weeklyActivity: {} };
       }
-      if (data.lastActiveDate === today || data.lastActiveDate === yesterday) {
+
+      const dayDiff = getCalendarDayDiff(data.lastActiveDate, today);
+
+      if (dayDiff === 0) {
+        // Active today: ensure streak is at least 1 (self-heal any stuck 0)
+        const currentStreak = Math.max(1, data.currentStreak || 1);
+        const longestStreak = Math.max(currentStreak, data.longestStreak || 1);
+        return { ...data, currentStreak, longestStreak };
+      } else if (dayDiff === 1) {
+        // Active yesterday: streak is alive at current count, waiting for today's activity
         return data;
       } else {
-        // Inactive for more than 1 day: streak reset to 0 until next activity
+        // Inactive for 2 or more days: streak reset to 0 until next activity
         const resetStreak: UserStreak = { 
           currentStreak: 0, 
           longestStreak: Math.max(data.longestStreak || 0, data.currentStreak || 0), 
           lastActiveDate: data.lastActiveDate,
           weeklyActivity: data.weeklyActivity || {}
         };
-        localStorage.setItem(STREAK_KEY, JSON.stringify(resetStreak));
-        if (isSupabaseConfigured && (data.currentStreak || 0) > 0) {
-          supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session?.user) {
-              supabase.from('user_profiles').update({ streak_days: 0 }).eq('id', session.user.id).then();
-            }
-          }).catch(() => {});
-        }
         return resetStreak;
       }
     } catch (e) {
@@ -363,39 +387,56 @@ export function loadStreak(): UserStreak {
   return { currentStreak: 0, longestStreak: 0, lastActiveDate: '', weeklyActivity: {} };
 }
 
-export async function recordActivity() {
+export async function recordActivity(): Promise<UserStreak | undefined> {
   if (typeof window === 'undefined') return;
   const today = getTodayDateString();
-  const yesterday = getYesterdayDateString();
   const saved = localStorage.getItem(STREAK_KEY);
+
+  const dayKeys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  const currentDayKey = dayKeys[new Date().getDay()];
 
   let currentStreak = 1;
   let longestStreak = 1;
   let weeklyActivity: Record<string, boolean> = {};
 
-  const dayKeys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-  const currentDayKey = dayKeys[new Date().getDay()];
-
   if (saved) {
     try {
       const data: UserStreak = JSON.parse(saved);
       longestStreak = data.longestStreak || 1;
-      weeklyActivity = data.weeklyActivity || {};
+      weeklyActivity = { ...(data.weeklyActivity || {}) };
 
-      if (data.lastActiveDate === today) {
-        // Ensure today's day key is set
-        weeklyActivity[currentDayKey] = true;
-        const updated: UserStreak = { ...data, weeklyActivity };
-        localStorage.setItem(STREAK_KEY, JSON.stringify(updated));
-        return;
-      } else if (data.lastActiveDate === yesterday) {
-        // Consecutive day activity!
-        currentStreak = (data.currentStreak || 0) + 1;
+      if (data.lastActiveDate) {
+        const dayDiff = getCalendarDayDiff(data.lastActiveDate, today);
+
+        if (dayDiff === 0) {
+          // Already recorded active today: ensure streak is at least 1, mark today
+          currentStreak = Math.max(1, data.currentStreak || 1);
+          longestStreak = Math.max(currentStreak, longestStreak);
+          weeklyActivity[currentDayKey] = true;
+
+          const updated: UserStreak = {
+            ...data,
+            currentStreak,
+            longestStreak,
+            lastActiveDate: today,
+            weeklyActivity
+          };
+          localStorage.setItem(STREAK_KEY, JSON.stringify(updated));
+          return updated;
+        } else if (dayDiff === 1) {
+          // Consecutive day activity! Advance streak
+          currentStreak = (data.currentStreak || 0) + 1;
+          longestStreak = Math.max(currentStreak, longestStreak);
+        } else {
+          // Streak broken by 2+ days gap, start fresh streak of 1
+          currentStreak = 1;
+          longestStreak = Math.max(1, longestStreak);
+        }
       } else {
-        // Streak broken, starting new streak of 1
+        // First activity ever
         currentStreak = 1;
+        longestStreak = Math.max(1, longestStreak);
       }
-      longestStreak = Math.max(currentStreak, longestStreak);
     } catch (e) {
       console.error('Failed to record activity', e);
     }
@@ -427,6 +468,8 @@ export async function recordActivity() {
       console.error('Error syncing streak to Supabase:', err);
     }
   }
+
+  return updated;
 }
 
 export function loadBookmarks(): string[] {
@@ -785,22 +828,43 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
 
     // 5. User Streak from profile (Strict user isolation & automatic inactivity reset)
     const todayStr = getTodayDateString();
-    const yesterdayStr = getYesterdayDateString();
-    const rawActive = profileData?.last_active_at ? profileData.last_active_at.split('T')[0] : '';
-    let currentStreak = profileData?.streak_days || 0;
+    const existingLocal = loadStreak();
+    const dbLocalDate = toLocalDateString(profileData?.last_active_at);
+
+    // Pick the most recent active date between local store and DB
+    const effectiveActiveDate = (dbLocalDate && (!existingLocal.lastActiveDate || dbLocalDate >= existingLocal.lastActiveDate))
+      ? dbLocalDate
+      : (existingLocal.lastActiveDate || dbLocalDate || '');
+
+    const dayDiff = effectiveActiveDate ? getCalendarDayDiff(effectiveActiveDate, todayStr) : -1;
+    let currentStreak = Math.max(profileData?.streak_days || 0, existingLocal.currentStreak || 0);
+    let longestStreak = Math.max(profileData?.streak_days || 0, existingLocal.longestStreak || 0, currentStreak);
     let isBroken = false;
 
-    if (!rawActive || (rawActive !== todayStr && rawActive !== yesterdayStr)) {
-      // Inactive for more than 1 day: streak reset to 0
+    if (dayDiff === 0) {
+      // Active today: ensure streak is at least 1
+      currentStreak = Math.max(1, currentStreak);
+    } else if (dayDiff === 1) {
+      // Active yesterday: streak is alive at current count (at risk until activity today)
+      currentStreak = Math.max(1, currentStreak);
+    } else if (dayDiff > 1) {
+      // Inactive for 2 or more days: streak reset to 0
       currentStreak = 0;
       isBroken = true;
     }
 
+    const dayKeys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+    const currentDayKey = dayKeys[new Date().getDay()];
+    const weeklyActivity = { ...(existingLocal.weeklyActivity || {}) };
+    if (dayDiff === 0) {
+      weeklyActivity[currentDayKey] = true;
+    }
+
     const userStreak: UserStreak = {
       currentStreak,
-      longestStreak: Math.max(profileData?.streak_days || 0, currentStreak),
-      lastActiveDate: rawActive,
-      weeklyActivity: {}
+      longestStreak: Math.max(longestStreak, currentStreak),
+      lastActiveDate: effectiveActiveDate,
+      weeklyActivity
     };
     localStorage.setItem(STREAK_KEY, JSON.stringify(userStreak));
 
@@ -932,6 +996,7 @@ export async function addTopicComment(
   const list = all[topicId] || [];
   all[topicId] = [newComment, ...list];
   localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
+  recordActivity();
   window.dispatchEvent(new Event('waynautic_storage_change'));
 
   if (isSupabaseConfigured) {
@@ -1466,22 +1531,30 @@ export function useWaynauticStore() {
     // Eager instant sync on hard refresh / mount:
     const cachedProfile = loadProfile();
     if (cachedProfile.userId && isSupabaseConfigured) {
-      fetchAndSyncCloudUser({ id: cachedProfile.userId, email: cachedProfile.email });
+      fetchAndSyncCloudUser({ id: cachedProfile.userId, email: cachedProfile.email }).then(() => {
+        recordActivity();
+      });
       ensureRealtimeSync(cachedProfile.userId, cachedProfile.email);
+    } else {
+      recordActivity();
     }
 
     // Sync with Supabase on mount if logged in
     if (isSupabaseConfigured) {
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.user) {
-          fetchAndSyncCloudUser(session.user);
+          fetchAndSyncCloudUser(session.user).then(() => {
+            recordActivity();
+          });
           ensureRealtimeSync(session.user.id, session.user.email);
         }
       });
 
       const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
         if (session?.user) {
-          fetchAndSyncCloudUser(session.user);
+          fetchAndSyncCloudUser(session.user).then(() => {
+            recordActivity();
+          });
           ensureRealtimeSync(session.user.id, session.user.email);
         } else if (event === 'SIGNED_OUT') {
           cleanupRealtimeSync();

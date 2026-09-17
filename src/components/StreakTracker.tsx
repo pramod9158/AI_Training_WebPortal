@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Flame, Calendar, AlertTriangle, Zap, Check, Sparkles } from 'lucide-react';
-import { useWaynauticStore, getTodayDateString, getYesterdayDateString } from '@/lib/store';
+import { useWaynauticStore, getTodayDateString, getCalendarDayDiff } from '@/lib/store';
 import { getResumeLearningUrl } from '@/lib/curriculumService';
 
 interface StreakTrackerProps {
@@ -13,11 +13,11 @@ interface StreakTrackerProps {
 export function StreakTracker({ variant = 'full' }: StreakTrackerProps) {
   const { streak, profile, progress } = useWaynauticStore();
   const today = getTodayDateString();
-  const yesterday = getYesterdayDateString();
+  const dayDiff = streak.lastActiveDate ? getCalendarDayDiff(streak.lastActiveDate, today) : -1;
 
   // Streak at risk condition: active yesterday, but not yet active today
-  const isStreakAtRisk = streak.lastActiveDate === yesterday && streak.lastActiveDate !== today && streak.currentStreak > 0;
-  const isActiveToday = streak.lastActiveDate === today;
+  const isStreakAtRisk = dayDiff === 1 && streak.currentStreak > 0;
+  const isActiveToday = dayDiff === 0;
 
   const daysOfWeek = [
     { key: 'mon', label: 'M' },
