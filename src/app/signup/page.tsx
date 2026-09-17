@@ -228,8 +228,11 @@ function SignupForm() {
   }
 
   return (
-    <div className="w-full max-w-md bg-white/90 dark:bg-[#0D121F]/90 backdrop-blur-2xl border-2 border-slate-200/80 dark:border-slate-700/60 rounded-2xl sm:rounded-3xl p-4 xs:p-6 sm:p-8 shadow-[0_32px_80px_-12px_rgba(0,0,0,0.18)] dark:shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] ring-1 ring-white/60 dark:ring-white/5 space-y-5 sm:space-y-6">
+    <div className="w-full max-w-md bg-white dark:bg-[#0F172A] border border-slate-200/90 dark:border-slate-700/80 rounded-3xl p-5 xs:p-7 sm:p-9 shadow-[0_25px_60px_-12px_rgba(15,23,42,0.32),0_12px_24px_-8px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.06)] dark:shadow-[0_25px_60px_-12px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.1)] ring-8 ring-black/[0.04] dark:ring-white/[0.03] space-y-5 sm:space-y-6 relative transition-all">
       
+      {/* Top accent pill indicator */}
+      <div className="w-14 h-1.5 mx-auto rounded-full bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 mb-2" />
+
       <div className="text-center space-y-1.5">
         <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Create Student Account</h2>
         <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">

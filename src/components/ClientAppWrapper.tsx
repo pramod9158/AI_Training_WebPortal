@@ -72,10 +72,10 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
           aria-hidden="true"
           className="fixed inset-0 z-0 pointer-events-none select-none overflow-hidden"
         >
-          {/* Real hero landing page content with very subtle blur (2px) so it is clearly discernible */}
+          {/* Real hero landing page content with softened blur (6px) so it is differentiated yet visible */}
           <div
             className="absolute inset-0 scale-[1.01] origin-top overflow-hidden"
-            style={{ filter: 'blur(2.5px)' }}
+            style={{ filter: 'blur(6px)' }}
           >
             {/* Ambient glows matching hero */}
             <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-[#0B0F19] dark:via-slate-900 dark:to-[#0B0F19]" />
@@ -194,8 +194,8 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
             </div>
           </div>
 
-          {/* Transparent overlay: 10% white / 20% dark so background is almost completely visible */}
-          <div className="absolute inset-0 bg-white/10 dark:bg-[#0B0F19]/25 pointer-events-none" />
+          {/* Subtle contrast overlay: dims and softens background so login window pops */}
+          <div className="absolute inset-0 bg-slate-900/8 dark:bg-black/40 backdrop-blur-[2px] pointer-events-none" />
         </div>
 
         {/* ── Auth UI layer (sits above the blurred background) ────────────── */}
