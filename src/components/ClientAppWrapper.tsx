@@ -9,6 +9,7 @@ import { Footer } from './Footer';
 import { SearchModal } from './SearchModal';
 import { useWaynauticStore, getStoredTheme } from '@/lib/store';
 import { fetchCurriculumUpdates } from '@/lib/curriculumService';
+import { Sparkles, BookOpen, CheckCircle2 } from 'lucide-react';
 
 export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -66,93 +67,135 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
     return (
       <div className="min-h-screen flex flex-col relative overflow-hidden text-slate-900 dark:text-slate-100">
 
-        {/* ── Blurred hero page preview (background layer) ─────────────────── */}
+        {/* ── Realistic translucent hero page preview (background layer) ─────────────────── */}
         <div
           aria-hidden="true"
           className="fixed inset-0 z-0 pointer-events-none select-none overflow-hidden"
         >
-          {/* Blurred snapshot of the hero landing page */}
-          <div className="absolute inset-0 scale-[1.05] origin-center" style={{ filter: 'blur(14px)' }}>
+          {/* Real hero landing page content with very subtle blur (2px) so it is clearly discernible */}
+          <div
+            className="absolute inset-0 scale-[1.01] origin-top overflow-hidden"
+            style={{ filter: 'blur(2.5px)' }}
+          >
             {/* Ambient glows matching hero */}
             <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-[#0B0F19] dark:via-slate-900 dark:to-[#0B0F19]" />
-            <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[550px] bg-gradient-to-br from-cyan-400/30 via-blue-500/20 to-violet-500/25 rounded-full" />
-            <div className="absolute top-1/3 -right-40 w-[500px] h-[500px] bg-gradient-to-bl from-violet-400/20 to-transparent rounded-full" />
-            <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-gradient-to-tr from-cyan-400/15 to-transparent rounded-full" />
+            <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[550px] bg-gradient-to-br from-cyan-400/25 via-blue-500/20 to-violet-500/20 rounded-full blur-[90px]" />
+            <div className="absolute top-1/3 -right-40 w-[500px] h-[500px] bg-gradient-to-bl from-violet-400/15 to-transparent rounded-full blur-[80px]" />
+            <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-gradient-to-tr from-cyan-400/15 to-transparent rounded-full blur-[70px]" />
 
-            {/* Hero text silhouette */}
-            <div className="absolute top-[12%] left-1/2 -translate-x-1/2 w-full max-w-4xl px-8">
-              {/* Badge pill */}
-              <div className="flex justify-center lg:justify-start mb-5">
-                <div className="h-7 w-72 rounded-full bg-cyan-500/20 border border-cyan-400/30" />
-              </div>
-              {/* Headline blocks */}
-              <div className="space-y-4 mb-8">
-                <div className="h-12 sm:h-16 w-[85%] rounded-2xl bg-slate-800/15 dark:bg-white/10" />
-                <div className="h-12 sm:h-16 w-[65%] rounded-2xl bg-slate-800/10 dark:bg-white/8" />
-              </div>
-              {/* Sub text */}
-              <div className="space-y-2.5 mb-8">
-                <div className="h-4 w-[75%] rounded-lg bg-slate-500/15 dark:bg-white/8" />
-                <div className="h-4 w-[60%] rounded-lg bg-slate-500/10 dark:bg-white/6" />
-              </div>
-              {/* CTA buttons */}
-              <div className="flex gap-4">
-                <div className="h-12 w-48 rounded-2xl bg-gradient-to-r from-cyan-400/50 to-blue-500/50" />
-                <div className="h-12 w-44 rounded-2xl border-2 border-slate-300/40 dark:border-slate-600/40 bg-white/20" />
-              </div>
-            </div>
+            {/* Content container */}
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-20">
+              <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-14">
 
-            {/* Right floating card silhouette — hidden on mobile, only decorative on desktop */}
-            <div className="hidden md:block absolute top-[10%] right-[6%] w-72 lg:w-80 h-96 rounded-3xl bg-white/40 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/50 shadow-2xl">
-              {/* Card header */}
-              <div className="p-5 border-b border-slate-200/40 dark:border-slate-700/40 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400/60 to-violet-500/60" />
-                <div className="space-y-1.5 flex-1">
-                  <div className="h-2 w-24 rounded bg-slate-400/30 dark:bg-white/20" />
-                  <div className="h-3 w-36 rounded bg-slate-500/25 dark:bg-white/15" />
-                </div>
-                <div className="h-6 w-14 rounded-lg bg-emerald-400/40" />
-              </div>
-              {/* Tag chips */}
-              <div className="p-5 flex flex-wrap gap-2">
-                {['LLMs', 'Prompts', 'Vector DB', 'RAG', 'AI IDEs', 'APIs', 'Local AI'].map((t) => (
-                  <div key={t} className="h-7 px-3 rounded-xl bg-slate-400/20 dark:bg-white/10 flex items-center">
-                    <div className="h-2 w-12 rounded bg-slate-400/40 dark:bg-white/20" />
+                {/* Left: Real Hero Copy */}
+                <div className="flex-1 text-center lg:text-left">
+                  {/* Badge */}
+                  <div className="flex justify-center lg:justify-start mb-5">
+                    <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 text-xs font-mono font-semibold">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      AI-First Curriculum — 56 Curated Topics
+                    </span>
                   </div>
-                ))}
-              </div>
-              {/* Progress bars */}
-              <div className="px-5 space-y-3">
-                {[85, 60, 40].map((w) => (
-                  <div key={w}>
-                    <div className="h-1.5 bg-slate-200/40 dark:bg-slate-700/40 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-cyan-400/60 to-blue-500/60 rounded-full" style={{ width: `${w}%` }} />
+
+                  {/* Headline */}
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-slate-900 dark:text-white mb-5">
+                    The{' '}
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500">
+                      Fastest Way
+                    </span>
+                    {' '}to Master{' '}
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-pink-500">
+                      AI Engineering
+                    </span>
+                  </h1>
+
+                  {/* Subheadline */}
+                  <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-6">
+                    Waynautic Academy is a structured, hands-on learning platform for developers.
+                    Go from <strong className="text-slate-800 dark:text-white">Python basics</strong> to building{' '}
+                    <strong className="text-slate-800 dark:text-white">production-grade RAG pipelines</strong> and{' '}
+                    <strong className="text-slate-800 dark:text-white">agentic AI systems</strong> — at your own pace.
+                  </p>
+
+                  {/* CTA button */}
+                  <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-6">
+                    <div className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 text-white font-bold text-sm shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2">
+                      <BookOpen className="w-4 h-4 text-cyan-200" />
+                      <span>Browse Curriculum</span>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
 
-            {/* Stats strip silhouette */}
-            <div className="absolute top-[72%] left-0 right-0 h-20 bg-slate-100/50 dark:bg-slate-800/30 flex items-center justify-center gap-6 sm:gap-16 px-4 sm:px-8">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="text-center space-y-1.5">
-                  <div className="h-8 w-16 rounded-lg bg-slate-400/20 dark:bg-white/10 mx-auto" />
-                  <div className="h-2 w-20 rounded bg-slate-300/30 dark:bg-white/8 mx-auto" />
+                  {/* Trust badges */}
+                  <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-5 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    {['Self-Paced', 'Expert-Curated', 'Project-Based', 'Quizzes & Badges'].map((label) => (
+                      <span key={label} className="flex items-center gap-1.5 font-semibold">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                        {label}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
 
-            {/* Module grid silhouette — only show on wider screens */}
-            <div className="hidden sm:grid absolute top-[85%] left-8 right-8 grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-32 rounded-2xl bg-white/40 dark:bg-slate-800/30 border border-slate-200/40 dark:border-slate-700/30" />
-              ))}
+                {/* Right: Real Interactive Card Preview */}
+                <div className="hidden md:block w-72 lg:w-80 rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-2xl p-5 space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                    <div>
+                      <div className="text-[10px] font-mono uppercase text-cyan-600 dark:text-cyan-400 font-bold">Comprehensive Curriculum</div>
+                      <div className="text-sm font-extrabold text-slate-900 dark:text-white">10 Modules • 56 Lessons</div>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400">Live</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {['LLMs', 'Prompt Engineering', 'Vector DB', 'RAG Systems', 'AI IDEs', 'Local AI', 'MCP Foundations'].map((tag) => (
+                      <span key={tag} className="px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-cyan-50 dark:bg-cyan-950/50 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800/40">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="space-y-2 pt-2">
+                    <div className="flex justify-between text-[11px] font-semibold text-slate-500">
+                      <span>RAG & Vector Search</span>
+                      <span>85%</span>
+                    </div>
+                    <div className="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full" style={{ width: '85%' }} />
+                    </div>
+                    <div className="flex justify-between text-[11px] font-semibold text-slate-500 pt-1">
+                      <span>Agentic Workflows</span>
+                      <span>70%</span>
+                    </div>
+                    <div className="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-violet-500 to-pink-500 rounded-full" style={{ width: '70%' }} />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Stats Bar Preview */}
+              <div className="mt-10 max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-2xl bg-white/75 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 text-center shadow-lg">
+                <div>
+                  <div className="text-2xl font-black text-cyan-600 dark:text-cyan-400">56</div>
+                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">In-Depth Topics</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-black text-blue-600 dark:text-blue-400">10</div>
+                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">Core Modules</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-black text-violet-600 dark:text-violet-400">4 Weeks</div>
+                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">Structured Path</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">4–5 Projects</div>
+                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">Agentic AI Portfolios</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Overlay: 40% white = 60% transparency so hero glows show through */}
-          <div className="absolute inset-0 bg-white/40 dark:bg-[#0B0F19]/50 backdrop-blur-[4px]" />
+          {/* Transparent overlay: 10% white / 20% dark so background is almost completely visible */}
+          <div className="absolute inset-0 bg-white/10 dark:bg-[#0B0F19]/25 pointer-events-none" />
         </div>
 
         {/* ── Auth UI layer (sits above the blurred background) ────────────── */}

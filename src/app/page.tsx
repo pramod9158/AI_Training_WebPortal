@@ -407,19 +407,12 @@ export default function HomePage() {
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-8">
               <Link
-                href={isLoggedIn ? '/curriculum' : '/signup'}
+                href="/curriculum"
                 className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 text-white font-bold text-sm sm:text-base shadow-xl shadow-blue-500/25 hover:brightness-110 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 group"
               >
-                <Zap className="w-5 h-5 fill-white group-hover:scale-110 transition-transform" />
-                {isLoggedIn ? 'Continue Learning' : 'Start Learning — Free'}
+                <BookOpen className="w-5 h-5 text-cyan-200" />
+                <span>Browse Curriculum</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                href="/curriculum"
-                className="w-full sm:w-auto px-7 py-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-cyan-400 dark:hover:border-cyan-500 hover:text-cyan-700 dark:hover:text-cyan-300 font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 bg-white dark:bg-slate-900/60"
-              >
-                <BookOpen className="w-5 h-5" />
-                Browse Curriculum
               </Link>
             </div>
 
