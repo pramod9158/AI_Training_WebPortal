@@ -1088,7 +1088,6 @@ export default function AdminDashboardPage() {
                         <th className="pb-3 pl-2">#</th>
                         <th className="pb-3">Module</th>
                         <th className="pb-3">Topic Title & Slug</th>
-                        <th className="pb-3">Duration</th>
                         <th className="pb-3 text-right pr-2">Actions</th>
                       </tr>
                     </thead>
@@ -1110,12 +1109,6 @@ export default function AdminDashboardPage() {
                               <div className="font-mono text-[11px] text-slate-400 truncate max-w-xs">
                                 /{t.moduleSlug}/{t.slug}
                               </div>
-                            </td>
-                            <td className="py-3.5 whitespace-nowrap">
-                              <span className="flex items-center space-x-1 text-slate-600 dark:text-slate-300">
-                                <Clock className="w-3 h-3 text-slate-400" />
-                                <span>{t.estimatedMinutes} mins</span>
-                              </span>
                             </td>
                             <td className="py-3.5 pr-2 text-right whitespace-nowrap">
                               <div className="flex items-center justify-end space-x-1.5">

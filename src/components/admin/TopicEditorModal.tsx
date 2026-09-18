@@ -648,35 +648,18 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
                 <span>Video Content (Paste Embed URL)</span>
               </label>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="sm:col-span-2 space-y-1">
-                  <span className="text-[11px] text-slate-400 block font-medium">Or Direct Video / Embed URL:</span>
-                  <input
-                    type="url"
-                    value={videoUrl}
-                    onChange={(e) => {
-                      setVideoUrl(e.target.value);
-                      setVideoFileName('');
-                    }}
-                    placeholder="https://www.youtube.com/embed/... or direct .mp4 link"
-                    className="w-full p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white font-mono text-xs focus:outline-none focus:border-sky-500"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <span className="text-[11px] text-slate-400 block font-medium">Est. Duration:</span>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      min={1}
-                      max={180}
-                      value={estimatedMinutes}
-                      onChange={(e) => setEstimatedMinutes(Number(e.target.value))}
-                      className="w-full p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-xs sm:text-sm font-semibold focus:outline-none focus:border-sky-500"
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-mono">mins</span>
-                  </div>
-                </div>
+              <div className="space-y-1">
+                <span className="text-[11px] text-slate-400 block font-medium">Or Direct Video / Embed URL:</span>
+                <input
+                  type="url"
+                  value={videoUrl}
+                  onChange={(e) => {
+                    setVideoUrl(e.target.value);
+                    setVideoFileName('');
+                  }}
+                  placeholder="https://www.youtube.com/embed/... or direct .mp4 link"
+                  className="w-full p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white font-mono text-xs focus:outline-none focus:border-sky-500"
+                />
               </div>
 
               {/* Video Player Live Preview */}
