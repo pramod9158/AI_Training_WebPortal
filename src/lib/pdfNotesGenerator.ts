@@ -137,8 +137,8 @@ function computeSmartPageSlices(container: HTMLElement, maxPageHeightPx: number,
         }
       }
 
-      // Avoid leaving an orphaned heading at the bottom of the page
-      if (b.isHeading && b.top > targetEndY - 85 && b.top < targetEndY && b.top > currentY + 100) {
+      // Avoid leaving an orphaned heading at the very bottom edge of the page
+      if (b.isHeading && b.top > targetEndY - 50 && b.top < targetEndY && b.top > currentY + 150) {
         bestBreakY = b.top;
         foundCleanBreak = true;
         break;

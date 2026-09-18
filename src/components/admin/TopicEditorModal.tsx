@@ -26,7 +26,7 @@ import {
   AlertCircle,
   Sparkles
 } from 'lucide-react';
-import { convertMarkdownToVisualNotes } from '@/lib/visualNotesConverter';
+import { cleanNotesContent, convertMarkdownToVisualNotes } from '@/lib/visualNotesConverter';
 import { MarkdownNotes } from '@/components/MarkdownNotes';
 
 interface TopicEditorModalProps {
@@ -223,16 +223,12 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
             }
           }
 
-          const processedText = isMd ? convertMarkdownToVisualNotes(text, activeTitle) : text;
+          const processedText = isMd ? cleanNotesContent(text) : text;
           setTextContent(processedText);
           setNotesFileName(`${file.name} (${Math.round(file.size / 1024)} KB)`);
           // Automatically switch to Live Preview so admin sees the visual notes immediately
           setNotesPreviewMode('preview');
-          setSuccessMessage(
-            isMd
-              ? `Notes file "${file.name}" converted into Masterclass visual notes with Mind Map!`
-              : `Notes file "${file.name}" uploaded and loaded into editor.`
-          );
+          setSuccessMessage(`Notes file "${file.name}" uploaded successfully.`);
           setTimeout(() => setSuccessMessage(''), 3500);
         }
       };
@@ -294,11 +290,11 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
 
     setIsSubmitting(true);
     try {
-      // Auto-format markdown notes into full Masterclass visual format
+      // Clean any accidental boilerplate and keep user's genuine notes
       let finalNotes = textContent.trim();
       const isMd = !finalNotes.startsWith('<!DOCTYPE') && !finalNotes.startsWith('<html') && !finalNotes.startsWith('<div');
       if (isMd && finalNotes.length > 0) {
-        finalNotes = convertMarkdownToVisualNotes(finalNotes, title);
+        finalNotes = cleanNotesContent(finalNotes);
       }
 
       const saved = await saveTopic({
@@ -705,21 +701,21 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
                     )}
                   </button>
 
-                  {/* Format as Masterclass Notes Button */}
+                  {/* Format & Clean Notes Button */}
                   <button
                     type="button"
                     onClick={() => {
                       if (!textContent.trim()) return;
-                      const formatted = convertMarkdownToVisualNotes(textContent, title);
-                      setTextContent(formatted);
-                      setSuccessMessage('Notes converted to Masterclass visual format (Executive summary, Mind Map & Chapters)!');
+                      const cleaned = cleanNotesContent(textContent);
+                      setTextContent(cleaned);
+                      setSuccessMessage('Notes cleaned of any artificial boilerplate!');
                       setTimeout(() => setSuccessMessage(''), 3500);
                     }}
-                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 text-white text-xs font-extrabold flex items-center space-x-1.5 shadow-sm transition-all cursor-pointer"
-                    title="Convert plain notes into Masterclass visual notes"
+                    className="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center space-x-1.5 shadow-sm transition-all cursor-pointer"
+                    title="Clean formatting and remove any artificial boilerplate"
                   >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Convert to Visual Notes</span>
+                    <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Clean & Format</span>
                   </button>
 
                   {/* Upload Notes File Button */}
