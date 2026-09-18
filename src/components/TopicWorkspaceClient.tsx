@@ -255,9 +255,9 @@ export function TopicWorkspaceClient() {
     }
   };
 
-  const handleDownloadPdfNotes = () => {
+  const handleDownloadPdfNotes = async () => {
     trackPdfDownloaded(topic.title, 'topic');
-    generateAndDownloadTopicPdf({
+    await generateAndDownloadTopicPdf({
       title: topic.title,
       slug: topic.slug,
       textContent: topic.textContent,

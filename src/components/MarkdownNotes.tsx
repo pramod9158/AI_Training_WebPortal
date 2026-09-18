@@ -66,10 +66,10 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
     return content;
   }, [content, topicTitle, isHtmlContent]);
 
-  const handleDownloadPdf = () => {
+  const handleDownloadPdf = async () => {
     try {
       setIsGeneratingPdf(true);
-      generateAndDownloadTopicPdf({
+      await generateAndDownloadTopicPdf({
         title: topicTitle,
         slug: topicSlug,
         textContent: displayContent,

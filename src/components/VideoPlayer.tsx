@@ -142,6 +142,30 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     url.startsWith('blob:') || 
     url.startsWith('data:video');
 
+  // Extract YouTube Video ID for thumbnail
+  const youtubeVideoId = useMemo(() => {
+    if (!url) return null;
+    if (url.includes('youtube.com/watch?v=')) {
+      return url.split('v=')[1]?.split('&')[0] || null;
+    }
+    if (url.includes('youtu.be/')) {
+      return url.split('youtu.be/')[1]?.split('?')[0] || null;
+    }
+    if (url.includes('youtube.com/embed/')) {
+      const afterEmbed = url.split('youtube.com/embed/')[1];
+      return afterEmbed?.split('?')[0]?.split('/')[0] || null;
+    }
+    return null;
+  }, [url]);
+
+  // YouTube thumbnail URL (maxresdefault for HD, hqdefault as fallback)
+  const thumbnailUrl = useMemo(() => {
+    if (!youtubeVideoId) return null;
+    return `https://img.youtube.com/vi/${youtubeVideoId}/maxresdefault.jpg`;
+  }, [youtubeVideoId]);
+
+  const [thumbnailError, setThumbnailError] = useState(false);
+
   // Convert watch URL to embed URL with enablejsapi=1 and initial start time
   const getEmbedUrl = useCallback((rawUrl: string, startTime = 0) => {
     let baseEmbed = 'https://www.youtube.com/embed/zxQyTK8ckyY';
@@ -407,8 +431,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               </a>
               {notesContent && (
                 <button
-                  onClick={() => {
-                    generateAndDownloadTopicPdf({
+                  onClick={async () => {
+                    await generateAndDownloadTopicPdf({
                       title,
                       slug: topicId || 'topic',
                       textContent: notesContent,
@@ -473,13 +497,31 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             />
           )
         ) : (
-          /* Cover & Launch Screen */
+          /* Cover & Launch Screen with YouTube Thumbnail */
           <div 
-            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-900/90 via-[#0A0F1E] to-[#04060B] cursor-pointer" 
+            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center cursor-pointer" 
             onClick={handleLaunchPlayer}
           >
-            {/* Ambient Animated Glow */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-sky-500/15 via-cyan-500/10 to-indigo-600/15 backdrop-blur-[2px] pointer-events-none" />
+            {/* Thumbnail Background Image */}
+            {thumbnailUrl && !thumbnailError ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={thumbnailUrl}
+                  alt={`${title} thumbnail`}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={() => setThumbnailError(true)}
+                />
+                {/* Dark overlay for contrast on thumbnail */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70 pointer-events-none" />
+              </>
+            ) : (
+              <>
+                {/* Gradient fallback when no thumbnail */}
+                <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-[#0A0F1E] to-[#04060B]" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-sky-500/15 via-cyan-500/10 to-indigo-600/15 backdrop-blur-[2px] pointer-events-none" />
+              </>
+            )}
 
             {/* Play Button Trigger */}
             <button
@@ -489,7 +531,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               <Play className="w-6 h-6 sm:w-8 sm:h-8 fill-slate-900 ml-0.5" />
             </button>
 
-            <h3 className="relative z-10 mt-4 text-sm sm:text-xl font-extrabold text-white max-w-xl px-4 drop-shadow-md">
+            <h3 className="relative z-10 mt-4 text-sm sm:text-xl font-extrabold text-white max-w-xl px-4 drop-shadow-lg">
               {title}
             </h3>
 
@@ -500,7 +542,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 <span>Click to Resume from {formatTime(resumedFrom)}</span>
               </div>
             ) : (
-              <p className="relative z-10 text-xs text-slate-300 mt-2 font-medium">
+              <p className="relative z-10 text-xs text-slate-200 mt-2 font-medium drop-shadow-md">
                 Click to launch interactive 16:9 adaptive video player
               </p>
             )}
@@ -616,8 +658,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           {/* Quick PDF Notes Download */}
           {notesContent && (
             <button
-              onClick={() => {
-                generateAndDownloadTopicPdf({
+              onClick={async () => {
+                await generateAndDownloadTopicPdf({
                   title,
                   textContent: notesContent,
                   moduleTitle

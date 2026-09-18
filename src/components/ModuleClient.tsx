@@ -110,8 +110,8 @@ export function ModuleClient() {
           {/* Action CTAs: Start Module & Download Full Module PDF */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto shrink-0">
             <button
-              onClick={() => {
-                generateAndDownloadModulePdf({
+              onClick={async () => {
+                await generateAndDownloadModulePdf({
                   moduleTitle: moduleData.title,
                   moduleSlug: moduleData.slug,
                   topics: moduleTopics
