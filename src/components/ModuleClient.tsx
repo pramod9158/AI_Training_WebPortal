@@ -53,7 +53,8 @@ export function ModuleClient() {
   }
 
   const Icon = ICON_MAP[moduleData.iconName] || Brain;
-  const moduleTopics = topics.filter((t) => t.moduleSlug === moduleSlug);
+  const moduleTopics = [...topics.filter((t) => t.moduleSlug === moduleSlug)]
+    .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
   const completedCount = moduleTopics.filter(
     (t) => progress[t.id]?.status === 'completed'
   ).length;
@@ -181,10 +182,10 @@ export function ModuleClient() {
                 }`}
               >
                 <div className="flex items-center space-x-2.5 sm:space-x-4 min-w-0 flex-1">
-                  <span className={`font-mono font-bold text-xs sm:text-base shrink-0 w-5 sm:w-6 text-left ${
+                  <span className={`font-mono font-bold text-xs sm:text-base shrink-0 w-6 sm:w-8 text-left ${
                     isCompleted ? 'text-emerald-400' : 'text-slate-400 group-hover:text-cyan-400'
                   } transition-colors`}>
-                    {index + 1}.
+                    {topic.orderIndex !== undefined ? `${topic.orderIndex}.` : `${index + 1}.`}
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center space-x-1.5 sm:space-x-2">

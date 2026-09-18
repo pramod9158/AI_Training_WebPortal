@@ -136,6 +136,12 @@ export function getAllTopics(): Topic[] {
 
     // 3. Append new topics created by admin
     topics = [...topics, ...newTopics];
+    topics.sort((a, b) => {
+      if (a.moduleSlug === b.moduleSlug) {
+        return (a.orderIndex || 0) - (b.orderIndex || 0);
+      }
+      return 0;
+    });
 
     return topics;
   } catch (err) {
@@ -413,7 +419,7 @@ export async function saveTopic(topicData: {
     description: topicData.description.trim(),
     videoUrl: topicData.videoUrl?.trim() || 'https://www.youtube.com/embed/zxQyTK8ckyY',
     videoProvider: topicData.videoProvider || 'youtube',
-    orderIndex: topicData.orderIndex || (existingTopic ? existingTopic.orderIndex : currentTopics.length + 1),
+    orderIndex: topicData.orderIndex !== undefined ? Number(topicData.orderIndex) : (existingTopic ? existingTopic.orderIndex : currentTopics.length + 1),
     estimatedMinutes: topicData.estimatedMinutes || 15,
     textContent: topicData.textContent || `# ${topicData.title}\n\nAdd your lesson notes and code examples here.`,
     chapters: topicData.chapters || existingTopic?.chapters

@@ -231,9 +231,10 @@ export function TopicWorkspaceClient() {
   const nextTopic = nextIncompleteTopic || (remainingTopics.length > 0 ? remainingTopics[0] : null);
 
   // Topic order index within current module
-  const moduleTopics = allActiveTopics.filter((t) => t.moduleSlug === moduleData.slug);
-  const topicIndexInModule = moduleTopics.findIndex((t) => t.id === topic.id) + 1;
-  const topicIndexStr = topicIndexInModule < 10 ? `0${topicIndexInModule}` : topicIndexInModule;
+  const moduleTopics = [...allActiveTopics.filter((t) => t.moduleSlug === moduleData.slug)]
+    .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
+  const topicSerialNo = topic.orderIndex !== undefined ? topic.orderIndex : (moduleTopics.findIndex((t) => t.id === topic.id) + 1);
+  const topicIndexStr = topicSerialNo < 10 ? `0${topicSerialNo}` : String(topicSerialNo);
 
   const isCompleted = progress[topic.id]?.status === 'completed';
   const isBookmarked = bookmarks.includes(topic.id);

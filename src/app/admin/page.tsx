@@ -242,7 +242,14 @@ export default function AdminDashboardPage() {
           t.description.toLowerCase().includes(q)
       );
     }
-    return list;
+    return [...list].sort((a, b) => {
+      if (a.moduleSlug !== b.moduleSlug) {
+        const modA = MODULES.find((m) => m.slug === a.moduleSlug)?.orderIndex || 0;
+        const modB = MODULES.find((m) => m.slug === b.moduleSlug)?.orderIndex || 0;
+        return modA - modB;
+      }
+      return (a.orderIndex || 0) - (b.orderIndex || 0);
+    });
   }, [allTopics, topicModuleFilter, topicSearch]);
 
   // Pending Payments Queue
@@ -1085,7 +1092,7 @@ export default function AdminDashboardPage() {
                   <table className="w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase font-mono tracking-wider text-[10px]">
-                        <th className="pb-3 pl-2">#</th>
+                        <th className="pb-3 pl-2">Serial #</th>
                         <th className="pb-3">Module</th>
                         <th className="pb-3">Topic Title & Slug</th>
                         <th className="pb-3 text-right pr-2">Actions</th>
@@ -1096,7 +1103,9 @@ export default function AdminDashboardPage() {
                         const mod = MODULES.find((m) => m.slug === t.moduleSlug);
                         return (
                           <tr key={t.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors group">
-                            <td className="py-3.5 pl-2 font-mono text-slate-400 font-bold">{idx + 1}</td>
+                            <td className="py-3.5 pl-2 font-mono text-sky-600 dark:text-cyan-400 font-bold">
+                              #{t.orderIndex !== undefined ? t.orderIndex : idx + 1}
+                            </td>
                             <td className="py-3.5">
                               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 whitespace-nowrap">
                                 {mod?.title || t.moduleSlug}

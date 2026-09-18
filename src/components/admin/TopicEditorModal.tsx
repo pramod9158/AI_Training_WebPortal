@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MODULES, Topic, QuizQuestion } from '@/data/seedModules';
-import { saveTopic, deleteTopic, saveTopicQuiz, getTopicQuiz } from '@/lib/curriculumService';
+import { saveTopic, deleteTopic, saveTopicQuiz, getTopicQuiz, getAllTopics } from '@/lib/curriculumService';
 import { verifyAdminPasskey, isAdminAuthenticated } from '@/lib/adminService';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { parseQuizMarkdown } from '@/lib/quizParser';
@@ -24,7 +24,8 @@ import {
   Code,
   HelpCircle,
   AlertCircle,
-  Sparkles
+  Sparkles,
+  Hash
 } from 'lucide-react';
 import { cleanNotesContent, convertMarkdownToVisualNotes } from '@/lib/visualNotesConverter';
 import { MarkdownNotes } from '@/components/MarkdownNotes';
@@ -57,6 +58,7 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
 
   // Form Fields
   const [moduleSlug, setModuleSlug] = useState<string>(defaultModuleSlug || 'llms');
+  const [orderIndex, setOrderIndex] = useState<number>(1);
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [description, setDescription] = useState('');
@@ -100,6 +102,7 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
 
       if (topic) {
         setModuleSlug(topic.moduleSlug);
+        setOrderIndex(topic.orderIndex !== undefined ? topic.orderIndex : 1);
         setTitle(topic.title);
         setSlug(topic.slug);
         setDescription(topic.description);
@@ -111,11 +114,19 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
         setQuizQuestions(existingQuiz);
         setQuizFileName(existingQuiz.length > 0 ? `Loaded platform quiz (${existingQuiz.length} questions)` : '');
       } else {
-        setModuleSlug(defaultModuleSlug || 'llms');
+        const initialMod = defaultModuleSlug || 'llms';
+        setModuleSlug(initialMod);
         setTitle('');
         setSlug('');
         setDescription('');
         setVideoUrl('https://www.youtube.com/embed/zxQyTK8ckyY');
+        
+        // Auto-calculate next available serial number under this module
+        const currentTopics = getAllTopics();
+        const modTopics = currentTopics.filter((t) => t.moduleSlug === initialMod);
+        const maxOrder = modTopics.reduce((max, t) => Math.max(max, t.orderIndex || 0), 0);
+        setOrderIndex(maxOrder + 1);
+
         setEstimatedMinutes(15);
         setTextContent('# Lesson Title\n\n## Overview\nExplain the technical foundations here.\n\n```python\n# Code Example\nprint("Hello Waynautic")\n```\n');
         setQuizQuestions([]);
@@ -123,6 +134,16 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
       }
     }
   }, [topic, defaultModuleSlug, isOpen]);
+
+  const handleModuleChange = (newModuleSlug: string) => {
+    setModuleSlug(newModuleSlug);
+    if (!isEditing) {
+      const currentTopics = getAllTopics();
+      const modTopics = currentTopics.filter((t) => t.moduleSlug === newModuleSlug);
+      const maxOrder = modTopics.reduce((max, t) => Math.max(max, t.orderIndex || 0), 0);
+      setOrderIndex(maxOrder + 1);
+    }
+  };
 
   // Handle Admin Authorization
   const handleAuthorizeAdmin = async (e: React.FormEvent) => {
@@ -305,6 +326,7 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
         description,
         videoUrl,
         videoProvider: 'youtube',
+        orderIndex: Number(orderIndex) || 1,
         estimatedMinutes: Number(estimatedMinutes) || 15,
         textContent: finalNotes
       });
@@ -573,23 +595,45 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
               </div>
             )}
 
-            {/* Module Assignment */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-mono uppercase font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
-                <Layers className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
-                <span>Module Assignment *</span>
-              </label>
-              <select
-                value={moduleSlug}
-                onChange={(e) => setModuleSlug(e.target.value)}
-                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-xs sm:text-sm font-semibold focus:outline-none focus:border-sky-500"
-              >
-                {MODULES.map((m) => (
-                  <option key={m.slug} value={m.slug}>
-                    Module {m.orderIndex}: {m.title} ({m.difficulty})
-                  </option>
-                ))}
-              </select>
+            {/* Module Assignment & Topic Serial Number Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              <div className="sm:col-span-2 space-y-1.5">
+                <label className="text-xs font-mono uppercase font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                  <Layers className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
+                  <span>Module Assignment *</span>
+                </label>
+                <select
+                  value={moduleSlug}
+                  onChange={(e) => handleModuleChange(e.target.value)}
+                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-xs sm:text-sm font-semibold focus:outline-none focus:border-sky-500"
+                >
+                  {MODULES.map((m) => (
+                    <option key={m.slug} value={m.slug}>
+                      Module {m.orderIndex}: {m.title} ({m.difficulty})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono uppercase font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                  <Hash className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
+                  <span>Topic Serial No. *</span>
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={999}
+                  value={orderIndex}
+                  onChange={(e) => setOrderIndex(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                  placeholder="e.g., 4"
+                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-xs sm:text-sm font-black focus:outline-none focus:border-sky-500"
+                  required
+                />
+                <span className="text-[10px] text-slate-400 block font-mono">
+                  Display order on student portal
+                </span>
+              </div>
             </div>
 
             {/* Title and Slug Grid */}
