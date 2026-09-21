@@ -180,7 +180,7 @@ async function renderTopicToPdf(
   container.style.boxSizing = 'border-box';
   container.style.padding = '24px 28px';
   container.style.opacity = '1';
-  container.className = 'light bg-white text-slate-900';
+  container.className = 'light bg-white text-slate-900 notes-paper-container';
 
   document.body.appendChild(container);
 

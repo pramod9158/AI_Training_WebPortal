@@ -44,7 +44,7 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-3.5 sm:p-8 shadow-xl text-slate-800 dark:text-slate-200 overflow-hidden">
+    <div className="notes-paper-container w-full bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-3.5 sm:p-8 shadow-xl text-slate-800 dark:text-slate-200 overflow-hidden">
       
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 mb-4 sm:mb-6 border-b-2 border-slate-200 dark:border-slate-800">

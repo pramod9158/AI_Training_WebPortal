@@ -244,8 +244,10 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
             }
           }
 
-          const processedText = isMd ? cleanNotesContent(text) : text;
-          setTextContent(processedText);
+          // Store raw markdown as-is — all processing (cleanNotesContent) happens
+          // at render time in NotesRenderer, so future rendering improvements
+          // automatically apply to all existing notes without re-uploading .md files.
+          setTextContent(text);
           setNotesFileName(`${file.name} (${Math.round(file.size / 1024)} KB)`);
           // Automatically switch to Live Preview so admin sees the visual notes immediately
           setNotesPreviewMode('preview');
@@ -311,12 +313,9 @@ export const TopicEditorModal: React.FC<TopicEditorModalProps> = ({
 
     setIsSubmitting(true);
     try {
-      // Clean any accidental boilerplate and keep user's genuine notes
-      let finalNotes = textContent.trim();
-      const isMd = !finalNotes.startsWith('<!DOCTYPE') && !finalNotes.startsWith('<html') && !finalNotes.startsWith('<div');
-      if (isMd && finalNotes.length > 0) {
-        finalNotes = cleanNotesContent(finalNotes);
-      }
+      // Store raw markdown as-is — cleanNotesContent() runs at render time only,
+      // so rendering improvements automatically apply without needing re-uploads.
+      const finalNotes = textContent.trim();
 
       const saved = await saveTopic({
         id: topic?.id,

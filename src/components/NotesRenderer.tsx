@@ -138,7 +138,7 @@ export const NotesRenderer: React.FC<NotesRendererProps> = ({
               // Section Headers (h2) - Clean, proportional spacing
               h2({ children }) {
                 return (
-                  <div className="mt-5 mb-2.5 pt-1">
+                  <div className="notes-h2-section mt-5 mb-2.5 pt-1">
                     <div className="flex items-center space-x-2.5 pb-1.5 border-b border-slate-200 dark:border-slate-800">
                       <div className="w-1 h-5 rounded-full bg-sky-500 dark:bg-cyan-400 shrink-0" />
                       <h2 className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 dark:text-white tracking-tight m-0 break-words">
@@ -164,7 +164,7 @@ export const NotesRenderer: React.FC<NotesRendererProps> = ({
               // Paragraphs
               p({ children }) {
                 return (
-                  <p className="my-2 leading-relaxed text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                  <p className="my-2 leading-[1.75] text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                     {children}
                   </p>
                 );
@@ -177,22 +177,21 @@ export const NotesRenderer: React.FC<NotesRendererProps> = ({
 
               // Custom High-Contrast Bullet Lists (ul)
               ul({ children }) {
-                return <ul className="my-2 space-y-1 pl-1 list-none text-xs sm:text-sm">{children}</ul>;
+                return <ul className="my-2.5 space-y-1.5 pl-1 text-xs sm:text-sm">{children}</ul>;
               },
 
               // Numbered Lists (ol) - Keeps standard numbers intact (1., 2., 3.)
               ol({ children }) {
                 return (
-                  <ol className="my-2 space-y-1 pl-5 list-decimal text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                  <ol className="my-2.5 space-y-1.5 pl-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
                     {children}
                   </ol>
                 );
               },
 
               li({ children, ...props }) {
-                // If inside an ordered list, let standard number show
                 return (
-                  <li className="my-0.5 leading-relaxed text-slate-700 dark:text-slate-300" {...props}>
+                  <li className="my-0.5 leading-[1.7] text-slate-700 dark:text-slate-300" {...props}>
                     {children}
                   </li>
                 );
@@ -266,11 +265,31 @@ export const NotesRenderer: React.FC<NotesRendererProps> = ({
               // Responsive Tables
               table({ children }) {
                 return (
-                  <div className="overflow-x-auto my-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <div className="overflow-x-auto my-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-xs sm:text-sm">
                       {children}
                     </table>
                   </div>
+                );
+              },
+
+              thead({ children }) {
+                return <thead className="bg-slate-50 dark:bg-slate-900/80">{children}</thead>;
+              },
+
+              th({ children }) {
+                return (
+                  <th className="px-3 py-2.5 text-left text-[0.7em] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    {children}
+                  </th>
+                );
+              },
+
+              td({ children }) {
+                return (
+                  <td className="px-3 py-2 text-slate-700 dark:text-slate-300 border-b border-slate-100 dark:border-slate-800/60">
+                    {children}
+                  </td>
                 );
               },
 
