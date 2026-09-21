@@ -267,19 +267,25 @@ async function renderTopicToPdf(
       if (i > 0) {
         if (logoBase64) {
           try {
-            doc.addImage(logoBase64, 'PNG', marginX, 6, 26, 8);
+            doc.addImage(logoBase64, 'PNG', marginX, 5, 26, 8);
           } catch {
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(8);
             doc.setTextColor(2, 132, 199);
-            doc.text('WAYNAUTIC ACADEMY', marginX, 11);
+            doc.text('WAYNAUTIC', marginX, 10);
           }
         } else {
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(8);
           doc.setTextColor(2, 132, 199);
-          doc.text('WAYNAUTIC ACADEMY', marginX, 11);
+          doc.text('WAYNAUTIC', marginX, 10);
         }
+
+        // Company subtitle under logo
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(5.5);
+        doc.setTextColor(148, 163, 184);
+        doc.text('Waynautic Technologies Pvt Ltd', marginX, 15);
 
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(7);
@@ -292,7 +298,7 @@ async function renderTopicToPdf(
         // Header divider
         doc.setDrawColor(226, 232, 240);
         doc.setLineWidth(0.3);
-        doc.line(marginX, 16, 210 - marginX, 16);
+        doc.line(marginX, 18, 210 - marginX, 18);
       }
 
       // Slice canvas chunk
@@ -313,7 +319,7 @@ async function renderTopicToPdf(
 
       const imgData = pageCanvas.toDataURL('image/jpeg', 0.95);
       const imgHeightMm = sliceHeightPx * mmPerPx;
-      const contentTopMm = i === 0 ? 12 : 18;
+      const contentTopMm = i === 0 ? 12 : 20;
 
       doc.addImage(imgData, 'JPEG', marginX, contentTopMm, printableWidthMm, imgHeightMm);
 
