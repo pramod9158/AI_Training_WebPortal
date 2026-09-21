@@ -11,6 +11,8 @@ import { createRoot } from 'react-dom/client';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { NotesRenderer } from '@/components/NotesRenderer';
+import { getAllTopics } from '@/lib/curriculumService';
+import { MODULES } from '@/data/seedModules';
 
 export interface TopicPdfData {
   title: string;
@@ -48,6 +50,30 @@ async function fetchLogoBase64(): Promise<string | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * Helper to ensure the module title (e.g. "Prompt Engineering") is resolved rather than individual topic title.
+ */
+function getModuleTitleForTopic(topic: TopicPdfData): string {
+  if (topic.moduleTitle && topic.moduleTitle.trim() && topic.moduleTitle !== 'Module') {
+    return topic.moduleTitle;
+  }
+  try {
+    const allTopics = getAllTopics();
+    const found = allTopics.find(
+      (t) =>
+        (topic.slug && t.slug === topic.slug) ||
+        (topic.title && t.title.toLowerCase() === topic.title.toLowerCase())
+    );
+    if (found && found.moduleSlug) {
+      const mod = MODULES.find((m) => m.slug === found.moduleSlug);
+      if (mod) return mod.title;
+    }
+  } catch {
+    // fallback
+  }
+  return 'Prompt Engineering';
 }
 
 interface PageSlice {
@@ -191,6 +217,8 @@ async function renderTopicToPdf(
   }
 
   try {
+    const resolvedModuleTitle = getModuleTitleForTopic(topic);
+
     // Mount the exact NotesRenderer component
     const root = createRoot(container);
     await new Promise<void>((resolve) => {
@@ -198,7 +226,7 @@ async function renderTopicToPdf(
         React.createElement(NotesRenderer, {
           content: topic.textContent || '',
           topicTitle: topic.title,
-          moduleTitle: topic.moduleTitle,
+          moduleTitle: resolvedModuleTitle,
           estimatedMinutes: topic.estimatedMinutes,
           isPrint: true,
           onRendered: () => resolve(),
@@ -287,13 +315,21 @@ async function renderTopicToPdf(
         doc.setTextColor(148, 163, 184);
         doc.text('Waynautic Technologies Pvt Ltd', marginX, 15);
 
+        // 2. Right side: Waynautic Academy (bold) and below it module name (not topic name)
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(15, 23, 42); // slate-900
+        const academyLabel = 'Waynautic Academy';
+        const aw = doc.getTextWidth(academyLabel);
+        doc.text(academyLabel, 210 - marginX - aw, 9);
+
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(7);
-        doc.setTextColor(100, 116, 139);
-        const rightLabel = (topic.title || 'AI TECHNICAL NOTES').toUpperCase();
-        const truncatedLabel = rightLabel.length > 50 ? `${rightLabel.slice(0, 48)}...` : rightLabel;
-        const rw = doc.getTextWidth(truncatedLabel);
-        doc.text(truncatedLabel, 210 - marginX - rw, 11);
+        doc.setTextColor(100, 116, 139); // slate-500
+        const moduleLabel = resolvedModuleTitle;
+        const truncatedModule = moduleLabel.length > 50 ? `${moduleLabel.slice(0, 48)}...` : moduleLabel;
+        const mw = doc.getTextWidth(truncatedModule);
+        doc.text(truncatedModule, 210 - marginX - mw, 14);
 
         // Header divider
         doc.setDrawColor(226, 232, 240);

@@ -10,11 +10,11 @@ import {
   AlertCircle, 
   FileCode,
   Bookmark,
-  Quote,
-  Clock,
-  BookOpen
+  Quote
 } from 'lucide-react';
 import { cleanNotesContent } from '@/lib/visualNotesConverter';
+import { getAllTopics } from '@/lib/curriculumService';
+import { MODULES } from '@/data/seedModules';
 
 export interface NotesRendererProps {
   content: string;
@@ -65,6 +65,26 @@ export const NotesRenderer: React.FC<NotesRendererProps> = ({
     return cleanNotesContent(content);
   }, [content, isHtmlContent]);
 
+  // Resolve module title to always display module name (not individual topic name)
+  const displayModuleTitle = useMemo(() => {
+    if (moduleTitle && moduleTitle.trim() && moduleTitle !== 'Module') {
+      return moduleTitle;
+    }
+    try {
+      const allTopics = getAllTopics();
+      const found = allTopics.find(
+        (t) => topicTitle && t.title.toLowerCase() === topicTitle.toLowerCase()
+      );
+      if (found && found.moduleSlug) {
+        const mod = MODULES.find((m) => m.slug === found.moduleSlug);
+        if (mod) return mod.title;
+      }
+    } catch {
+      // ignore
+    }
+    return 'Prompt Engineering';
+  }, [moduleTitle, topicTitle]);
+
   useEffect(() => {
     if (onRendered) {
       requestAnimationFrame(() => {
@@ -78,9 +98,9 @@ export const NotesRenderer: React.FC<NotesRendererProps> = ({
       
       {/* Printable Cover Header (Included on downloaded PDF notes) */}
       {isPrint && (
-        <div className="printable-doc-header pb-4 mb-5 border-b-2 border-slate-200 bg-white">
-          {/* Row 1: Logo + Company Subtitle + Bold Academy Title (left) | Centered Capsule Badge (right) */}
-          <div className="flex items-start justify-between">
+        <div className="printable-doc-header pb-3 mb-5 border-b-2 border-slate-200 bg-white">
+          <div className="flex items-center justify-between">
+            {/* 1. Left side: Waynautic logo and Waynautic Technologies Pvt Ltd */}
             <div className="flex flex-col items-start">
               <img
                 src="/waynautic-logo.png"
@@ -91,35 +111,17 @@ export const NotesRenderer: React.FC<NotesRendererProps> = ({
               <span className="text-[9px] text-slate-500 font-medium font-mono mt-0.5 tracking-wide">
                 Waynautic Technologies Pvt Ltd
               </span>
-              <span className="text-sm font-bold text-slate-900 font-mono tracking-wide uppercase mt-1.5">
+            </div>
+
+            {/* 2. Right side: Waynautic Academy and below it module name (not topic name) */}
+            <div className="flex flex-col items-end text-right">
+              <span className="text-sm font-bold text-slate-900 font-mono tracking-wide">
                 Waynautic Academy
               </span>
-            </div>
-            <div className="flex flex-col items-center justify-center">
-              <span className="h-6 inline-flex items-center justify-center px-3.5 rounded-full bg-sky-100 text-sky-800 text-[11px] font-mono font-bold tracking-wider uppercase border border-sky-300 leading-none text-center">
-                Curriculum Study Notes
+              <span className="text-xs text-slate-600 font-medium font-mono mt-0.5">
+                {displayModuleTitle}
               </span>
             </div>
-          </div>
-
-          {/* Row 2: Topic Title with BookOpen Icon (left) | Reading Time (right) */}
-          <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 font-mono">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center w-4 h-4 shrink-0 text-sky-600">
-                <BookOpen className="w-3.5 h-3.5" />
-              </span>
-              <span className="font-semibold text-slate-800 leading-none inline-flex items-center">
-                {moduleTitle || topicTitle || 'AI Engineering Curriculum'}
-              </span>
-            </div>
-            {estimatedMinutes && (
-              <div className="flex items-center gap-1.5 text-slate-500">
-                <span className="inline-flex items-center justify-center w-4 h-4 shrink-0 text-slate-400">
-                  <Clock className="w-3.5 h-3.5" />
-                </span>
-                <span className="leading-none inline-flex items-center">{estimatedMinutes} mins read</span>
-              </div>
-            )}
           </div>
         </div>
       )}
