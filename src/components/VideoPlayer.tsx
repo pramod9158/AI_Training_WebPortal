@@ -499,7 +499,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         ) : (
           /* Cover & Launch Screen with YouTube Thumbnail */
           <div 
-            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center cursor-pointer" 
+            className="group absolute inset-0 flex flex-col items-center justify-center p-6 text-center cursor-pointer" 
             onClick={handleLaunchPlayer}
           >
             {/* Thumbnail Background Image */}
@@ -509,11 +509,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 <img
                   src={thumbnailUrl}
                   alt={`${title} thumbnail`}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                   onError={() => setThumbnailError(true)}
                 />
-                {/* Dark overlay for contrast on thumbnail */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/70 pointer-events-none" />
+                {/* Subtle scrim for play button contrast */}
+                <div className="absolute inset-0 bg-black/15 group-hover:bg-black/25 transition-colors pointer-events-none" />
               </>
             ) : (
               <>
@@ -526,26 +526,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             {/* Play Button Trigger */}
             <button
               aria-label="Play Lesson Video"
-              className="relative z-10 w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-white/95 hover:bg-white text-slate-900 shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center ring-4 ring-white/20"
+              className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/95 group-hover:bg-white text-slate-900 shadow-2xl group-hover:scale-110 active:scale-95 transition-all duration-200 flex items-center justify-center ring-4 ring-white/25"
             >
-              <Play className="w-6 h-6 sm:w-8 sm:h-8 fill-slate-900 ml-0.5" />
+              <Play className="w-7 h-7 sm:w-9 sm:h-9 fill-slate-900 ml-1" />
             </button>
-
-            <h3 className="relative z-10 mt-4 text-sm sm:text-xl font-extrabold text-white max-w-xl px-4 drop-shadow-lg">
-              {title}
-            </h3>
-
-            {/* Resume or Chapter info */}
-            {resumedFrom && resumedFrom > 2 ? (
-              <div className="relative z-10 mt-3 inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-sky-500/25 border-2 border-sky-400/50 text-sky-200 text-xs font-extrabold backdrop-blur-md shadow-lg animate-pulse">
-                <Clock className="w-4 h-4 text-sky-300" />
-                <span>Click to Resume from {formatTime(resumedFrom)}</span>
-              </div>
-            ) : (
-              <p className="relative z-10 text-xs text-slate-200 mt-2 font-medium drop-shadow-md">
-                Click to launch interactive 16:9 adaptive video player
-              </p>
-            )}
           </div>
         )}
 

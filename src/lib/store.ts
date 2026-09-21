@@ -925,6 +925,9 @@ export function loadTopicComments(topicId: string): TopicComment[] {
 }
 
 export async function fetchTopicCommentsFromDb(topicId: string): Promise<TopicComment[]> {
+  let dbComments: TopicComment[] = [];
+
+  // 1. Fetch from Supabase
   if (isSupabaseConfigured) {
     try {
       const { data, error } = await supabase
@@ -933,40 +936,85 @@ export async function fetchTopicCommentsFromDb(topicId: string): Promise<TopicCo
         .eq('topic_id', topicId)
         .order('created_at', { ascending: false });
 
-      if (!error && data) {
-        const mapped: TopicComment[] = data.map((d: any) => ({
-          id: d.id,
-          topicId: d.topic_id,
-          userId: d.user_id,
-          userName: d.user_name || 'Developer',
-          userAvatar: d.user_avatar || '',
-          content: d.content,
-          isQuestion: Boolean(d.is_question),
-          parentId: d.parent_id || undefined,
-          upvotes: 0,
-          userUpvoted: false,
-          createdAt: d.created_at
-        }));
-
-        const all = loadAllTopicComments();
-        const localList = all[topicId] || [];
-        // Preserve any optimistic local comments that have not yet synced
-        const pendingLocal = localList.filter(
-          (c) => c.id.startsWith('cmt-') && !mapped.some((m) => m.content === c.content && m.userName === c.userName)
-        );
-
-        all[topicId] = [...pendingLocal, ...mapped];
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
-          window.dispatchEvent(new Event('waynautic_storage_change'));
+      if (!error && data && data.length > 0) {
+        // Look up user_profiles to enrich missing display names or avatars
+        const userIds = Array.from(new Set(data.map((d: any) => d.user_id).filter(Boolean)));
+        let profileMap = new Map<string, { display_name?: string; avatar_url?: string }>();
+        if (userIds.length > 0) {
+          try {
+            const { data: profiles } = await supabase
+              .from('user_profiles')
+              .select('id, display_name, avatar_url')
+              .in('id', userIds);
+            if (profiles) {
+              profiles.forEach((p: any) => profileMap.set(p.id, p));
+            }
+          } catch {}
         }
-        return all[topicId];
+
+        dbComments = data.map((d: any) => {
+          const prof = profileMap.get(d.user_id);
+          return {
+            id: d.id,
+            topicId: d.topic_id,
+            userId: d.user_id,
+            userName: d.user_name || prof?.display_name || 'Learner',
+            userAvatar: d.user_avatar || prof?.avatar_url || '',
+            content: d.content,
+            isQuestion: Boolean(d.is_question),
+            parentId: d.parent_id || undefined,
+            upvotes: 0,
+            userUpvoted: false,
+            createdAt: d.created_at
+          };
+        });
       }
     } catch (err) {
       console.warn('Error fetching topic comments from Supabase:', err);
     }
   }
-  return loadTopicComments(topicId);
+
+  // 2. Query /api/comments for server-cached cross-user comments
+  let apiComments: TopicComment[] = [];
+  try {
+    const res = await fetch(`/api/comments?topicId=${encodeURIComponent(topicId)}`);
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && Array.isArray(json.comments)) {
+        apiComments = json.comments;
+      }
+    }
+  } catch (err) {
+    console.warn('Could not fetch comments from /api/comments:', err);
+  }
+
+  // Merge Supabase comments and API comments
+  const mergedMap = new Map<string, TopicComment>();
+  dbComments.forEach((c) => mergedMap.set(c.id, c));
+  apiComments.forEach((c) => {
+    if (!mergedMap.has(c.id)) {
+      mergedMap.set(c.id, c);
+    }
+  });
+
+  const all = loadAllTopicComments();
+  const localList = all[topicId] || [];
+  // Preserve any local pending comments that haven't synced
+  const combined = Array.from(mergedMap.values());
+  const pendingLocal = localList.filter(
+    (c) => c.id.startsWith('cmt-') && !combined.some((m) => m.content === c.content && m.userName === c.userName)
+  );
+
+  const finalList = [...pendingLocal, ...combined].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  all[topicId] = finalList;
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
+    window.dispatchEvent(new Event('waynautic_storage_change'));
+  }
+  return finalList;
 }
 
 export async function addTopicComment(
@@ -978,12 +1026,15 @@ export async function addTopicComment(
   if (typeof window === 'undefined') throw new Error('Client side only');
   const profile = loadProfile();
   const trimmed = content.trim();
+  const tempId = `cmt-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+  let realCommentId = tempId;
+
   const newComment: TopicComment = {
-    id: `cmt-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+    id: tempId,
     topicId,
     userId: profile.userId,
-    userName: profile.displayName || 'Developer',
-    userAvatar: profile.avatarUrl,
+    userName: profile.displayName || 'Learner',
+    userAvatar: profile.avatarUrl || '',
     content: trimmed,
     isQuestion,
     parentId: parentId || undefined,
@@ -999,9 +1050,13 @@ export async function addTopicComment(
   recordActivity();
   window.dispatchEvent(new Event('waynautic_storage_change'));
 
+  // Get session if available
+  let sessionToken: string | undefined;
   if (isSupabaseConfigured) {
     try {
-      let user = (await supabase.auth.getSession()).data.session?.user;
+      const { data: { session } } = await supabase.auth.getSession();
+      sessionToken = session?.access_token;
+      let user = session?.user;
       if (!user) {
         user = (await supabase.auth.getUser()).data.user || undefined;
       }
@@ -1011,7 +1066,7 @@ export async function addTopicComment(
         const payload: any = {
           topic_id: topicId,
           user_id: user.id,
-          user_name: profile.displayName || user.user_metadata?.full_name || 'Developer',
+          user_name: profile.displayName || user.user_metadata?.full_name || 'Learner',
           user_avatar: profile.avatarUrl || user.user_metadata?.avatar_url || '',
           content: trimmed,
           is_question: isQuestion,
@@ -1020,14 +1075,54 @@ export async function addTopicComment(
           payload.parent_id = parentId;
         }
 
-        const { error } = await supabase.from('topic_comments').insert(payload);
-        if (error) {
-          console.warn('Supabase comment insert failed:', error);
+        const { data: inserted, error } = await supabase
+          .from('topic_comments')
+          .insert(payload)
+          .select()
+          .single();
+
+        if (!error && inserted?.id) {
+          realCommentId = inserted.id;
+          newComment.id = realCommentId;
+        } else if (error) {
+          console.warn('Supabase comment insert warning:', error);
         }
       }
     } catch (err) {
       console.warn('Supabase comment insert error:', err);
     }
+  }
+
+  // 2. Post to /api/comments for server persistence & cross-user propagation
+  try {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (sessionToken) {
+      headers['Authorization'] = `Bearer ${sessionToken}`;
+    }
+    const res = await fetch('/api/comments', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        topicId,
+        userId: profile.userId,
+        userName: profile.displayName || 'Learner',
+        userAvatar: profile.avatarUrl || '',
+        content: trimmed,
+        isQuestion,
+        parentId
+      })
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && Array.isArray(json.comments)) {
+        all[topicId] = json.comments;
+        localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
+        window.dispatchEvent(new Event('waynautic_storage_change'));
+        if (json.comment) return json.comment;
+      }
+    }
+  } catch (err) {
+    console.warn('Failed to sync comment to /api/comments:', err);
   }
 
   return newComment;
@@ -1042,13 +1137,19 @@ export async function deleteTopicComment(topicId: string, commentId: string): Pr
     window.dispatchEvent(new Event('waynautic_storage_change'));
   }
 
-  if (isSupabaseConfigured) {
+  if (isSupabaseConfigured && /^[0-9a-fA-F-]{36}$/.test(commentId)) {
     try {
       await supabase.from('topic_comments').delete().eq('id', commentId);
     } catch (err) {
       console.warn('Supabase comment delete error:', err);
     }
   }
+
+  try {
+    await fetch(`/api/comments?topicId=${encodeURIComponent(topicId)}&commentId=${encodeURIComponent(commentId)}`, {
+      method: 'DELETE'
+    });
+  } catch {}
 }
 
 export async function toggleCommentUpvote(topicId: string, commentId: string): Promise<void> {
@@ -1115,6 +1216,9 @@ export async function fetchTopicRatingsFromDb(topicId: string): Promise<{
   ratings: TopicRating[];
   stats: { totalVotes: number; upvotes: number; downvotes: number; avgStars: number; starRatingsCount: number };
 }> {
+  let dbRatings: TopicRating[] = [];
+
+  // 1. Fetch from Supabase
   if (isSupabaseConfigured) {
     try {
       const { data, error } = await supabase
@@ -1123,80 +1227,96 @@ export async function fetchTopicRatingsFromDb(topicId: string): Promise<{
         .eq('topic_id', topicId);
 
       if (!error && data && data.length > 0) {
-        const dbRatings: TopicRating[] = data.map((row: any) => ({
-          id: row.id || `db-${row.user_id}-${row.topic_id}`,
-          topicId: row.topic_id,
-          userId: row.user_id,
-          userName: 'Member',
-          userAvatar: '',
-          userVote: row.vote || undefined,
-          starRating: row.stars || undefined,
-          feedbackText: row.feedback || '',
-          createdAt: row.updated_at || row.created_at || new Date().toISOString()
-        }));
+        // Look up user_profiles to enrich with author display names and avatars
+        const userIds = Array.from(new Set(data.map((r: any) => r.user_id).filter(Boolean)));
+        let profileMap = new Map<string, { display_name?: string; avatar_url?: string }>();
+        if (userIds.length > 0) {
+          try {
+            const { data: profiles } = await supabase
+              .from('user_profiles')
+              .select('id, display_name, avatar_url')
+              .in('id', userIds);
+            if (profiles) {
+              profiles.forEach((p: any) => profileMap.set(p.id, p));
+            }
+          } catch (pErr) {
+            console.warn('Could not query user_profiles in fetchTopicRatingsFromDb:', pErr);
+          }
+        }
 
         const all = loadAllTopicRatings();
         const currentList = all[topicId] || [];
-        const merged = dbRatings.map((dbR) => {
-          const localMatch = currentList.find((l) => l.userId === dbR.userId);
-          if (localMatch) {
-            return {
-              ...dbR,
-              userName: localMatch.userName || dbR.userName,
-              userAvatar: localMatch.userAvatar || dbR.userAvatar
-            };
-          }
-          return dbR;
-        });
 
-        all[topicId] = merged;
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(RATINGS_KEY, JSON.stringify(all));
-          window.dispatchEvent(new Event('waynautic_storage_change'));
-        }
-        const profile = loadProfile();
-        const userRating = merged.find((r) => r.userId === profile.userId) || null;
-        return {
-          userRating,
-          ratings: merged,
-          stats: getTopicRatingStats(topicId)
-        };
+        dbRatings = data.map((row: any) => {
+          const prof = profileMap.get(row.user_id);
+          const localMatch = currentList.find((l) => l.userId === row.user_id);
+          return {
+            id: row.id || `db-${row.user_id}-${row.topic_id}`,
+            topicId: row.topic_id,
+            userId: row.user_id,
+            userName: prof?.display_name || row.user_name || localMatch?.userName || 'Member',
+            userAvatar: prof?.avatar_url || row.user_avatar || localMatch?.userAvatar || '',
+            userVote: row.vote || undefined,
+            starRating: row.stars || undefined,
+            feedbackText: row.feedback || '',
+            createdAt: row.updated_at || row.created_at || new Date().toISOString()
+          };
+        });
       }
     } catch (err) {
       console.warn('Supabase ratings fetch error:', err);
     }
   }
 
+  // 2. Fetch from /api/ratings to merge server-cached reviews
+  let apiRatings: TopicRating[] = [];
   try {
     const res = await fetch(`/api/ratings?topicId=${encodeURIComponent(topicId)}`);
     if (res.ok) {
-      const data = await res.json();
-      if (data.success && Array.isArray(data.ratings)) {
-        const all = loadAllTopicRatings();
-        all[topicId] = data.ratings;
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(RATINGS_KEY, JSON.stringify(all));
-          window.dispatchEvent(new Event('waynautic_storage_change'));
-        }
-        const profile = loadProfile();
-        const userRating = data.ratings.find((r: TopicRating) => r.userId === profile.userId) || null;
-        return {
-          userRating,
-          ratings: data.ratings,
-          stats: data.stats || getTopicRatingStats(topicId)
-        };
+      const json = await res.json();
+      if (json.success && Array.isArray(json.ratings)) {
+        apiRatings = json.ratings;
       }
     }
   } catch (err) {
     console.warn('Could not fetch ratings from /api/ratings:', err);
   }
 
+  // Merge dbRatings and apiRatings cleanly by userId / id
+  const mergedMap = new Map<string, TopicRating>();
+  apiRatings.forEach((r) => {
+    const key = r.userId || r.id;
+    mergedMap.set(key, r);
+  });
+  dbRatings.forEach((r) => {
+    const key = r.userId || r.id;
+    const existing = mergedMap.get(key);
+    mergedMap.set(key, {
+      ...r,
+      userName: r.userName !== 'Member' ? r.userName : (existing?.userName || r.userName),
+      userAvatar: r.userAvatar || existing?.userAvatar || ''
+    });
+  });
+
+  const merged = Array.from(mergedMap.values()).sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
   const all = loadAllTopicRatings();
-  const list = all[topicId] || [];
+  all[topicId] = merged;
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(RATINGS_KEY, JSON.stringify(all));
+    window.dispatchEvent(new Event('waynautic_storage_change'));
+  }
+
+  const profile = loadProfile();
+  const userRating = merged.find((r) => r.userId === profile.userId) || null;
+  const stats = getTopicRatingStats(topicId);
+
   return {
-    userRating: loadTopicUserRating(topicId),
-    ratings: list,
-    stats: getTopicRatingStats(topicId)
+    userRating,
+    ratings: merged,
+    stats
   };
 }
 
@@ -1240,21 +1360,33 @@ export async function saveTopicRating(
   window.dispatchEvent(new Event('waynautic_storage_change'));
 
   // 1. Direct Supabase cloud persistence with authenticated user session
+  let sessionToken: string | undefined;
   if (isSupabaseConfigured) {
     try {
-      let user = (await supabase.auth.getSession()).data.session?.user;
+      const { data: { session } } = await supabase.auth.getSession();
+      sessionToken = session?.access_token;
+      let user = session?.user;
       if (!user) {
         user = (await supabase.auth.getUser()).data.user || undefined;
       }
       if (user) {
-        await supabase.from('topic_ratings').upsert({
+        const payload: any = {
           topic_id: topicId,
           user_id: user.id,
           vote: newRating.userVote || null,
           stars: newRating.starRating || null,
           feedback: newRating.feedbackText || '',
           updated_at: new Date().toISOString()
-        }, { onConflict: 'user_id,topic_id' });
+        };
+        if (newRating.userName) payload.user_name = newRating.userName;
+        if (newRating.userAvatar) payload.user_avatar = newRating.userAvatar;
+
+        const { error } = await supabase.from('topic_ratings').upsert(payload, { onConflict: 'user_id,topic_id' });
+        if (error && (error.message?.includes('column') || error.code === 'PGRST204')) {
+          delete payload.user_name;
+          delete payload.user_avatar;
+          await supabase.from('topic_ratings').upsert(payload, { onConflict: 'user_id,topic_id' });
+        }
       }
     } catch (err) {
       console.warn('Direct Supabase rating upsert error:', err);
@@ -1263,9 +1395,13 @@ export async function saveTopicRating(
 
   // 2. Post to server API for universal cross-member visibility
   try {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (sessionToken) {
+      headers['Authorization'] = `Bearer ${sessionToken}`;
+    }
     const res = await fetch('/api/ratings', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
         topicId,
         userId: profile.userId,
@@ -1278,13 +1414,14 @@ export async function saveTopicRating(
     });
     if (res.ok) {
       const data = await res.json();
-      if (data.success) {
+      if (data.success && Array.isArray(data.ratings)) {
         all[topicId] = data.ratings;
         localStorage.setItem(RATINGS_KEY, JSON.stringify(all));
+        window.dispatchEvent(new Event('waynautic_storage_change'));
         return {
-          rating: data.rating,
+          rating: data.rating || newRating,
           ratings: data.ratings,
-          stats: data.stats
+          stats: data.stats || getTopicRatingStats(topicId)
         };
       }
     }

@@ -293,48 +293,45 @@ async function renderTopicToPdf(
 
       // Top running header (Pages 2+)
       if (i > 0) {
+        // 1. Top Row: Logo on Left aligned with Waynautic Academy on Right
         if (logoBase64) {
           try {
-            doc.addImage(logoBase64, 'PNG', marginX, 5, 26, 8);
+            doc.addImage(logoBase64, 'PNG', marginX, 5.5, 20, 6.1);
           } catch {
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(8);
+            doc.setFontSize(8.5);
             doc.setTextColor(2, 132, 199);
             doc.text('WAYNAUTIC', marginX, 10);
           }
         } else {
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(8);
+          doc.setFontSize(8.5);
           doc.setTextColor(2, 132, 199);
           doc.text('WAYNAUTIC', marginX, 10);
         }
 
-        // Company subtitle under logo
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(5.5);
-        doc.setTextColor(148, 163, 184);
-        doc.text('Waynautic Technologies Pvt Ltd', marginX, 15);
-
-        // 2. Right side: Waynautic Academy (bold) and below it module name (not topic name)
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8.5);
         doc.setTextColor(15, 23, 42); // slate-900
         const academyLabel = 'Waynautic Academy';
         const aw = doc.getTextWidth(academyLabel);
-        doc.text(academyLabel, 210 - marginX - aw, 9);
+        doc.text(academyLabel, 210 - marginX - aw, 10);
 
+        // 2. Bottom Row: Company subtitle on Left aligned with Module title on Right (exact same baseline Y = 14.5)
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7);
+        doc.setFontSize(6);
         doc.setTextColor(100, 116, 139); // slate-500
+        doc.text('Waynautic Technologies Pvt Ltd', marginX, 14.5);
+
         const moduleLabel = resolvedModuleTitle;
         const truncatedModule = moduleLabel.length > 50 ? `${moduleLabel.slice(0, 48)}...` : moduleLabel;
         const mw = doc.getTextWidth(truncatedModule);
-        doc.text(truncatedModule, 210 - marginX - mw, 14);
+        doc.text(truncatedModule, 210 - marginX - mw, 14.5);
 
-        // Header divider
+        // Header divider line
         doc.setDrawColor(226, 232, 240);
         doc.setLineWidth(0.3);
-        doc.line(marginX, 18, 210 - marginX, 18);
+        doc.line(marginX, 17.5, 210 - marginX, 17.5);
       }
 
       // Slice canvas chunk

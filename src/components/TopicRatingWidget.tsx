@@ -24,32 +24,48 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   useEffect(() => {
-    // 1. Instant local render
-    const r = loadTopicUserRating(topicId);
-    if (r) {
-      setUserRating(r);
-      setVote(r.userVote);
-      setStarRating(r.starRating || 0);
-      setFeedback(r.feedbackText || '');
-    } else {
-      setUserRating(null);
-      setVote(undefined);
-      setStarRating(0);
-      setFeedback('');
-    }
-    setStats(getTopicRatingStats(topicId));
-
-    // 2. Live cross-device server & database hydration
-    fetchTopicRatingsFromDb(topicId).then((live) => {
-      if (live.userRating) {
-        setUserRating(live.userRating);
-        setVote(live.userRating.userVote);
-        setStarRating(live.userRating.starRating || 0);
-        setFeedback(live.userRating.feedbackText || '');
+    const syncRatings = () => {
+      // 1. Instant local render
+      const r = loadTopicUserRating(topicId);
+      if (r) {
+        setUserRating(r);
+        setVote(r.userVote);
+        setStarRating(r.starRating || 0);
+        setFeedback(r.feedbackText || '');
+      } else {
+        setUserRating(null);
+        setVote(undefined);
+        setStarRating(0);
+        setFeedback('');
       }
-      setStats(live.stats);
-      setAllReviews(live.ratings || []);
-    });
+      setStats(getTopicRatingStats(topicId));
+
+      // 2. Live cross-device server & database hydration
+      fetchTopicRatingsFromDb(topicId).then((live) => {
+        if (live.userRating) {
+          setUserRating(live.userRating);
+          setVote(live.userRating.userVote);
+          setStarRating(live.userRating.starRating || 0);
+          setFeedback(live.userRating.feedbackText || '');
+        }
+        setStats(live.stats);
+        setAllReviews(live.ratings || []);
+      });
+    };
+
+    syncRatings();
+
+    const handleStorageChange = () => {
+      syncRatings();
+    };
+
+    window.addEventListener('waynautic_storage_change', handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('waynautic_storage_change', handleStorageChange);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [topicId]);
 
   const handleVote = async (newVote: 'up' | 'down') => {
@@ -405,8 +421,14 @@ export function TopicRatingWidget({ topicId, topicTitle }: TopicRatingWidgetProp
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 rounded-full bg-sky-100 dark:bg-sky-900/60 text-sky-600 dark:text-cyan-300 flex items-center justify-center font-bold text-[10px]">
-                      {rev.userName ? rev.userName.charAt(0).toUpperCase() : <User className="w-3 h-3" />}
+                    <div className="w-6 h-6 rounded-full bg-sky-100 dark:bg-sky-900/60 text-sky-600 dark:text-cyan-300 flex items-center justify-center font-bold text-[10px] overflow-hidden shrink-0">
+                      {rev.userAvatar && rev.userAvatar.startsWith('http') ? (
+                        <img src={rev.userAvatar} alt={rev.userName} className="w-full h-full object-cover" />
+                      ) : rev.userName ? (
+                        rev.userName.charAt(0).toUpperCase()
+                      ) : (
+                        <User className="w-3 h-3" />
+                      )}
                     </div>
                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
                       {rev.userName || 'Member'}

@@ -34,6 +34,18 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
 
   useEffect(() => {
     reloadComments();
+
+    const handleStorageChange = () => {
+      reloadComments();
+    };
+
+    window.addEventListener('waynautic_storage_change', handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('waynautic_storage_change', handleStorageChange);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [topicId]);
 
   const handlePost = async (e?: React.FormEvent) => {
@@ -214,7 +226,10 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
         ) : (
           rootComments.map((comment) => {
             const replies = getReplies(comment.id);
-            const isAuthor = comment.userName === (profile.displayName || 'Developer') || !comment.userId;
+            const isAuthor = Boolean(
+              (comment.userId && profile.userId && comment.userId === profile.userId) ||
+              (!comment.userId && comment.userName && profile.displayName && comment.userName === profile.displayName)
+            );
 
             return (
               <div

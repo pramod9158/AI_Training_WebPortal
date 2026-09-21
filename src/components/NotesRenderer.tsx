@@ -98,30 +98,32 @@ export const NotesRenderer: React.FC<NotesRendererProps> = ({
       
       {/* Printable Cover Header (Included on downloaded PDF notes) */}
       {isPrint && (
-        <div className="printable-doc-header pb-3 mb-5 border-b-2 border-slate-200 bg-white">
+        <div className="printable-doc-header pb-2.5 mb-5 border-b-2 border-slate-200 bg-white">
+          {/* Row 1: Logo on Left aligned with Waynautic Academy on Right */}
           <div className="flex items-center justify-between">
-            {/* 1. Left side: Waynautic logo and Waynautic Technologies Pvt Ltd */}
-            <div className="flex flex-col items-start">
+            <div className="flex items-center h-7">
               <img
                 src="/waynautic-logo.png"
                 alt="Waynautic"
-                className="h-8 w-auto object-contain max-h-8"
+                className="h-6 w-auto object-contain max-h-6"
                 crossOrigin="anonymous"
               />
-              <span className="text-[9px] text-slate-500 font-medium font-mono mt-0.5 tracking-wide">
-                Waynautic Technologies Pvt Ltd
-              </span>
             </div>
-
-            {/* 2. Right side: Waynautic Academy and below it module name (not topic name) */}
-            <div className="flex flex-col items-end text-right">
-              <span className="text-sm font-bold text-slate-900 font-mono tracking-wide">
+            <div className="flex items-center h-7 text-right">
+              <span className="text-sm font-bold text-slate-900 font-mono tracking-wide leading-none">
                 Waynautic Academy
               </span>
-              <span className="text-xs text-slate-600 font-medium font-mono mt-0.5">
-                {displayModuleTitle}
-              </span>
             </div>
+          </div>
+
+          {/* Row 2: Company Subtitle on Left aligned with Module Title on Right */}
+          <div className="flex items-center justify-between mt-1 pt-0.5">
+            <span className="text-[10px] text-slate-500 font-medium font-mono tracking-wide leading-none">
+              Waynautic Technologies Pvt Ltd
+            </span>
+            <span className="text-[10px] text-slate-600 font-medium font-mono text-right leading-none">
+              {displayModuleTitle}
+            </span>
           </div>
         </div>
       )}
