@@ -1092,8 +1092,7 @@ export default function AdminDashboardPage() {
                   <table className="w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase font-mono tracking-wider text-[10px]">
-                        <th className="pb-3 pl-2">Serial #</th>
-                        <th className="pb-3">Module</th>
+                        <th className="pb-3 pl-2">Module</th>
                         <th className="pb-3">Topic Title & Slug</th>
                         <th className="pb-3 text-right pr-2">Actions</th>
                       </tr>
@@ -1103,10 +1102,7 @@ export default function AdminDashboardPage() {
                         const mod = MODULES.find((m) => m.slug === t.moduleSlug);
                         return (
                           <tr key={t.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors group">
-                            <td className="py-3.5 pl-2 font-mono text-sky-600 dark:text-cyan-400 font-bold">
-                              #{t.orderIndex !== undefined ? t.orderIndex : idx + 1}
-                            </td>
-                            <td className="py-3.5">
+                            <td className="py-3.5 pl-2">
                               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 whitespace-nowrap">
                                 {mod?.title || t.moduleSlug}
                               </span>
