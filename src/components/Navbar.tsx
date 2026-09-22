@@ -155,26 +155,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         {/* Right Section: Focused & Consolidated Utilities */}
         <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
 
-          {/* Search Trigger Pill - Exactly matching attached screenshot */}
+          {/* Search Trigger Button - Clean rounded-lg styling matching Log in & Upgrade buttons */}
           <button
             type="button"
             onClick={onOpenSearch}
-            className="group flex items-center justify-between h-9 sm:h-10 pl-3.5 sm:pl-4 pr-1 sm:pr-1.5 bg-white dark:bg-slate-900/90 hover:bg-slate-50 dark:hover:bg-slate-800/90 border border-slate-300/80 dark:border-slate-700/80 hover:border-blue-400 dark:hover:border-blue-500 rounded-full shadow-2xs hover:shadow-xs transition-all text-left w-36 xs:w-44 sm:w-56 md:w-60 lg:w-72 xl:w-80 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0056D2]"
+            className="group flex items-center justify-between h-9 sm:h-10 px-3 sm:px-3.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-700/80 dark:border-slate-300/80 hover:border-slate-900 dark:hover:border-white rounded-lg transition-colors text-left w-36 xs:w-44 sm:w-56 md:w-60 lg:w-72 cursor-pointer shrink-0"
             title="Search topics (Cmd+K)"
             aria-label="What do you want to learn?"
           >
-            <span className="text-[11px] xs:text-xs sm:text-sm text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 font-normal truncate">
-              <span className="hidden xs:inline">What do you want to learn?</span>
-              <span className="xs:hidden">Search...</span>
-            </span>
-            <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0 ml-1.5">
-              <kbd className="hidden xl:inline px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-mono border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400">
-                ⌘K
-              </kbd>
-              <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#0056D2] group-hover:bg-[#0047b3] text-white transition-transform group-hover:scale-105 shadow-xs shrink-0">
-                <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white stroke-[2.5]" />
+            <div className="flex items-center space-x-2 truncate">
+              <Search className="w-4 h-4 text-slate-500 dark:text-slate-400 group-hover:text-[#0056D2] dark:group-hover:text-cyan-400 transition-colors shrink-0" />
+              <span className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium truncate">
+                <span className="hidden sm:inline">What do you want to learn?</span>
+                <span className="sm:hidden">Search...</span>
               </span>
             </div>
+            <kbd className="hidden md:inline px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-mono border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 ml-2 shrink-0">
+              ⌘K
+            </kbd>
           </button>
 
           {/* Upgrade to Pro Button - Exactly same as screenshot (rounded rectangle outline) */}
@@ -519,18 +517,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
           {/* Mobile Search & Upgrade to Pro - Matching Pills */}
           <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-2">
-            {/* Mobile Search Trigger */}
+            {/* Mobile Search Trigger - Clean rounded-lg styling */}
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 if (onOpenSearch) onOpenSearch();
               }}
-              className="w-full flex items-center justify-between h-11 pl-4 pr-1.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-full text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium transition-colors shadow-2xs"
+              className="w-full flex items-center justify-between h-11 px-4 bg-white dark:bg-slate-900 border border-slate-700/80 dark:border-slate-300/80 rounded-lg text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium transition-colors"
             >
-              <span>What do you want to learn?</span>
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#0056D2] text-white shadow-xs shrink-0">
-                <Search className="w-4 h-4 text-white stroke-[2.5]" />
-              </span>
+              <div className="flex items-center space-x-2.5">
+                <Search className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                <span>What do you want to learn?</span>
+              </div>
+              <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-mono border border-slate-300 dark:border-slate-600 text-slate-500">⌘K</kbd>
             </button>
 
             {/* Mobile Upgrade Trigger - Exactly same as screenshot */}

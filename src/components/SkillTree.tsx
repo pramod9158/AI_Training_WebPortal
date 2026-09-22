@@ -179,7 +179,7 @@ export const SkillTree: React.FC<SkillTreeProps> = ({
                     </div>
                   </div>
 
-                  <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:bg-sky-500 group-hover:text-white dark:group-hover:bg-cyan-500 dark:group-hover:text-black transition-colors">
+                  <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-slate-500 dark:text-slate-400 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </div>
