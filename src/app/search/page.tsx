@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Search, BookOpen, ArrowRight } from 'lucide-react';
+import { Search, BookOpen, ArrowRight, X } from 'lucide-react';
 import { TOPICS } from '@/data/seedTopics';
 import { MODULES } from '@/data/seedModules';
 
@@ -25,16 +25,30 @@ export default function SearchPage() {
         <h1 className="text-2xl xs:text-3xl font-extrabold text-slate-900 dark:text-white break-words">Search Academy Topics</h1>
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">Fuzzy search across all 56 lesson units, quizzes, and code notes.</p>
         
-        <div className="relative pt-2">
-          <Search className="w-5 h-5 text-slate-500 dark:text-slate-400 absolute left-4 top-6" />
-          <input
-            type="text"
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search topics (e.g. Python, Vector DBs)..."
-            className="w-full py-3.5 sm:py-4 pl-12 pr-4 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 text-base font-semibold shadow-sm min-h-[48px]"
-          />
+        <div className="relative pt-2 max-w-xl mx-auto">
+          <div className="relative flex items-center h-13 sm:h-14 pl-5 pr-2 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-700 focus-within:border-[#0056D2] dark:focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-[#0056D2]/15 rounded-full shadow-sm transition-all">
+            <input
+              type="text"
+              autoFocus
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="What do you want to learn?"
+              className="w-full bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none text-base sm:text-lg font-medium pr-2"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery('')}
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 mr-2 rounded-full"
+                aria-label="Clear query"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0056D2] text-white shadow-xs shrink-0">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5 text-white stroke-[2.5]" />
+            </div>
+          </div>
         </div>
       </div>
 

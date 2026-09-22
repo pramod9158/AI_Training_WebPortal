@@ -50,19 +50,34 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
         className="relative w-full max-w-2xl bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden text-slate-800 dark:text-slate-200 cursor-default"
       >
         {/* Search Input Header */}
-        <div className="flex items-center px-4 border-b-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60">
-          <Search className="w-5 h-5 text-slate-500 dark:text-slate-400 shrink-0" />
-          <input
-            type="text"
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search all 56 topics, modules, or skills..."
-            className="w-full py-4 px-3 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none text-base font-semibold border-none ring-0 shadow-none"
-          />
+        <div className="p-3.5 sm:p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/60 flex items-center gap-2.5">
+          <div className="relative flex-1 flex items-center h-12 pl-4 pr-1.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus-within:border-[#0056D2] dark:focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-[#0056D2]/20 rounded-full shadow-2xs transition-all">
+            <input
+              type="text"
+              autoFocus
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="What do you want to learn?"
+              className="w-full bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none text-sm sm:text-base font-medium pr-2"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery('')}
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 mr-1.5 rounded-full"
+                aria-label="Clear query"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+            <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#0056D2] text-white shadow-xs shrink-0">
+              <Search className="w-4 h-4 text-white stroke-[2.5]" />
+            </div>
+          </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+            className="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors shrink-0"
+            title="Close (Esc)"
           >
             <X className="w-5 h-5" />
           </button>

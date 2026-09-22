@@ -89,8 +89,9 @@ function SignupForm() {
       const { data, error } = await signUpWithEmail(email, password, name.trim());
 
       // Requirement: When already registered user creates account again, it should say "You are already registered"
+      const userIdentities = (data?.user as { identities?: unknown[] } | undefined)?.identities;
       const userAlreadyExists = 
-        Boolean(data?.user?.identities && data.user.identities.length === 0) ||
+        Boolean(userIdentities && userIdentities.length === 0) ||
         Boolean(error && (
           error.message.toLowerCase().includes('already registered') ||
           error.message.toLowerCase().includes('already exists') ||
