@@ -177,16 +177,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             </div>
           </button>
 
-          {/* Upgrade to Pro Button - Exactly same CSS, color, size, and shape as Login button */}
+          {/* Upgrade to Pro Button - Exactly same as screenshot (rounded rectangle outline) */}
           {!isProUser && (
             <button
               type="button"
               onClick={() => setPaymentModalOpen(true)}
-              className="flex items-center space-x-1.5 h-9 sm:h-10 px-3 sm:px-4 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-xs transition-colors shrink-0"
+              className="flex items-center justify-center h-9 sm:h-10 px-3 sm:px-4 rounded-lg border border-slate-700 dark:border-slate-300 bg-white dark:bg-slate-900 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-xs sm:text-sm transition-colors shrink-0"
               title="Upgrade to Pro - unlock all courses"
               aria-label="Upgrade to Pro"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400 dark:text-amber-500 shrink-0" />
               <span className="hidden sm:inline">Upgrade to Pro</span>
               <span className="sm:hidden">Upgrade</span>
             </button>
@@ -354,10 +353,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           ) : (
             <Link
               href="/login"
-              className="hidden sm:flex items-center space-x-1.5 h-9 sm:h-10 px-4 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-xs transition-colors shrink-0"
+              className="hidden sm:flex items-center justify-center h-9 sm:h-10 px-4 rounded-lg border border-slate-700 dark:border-slate-300 bg-white dark:bg-slate-900 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-xs sm:text-sm transition-colors shrink-0"
             >
-              <LogIn className="w-3.5 h-3.5" />
-              <span>Log In</span>
+              Log in
             </Link>
           )}
 
@@ -535,20 +533,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               </span>
             </button>
 
-            {/* Mobile Upgrade Trigger - Matching Login button CSS */}
+            {/* Mobile Upgrade Trigger - Exactly same as screenshot */}
             {!isProUser && (
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setPaymentModalOpen(true);
                 }}
-                className="w-full flex items-center justify-between h-11 px-4 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-xs transition-colors"
+                className="w-full flex items-center justify-between h-11 px-4 rounded-lg border border-slate-700 dark:border-slate-300 bg-white dark:bg-slate-900 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-xs sm:text-sm transition-colors"
               >
-                <div className="flex items-center space-x-2">
-                  <Sparkles className="w-4 h-4 text-amber-400 dark:text-amber-500 shrink-0" />
-                  <span>Upgrade to Pro Pass</span>
-                </div>
-                <span className="text-[11px] bg-slate-800 dark:bg-slate-100 text-amber-300 dark:text-amber-600 px-2 py-0.5 rounded-full font-mono font-bold">₹10,000/yr</span>
+                <span>Upgrade to Pro Pass</span>
+                <span className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 font-mono font-bold">₹10,000/yr</span>
               </button>
             )}
           </div>
