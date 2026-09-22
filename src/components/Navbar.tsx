@@ -177,22 +177,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             </div>
           </button>
 
-          {/* Upgrade to Pro Pill - Styled matching the search bar pill */}
+          {/* Upgrade to Pro Button - Exactly same CSS, color, size, and shape as Login button */}
           {!isProUser && (
             <button
               type="button"
               onClick={() => setPaymentModalOpen(true)}
-              className="group flex items-center justify-between h-9 sm:h-10 pl-3 sm:pl-3.5 pr-1 sm:pr-1.5 bg-gradient-to-r from-amber-500/10 via-amber-500/15 to-amber-500/10 hover:from-amber-500/20 hover:to-amber-500/25 dark:bg-amber-500/10 dark:hover:bg-amber-500/20 border border-amber-400/60 dark:border-amber-500/40 hover:border-amber-500 dark:hover:border-amber-400 rounded-full shadow-2xs hover:shadow-xs transition-all text-left cursor-pointer shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+              className="flex items-center space-x-1.5 h-9 sm:h-10 px-3 sm:px-4 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-xs transition-colors shrink-0"
               title="Upgrade to Pro - unlock all courses"
               aria-label="Upgrade to Pro"
             >
-              <span className="text-[11px] xs:text-xs sm:text-sm font-semibold text-amber-900 dark:text-amber-200 truncate">
-                <span className="hidden sm:inline">Upgrade to Pro</span>
-                <span className="sm:hidden">Pro</span>
-              </span>
-              <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 group-hover:from-amber-600 group-hover:to-orange-600 text-white transition-transform group-hover:scale-105 shadow-xs shrink-0 ml-1.5">
-                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
-              </span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-400 dark:text-amber-500 shrink-0" />
+              <span className="hidden sm:inline">Upgrade to Pro</span>
+              <span className="sm:hidden">Upgrade</span>
             </button>
           )}
 
@@ -539,23 +535,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               </span>
             </button>
 
-            {/* Mobile Upgrade Trigger */}
+            {/* Mobile Upgrade Trigger - Matching Login button CSS */}
             {!isProUser && (
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setPaymentModalOpen(true);
                 }}
-                className="w-full flex items-center justify-between h-11 pl-4 pr-1.5 rounded-full text-xs font-bold text-amber-900 dark:text-amber-200 bg-amber-500/10 hover:bg-amber-500/15 border border-amber-400/60 dark:border-amber-500/40 transition-colors shadow-2xs"
+                className="w-full flex items-center justify-between h-11 px-4 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-xs transition-colors"
               >
                 <div className="flex items-center space-x-2">
-                  <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
+                  <Sparkles className="w-4 h-4 text-amber-400 dark:text-amber-500 shrink-0" />
                   <span>Upgrade to Pro Pass</span>
-                  <span className="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded-full font-mono font-bold">₹10,000/yr</span>
                 </div>
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-xs shrink-0">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </span>
+                <span className="text-[11px] bg-slate-800 dark:bg-slate-100 text-amber-300 dark:text-amber-600 px-2 py-0.5 rounded-full font-mono font-bold">₹10,000/yr</span>
               </button>
             )}
           </div>
