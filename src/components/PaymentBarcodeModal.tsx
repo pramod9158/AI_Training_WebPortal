@@ -445,9 +445,12 @@ export const PaymentBarcodeModal: React.FC<PaymentBarcodeModalProps> = ({
 
                   {/* Pricing Badge */}
                   <div className="mt-2.5">
-                    <div className="inline-flex items-baseline space-x-1">
-                      <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-                        ₹{config.amount}
+                    <div className="inline-flex items-baseline space-x-1.5">
+                      <span className="text-sm font-bold text-slate-400 dark:text-slate-500 line-through font-mono">
+                        ₹15,000
+                      </span>
+                      <span className="text-xl sm:text-2xl font-black text-cyan-600 dark:text-cyan-400 font-mono">
+                        ₹{config.amount.toLocaleString('en-IN')}
                       </span>
                       <span className="text-[10px] font-bold text-slate-500 uppercase">
                         {config.currency} / Year

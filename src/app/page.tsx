@@ -445,9 +445,10 @@ export default function HomePage() {
               </div>
 
               <div className="mb-6">
-                <div className="flex items-baseline gap-1">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹499</span>
                   <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">₹19</span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold ml-2">Intro Offer</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Intro Offer</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
                   Everything in Free tier + an additional 1-on-1 session with an AI Expert.
@@ -495,7 +496,7 @@ export default function HomePage() {
             </a>
           </div>
 
-          {/* Card 3: Pay ₹10,000 — 4-Week Intensive Cohort (Flagship Tier) */}
+          {/* Card 3: Pay ₹9,999 — 4-Week Intensive Cohort (Flagship Tier) */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-white via-white to-cyan-50/30 dark:from-[#0D121F] dark:via-[#0D121F] dark:to-[#071324] border-2 border-cyan-400 dark:border-cyan-500 shadow-2xl shadow-cyan-500/20 ring-2 ring-cyan-400/20 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02]">
             {/* Top Badge */}
             <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-[11px] font-mono font-extrabold uppercase tracking-wider shadow-lg shadow-cyan-500/30 flex items-center gap-1.5">
@@ -509,9 +510,10 @@ export default function HomePage() {
               </div>
 
               <div className="mb-6">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl sm:text-5xl font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">₹10,000</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 ml-1.5 font-medium">all-inclusive</span>
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹15,000</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">₹9,999</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">all-inclusive</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
                   Complete 4-week live personalized training & full Academy Portal access.

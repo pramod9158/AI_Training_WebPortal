@@ -42,7 +42,7 @@ export const MASTER_PAYMENT_CONFIG: UpiPaymentConfig = {
   payeeName: 'Pramod Kalyan',
 
   // 3. Pro Annual Course Fee
-  amount: 10000.00,
+  amount: 9999.00,
 
   // 4. Currency
   currency: 'INR',

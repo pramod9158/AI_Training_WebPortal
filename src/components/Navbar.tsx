@@ -578,7 +578,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 className="w-full flex items-center justify-between h-11 px-4 rounded-lg border border-slate-700 dark:border-slate-300 bg-white dark:bg-slate-900 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-xs sm:text-sm transition-colors"
               >
                 <span>Upgrade to Pro Pass</span>
-                <span className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 font-mono font-bold">₹10,000/yr</span>
+                <span className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 font-mono font-bold">₹9,999/yr</span>
               </button>
             )}
           </div>
