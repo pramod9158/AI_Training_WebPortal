@@ -595,42 +595,42 @@ export default function HomePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {[
             {
-              icon: <BookOpen className="w-6 h-6" />,
+              icon: <BookOpen className="w-5 h-5 sm:w-6 sm:h-6" />,
               title: '56 Topics — Video + Live Sessions',
               desc: 'Every topic is covered through recorded video lectures and reinforced through live sessions with your mentor. Maximum depth, maximum flexibility.',
               color: 'from-cyan-500 to-blue-600',
               points: [],
             },
             {
-              icon: <Clock className="w-6 h-6" />,
+              icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
               title: '4-Week Structured Path',
               desc: 'A fast, focused journey from Python & Git fundamentals all the way to advanced RAG systems, agentic AI, and local model deployment.',
               color: 'from-blue-500 to-violet-500',
               points: [],
             },
             {
-              icon: <Rocket className="w-6 h-6" />,
+              icon: <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />,
               title: '4–5 Agentic, Market-Ready Projects',
               desc: 'Build real, portfolio-worthy AI projects — not just theory exercises. Walk away with work you can demo in any job interview.',
               color: 'from-violet-500 to-pink-500',
               points: [],
             },
             {
-              icon: <Users className="w-6 h-6" />,
+              icon: <Users className="w-5 h-5 sm:w-6 sm:h-6" />,
               title: 'Personalized Mentor',
               desc: 'Every student gets a dedicated mentor for personalized training, doubt-solving, and career guidance — one-on-one, not generic group sessions.',
               color: 'from-amber-500 to-orange-500',
               points: [],
             },
             {
-              icon: <Award className="w-6 h-6" />,
+              icon: <Award className="w-5 h-5 sm:w-6 sm:h-6" />,
               title: 'Internship + Completion Certificate',
               desc: 'Earn an Internship Certificate for your project work and a Program Completion Certificate from Waynautic Academy — credentials you can proudly display on LinkedIn and your resume.',
               color: 'from-emerald-500 to-teal-600',
               points: [],
             },
             {
-              icon: <Target className="w-6 h-6" />,
+              icon: <Target className="w-5 h-5 sm:w-6 sm:h-6" />,
               title: 'Full Placement Assistance',
               desc: 'We prepare you end-to-end for the job market: mock interviews with real feedback, resume building, LinkedIn profile optimization, and 1 year of portal access.',
               color: 'from-rose-500 to-red-500',
@@ -639,15 +639,19 @@ export default function HomePage() {
           ].map(({ icon, title, desc, color }) => (
             <div
               key={title}
-              className="group p-6 rounded-3xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-xl transition-all duration-300 flex flex-col gap-4"
+              className="group p-5 sm:p-6 rounded-3xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-xl transition-all duration-300 flex flex-col justify-start"
             >
-              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform`}>
-                {icon}
+              <div className="flex items-center gap-3.5 sm:gap-4 mb-3 sm:mb-4">
+                <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-md shrink-0 group-hover:scale-105 transition-transform`}>
+                  {icon}
+                </div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base sm:text-lg leading-snug">
+                  {title}
+                </h3>
               </div>
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-white mb-2">{title}</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{desc}</p>
-              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                {desc}
+              </p>
             </div>
           ))}
         </div>
