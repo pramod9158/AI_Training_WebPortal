@@ -28,69 +28,28 @@ export default function AboutPage() {
       />
 
       {/* ================================================================ */}
-      {/* HERO: Team Photo & Hero Title                                   */}
+      {/* HERO: Team Photo with Bottom Headline                           */}
       {/* ================================================================ */}
-      <section
-        className="relative w-full overflow-hidden"
-        style={{ backgroundColor: '#0B0F1A', color: '#FFFFFF' }}
-      >
-        {/* Hero Header: Title & CTA placed cleanly without occluding team members */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-14 pb-5 sm:pb-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 sm:gap-6">
-            <div className="space-y-2.5 max-w-2xl">
-              <div
-                className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border text-xs font-mono font-bold shadow-sm"
-                style={{ backgroundColor: '#111827', borderColor: '#1F2937', color: '#38BDF8' }}
-              >
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Waynautic Technologies Core Team</span>
-              </div>
-              <h1
-                className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight"
-                style={{ color: '#FFFFFF' }}
-              >
-                We have the solution for<br />
-                <span style={{ color: '#38BDF8' }}>AI upskilling.</span>
-              </h1>
-              <p className="text-sm sm:text-lg lg:text-xl font-semibold leading-relaxed max-w-xl">
-                <span style={{ color: '#E2E8F0' }}>Building the </span>
-                <span
-                  className="font-extrabold"
-                  style={{
-                    background: 'linear-gradient(90deg, #38BDF8, #67E8F9, #60A5FA)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                  }}
-                >
-                  future of developer education
-                </span>
-                <span style={{ color: '#E2E8F0' }}>,</span>
-                <br />
-                <span
-                  className="text-xs sm:text-base font-medium tracking-widest uppercase"
-                  style={{ color: '#94A3B8' }}
-                >
-                  one module at a time.
-                </span>
-              </p>
-            </div>
-            <div className="shrink-0 pt-1 md:pt-0">
-              <Link
-                href="/curriculum"
-                className="inline-flex items-center justify-center space-x-2 w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-xl font-bold text-sm shadow-xl transition-all transform hover:-translate-y-0.5"
-                style={{ backgroundColor: '#0284C7', color: '#FFFFFF' }}
-              >
-                <span style={{ color: '#FFFFFF' }}>Explore Curriculum</span>
-                <ArrowRight className="w-4 h-4" style={{ color: '#FFFFFF' }} />
-              </Link>
-            </div>
+      <section className="relative w-full overflow-hidden bg-slate-50 dark:bg-[#07090E] transition-colors">
+        {/* Top Header: Badge & Explore CTA */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-3 sm:pb-4 flex items-center justify-between">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-mono font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-sky-600 dark:text-cyan-400 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Waynautic Technologies Core Team</span>
           </div>
+
+          <Link
+            href="/curriculum"
+            className="inline-flex items-center justify-center space-x-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-sky-600 hover:bg-sky-500 text-white shadow-md transition-all transform hover:-translate-y-0.5"
+          >
+            <span>Explore Curriculum</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
 
-        {/* Team Photo Container with Thin Black Transparent Layer */}
+        {/* Team Photo Container with Thin Transparent Layer and Bottom Headline */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-8">
-          <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900">
+          <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl bg-white dark:bg-slate-900">
             <Image
               src="/WaynauticTeam.webp"
               alt="Waynautic Technologies Team and Educators"
@@ -103,6 +62,13 @@ export default function AboutPage() {
             />
             {/* Thin black transparent layer over the image as in professional hero images */}
             <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+
+            {/* "We have the solution for AI upskilling." placed at bottom of team photo near legs */}
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pt-14 pb-4 sm:pb-7 px-4 sm:px-8">
+              <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight drop-shadow-lg leading-tight">
+                We have the solution for <span className="text-cyan-400">AI upskilling.</span>
+              </h2>
+            </div>
           </div>
         </div>
       </section>
