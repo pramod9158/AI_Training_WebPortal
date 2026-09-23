@@ -46,11 +46,19 @@ export default function AboutPage() {
                 We have the solution for<br />
                 <span className="text-sky-400 !text-sky-400" style={{ color: '#38BDF8' }}>AI upskilling.</span>
               </h1>
-              <p 
-                className="text-xs sm:text-base text-slate-300 !text-slate-300 font-medium leading-relaxed max-w-xl"
-                style={{ color: '#CBD5E1' }}
-              >
-                Building the future of developer education, one module at a time.
+              <p className="text-sm sm:text-lg lg:text-xl font-semibold leading-relaxed max-w-xl">
+                <span className="text-slate-200">Building the </span>
+                <span
+                  className="font-extrabold bg-gradient-to-r from-sky-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent"
+                  style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+                >
+                  future of developer education
+                </span>
+                <span className="text-slate-200">,</span>
+                <br />
+                <span className="text-slate-400 text-xs sm:text-base font-medium tracking-widest uppercase">
+                  one module at a time.
+                </span>
               </p>
             </div>
             <div className="shrink-0 pt-1 md:pt-0">
