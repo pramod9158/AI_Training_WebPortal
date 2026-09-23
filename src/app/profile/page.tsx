@@ -26,7 +26,7 @@ import {
   Clock
 } from 'lucide-react';
 import { CertificateModal } from '@/components/CertificateModal';
-import { PaymentBarcodeModal } from '@/components/PaymentBarcodeModal';
+import { RazorpayModal } from '@/components/RazorpayModal';
 import { getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { LEARNING_PATHS } from '@/data/seedModules';
 import { AVATAR_PRESETS, getAvatarPreset } from '@/data/avatarPresets';
@@ -185,10 +185,11 @@ export default function ProfilePage() {
         totalCount={pathTopics.length}
       />
 
-      {/* Upgrade to Pro Modal */}
-      <PaymentBarcodeModal
+      {/* Upgrade to Pro Modal via Razorpay */}
+      <RazorpayModal
         isOpen={paymentModalOpen}
         onClose={() => setPaymentModalOpen(false)}
+        plan="cohort"
       />
 
       {/* Top Breadcrumb & Page Header */}

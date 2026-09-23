@@ -32,10 +32,7 @@ import dynamic from 'next/dynamic';
 import { NotificationDrawer } from './NotificationDrawer';
 import { SearchModal } from './SearchModal';
 
-const PaymentBarcodeModal = dynamic(
-  () => import('./PaymentBarcodeModal').then((mod) => mod.PaymentBarcodeModal),
-  { ssr: false }
-);
+
 
 interface NavbarProps {
   onOpenSearch?: () => void;
@@ -46,7 +43,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const router = useRouter();
   const { profile, progress, streak, bookmarks, updateProfile, signOut, toggleBookmarkTopic } = useWaynauticStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -585,11 +581,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         </div>
       )}
 
-      {/* Candidate Barcode / UPI Payment Modal */}
-      <PaymentBarcodeModal
-        isOpen={paymentModalOpen}
-        onClose={() => setPaymentModalOpen(false)}
-      />
     </header>
   );
 };

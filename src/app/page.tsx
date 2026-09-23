@@ -43,7 +43,7 @@ import { TOPICS } from '@/data/seedTopics';
 import { getAllTopics, getResumeTopic, getResumeLearningUrl } from '@/lib/curriculumService';
 import { useWaynauticStore } from '@/lib/store';
 import { OnboardingTour } from '@/components/OnboardingTour';
-import { PaymentBarcodeModal } from '@/components/PaymentBarcodeModal';
+import { RazorpayModal } from '@/components/RazorpayModal';
 
 // ─── Module icon mapping ─────────────────────────────────────────────────────
 const MODULE_ICON_MAP: Record<string, React.ReactNode> = {
@@ -775,10 +775,11 @@ export default function HomePage() {
         </svg>
       </a>
 
-      {/* UPI / Barcode Payment Modal */}
-      <PaymentBarcodeModal
+      {/* Official Razorpay Checkout Modal */}
+      <RazorpayModal
         isOpen={paymentModalOpen}
         onClose={() => setPaymentModalOpen(false)}
+        plan="cohort"
       />
 
     </div>
