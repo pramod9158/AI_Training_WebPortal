@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, HelpCircle, Send, Trash2, CornerDownRight, ChevronDown, MessageCircle } from 'lucide-react';
 import { loadTopicComments, fetchTopicCommentsFromDb, addTopicComment, deleteTopicComment, useWaynauticStore } from '@/lib/store';
+import { deduplicateComments } from '@/lib/commentUtils';
 import { TopicComment } from '@/lib/types';
 import { trackCommentPosted } from '@/lib/analytics';
 
@@ -26,10 +27,10 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
 
   const reloadComments = async () => {
     // Instant local cache render
-    setComments(loadTopicComments(topicId));
+    setComments(deduplicateComments(loadTopicComments(topicId)));
     // Live database hydration from Supabase
     const liveComments = await fetchTopicCommentsFromDb(topicId);
-    setComments(liveComments);
+    setComments(deduplicateComments(liveComments));
   };
 
   useEffect(() => {
@@ -96,14 +97,18 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
     }));
   };
 
-  const filteredComments = comments.filter((c) => {
+  // Robustly deduplicate all comments and replies before display
+  const uniqueComments = deduplicateComments(comments);
+
+  const filteredComments = uniqueComments.filter((c) => {
     if (filter === 'questions') return c.isQuestion;
     return true;
   });
 
-  // Group root comments and replies
+  // Group root comments and replies (both deduplicated)
   const rootComments = filteredComments.filter((c) => !c.parentId);
-  const getReplies = (parentId: string) => comments.filter((c) => c.parentId === parentId);
+  const getReplies = (parentId: string) =>
+    deduplicateComments(uniqueComments.filter((c) => c.parentId === parentId));
 
   return (
     <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
@@ -117,7 +122,7 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
               <span>Community Q&A & Discussion</span>
             </span>
             <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white pt-0.5 flex items-center space-x-2">
-              <span>Topic Discussion Thread ({comments.length})</span>
+              <span>Topic Discussion Thread ({uniqueComments.length})</span>
             </h2>
           </div>
         </div>
@@ -135,7 +140,7 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
                 }`}
               >
-                All ({comments.length})
+                All ({uniqueComments.length})
               </button>
               <button
                 type="button"
@@ -147,7 +152,7 @@ export function TopicComments({ topicId, topicTitle }: TopicCommentsProps) {
                 }`}
               >
                 <HelpCircle className="w-3.5 h-3.5" />
-                <span>Questions ({comments.filter((c) => c.isQuestion).length})</span>
+                <span>Questions ({uniqueComments.filter((c) => c.isQuestion).length})</span>
               </button>
             </>
           )}

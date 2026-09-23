@@ -4,6 +4,7 @@ import path from 'path';
 import { createClient } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { TopicComment } from '@/lib/types';
+import { deduplicateComments } from '@/lib/commentUtils';
 
 const COMMENTS_FILE = path.join(process.cwd(), 'src', 'data', 'topic_comments.json');
 
@@ -109,19 +110,12 @@ export async function GET(req: NextRequest) {
             };
           });
 
-          // Merge: Supabase comments + any pending local file comments
-          const mergedMap = new Map<string, TopicComment>();
-          dbComments.forEach((c) => mergedMap.set(c.id, c));
-          topicList.forEach((c) => {
-            if (!mergedMap.has(c.id)) {
-              mergedMap.set(c.id, c);
-            }
-          });
-
-          topicList = Array.from(mergedMap.values()).sort(
+          // Merge: Supabase comments + any pending local file comments, with deduplication
+          const merged = [...dbComments, ...topicList].sort(
             (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
 
+          topicList = deduplicateComments(merged);
           allComments[topicId] = topicList;
           writeCommentsToFile(allComments);
         }
@@ -133,7 +127,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       success: true,
       topicId,
-      comments: topicList
+      comments: deduplicateComments(topicList)
     });
   }
 
@@ -146,7 +140,17 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { topicId, userId, userName, userAvatar, content, isQuestion, parentId } = body;
+    const {
+      topicId,
+      userId,
+      userName,
+      userAvatar,
+      content,
+      isQuestion,
+      parentId,
+      id: incomingId,
+      alreadyInsertedInDb
+    } = body;
 
     if (!topicId || !content || !content.trim()) {
       return NextResponse.json(
@@ -160,36 +164,62 @@ export async function POST(req: NextRequest) {
     const list = allComments[topicId] || [];
 
     const now = new Date().toISOString();
-    let commentId = `cmt-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+    const isIncomingUuid = Boolean(incomingId && /^[0-9a-fA-F-]{36}$/.test(incomingId));
+    let commentId = isIncomingUuid ? incomingId : `cmt-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
 
-    // Try Supabase insert
-    if (isSupabaseConfigured) {
+    // If client already inserted into Supabase directly, DO NOT insert again to avoid duplicates!
+    if (isSupabaseConfigured && !alreadyInsertedInDb && !isIncomingUuid) {
       try {
         const sb = getSupabaseClient(req);
         const isUserUuid = Boolean(userId && /^[0-9a-fA-F-]{36}$/.test(userId));
         const isParentUuid = Boolean(parentId && /^[0-9a-fA-F-]{36}$/.test(parentId));
 
-        const payload: any = {
-          topic_id: topicId,
-          user_name: userName || 'Learner',
-          user_avatar: userAvatar || '',
-          content: trimmed,
-          is_question: Boolean(isQuestion),
-          created_at: now
-        };
+        // Quick deduplication check: check if the exact same comment was created in the last 15 seconds
+        let query = sb
+          .from('topic_comments')
+          .select('id, created_at')
+          .eq('topic_id', topicId)
+          .eq('content', trimmed)
+          .order('created_at', { ascending: false })
+          .limit(1);
 
-        if (isUserUuid) {
-          payload.user_id = userId;
-        }
         if (isParentUuid) {
-          payload.parent_id = parentId;
+          query = query.eq('parent_id', parentId);
         }
 
-        const { data, error } = await sb.from('topic_comments').insert(payload).select().single();
-        if (!error && data?.id) {
-          commentId = data.id;
-        } else if (error) {
-          console.warn('Supabase comment insert failed in API route:', error.message);
+        const { data: recentMatches } = await query;
+        if (recentMatches && recentMatches.length > 0) {
+          const matchTime = new Date(recentMatches[0].created_at).getTime();
+          if (Date.now() - matchTime < 15000) {
+            commentId = recentMatches[0].id;
+          }
+        }
+
+        if (!commentId.startsWith('cmt-')) {
+          // Already exists in Supabase
+        } else {
+          const payload: any = {
+            topic_id: topicId,
+            user_name: userName || 'Learner',
+            user_avatar: userAvatar || '',
+            content: trimmed,
+            is_question: Boolean(isQuestion),
+            created_at: now
+          };
+
+          if (isUserUuid) {
+            payload.user_id = userId;
+          }
+          if (isParentUuid) {
+            payload.parent_id = parentId;
+          }
+
+          const { data, error } = await sb.from('topic_comments').insert(payload).select().single();
+          if (!error && data?.id) {
+            commentId = data.id;
+          } else if (error) {
+            console.warn('Supabase comment insert failed in API route:', error.message);
+          }
         }
       } catch (err) {
         console.warn('Supabase comment insert caught error in API route:', err);
@@ -211,13 +241,14 @@ export async function POST(req: NextRequest) {
     };
 
     list.unshift(newComment);
-    allComments[topicId] = list;
+    const deduplicatedList = deduplicateComments(list);
+    allComments[topicId] = deduplicatedList;
     writeCommentsToFile(allComments);
 
     return NextResponse.json({
       success: true,
       comment: newComment,
-      comments: list
+      comments: deduplicatedList
     });
   } catch (err: any) {
     console.error('Error in POST /api/comments:', err);

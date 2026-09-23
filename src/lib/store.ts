@@ -919,9 +919,13 @@ export function loadAllTopicComments(): Record<string, TopicComment[]> {
   return {};
 }
 
+import { deduplicateComments } from './commentUtils';
+export { deduplicateComments };
+
+
 export function loadTopicComments(topicId: string): TopicComment[] {
   const all = loadAllTopicComments();
-  return all[topicId] || [];
+  return deduplicateComments(all[topicId] || []);
 }
 
 export async function fetchTopicCommentsFromDb(topicId: string): Promise<TopicComment[]> {
@@ -988,31 +992,19 @@ export async function fetchTopicCommentsFromDb(topicId: string): Promise<TopicCo
     console.warn('Could not fetch comments from /api/comments:', err);
   }
 
-  // Merge Supabase comments and API comments
-  const mergedMap = new Map<string, TopicComment>();
-  dbComments.forEach((c) => mergedMap.set(c.id, c));
-  apiComments.forEach((c) => {
-    if (!mergedMap.has(c.id)) {
-      mergedMap.set(c.id, c);
-    }
-  });
-
   const all = loadAllTopicComments();
   const localList = all[topicId] || [];
-  // Preserve any local pending comments that haven't synced
-  const combined = Array.from(mergedMap.values());
-  const pendingLocal = localList.filter(
-    (c) => c.id.startsWith('cmt-') && !combined.some((m) => m.content === c.content && m.userName === c.userName)
-  );
+  const pendingLocal = localList.filter((c) => c.id.startsWith('cmt-'));
 
-  const finalList = [...pendingLocal, ...combined].sort(
+  const rawList = [...dbComments, ...apiComments, ...pendingLocal].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
+
+  const finalList = deduplicateComments(rawList);
 
   all[topicId] = finalList;
   if (typeof window !== 'undefined') {
     localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
-    window.dispatchEvent(new Event('waynautic_storage_change'));
   }
   return finalList;
 }
@@ -1028,6 +1020,7 @@ export async function addTopicComment(
   const trimmed = content.trim();
   const tempId = `cmt-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
   let realCommentId = tempId;
+  let alreadyInsertedInDb = false;
 
   const newComment: TopicComment = {
     id: tempId,
@@ -1045,12 +1038,11 @@ export async function addTopicComment(
 
   const all = loadAllTopicComments();
   const list = all[topicId] || [];
-  all[topicId] = [newComment, ...list];
+  all[topicId] = deduplicateComments([newComment, ...list]);
   localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
   recordActivity();
-  window.dispatchEvent(new Event('waynautic_storage_change'));
 
-  // Get session if available
+  // 1. Direct Supabase cloud insert if user is connected
   let sessionToken: string | undefined;
   if (isSupabaseConfigured) {
     try {
@@ -1084,6 +1076,12 @@ export async function addTopicComment(
         if (!error && inserted?.id) {
           realCommentId = inserted.id;
           newComment.id = realCommentId;
+          alreadyInsertedInDb = true;
+
+          // Update local cache with real UUID
+          const currentList = (all[topicId] || []).map((c) => (c.id === tempId ? { ...c, id: realCommentId } : c));
+          all[topicId] = deduplicateComments(currentList);
+          localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
         } else if (error) {
           console.warn('Supabase comment insert warning:', error);
         }
@@ -1093,7 +1091,7 @@ export async function addTopicComment(
     }
   }
 
-  // 2. Post to /api/comments for server persistence & cross-user propagation
+  // 2. Post to /api/comments for server file cache (mark alreadyInsertedInDb so the server does NOT re-insert into Supabase!)
   try {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (sessionToken) {
@@ -1109,37 +1107,61 @@ export async function addTopicComment(
         userAvatar: profile.avatarUrl || '',
         content: trimmed,
         isQuestion,
-        parentId
+        parentId,
+        id: realCommentId,
+        alreadyInsertedInDb
       })
     });
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.comments)) {
-        all[topicId] = json.comments;
+        all[topicId] = deduplicateComments(json.comments);
         localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
-        window.dispatchEvent(new Event('waynautic_storage_change'));
-        if (json.comment) return json.comment;
       }
     }
   } catch (err) {
     console.warn('Failed to sync comment to /api/comments:', err);
   }
 
+  window.dispatchEvent(new Event('waynautic_storage_change'));
   return newComment;
 }
 
 export async function deleteTopicComment(topicId: string, commentId: string): Promise<void> {
   if (typeof window === 'undefined') return;
   const all = loadAllTopicComments();
+  const targetComment = (all[topicId] || []).find((c) => c.id === commentId);
+
   if (all[topicId]) {
-    all[topicId] = all[topicId].filter((c) => c.id !== commentId && c.parentId !== commentId);
+    all[topicId] = all[topicId].filter((c) => {
+      if (c.id === commentId || c.parentId === commentId) return false;
+      if (
+        targetComment &&
+        c.content.trim() === targetComment.content.trim() &&
+        (c.parentId || '') === (targetComment.parentId || '') &&
+        (c.userName === targetComment.userName || c.userId === targetComment.userId)
+      ) {
+        return false;
+      }
+      return true;
+    });
     localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
     window.dispatchEvent(new Event('waynautic_storage_change'));
   }
 
-  if (isSupabaseConfigured && /^[0-9a-fA-F-]{36}$/.test(commentId)) {
+  if (isSupabaseConfigured) {
     try {
-      await supabase.from('topic_comments').delete().eq('id', commentId);
+      if (/^[0-9a-fA-F-]{36}$/.test(commentId)) {
+        await supabase.from('topic_comments').delete().eq('id', commentId);
+      }
+      if (targetComment?.content && targetComment?.userId && /^[0-9a-fA-F-]{36}$/.test(targetComment.userId)) {
+        await supabase
+          .from('topic_comments')
+          .delete()
+          .eq('topic_id', topicId)
+          .eq('user_id', targetComment.userId)
+          .eq('content', targetComment.content.trim());
+      }
     } catch (err) {
       console.warn('Supabase comment delete error:', err);
     }
