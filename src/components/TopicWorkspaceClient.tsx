@@ -460,7 +460,7 @@ export function TopicWorkspaceClient() {
         {currentTab === 'read' && (
           <div role="tabpanel" id="panel-read" aria-labelledby="tab-read">
             <MarkdownNotes 
-              key={`notes-${topic.id}-${topic.textContent?.length}-${topicsVersion}`}
+              key={`notes-${topic.id}`}
               content={topic.textContent}
               topicTitle={topic.title}
               topicSlug={topic.slug}

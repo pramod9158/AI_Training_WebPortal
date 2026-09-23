@@ -43,7 +43,137 @@ function cleanAlertChildren(children: React.ReactNode): React.ReactNode {
   });
 }
 
-export const NotesRenderer: React.FC<NotesRendererProps> = ({
+interface PersistentCodeBlockProps {
+  codeString: string;
+  className?: string;
+}
+
+const PersistentCodeBlock = React.memo<PersistentCodeBlockProps>(({ codeString, className }) => {
+  const preRef = React.useRef<HTMLPreElement>(null);
+  const scrollPosRef = React.useRef<number>(0);
+
+  const match = /language-(\w+)/.exec(className || '');
+  const languageLabel = match ? match[1] : 'code';
+  const isDiagram = /[┌┐└┘├┤┬┴┼─│▼▲►◄═║╔╗╚╝]/.test(codeString);
+  const displayLabel = isDiagram 
+    ? 'Architecture Mind Map' 
+    : languageLabel === 'text' 
+    ? 'Plain Text' 
+    : languageLabel;
+
+  // Restore horizontal scroll position after any re-render so user never loses their scrolled content
+  React.useLayoutEffect(() => {
+    if (preRef.current && scrollPosRef.current > 0) {
+      preRef.current.scrollLeft = scrollPosRef.current;
+    }
+  });
+
+  const handleScroll = (e: React.UIEvent<HTMLPreElement>) => {
+    scrollPosRef.current = e.currentTarget.scrollLeft;
+  };
+
+  const highlightedNodes = React.useMemo(() => {
+    if (isDiagram) {
+      const lines = codeString.split('\n');
+      return lines.map((line, lineIdx) => {
+        const parts: React.ReactNode[] = [];
+        let currentSeg = '';
+        let isBox = false;
+
+        for (let i = 0; i < line.length; i++) {
+          const c = line[i];
+          const isBoxChar = /[┌┐└┘├┤┬┴┼─│▼▲►◄═║╔╗╚╝]/.test(c);
+
+          if (i === 0) {
+            isBox = isBoxChar;
+            currentSeg = c;
+          } else if (isBoxChar === isBox) {
+            currentSeg += c;
+          } else {
+            parts.push(
+              <span
+                key={`${lineIdx}-${parts.length}`}
+                className={isBox ? 'text-sky-400 font-bold' : 'text-slate-100 font-semibold'}
+              >
+                {currentSeg}
+              </span>
+            );
+            isBox = isBoxChar;
+            currentSeg = c;
+          }
+        }
+
+        if (currentSeg) {
+          parts.push(
+            <span
+              key={`${lineIdx}-${parts.length}`}
+              className={isBox ? 'text-sky-400 font-bold' : 'text-slate-100 font-semibold'}
+            >
+              {currentSeg}
+            </span>
+          );
+        }
+
+        return (
+          <React.Fragment key={lineIdx}>
+            {parts}
+            {lineIdx < lines.length - 1 ? '\n' : ''}
+          </React.Fragment>
+        );
+      });
+    }
+
+    const lines = codeString.split('\n');
+    return lines.map((line, lineIdx) => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('#') || trimmed.startsWith('//')) {
+        return (
+          <span key={lineIdx} className="text-slate-400 italic">
+            {line}
+            {lineIdx < lines.length - 1 ? '\n' : ''}
+          </span>
+        );
+      }
+      return (
+        <span key={lineIdx} className="text-slate-100">
+          {line}
+          {lineIdx < lines.length - 1 ? '\n' : ''}
+        </span>
+      );
+    });
+  }, [codeString, isDiagram]);
+
+  return (
+    <div className="notes-code-wrapper relative group my-4 rounded-xl overflow-hidden border-2 border-slate-700/80 dark:border-slate-800 bg-[#0A0F1D] shadow-lg">
+      <div className="notes-code-header flex items-center justify-between px-3.5 sm:px-4 py-2 bg-[#131B2E] border-b border-slate-800 text-[11px] sm:text-xs font-mono text-slate-300">
+        <div className="flex items-center space-x-2.5">
+          <div className="flex items-center space-x-1.5 opacity-90">
+            <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+          </div>
+          <span className="flex items-center space-x-1.5 pl-2 border-l border-slate-700/60">
+            <FileCode className="w-3.5 h-3.5 text-sky-400" />
+            <span className="font-bold uppercase tracking-wider text-sky-300">{displayLabel}</span>
+          </span>
+        </div>
+      </div>
+      <pre 
+        ref={preRef}
+        onScroll={handleScroll}
+        style={{ overscrollBehaviorX: 'contain' }}
+        className="notes-code-pre p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm font-mono text-slate-100 bg-[#0A0F1D] m-0 leading-relaxed scrollbar-thin"
+      >
+        <code className="font-mono leading-relaxed block tracking-normal whitespace-pre text-slate-100">
+          {highlightedNodes}
+        </code>
+      </pre>
+    </div>
+  );
+});
+PersistentCodeBlock.displayName = 'PersistentCodeBlock';
+
+export const NotesRenderer: React.FC<NotesRendererProps> = React.memo(({
   content = '',
   topicTitle = 'Topic Notes',
   moduleTitle,
@@ -322,107 +452,7 @@ export const NotesRenderer: React.FC<NotesRendererProps> = ({
                   );
                 }
 
-                const languageLabel = match ? match[1] : 'code';
-                const isDiagram = /[┌┐└┘├┤┬┴┼─│▼▲►◄═║╔╗╚╝]/.test(codeString);
-                const displayLabel = isDiagram 
-                  ? 'Architecture Mind Map' 
-                  : languageLabel === 'text' 
-                  ? 'Plain Text' 
-                  : languageLabel;
-
-                const renderHighlighted = () => {
-                  if (isDiagram) {
-                    const lines = codeString.split('\n');
-                    return lines.map((line, lineIdx) => {
-                      const parts: React.ReactNode[] = [];
-                      let currentSeg = '';
-                      let isBox = false;
-
-                      for (let i = 0; i < line.length; i++) {
-                        const c = line[i];
-                        const isBoxChar = /[┌┐└┘├┤┬┴┼─│▼▲►◄═║╔╗╚╝]/.test(c);
-
-                        if (i === 0) {
-                          isBox = isBoxChar;
-                          currentSeg = c;
-                        } else if (isBoxChar === isBox) {
-                          currentSeg += c;
-                        } else {
-                          parts.push(
-                            <span
-                              key={`${lineIdx}-${parts.length}`}
-                              className={isBox ? 'text-sky-400 font-bold' : 'text-slate-100 font-semibold'}
-                            >
-                              {currentSeg}
-                            </span>
-                          );
-                          isBox = isBoxChar;
-                          currentSeg = c;
-                        }
-                      }
-
-                      if (currentSeg) {
-                        parts.push(
-                          <span
-                            key={`${lineIdx}-${parts.length}`}
-                            className={isBox ? 'text-sky-400 font-bold' : 'text-slate-100 font-semibold'}
-                          >
-                            {currentSeg}
-                          </span>
-                        );
-                      }
-
-                      return (
-                        <React.Fragment key={lineIdx}>
-                          {parts}
-                          {lineIdx < lines.length - 1 ? '\n' : ''}
-                        </React.Fragment>
-                      );
-                    });
-                  }
-
-                  const lines = codeString.split('\n');
-                  return lines.map((line, lineIdx) => {
-                    const trimmed = line.trim();
-                    if (trimmed.startsWith('#') || trimmed.startsWith('//')) {
-                      return (
-                        <span key={lineIdx} className="text-slate-400 italic">
-                          {line}
-                          {lineIdx < lines.length - 1 ? '\n' : ''}
-                        </span>
-                      );
-                    }
-                    return (
-                      <span key={lineIdx} className="text-slate-100">
-                        {line}
-                        {lineIdx < lines.length - 1 ? '\n' : ''}
-                      </span>
-                    );
-                  });
-                };
-
-                return (
-                  <div className="notes-code-wrapper relative group my-4 rounded-xl overflow-hidden border-2 border-slate-700/80 dark:border-slate-800 bg-[#0A0F1D] shadow-lg">
-                    <div className="notes-code-header flex items-center justify-between px-3.5 sm:px-4 py-2 bg-[#131B2E] border-b border-slate-800 text-[11px] sm:text-xs font-mono text-slate-300">
-                      <div className="flex items-center space-x-2.5">
-                        <div className="flex items-center space-x-1.5 opacity-90">
-                          <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-                          <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                        </div>
-                        <span className="flex items-center space-x-1.5 pl-2 border-l border-slate-700/60">
-                          <FileCode className="w-3.5 h-3.5 text-sky-400" />
-                          <span className="font-bold uppercase tracking-wider text-sky-300">{displayLabel}</span>
-                        </span>
-                      </div>
-                    </div>
-                    <pre className="notes-code-pre p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm font-mono text-slate-100 bg-[#0A0F1D] m-0 leading-relaxed scrollbar-thin">
-                      <code className="font-mono leading-relaxed block tracking-normal whitespace-pre text-slate-100">
-                        {renderHighlighted()}
-                      </code>
-                    </pre>
-                  </div>
-                );
+                return <PersistentCodeBlock codeString={codeString} className={className} />;
               }
             }}
           >
@@ -433,4 +463,6 @@ export const NotesRenderer: React.FC<NotesRendererProps> = ({
 
     </div>
   );
-};
+});
+NotesRenderer.displayName = 'NotesRenderer';
+

@@ -28,93 +28,64 @@ export default function AboutPage() {
       />
 
       {/* ================================================================ */}
-      {/* HERO: Full-width team photo at top (iStudio-inspired)            */}
+      {/* HERO: Team Photo & Hero Title                                   */}
       {/* ================================================================ */}
-      <section className="relative w-full overflow-hidden bg-slate-950">
-        <div className="relative w-full aspect-[4/3] sm:aspect-auto sm:min-h-[480px] sm:max-h-[85vh]">
-          <Image
-            src="/WaynauticTeam.webp"
-            alt="Waynautic Technologies Team and Educators"
-            width={1600}
-            height={1200}
-            priority
-            sizes="100vw"
-            className="w-full h-full object-contain sm:object-cover object-center"
-          />
-
-          {/* Badge: Kept on top of the image in both mobile and desktop view */}
-          <div className="absolute top-3 left-3 sm:top-6 sm:left-8 z-10">
-            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-white text-[11px] sm:text-xs font-bold font-mono shadow-md">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Waynautic Technologies Core Team</span>
+      <section className="relative w-full overflow-hidden bg-slate-950 text-white">
+        {/* Hero Header: Title & CTA placed cleanly without occluding team members */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-14 pb-5 sm:pb-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 sm:gap-6">
+            <div className="space-y-2.5 max-w-2xl">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-sky-400 text-xs font-mono font-bold shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Waynautic Technologies Core Team</span>
+              </div>
+              <h1 
+                className="about-hero-title text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-white !text-white tracking-tight leading-tight"
+                style={{ color: '#FFFFFF' }}
+              >
+                We have the solution for<br />
+                <span className="text-sky-400 !text-sky-400" style={{ color: '#38BDF8' }}>AI upskilling.</span>
+              </h1>
+              <p 
+                className="text-xs sm:text-base text-slate-300 !text-slate-300 font-medium leading-relaxed max-w-xl"
+                style={{ color: '#CBD5E1' }}
+              >
+                Building the future of developer education, one module at a time.
+              </p>
             </div>
-          </div>
-
-          {/* Desktop/Tablet text overlay at bottom of image */}
-          <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent pointer-events-none" />
-          <div className="hidden sm:block absolute bottom-0 left-0 right-0 px-8 lg:px-12 pb-10 sm:pb-12 z-10">
-            <div className="max-w-6xl mx-auto flex items-end justify-between gap-6">
-              <div className="space-y-2">
-                <h1 
-                  className="about-hero-title text-4xl lg:text-6xl font-black text-white !text-white leading-tight drop-shadow-xl"
-                  style={{ color: '#FFFFFF' }}
-                >
-                  We have the solution for<br />
-                  <span className="text-sky-400 !text-sky-400" style={{ color: '#38BDF8' }}>AI upskilling.</span>
-                </h1>
-                <p 
-                  className="text-base text-slate-200 !text-slate-200 font-medium max-w-xl drop-shadow-md"
-                  style={{ color: '#E2E8F0' }}
-                >
-                  Building the future of developer education, one module at a time.
-                </p>
-              </div>
-              <div className="shrink-0">
-                <Link
-                  href="/curriculum"
-                  className="px-7 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white !text-white font-bold text-sm shadow-xl transition-all flex items-center space-x-2 transform hover:-translate-y-0.5"
-                  style={{ color: '#FFFFFF', backgroundColor: '#0284C7' }}
-                >
-                  <span style={{ color: '#FFFFFF' }}>Explore Curriculum</span>
-                  <ArrowRight className="w-4 h-4 text-white !text-white" style={{ color: '#FFFFFF' }} />
-                </Link>
-              </div>
+            <div className="shrink-0 pt-1 md:pt-0">
+              <Link
+                href="/curriculum"
+                className="inline-flex items-center justify-center space-x-2 w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white !text-white font-bold text-sm shadow-xl transition-all transform hover:-translate-y-0.5"
+                style={{ color: '#FFFFFF', backgroundColor: '#0284C7' }}
+              >
+                <span style={{ color: '#FFFFFF' }}>Explore Curriculum</span>
+                <ArrowRight className="w-4 h-4 text-white !text-white" style={{ color: '#FFFFFF' }} />
+              </Link>
             </div>
           </div>
         </div>
 
-        {/* Mobile View: Text & Explore Curriculum button placed cleanly below image to never obstruct team faces */}
-        <div 
-          className="block sm:hidden px-5 py-6 bg-slate-950 text-left space-y-3.5 border-b border-slate-800"
-          style={{ backgroundColor: '#030712' }}
-        >
-          <h1 
-            className="about-hero-title text-2xl xs:text-3xl font-black text-white !text-white leading-tight"
-            style={{ color: '#FFFFFF' }}
-          >
-            We have the solution for<br />
-            <span className="text-sky-400 !text-sky-400" style={{ color: '#38BDF8' }}>AI upskilling.</span>
-          </h1>
-          <p 
-            className="text-xs text-slate-300 !text-slate-300 font-medium leading-relaxed"
-            style={{ color: '#CBD5E1' }}
-          >
-            Building the future of developer education, one module at a time.
-          </p>
-          <div className="pt-1">
-            <Link
-              href="/curriculum"
-              className="inline-flex items-center justify-center space-x-2 w-full py-3.5 px-6 rounded-xl bg-sky-500 hover:bg-sky-400 text-white !text-white font-bold text-sm shadow-lg transition-all"
-              style={{ color: '#FFFFFF', backgroundColor: '#0284C7' }}
-            >
-              <span style={{ color: '#FFFFFF' }}>Explore Curriculum</span>
-              <ArrowRight className="w-4 h-4 text-white !text-white" style={{ color: '#FFFFFF' }} />
-            </Link>
+        {/* Team Photo Container with Thin Black Transparent Layer */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-8">
+          <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900">
+            <Image
+              src="/WaynauticTeam.webp"
+              alt="Waynautic Technologies Team and Educators"
+              width={1600}
+              height={1200}
+              priority
+              quality={90}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 95vw, 1200px"
+              className="w-full h-auto object-cover max-h-[520px] lg:max-h-[620px]"
+            />
+            {/* Thin black transparent layer over the image as in professional hero images */}
+            <div className="absolute inset-0 bg-black/25 pointer-events-none" />
           </div>
         </div>
       </section>
 
-      <div className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-16 sm:space-y-24 relative z-10">
+      <div className="py-6 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-10 sm:space-y-16 relative z-10">
 
         {/* ==================================================================== */}
         {/* RECOGNIZED FOR EXCELLENCE (Innovation Certificate & Award)           */}
@@ -199,10 +170,10 @@ export default function AboutPage() {
         </section>
 
         {/* ==================================================================== */}
-        {/* CORE PILLARS & VALUES (Kept as is)                                    */}
+        {/* CORE PILLARS & VALUES (Aligned Icons & Compact Layout)               */}
         {/* ==================================================================== */}
-        <section className="space-y-8">
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
+        <section className="space-y-6 sm:space-y-8">
+          <div className="text-center space-y-2.5 max-w-2xl mx-auto">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-xs font-mono font-bold">
               <Zap className="w-3.5 h-3.5" />
               <span>Core Values</span>
@@ -210,55 +181,63 @@ export default function AboutPage() {
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
               The Principles That Guide Us
             </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
               Every course, code sample, and design decision at Waynautic is anchored in four foundational pillars.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-sky-400 dark:hover:border-cyan-500/50 transition-all space-y-3 shadow-sm">
-              <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-cyan-950/70 text-sky-600 dark:text-cyan-400 flex items-center justify-center font-bold">
-                <Code2 className="w-5 h-5" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-sky-400 dark:hover:border-cyan-500/50 transition-all space-y-3 shadow-sm">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-cyan-950/70 text-sky-600 dark:text-cyan-400 flex items-center justify-center font-bold shrink-0">
+                  <Code2 className="w-5 h-5" />
+                </div>
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
+                  Hands-on Mastery
+                </h3>
               </div>
-              <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
-                Hands-on Mastery
-              </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 We believe true engineering skill is built by writing code, breaking systems, and diagnosing stack traces — not passive watching.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500/50 transition-all space-y-3 shadow-sm">
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold">
-                <Cpu className="w-5 h-5" />
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500/50 transition-all space-y-3 shadow-sm">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold shrink-0">
+                  <Cpu className="w-5 h-5" />
+                </div>
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
+                  Production Focus
+                </h3>
               </div>
-              <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
-                Production Focus
-              </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 We teach architectures that stand up to actual traffic: token caching, inference batching, fault tolerance, and vector index sharding.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-violet-400 dark:hover:border-violet-500/50 transition-all space-y-3 shadow-sm">
-              <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-950/70 text-violet-600 dark:text-violet-400 flex items-center justify-center font-bold">
-                <ShieldCheck className="w-5 h-5" />
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-violet-400 dark:hover:border-violet-500/50 transition-all space-y-3 shadow-sm">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-950/70 text-violet-600 dark:text-violet-400 flex items-center justify-center font-bold shrink-0">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
+                  Safety & Guardrails
+                </h3>
               </div>
-              <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
-                Safety & Guardrails
-              </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 AI systems without defenses are vulnerabilities. We embed prompt injection prevention, PII redacting, and moderation from day one.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-emerald-500/50 transition-all space-y-3 shadow-sm">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-                <HeartHandshake className="w-5 h-5" />
+            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-emerald-500/50 transition-all space-y-3 shadow-sm">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
+                  <HeartHandshake className="w-5 h-5" />
+                </div>
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
+                  Learner-First Culture
+                </h3>
               </div>
-              <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
-                Learner-First Culture
-              </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 Every curriculum update and platform refinement is built around student success, accessibility, and measurable career outcomes.
               </p>

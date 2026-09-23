@@ -17,7 +17,7 @@ interface MarkdownNotesProps {
   estimatedMinutes?: number;
 }
 
-export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({ 
+export const MarkdownNotes: React.FC<MarkdownNotesProps> = React.memo(({ 
   content = '',
   topicTitle = 'Topic Notes',
   topicSlug,
@@ -79,4 +79,6 @@ export const MarkdownNotes: React.FC<MarkdownNotesProps> = ({
 
     </div>
   );
-};
+});
+MarkdownNotes.displayName = 'MarkdownNotes';
+
