@@ -64,9 +64,15 @@ export default function AboutPage() {
             <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
             {/* "We have the solution for AI upskilling." placed at bottom of team photo near legs */}
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pt-14 pb-4 sm:pb-7 px-4 sm:px-8">
-              <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight drop-shadow-lg leading-tight">
-                We have the solution for <span className="text-cyan-400">AI upskilling.</span>
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent pt-16 pb-5 sm:pb-8 px-4 sm:px-8">
+              <h2 
+                className="team-photo-headline text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] leading-tight"
+                style={{ color: '#FFFFFF' }}
+              >
+                <span style={{ color: '#FFFFFF' }}>We have the solution for </span>
+                <span className="text-cyan-highlight" style={{ color: '#38BDF8' }}>
+                  AI upskilling.
+                </span>
               </h2>
             </div>
           </div>

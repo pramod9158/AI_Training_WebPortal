@@ -338,9 +338,15 @@ html:not(.dark) {
   button[type="submit"].bg-\[\#5850EC\] svg,
   [class*="from-sky-600"] h2,
   [class*="from-sky-600"] p,
-  [class*="from-sky-600"] .text-white {
+  [class*="from-sky-600"] .text-white,
+  .team-photo-headline,
+  .team-photo-headline * {
     color: #FFFFFF !important;
     fill: #FFFFFF !important;
+  }
+
+  .team-photo-headline .text-cyan-highlight {
+    color: #38BDF8 !important;
   }
 
   /* Ensure text inside light blue / purple cards is dark and readable */
