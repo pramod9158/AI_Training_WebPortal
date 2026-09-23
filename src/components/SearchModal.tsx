@@ -3,9 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Search, X, BookOpen, ArrowRight, Clock, TrendingUp } from 'lucide-react';
-import { getAllTopics } from '@/lib/curriculumService';
+import { Search, X, BookOpen, ArrowRight, TrendingUp } from 'lucide-react';
 import { MODULES } from '@/data/seedModules';
+import { getAllTopics } from '@/lib/curriculumService';
 
 interface SearchDropdownProps {
   isOpen: boolean;
@@ -132,186 +132,191 @@ export const SearchModal: React.FC<SearchDropdownProps> = ({ isOpen, onClose, an
   };
 
   return (
-    <div
-      ref={dropdownRef}
-      className="absolute top-full mt-2 left-0 right-0 z-[9999] bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden text-slate-800 dark:text-slate-200 animate-in fade-in slide-in-from-top-2 duration-200"
-      style={{ minWidth: '340px' }}
-    >
-      {/* Search Input inside dropdown */}
-      <div className="flex items-center px-4 py-3 gap-3 border-b border-slate-100 dark:border-slate-800">
-        <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="What do you want to learn?"
-          className="flex-1 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none text-sm font-medium border-none ring-0 p-0"
-          aria-label="Search topics"
-        />
-        {query && (
+    <>
+      {/* Mobile backdrop */}
+      <div
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998] sm:hidden"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      <div
+        ref={dropdownRef}
+        className="fixed inset-x-3 top-[68px] sm:absolute sm:top-full sm:mt-2 sm:left-0 sm:right-0 sm:w-full sm:inset-x-auto z-[9999] bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden text-slate-800 dark:text-slate-200 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[82vh] flex flex-col"
+      >
+        {/* Search Input inside dropdown */}
+        <div className="flex items-center px-4 py-3 gap-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
+          <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="What do you want to learn?"
+            className="flex-1 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none text-sm font-medium border-none ring-0 p-0"
+            aria-label="Search topics"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => { setQuery(''); inputRef.current?.focus(); }}
+              className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
           <button
             type="button"
-            onClick={() => { setQuery(''); inputRef.current?.focus(); }}
+            onClick={onClose}
             className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Clear search"
+            aria-label="Close search"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-4 h-4" />
           </button>
-        )}
-        <button
-          type="button"
-          onClick={onClose}
-          className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          aria-label="Close search"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* Trending Tags — shown when no query */}
-      {!query.trim() && (
-        <div className="px-4 pt-3 pb-2">
-          <div className="flex items-center gap-1.5 mb-2.5">
-            <TrendingUp className="w-3.5 h-3.5 text-blue-500 dark:text-cyan-400" />
-            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-              Trending on Waynautic
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {TRENDING_TAGS.map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => handleTagClick(tag)}
-                className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-950/50 hover:text-blue-700 dark:hover:text-cyan-300 border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-cyan-700 transition-all cursor-pointer whitespace-nowrap"
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
         </div>
-      )}
 
-      {/* Results or popular topics */}
-      {(query.trim() || true) && (
-        <div className="px-3 pt-2 pb-3">
-          {/* Section header */}
-          <div className="flex items-center justify-between px-1 mb-1.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-              {query.trim()
-                ? filteredTopics.length === 0
-                  ? 'No results'
-                  : `${filteredTopics.length} topic${filteredTopics.length === 1 ? '' : 's'} found`
-                : 'Popular Topics'}
-            </span>
-            <span className="text-[10px] text-slate-400 dark:text-slate-500 hidden sm:inline">
-              Use ↑↓ to navigate · ↵ to open
-            </span>
-          </div>
-
-          {/* Empty state */}
-          {query.trim() && filteredTopics.length === 0 && (
-            <div className="py-6 text-center">
-              <Search className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                No topics found for &ldquo;{query}&rdquo;
-              </p>
-              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                Try: Python, RAG, Prompting, or LLMs
-              </p>
+        {/* Scrollable content container */}
+        <div className="overflow-y-auto flex-1 overscroll-contain">
+          {/* Trending Tags — shown when no query */}
+          {!query.trim() && (
+            <div className="px-4 pt-3 pb-2">
+              <div className="flex items-center gap-1.5 mb-2.5">
+                <TrendingUp className="w-3.5 h-3.5 text-blue-500 dark:text-cyan-400" />
+                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Trending on Waynautic
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {TRENDING_TAGS.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => handleTagClick(tag)}
+                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-950/50 hover:text-blue-700 dark:hover:text-cyan-300 border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-cyan-700 transition-all cursor-pointer whitespace-nowrap"
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
-          {/* Topic rows */}
-          <div className="space-y-0.5">
-            {displayList.map((topic, index) => {
-              const mod = MODULES.find((m) => m.slug === topic.moduleSlug);
-              const isSelected = index === selectedIndex;
-              return (
-                <Link
-                  key={topic.id}
-                  href={`/curriculum/${topic.moduleSlug}/${topic.slug}`}
-                  onClick={onClose}
-                  onMouseEnter={() => setSelectedIndex(index)}
-                  data-selected={isSelected}
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-all group cursor-pointer ${
-                    isSelected
-                      ? 'bg-blue-50 dark:bg-slate-800/90'
-                      : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
-                  }`}
-                >
-                  <div className="flex items-start space-x-3 min-w-0 flex-1">
-                    {/* Icon */}
-                    <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
-                        isSelected
-                          ? 'bg-[#0056D2] text-white dark:bg-cyan-500 dark:text-slate-950'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
-                      }`}
-                    >
-                      <BookOpen className="w-3.5 h-3.5" />
-                    </div>
+          {/* Results or popular topics */}
+          <div className="px-3 pt-2 pb-3">
+            {/* Section header */}
+            <div className="flex items-center justify-between px-1 mb-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                {query.trim()
+                  ? filteredTopics.length === 0
+                    ? 'No results'
+                    : `${filteredTopics.length} topic${filteredTopics.length === 1 ? '' : 's'} found`
+                  : 'Popular Topics'}
+              </span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 hidden sm:inline">
+                Use ↑↓ to navigate · ↵ to open
+              </span>
+            </div>
 
-                    {/* Text */}
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-[10px] font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-tight truncate">
-                          {mod?.title}
-                        </span>
-                        <span className="text-[10px] text-slate-400 flex items-center gap-0.5 shrink-0">
-                          <Clock className="w-2.5 h-2.5" />
-                          {topic.estimatedMinutes}m
-                        </span>
-                      </div>
+            {/* Empty state */}
+            {query.trim() && filteredTopics.length === 0 && (
+              <div className="py-6 text-center">
+                <Search className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  No topics found for &ldquo;{query}&rdquo;
+                </p>
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                  Try: Python, RAG, Prompting, or LLMs
+                </p>
+              </div>
+            )}
+
+            {/* Topic rows */}
+            <div className="space-y-0.5">
+              {displayList.map((topic, index) => {
+                const mod = MODULES.find((m) => m.slug === topic.moduleSlug);
+                const isSelected = index === selectedIndex;
+                return (
+                  <Link
+                    key={topic.id}
+                    href={`/curriculum/${topic.moduleSlug}/${topic.slug}`}
+                    onClick={onClose}
+                    onMouseEnter={() => setSelectedIndex(index)}
+                    data-selected={isSelected}
+                    className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-all group cursor-pointer ${
+                      isSelected
+                        ? 'bg-blue-50 dark:bg-slate-800/90'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                    }`}
+                  >
+                    <div className="flex items-start space-x-3 min-w-0 flex-1">
+                      {/* Icon */}
                       <div
-                        className={`font-semibold text-sm truncate transition-colors ${
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
                           isSelected
-                            ? 'text-[#0056D2] dark:text-cyan-300'
-                            : 'text-slate-900 dark:text-white'
+                            ? 'bg-[#0056D2] text-white dark:bg-cyan-500 dark:text-slate-950'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
                         }`}
                       >
-                        {topic.title}
+                        <BookOpen className="w-3.5 h-3.5" />
                       </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                        {topic.description}
+
+                      {/* Text */}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className="text-[10px] font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-tight truncate">
+                            {mod?.title}
+                          </span>
+                        </div>
+                        <div
+                          className={`font-semibold text-sm truncate transition-colors ${
+                            isSelected
+                              ? 'text-[#0056D2] dark:text-cyan-300'
+                              : 'text-slate-900 dark:text-white'
+                          }`}
+                        >
+                          {topic.title}
+                        </div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                          {topic.description}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Arrow */}
-                  <ArrowRight
-                    className={`w-4 h-4 shrink-0 ml-2 transition-all ${
-                      isSelected
-                        ? 'text-[#0056D2] dark:text-cyan-400 translate-x-0.5'
-                        : 'text-slate-300 dark:text-slate-600 group-hover:text-slate-400 group-hover:translate-x-0.5'
-                    }`}
-                  />
-                </Link>
-              );
-            })}
+                    {/* Arrow */}
+                    <ArrowRight
+                      className={`w-4 h-4 shrink-0 ml-2 transition-all ${
+                        isSelected
+                          ? 'text-[#0056D2] dark:text-cyan-400 translate-x-0.5'
+                          : 'text-slate-300 dark:text-slate-600 group-hover:text-slate-400 group-hover:translate-x-0.5'
+                      }`}
+                    />
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
-      )}
 
-      {/* Footer hint */}
-      <div className="px-4 py-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500">
-        <div className="flex items-center gap-3">
+        {/* Footer hint */}
+        <div className="px-4 py-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 shrink-0">
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1">
+              <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">↑</kbd>
+              <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">↓</kbd>
+              <span className="hidden sm:inline">navigate</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">↵</kbd>
+              <span className="hidden sm:inline">select</span>
+            </span>
+          </div>
           <span className="flex items-center gap-1">
-            <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">↑</kbd>
-            <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">↓</kbd>
-            <span className="hidden sm:inline">navigate</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">↵</kbd>
-            <span className="hidden sm:inline">select</span>
+            <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">ESC</kbd>
+            <span className="hidden sm:inline">close</span>
           </span>
         </div>
-        <span className="flex items-center gap-1">
-          <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">ESC</kbd>
-          <span className="hidden sm:inline">close</span>
-        </span>
       </div>
-    </div>
+    </>
   );
 };

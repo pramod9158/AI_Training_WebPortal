@@ -166,50 +166,50 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
         </div>
 
-        {/* Right Section: Focused & Consolidated Utilities */}
-        <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
-
-          {/* Search Trigger — Coursera-style anchored dropdown */}
-          <div className="relative">
-            <button
-              ref={searchBtnRef}
-              type="button"
-              onClick={() => {
-                setSearchOpen((prev) => !prev);
-                if (onOpenSearch && !searchOpen) onOpenSearch();
-              }}
-              className={`group flex items-center justify-between h-9 sm:h-10 px-3 sm:px-3.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border rounded-lg transition-colors text-left w-36 xs:w-44 sm:w-56 md:w-60 lg:w-72 cursor-pointer shrink-0 ${
+        {/* Center / Middle Section: Extended Search Bar — stretches across available center space */}
+        <div className="relative flex-1 min-w-0 max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-2 sm:mx-4">
+          <button
+            ref={searchBtnRef}
+            type="button"
+            onClick={() => {
+              setSearchOpen((prev) => !prev);
+              if (onOpenSearch && !searchOpen) onOpenSearch();
+            }}
+            className={`group flex items-center justify-between h-9 sm:h-10 px-3 sm:px-3.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border rounded-lg transition-colors text-left w-full cursor-pointer ${
+              searchOpen
+                ? 'border-blue-400 dark:border-cyan-500 ring-2 ring-blue-100 dark:ring-cyan-900/40'
+                : 'border-slate-700/80 dark:border-slate-300/80 hover:border-slate-900 dark:hover:border-white'
+            }`}
+            title="Search topics (Cmd+K)"
+            aria-label="What do you want to learn?"
+            aria-expanded={searchOpen}
+          >
+            <div className="flex items-center space-x-2 truncate">
+              <Search className={`w-4 h-4 transition-colors shrink-0 ${
                 searchOpen
-                  ? 'border-blue-400 dark:border-cyan-500 ring-2 ring-blue-100 dark:ring-cyan-900/40'
-                  : 'border-slate-700/80 dark:border-slate-300/80 hover:border-slate-900 dark:hover:border-white'
-              }`}
-              title="Search topics (Cmd+K)"
-              aria-label="What do you want to learn?"
-              aria-expanded={searchOpen}
-            >
-              <div className="flex items-center space-x-2 truncate">
-                <Search className={`w-4 h-4 transition-colors shrink-0 ${
-                  searchOpen
-                    ? 'text-[#0056D2] dark:text-cyan-400'
-                    : 'text-slate-500 dark:text-slate-400 group-hover:text-[#0056D2] dark:group-hover:text-cyan-400'
-                }`} />
-                <span className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium truncate">
-                  <span className="hidden sm:inline">What do you want to learn?</span>
-                  <span className="sm:hidden">Search...</span>
-                </span>
-              </div>
-              <kbd className="hidden md:inline px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-mono border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 ml-2 shrink-0">
-                ⌘K
-              </kbd>
-            </button>
+                  ? 'text-[#0056D2] dark:text-cyan-400'
+                  : 'text-slate-500 dark:text-slate-400 group-hover:text-[#0056D2] dark:group-hover:text-cyan-400'
+              }`} />
+              <span className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium truncate">
+                <span className="hidden sm:inline">What do you want to learn?</span>
+                <span className="sm:hidden">Search...</span>
+              </span>
+            </div>
+            <kbd className="hidden md:inline px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-mono border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 ml-2 shrink-0">
+              ⌘K
+            </kbd>
+          </button>
 
-            {/* Inline anchored dropdown — Coursera style */}
-            <SearchModal
-              isOpen={searchOpen}
-              onClose={() => setSearchOpen(false)}
-              anchorRef={searchBtnRef}
-            />
-          </div>
+          {/* Inline anchored dropdown — Coursera style */}
+          <SearchModal
+            isOpen={searchOpen}
+            onClose={() => setSearchOpen(false)}
+            anchorRef={searchBtnRef}
+          />
+        </div>
+
+        {/* Right Section: Focused & Consolidated Utilities */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
 
           {/* Upgrade to Pro Button - Exactly same as screenshot (rounded rectangle outline) */}
           {!isProUser && (

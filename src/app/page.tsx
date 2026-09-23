@@ -230,14 +230,6 @@ export default function HomePage() {
                 <span>Start Learning Now</span>
                 <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform shrink-0" />
               </Link>
-
-              <Link
-                href="/curriculum"
-                className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-slate-200 hover:text-white hover:border-slate-700 font-bold text-sm sm:text-base transition-all flex items-center justify-center space-x-2 min-h-[48px]"
-              >
-                <BookOpen className="w-5 h-5 text-slate-400 shrink-0" />
-                <span>Browse All 10 Modules</span>
-              </Link>
             </div>
           </div>
 
@@ -275,18 +267,9 @@ export default function HomePage() {
 
         {/* Modules Overview — logged-in users */}
         <section className="py-12 sm:py-20 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 sm:mb-12 space-y-4 md:space-y-0">
-            <div>
-              <span className="text-xs font-mono uppercase tracking-widest text-cyan-400">Structured Curriculum</span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-white">10 Core Modules</h2>
-            </div>
-            <Link
-              href="/curriculum"
-              className="inline-flex items-center space-x-2 text-sm font-bold text-cyan-400 hover:text-cyan-300"
-            >
-              <span>Explore Visual Skill Map</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+          <div className="mb-8 sm:mb-12">
+            <span className="text-xs font-mono uppercase tracking-widest text-cyan-400">Structured Curriculum</span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white">10 Core Modules</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
