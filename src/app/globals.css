@@ -338,9 +338,7 @@ html:not(.dark) {
   button[type="submit"].bg-\[\#5850EC\] svg,
   [class*="from-sky-600"] h2,
   [class*="from-sky-600"] p,
-  [class*="from-sky-600"] .text-white,
-  .about-hero-title,
-  .about-hero-title * {
+  [class*="from-sky-600"] .text-white {
     color: #FFFFFF !important;
     fill: #FFFFFF !important;
   }
