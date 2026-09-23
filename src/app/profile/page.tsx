@@ -7,7 +7,6 @@ import { useWaynauticStore, fetchAndSyncCloudUser } from '@/lib/store';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { 
   Award, 
-  Sparkles, 
   Check, 
   LogOut, 
   Lock, 
@@ -34,7 +33,7 @@ import { AVATAR_PRESETS, getAvatarPreset } from '@/data/avatarPresets';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { profile, progress, badges, updateProfile, signOut, setTheme } = useWaynauticStore();
+  const { profile, progress, updateProfile, signOut, setTheme } = useWaynauticStore();
   
   const [name, setName] = useState(profile.displayName || 'Developer');
   const [avatarPreset, setAvatarPreset] = useState<string>(profile.avatarPreset || 'ai-architect');
@@ -559,37 +558,6 @@ export default function ProfilePage() {
         </div>
 
       </form>
-
-      {/* Badges & Achievements Section */}
-      <div className="space-y-4 pt-4">
-        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
-          <Award className="w-5 h-5 text-purple-600 dark:text-violet-400" />
-          <span>Earned Badges ({badges.length})</span>
-        </h2>
-
-        {badges.length === 0 ? (
-          <div className="p-8 sm:p-12 text-center text-slate-500 dark:text-slate-400 text-sm bg-white dark:bg-slate-900/40 rounded-3xl border-2 border-slate-200 dark:border-slate-800 font-medium">
-            No badges earned yet. Complete topics and pass quizzes to unlock achievement badges!
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {badges.map((b) => (
-              <div key={b.id} className="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 flex items-start space-x-3 shadow-sm">
-                <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-cyan-950 border border-purple-300 dark:border-cyan-800 flex items-center justify-center text-purple-600 dark:text-cyan-400 shrink-0">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-extrabold text-slate-900 dark:text-white text-sm">{b.title}</h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">{b.description}</p>
-                  <span className="text-[10px] text-slate-500 font-mono block mt-1 font-bold">
-                    Unlocked: {new Date(b.earnedAt).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
 
     </div>
   );
