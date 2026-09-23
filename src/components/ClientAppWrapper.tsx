@@ -6,14 +6,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
-import { SearchModal } from './SearchModal';
 import { useWaynauticStore, getStoredTheme } from '@/lib/store';
 import { fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { Sparkles, BookOpen, CheckCircle2 } from 'lucide-react';
 
 export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
-  const [searchOpen, setSearchOpen] = useState(false);
   const { profile } = useWaynauticStore();
 
   const isAuthPage = 
@@ -233,12 +231,11 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
 
   return (
     <>
-      <Navbar onOpenSearch={() => setSearchOpen(true)} />
+      <Navbar />
       <main className="flex-1">
         {children}
       </main>
       <Footer />
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 };
