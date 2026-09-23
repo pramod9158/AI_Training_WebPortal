@@ -474,52 +474,15 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Section 3: Learning Path & Platform Preferences Card */}
+        {/* Section 3: Platform Preferences Card */}
         <div className="p-5 sm:p-8 rounded-3xl bg-white dark:bg-slate-900/80 border-2 border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
           <h3 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg flex items-center space-x-2">
             <Compass className="w-5 h-5 text-sky-600 dark:text-cyan-400" />
-            <span>Learning Pathway & Platform Settings</span>
+            <span>Platform Settings</span>
           </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            
-            {/* Learning Path Selection */}
-            {LEARNING_PATHS.map((path) => {
-              const isCurrent = selectedPath === path.id;
-              return (
-                <div
-                  key={path.id}
-                  onClick={() => handlePathSelect(path.id)}
-                  className={`p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all ${
-                    isCurrent
-                      ? 'border-sky-500 dark:border-cyan-400 bg-sky-50 dark:bg-cyan-950/30 shadow-md'
-                      : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 hover:border-slate-300'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-cyan-400">
-                      {path.id === 'path-a' ? 'Sequence A' : 'Sequence B'}
-                    </span>
-                    {isCurrent && (
-                      <span className="flex items-center space-x-1 text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-sky-500 text-white">
-                        <Check className="w-3 h-3" />
-                        <span>Active</span>
-                      </span>
-                    )}
-                  </div>
-                  <h4 className="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">
-                    {path.title}
-                  </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
-                    {path.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-
           {/* Theme Mode Toggle */}
-          <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h4 className="font-extrabold text-slate-900 dark:text-white text-sm">Theme Appearance</h4>
               <p className="text-xs text-slate-500 dark:text-slate-400">Select your preferred platform lighting mode.</p>

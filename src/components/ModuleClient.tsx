@@ -10,7 +10,6 @@ import { generateAndDownloadModulePdf } from '@/lib/pdfNotesGenerator';
 import { 
   BookOpen, 
   CheckCircle2, 
-  Clock, 
   Play, 
   ArrowLeft, 
   ArrowRight,
@@ -197,17 +196,12 @@ export function ModuleClient() {
                       )}
                     </div>
                     <p className="text-[11px] sm:text-xs text-slate-400 line-clamp-1 mt-0.5">
-                      <span className="sm:hidden font-mono text-[10px] text-slate-500 mr-1.5">{topic.estimatedMinutes}m •</span>
                       {topic.description}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-2 sm:space-x-4 shrink-0 ml-2">
-                  <div className="hidden sm:flex items-center space-x-1 text-xs text-slate-400 font-mono">
-                    <Clock className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{topic.estimatedMinutes}m</span>
-                  </div>
 
                   {score !== undefined && (
                     <span className="px-2 sm:px-2.5 py-0.5 text-[9px] sm:text-[10px] font-mono font-bold rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800 shrink-0">

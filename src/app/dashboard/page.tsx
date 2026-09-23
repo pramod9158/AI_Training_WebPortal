@@ -487,13 +487,6 @@ function DashboardContent() {
                   {overallStats.averageQuizScore !== null ? `${overallStats.averageQuizScore}%` : 'No quizzes yet'}
                 </div>
               </div>
-
-              <div>
-                <div className="text-xs font-mono text-slate-500 dark:text-slate-400 font-medium">Est. Study Completed</div>
-                <div className="text-xs font-bold text-slate-700 dark:text-slate-300 font-mono">
-                  {Math.round(overallStats.completedEstimatedMinutes / 60)}h {overallStats.completedEstimatedMinutes % 60}m
-                </div>
-              </div>
             </div>
           </div>
 
@@ -887,16 +880,6 @@ function DashboardContent() {
                       <span>Module Syllabus</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
-
-                    {nextTopic && (
-                      <Link
-                        href={`/curriculum/${mod.slug}/${nextTopic.slug}?tab=watch`}
-                        className="px-3.5 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-xs font-extrabold font-mono transition-all flex items-center space-x-1"
-                      >
-                        <span>{progressPercent === 100 ? 'Review' : 'Resume'}</span>
-                        <Play className="w-3 h-3 fill-white" />
-                      </Link>
-                    )}
                   </div>
                 </div>
               );

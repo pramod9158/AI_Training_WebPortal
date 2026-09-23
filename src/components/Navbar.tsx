@@ -117,13 +117,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const navLinks = isLoggedIn
     ? [
         { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
-        { href: '/paths', label: 'Paths', icon: Compass },
         { href: '/dashboard', label: 'Dashboard', icon: Trophy },
         { href: '/about', label: 'About', icon: Sparkles },
       ]
     : [
         { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
-        { href: '/paths', label: 'Paths', icon: Compass },
         { href: '/about', label: 'About', icon: Sparkles },
       ];
 

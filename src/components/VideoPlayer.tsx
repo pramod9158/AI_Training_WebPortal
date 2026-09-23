@@ -169,7 +169,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   // Convert watch URL to embed URL with enablejsapi=1 and initial start time
   const getEmbedUrl = useCallback((rawUrl: string, startTime = 0) => {
     let baseEmbed = 'https://www.youtube.com/embed/zxQyTK8ckyY';
-    if (!rawUrl) return `${baseEmbed}?enablejsapi=1&autoplay=1&rel=0`;
+    if (!rawUrl) return `${baseEmbed}?enablejsapi=1&autoplay=1&rel=0&controls=1`;
 
     if (rawUrl.includes('youtube.com/watch?v=')) {
       const videoId = rawUrl.split('v=')[1]?.split('&')[0];
@@ -186,7 +186,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const params = new URLSearchParams();
     params.set('enablejsapi', '1');
     params.set('autoplay', '1');
+    params.set('controls', '1');
     params.set('rel', '0');
+    params.set('modestbranding', '1');
     if (startTime > 2) {
       params.set('start', Math.floor(startTime).toString());
     }
