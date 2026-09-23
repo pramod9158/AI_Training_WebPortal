@@ -211,19 +211,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         {/* Right Section: Focused & Consolidated Utilities */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
 
-          {/* Upgrade to Pro Button - Exactly same as screenshot (rounded rectangle outline) */}
-          {!isProUser && (
-            <button
-              type="button"
-              onClick={() => setPaymentModalOpen(true)}
-              className="flex items-center justify-center h-9 sm:h-10 px-3 sm:px-4 rounded-lg border border-slate-700 dark:border-slate-300 bg-white dark:bg-slate-900 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-xs sm:text-sm transition-colors shrink-0"
-              title="Upgrade to Pro - unlock all courses"
-              aria-label="Upgrade to Pro"
-            >
-              <span className="hidden sm:inline">Upgrade to Pro</span>
-              <span className="sm:hidden">Upgrade</span>
-            </button>
-          )}
+
 
           {/* Laptop / Desktop Theme Toggle Button */}
           <button
@@ -568,19 +556,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-mono border border-slate-300 dark:border-slate-600 text-slate-500">⌘K</kbd>
             </button>
 
-            {/* Mobile Upgrade Trigger - Exactly same as screenshot */}
-            {!isProUser && (
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setPaymentModalOpen(true);
-                }}
-                className="w-full flex items-center justify-between h-11 px-4 rounded-lg border border-slate-700 dark:border-slate-300 bg-white dark:bg-slate-900 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-xs sm:text-sm transition-colors"
-              >
-                <span>Upgrade to Pro Pass</span>
-                <span className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 font-mono font-bold">₹9,999/yr</span>
-              </button>
-            )}
           </div>
 
           {/* Mobile Theme Toggle */}
