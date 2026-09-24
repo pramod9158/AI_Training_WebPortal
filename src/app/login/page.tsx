@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Mail, Lock, ShieldCheck, Eye, EyeOff, CheckCircle2, ArrowLeft, ArrowRight, RefreshCw, AlertCircle } from 'lucide-react';
 import { signInWithEmail, sendPasswordResetEmail, resendVerificationEmail, checkUserAccountExists } from '@/lib/supabaseAuth';
-import { fetchAndSyncCloudUser, useWaynauticStore } from '@/lib/store';
+import { fetchAndSyncCloudUser, useWaynauticStore, loadProfile } from '@/lib/store';
 import { clearAdminSession } from '@/lib/adminService';
 
 function LoginForm() {
@@ -116,8 +116,8 @@ function LoginForm() {
       if (redirectTo) {
         router.push(redirectTo);
       } else {
-        const latestProfile = useWaynauticStore.getState().profile;
-        const isPaid = latestProfile.plan === 'pro' || latestProfile.plan === 'enterprise';
+        const latestProfile = loadProfile();
+        const isPaid = latestProfile.plan === 'pro' || latestProfile.plan === 'enterprise' || latestProfile.role === 'admin' || latestProfile.role === 'instructor';
         if (isPaid) {
           router.push('/dashboard');
         } else {
