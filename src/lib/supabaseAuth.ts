@@ -41,12 +41,22 @@ export async function checkAndHandleInactivityTimeout(): Promise<boolean> {
   return false; // Valid session
 }
 
+function getAuthRedirectUrl(path: string): string {
+  if (typeof window !== 'undefined') {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return `${window.location.origin}${path}`;
+    }
+  }
+  const base = process.env.NEXT_PUBLIC_APP_URL || 'https://academy.waynautic.com';
+  return `${base.replace(/\/+$/, '')}${path}`;
+}
+
 export async function signUpWithEmail(email: string, password: string, displayName?: string) {
   if (!isSupabaseConfigured) {
     return { data: { user: { id: 'demo-user-id', email }, session: null }, error: null };
   }
 
-  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined;
+  const redirectTo = getAuthRedirectUrl('/auth/callback');
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -170,7 +180,7 @@ export async function sendPasswordResetEmail(email: string) {
   if (!isSupabaseConfigured) {
     return { data: {}, error: null };
   }
-  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/reset-password` : undefined;
+  const redirectTo = getAuthRedirectUrl('/reset-password');
   return await supabase.auth.resetPasswordForEmail(email, {
     redirectTo
   });
@@ -189,7 +199,7 @@ export async function resendVerificationEmail(email: string) {
   if (!isSupabaseConfigured) {
     return { data: {}, error: null };
   }
-  const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined;
+  const redirectTo = getAuthRedirectUrl('/auth/callback');
   return await supabase.auth.resend({
     type: 'signup',
     email,

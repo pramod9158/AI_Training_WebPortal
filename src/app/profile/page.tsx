@@ -343,27 +343,18 @@ export default function ProfilePage() {
               </div>
               <div>
                 <h3 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg">
-                  {isPro ? 'Waynautic Pro AI Pass (1 Year Access)' : 'Waynautic Free Candidate Account'}
+                  {isPro ? 'Waynautic Pro AI Pass (1 Year Access)' : 'Waynautic Candidate Account'}
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400">
                   {isPro 
                     ? 'All 10 curriculum modules, quizzes, and verified certification unlocked.' 
-                    : 'Upgrade for ₹9,999/year (was ₹15,000) to unlock all 10 specialized modules & verified certificate.'}
+                    : 'Standard candidate membership account.'}
                 </p>
               </div>
             </div>
 
-            {!isPro ? (
-              <button
-                type="button"
-                onClick={() => setPaymentModalOpen(true)}
-                className="px-4 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30 font-bold text-xs sm:text-sm flex items-center space-x-2 shrink-0 transition-all min-h-[40px]"
-              >
-                <QrCode className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                <span>Upgrade to Pro (₹9,999/yr)</span>
-              </button>
-            ) : (
-              <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-black">
+            {isPro && (
+              <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-black shrink-0">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Verified Pro Active</span>
               </div>

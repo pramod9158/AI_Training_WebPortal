@@ -236,17 +236,6 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
             </td>
           </tr>
 
-          <!-- Launch Portal CTA Button -->
-          <tr>
-            <td style="padding: 0 36px 36px; text-align: center;">
-              <a href="${portalUrl}/curriculum" target="_blank" style="display: inline-block; width: 85%; max-width: 380px; padding: 16px 24px; background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%); color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 800; border-radius: 14px; text-align: center; box-shadow: 0 8px 20px rgba(2, 132, 199, 0.35);">
-                Access Curriculum Portal Now →
-              </a>
-              <p style="margin: 12px 0 0; font-size: 12px; color: #94a3b8;">
-                Bookmark <a href="${portalUrl}/curriculum" style="color: #0284c7; text-decoration: underline;">waynautic-academy.com/curriculum</a> to resume learning anytime.
-              </p>
-            </td>
-          </tr>
 
           <!-- Footer Information -->
           <tr>
