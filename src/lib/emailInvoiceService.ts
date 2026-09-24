@@ -296,7 +296,18 @@ export async function sendInvoiceEmail(details: InvoiceDetails): Promise<{
     }
 
     const info = await transporter.sendMail({
-      from: smtpFrom,
+      from: {
+        name: 'Waynautic Academy',
+        address: smtpUser || 'pramodkalyan27@gmail.com',
+      },
+      sender: {
+        name: 'Waynautic Academy',
+        address: smtpUser || 'pramodkalyan27@gmail.com',
+      },
+      replyTo: {
+        name: 'Waynautic Academy',
+        address: smtpUser || 'pramodkalyan27@gmail.com',
+      },
       to: details.studentEmail,
       subject: `Enrollment Confirmed & Invoice: 4-Week AI Intensive Cohort (Order #${details.orderId.slice(-6).toUpperCase()})`,
       html: htmlContent,
