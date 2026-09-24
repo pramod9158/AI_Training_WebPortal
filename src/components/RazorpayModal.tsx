@@ -194,6 +194,11 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
                 email: cleanEmail || profile.email,
               });
 
+              // Clean up ?enroll=cohort and other checkout params from URL
+              if (typeof window !== 'undefined') {
+                window.history.replaceState(null, '', window.location.pathname);
+              }
+
               setVerifiedPaymentId(response.razorpay_payment_id);
               setPaymentSuccess(true);
               triggerConfettiCelebration();

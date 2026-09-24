@@ -13,7 +13,8 @@ import { supabase } from '@/lib/supabaseClient';
 function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirectTo') || '/onboarding';
+  const redirectTo = searchParams.get('redirectTo') || '/?enroll=cohort';
+  const notice = searchParams.get('notice');
 
   const { profile, updateProfile } = useWaynauticStore();
   const [name, setName] = useState('');
@@ -204,7 +205,7 @@ function SignupForm() {
           </button>
 
           <Link
-            href={`/login${redirectTo !== '/onboarding' && redirectTo !== '/dashboard' ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`}
+            href={`/login${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`}
             className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px] shadow-sm"
           >
             <span>Proceed to Log In</span>
@@ -247,6 +248,19 @@ function SignupForm() {
         <span>8-Hour Protected Session</span>
       </div>
 
+      {/* Notice Banner when redirected from enrollment or locked portal */}
+      {notice === 'enroll_required' && (
+        <div className="p-3.5 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border-2 border-sky-300 dark:border-sky-700/60 text-sky-900 dark:text-sky-200 text-xs font-medium space-y-1 animate-in fade-in">
+          <div className="font-extrabold flex items-center space-x-1.5 text-sky-800 dark:text-sky-300 text-xs">
+            <ShieldCheck className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
+            <span>Step 1: Create Account to Enroll</span>
+          </div>
+          <p className="text-[11px] text-sky-700/90 dark:text-sky-300/90 leading-relaxed">
+            Please register your student account first. Once created, you will be taken directly to checkout to complete your 4-Week Cohort enrollment.
+          </p>
+        </div>
+      )}
+
       {isAlreadyRegistered ? (
         <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border-2 border-amber-300 dark:border-amber-600/50 text-amber-900 dark:text-amber-200 text-xs font-medium space-y-3 animate-in fade-in">
           <div className="flex items-center space-x-2 font-extrabold text-amber-800 dark:text-amber-300 text-sm">
@@ -257,7 +271,7 @@ function SignupForm() {
             An account already exists for <strong>{email}</strong>. Please log in with your credentials or reset your password.
           </p>
           <Link
-            href={`/login?email=${encodeURIComponent(email)}`}
+            href={`/login?email=${encodeURIComponent(email)}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ''}`}
             className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-900 font-extrabold text-xs flex items-center justify-center space-x-1.5 transition-all shadow-sm min-h-[44px]"
           >
             <span>Proceed to Log In</span>
@@ -269,7 +283,7 @@ function SignupForm() {
           <div>{errorMsg}</div>
           {errorMsg.includes('rate limit') && (
             <div className="pt-1">
-              <Link href="/login" className="text-sky-600 dark:text-cyan-400 underline font-extrabold hover:text-sky-700">
+              <Link href={`/login${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`} className="text-sky-600 dark:text-cyan-400 underline font-extrabold hover:text-sky-700">
                 Already registered? Go to Log In →
               </Link>
             </div>
@@ -344,7 +358,7 @@ function SignupForm() {
 
       <div className="text-center text-xs text-slate-600 dark:text-slate-400 pt-2 font-medium">
         Already have an account?{' '}
-        <Link href={`/login${redirectTo !== '/onboarding' && redirectTo !== '/dashboard' ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`} className="text-sky-600 dark:text-cyan-400 hover:underline font-extrabold">
+        <Link href={`/login${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`} className="text-sky-600 dark:text-cyan-400 hover:underline font-extrabold">
           Log In
         </Link>
       </div>

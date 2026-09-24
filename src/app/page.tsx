@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Zap,
   Sparkles,
@@ -10,6 +10,7 @@ import {
   Play,
   BookOpen,
   CheckCircle2,
+  AlertCircle,
   Flame,
   Compass,
   Terminal,
@@ -160,13 +161,36 @@ const HERO_TAGS = [
 ];
 
 // ─── Main Component ──────────────────────────────────────────────────────────
-export default function HomePage() {
+function HomePageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { profile, progress, streak } = useWaynauticStore();
   const [onboardingOpen, setOnboardingOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [topics, setTopics] = useState(getAllTopics());
   const [faqCategory, setFaqCategory] = useState('Courses');
   const isLoggedIn = Boolean(profile.userId || profile.email);
+  const isEnrolled = profile.plan === 'pro' || profile.plan === 'enterprise';
+
+  const enrollParam = searchParams.get('enroll');
+  const noticeParam = searchParams.get('notice');
+
+  // Auto-open modal if returning from auth with ?enroll=cohort
+  useEffect(() => {
+    if (enrollParam === 'cohort') {
+      if (!isLoggedIn) {
+        router.replace('/signup?redirectTo=' + encodeURIComponent('/?enroll=cohort'));
+      } else if (isLoggedIn && !isEnrolled) {
+        setPaymentModalOpen(true);
+        const pricingEl = document.getElementById('pricing');
+        if (pricingEl) {
+          pricingEl.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else if (isLoggedIn && isEnrolled) {
+        router.replace('/dashboard');
+      }
+    }
+  }, [enrollParam, isLoggedIn, isEnrolled, router]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && (window.location.hash.includes('error=') || window.location.hash.includes('error_code='))) {
@@ -186,9 +210,9 @@ export default function HomePage() {
   const filteredFaqs = FAQS.filter((f) => f.category === faqCategory);
 
   // ═════════════════════════════════════════════════════════════════════════
-  // LOGGED-IN VIEW: Dashboard-style home page restored for active students
+  // LOGGED-IN VIEW: Only for ACTIVE PAID STUDENTS (isEnrolled)
   // ═════════════════════════════════════════════════════════════════════════
-  if (isLoggedIn) {
+  if (isLoggedIn && isEnrolled) {
     return (
       <div className="relative overflow-hidden min-h-screen">
         {/* Background Ambient Glow Orbs */}
@@ -352,7 +376,18 @@ export default function HomePage() {
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 1 — AI UPSKILLING JOURNEY & PRICING PLANS
       ═══════════════════════════════════════════════════════════════════ */}
-      <section className="relative pt-12 pb-20 sm:pt-20 sm:pb-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="pricing" className="relative pt-12 pb-20 sm:pt-20 sm:pb-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Notice Banner if redirected from protected portal */}
+        {noticeParam === 'enroll_required' && (
+          <div className="max-w-3xl mx-auto mb-8 p-4 sm:p-5 rounded-2xl bg-amber-500/10 border-2 border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs sm:text-sm flex items-start sm:items-center gap-3 shadow-md animate-in fade-in">
+            <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5 sm:mt-0" />
+            <div>
+              <strong className="font-bold">Enrollment Required:</strong> The Academy portal (video lectures, code notes, quizzes, and labs) is exclusively available to enrolled students. Please complete your enrollment in the 4-Week Cohort below to access the curriculum.
+            </div>
+          </div>
+        )}
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 text-xs font-mono font-bold tracking-wider mb-4 shadow-sm">
@@ -564,7 +599,13 @@ export default function HomePage() {
 
             <button
               type="button"
-              onClick={() => setPaymentModalOpen(true)}
+              onClick={() => {
+                if (!isLoggedIn) {
+                  router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=cohort'));
+                } else {
+                  setPaymentModalOpen(true);
+                }
+              }}
               className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 hover:brightness-110 text-white font-bold text-sm sm:text-base text-center transition-all shadow-xl shadow-cyan-500/30 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
             >
               <span>Enroll in 4-Week Program</span>
@@ -783,5 +824,13 @@ export default function HomePage() {
       />
 
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400 font-mono text-xs">Loading Waynautic Academy...</div>}>
+      <HomePageContent />
+    </React.Suspense>
   );
 }

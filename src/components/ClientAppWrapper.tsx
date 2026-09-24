@@ -1,18 +1,24 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { useWaynauticStore, getStoredTheme } from '@/lib/store';
 import { fetchCurriculumUpdates } from '@/lib/curriculumService';
-import { Sparkles, BookOpen, CheckCircle2 } from 'lucide-react';
+import { Sparkles, BookOpen, CheckCircle2, Lock } from 'lucide-react';
 
 export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const { profile } = useWaynauticStore();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const isAuthPage = 
     pathname === '/login' || 
@@ -25,7 +31,28 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const isAdminPage = pathname?.startsWith('/admin');
 
-  // 1. Sync theme across app
+  const isProtectedPortalRoute = 
+    pathname === '/curriculum' || pathname?.startsWith('/curriculum/') ||
+    pathname === '/dashboard' || pathname?.startsWith('/dashboard/') ||
+    pathname === '/paths' || pathname?.startsWith('/paths/') ||
+    pathname === '/onboarding' || pathname?.startsWith('/onboarding/');
+
+  const isLoggedIn = Boolean(profile.userId || profile.email);
+  const isEnrolled = profile.plan === 'pro' || profile.plan === 'enterprise' || profile.role === 'admin' || profile.role === 'instructor';
+
+  // 1. Enforce portal route guard: only enrolled students can access protected routes
+  useEffect(() => {
+    if (!isMounted) return;
+    if (isProtectedPortalRoute) {
+      if (!isLoggedIn) {
+        router.replace(`/signup?redirectTo=${encodeURIComponent(pathname)}&notice=enroll_required`);
+      } else if (!isEnrolled) {
+        router.replace(`/?enroll=cohort&notice=enroll_required`);
+      }
+    }
+  }, [isMounted, isProtectedPortalRoute, isLoggedIn, isEnrolled, pathname, router]);
+
+  // 2. Sync theme across app
   useEffect(() => {
     if (typeof document !== 'undefined') {
       const activeTheme = profile.theme || getStoredTheme();
@@ -37,9 +64,8 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, [profile.theme]);
 
-  // 2. Global curriculum and quiz synchronization on mount and window focus
+  // 3. Global curriculum and quiz synchronization on mount and window focus
   useEffect(() => {
-    // Initial fetch from cloud/Supabase
     fetchCurriculumUpdates();
 
     const handleFocus = () => {
@@ -56,6 +82,30 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
     return (
       <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#090D16] text-slate-900 dark:text-slate-100">
         {children}
+      </div>
+    );
+  }
+
+  // Guard protected portal routes from unauthenticated & un-enrolled free users
+  if (isProtectedPortalRoute && (!isMounted || !isLoggedIn || !isEnrolled)) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-[#090D16] text-slate-900 dark:text-slate-100 p-4">
+        <div className="flex flex-col items-center max-w-md text-center space-y-4 animate-in fade-in duration-200">
+          <div className="w-16 h-16 rounded-3xl bg-cyan-50 dark:bg-cyan-950/80 border-2 border-cyan-500/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shadow-md">
+            <Lock className="w-8 h-8 animate-pulse" />
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
+              {!isLoggedIn ? 'Account Required' : 'Cohort Enrollment Required'}
+            </h2>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              {!isLoggedIn
+                ? 'Redirecting to registration... Please create an account to enroll in the 4-Week AI Intensive Cohort.'
+                : 'Redirecting to enrollment... A 4-Week Cohort pass is required to access curriculum videos, lecture workspaces, and code notes.'}
+            </p>
+          </div>
+          <div className="w-6 h-6 border-2 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
+        </div>
       </div>
     );
   }

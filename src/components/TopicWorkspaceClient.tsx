@@ -122,6 +122,7 @@ export function TopicWorkspaceClient() {
 
   const topicId = topic?.id;
   const isLoggedIn = Boolean(profile.userId || profile.email);
+  const isEnrolled = profile.plan === 'pro' || profile.plan === 'enterprise' || profile.role === 'admin' || profile.role === 'instructor';
 
   // Record last accessed topic & tab for deep-link Resume Learning
   useEffect(() => {
@@ -146,7 +147,7 @@ export function TopicWorkspaceClient() {
     notFound();
   }
 
-  // If not logged in, enforce login requirement before starting learning
+  // 1. If not logged in, require student account registration/login
   if (!isLoggedIn) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center p-4">
@@ -158,13 +159,13 @@ export function TopicWorkspaceClient() {
 
           <div className="space-y-2">
             <span className="text-xs font-mono uppercase tracking-widest text-sky-600 dark:text-cyan-400 font-bold">
-              Student Login Required
+              Student Account Required
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
               Log In to Start Learning
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-md mx-auto">
-              You must be logged into your Waynautic Academy account to access <strong className="text-slate-900 dark:text-white">&quot;{topic.title}&quot;</strong>, stream video lectures, view code notes, and take quizzes.
+              You must be logged into your student account to access <strong className="text-slate-900 dark:text-white">&quot;{topic.title}&quot;</strong>, stream video lectures, view code notes, and take quizzes.
             </p>
           </div>
 
@@ -187,7 +188,7 @@ export function TopicWorkspaceClient() {
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
             <Link
-              href={`/login?redirectTo=/curriculum/${moduleSlug}/${topicSlug}`}
+              href={`/login?redirectTo=/curriculum/${moduleSlug}/${topicSlug}&notice=enroll_required`}
               className="w-full sm:w-1/2 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 min-h-[44px] shadow-sm focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
             >
               <span>Log In to Account</span>
@@ -195,10 +196,70 @@ export function TopicWorkspaceClient() {
             </Link>
 
             <Link
-              href="/signup"
-              className="w-full sm:w-1/2 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold text-xs sm:text-sm transition-all text-center min-h-[44px] flex items-center justify-center focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
+              href={`/signup?redirectTo=/curriculum/${moduleSlug}/${topicSlug}&notice=enroll_required`}
+              className="w-full sm:w-1/2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 text-white font-bold text-xs sm:text-sm transition-all text-center min-h-[44px] flex items-center justify-center shadow-md focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
             >
-              Create Free Account
+              Register & Enroll
+            </Link>
+          </div>
+
+        </div>
+      </div>
+    );
+  }
+
+  // 2. If logged in but not enrolled in paid cohort, show enrollment paywall
+  if (!isEnrolled) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center p-4">
+        <div className="w-full max-w-lg bg-white dark:bg-[#0D121F] border-2 border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6 text-center animate-in fade-in duration-300">
+          
+          <div className="w-16 h-16 mx-auto rounded-3xl bg-amber-50 dark:bg-amber-950/80 border-2 border-amber-300 dark:border-amber-500/40 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-md">
+            <Lock className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="text-xs font-mono uppercase tracking-widest text-amber-600 dark:text-amber-400 font-bold">
+              Cohort Enrollment Required
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+              Enroll to Access Lecture
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-md mx-auto">
+              You are logged in as <strong className="text-slate-900 dark:text-white">{profile.displayName || profile.email}</strong>. Access to <strong className="text-slate-900 dark:text-white">&quot;{topic.title}&quot;</strong>, video lectures, code notes, and quizzes requires enrollment in the 4-Week AI Intensive Cohort.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 text-left space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium">
+            <div className="flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              <span>Full curriculum: 10 Modules, 56 lessons & video lectures</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              <span>Downloadable code notes, architectural diagrams & mind maps</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              <span>Interactive quizzes & verified completion certificate</span>
+            </div>
+          </div>
+
+          <div className="pt-2 space-y-3">
+            <Link
+              href="/?enroll=cohort"
+              className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 hover:from-cyan-400 hover:via-blue-500 hover:to-violet-500 text-white font-extrabold text-sm transition-all flex items-center justify-center space-x-2 min-h-[46px] shadow-lg shadow-blue-500/25"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Enroll in 4-Week Cohort (₹9,999)</span>
+              <ArrowRight className="w-4 h-4 text-current" />
+            </Link>
+
+            <Link
+              href="/"
+              className="block text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white font-medium"
+            >
+              ← Return to Academy Home
             </Link>
           </div>
 

@@ -11,7 +11,7 @@ import { clearAdminSession } from '@/lib/adminService';
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirectTo') || '/';
+  const redirectTo = searchParams.get('redirectTo');
   const isVerified = searchParams.get('verified') === 'true';
   const emailParam = searchParams.get('email') || '';
 
@@ -113,7 +113,17 @@ function LoginForm() {
         });
       }
 
-      router.push(redirectTo);
+      if (redirectTo) {
+        router.push(redirectTo);
+      } else {
+        const latestProfile = useWaynauticStore.getState().profile;
+        const isPaid = latestProfile.plan === 'pro' || latestProfile.plan === 'enterprise';
+        if (isPaid) {
+          router.push('/dashboard');
+        } else {
+          router.push('/?enroll=cohort');
+        }
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred during login.';
       setErrorMsg(message);
@@ -275,6 +285,13 @@ function LoginForm() {
       {/* Top accent pill indicator */}
       <div className="w-14 h-1.5 mx-auto rounded-full bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 mb-2" />
 
+      {searchParams.get('notice') === 'enroll_required' && (
+        <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-500/40 text-amber-800 dark:text-amber-200 text-xs font-medium flex items-center gap-2 animate-in fade-in">
+          <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+          <span>Please log in to your account to enroll in the 4-Week Intensive Cohort.</span>
+        </div>
+      )}
+
       <div className="text-center space-y-1.5">
         <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Student Login</h2>
         <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
@@ -390,7 +407,7 @@ function LoginForm() {
 
       <div className="text-center text-xs text-slate-600 dark:text-slate-400 pt-2 font-medium">
         Don&apos;t have an account?{' '}
-        <Link href={`/signup${redirectTo !== '/dashboard' ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`} className="text-sky-600 dark:text-cyan-400 hover:underline font-extrabold">
+        <Link href={`/signup${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`} className="text-sky-600 dark:text-cyan-400 hover:underline font-extrabold">
           Create Free Student Account
         </Link>
       </div>
