@@ -295,9 +295,15 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
                 <span className="text-[11px] font-mono font-bold text-cyan-600 dark:text-cyan-400">
                   Razorpay Secure Checkout
                 </span>
-                <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                  Test Mode
-                </span>
+                {(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '').startsWith('rzp_test_') ? (
+                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                    Test Mode
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+                    <ShieldCheck className="w-3 h-3 text-emerald-500" /> Live Gateway
+                  </span>
+                )}
               </div>
             </div>
           </div>
