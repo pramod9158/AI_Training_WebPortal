@@ -55,7 +55,13 @@ export async function POST(req: NextRequest) {
 
     // Signature is authentic and valid!
     const cleanEmail = (userEmail || '').trim().toLowerCase();
-    const numericAmount = amount ? Number(amount) / 100 : plan === 'expert_session' ? 19 : 9999;
+    const numericAmount = amount
+      ? Number(amount) / 100
+      : plan === 'consultation'
+      ? 1
+      : plan === 'expert_session'
+      ? 5
+      : 9999;
 
     // Record verified transaction in Supabase
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -77,15 +83,15 @@ export async function POST(req: NextRequest) {
           barcode_id: `razorpay_${razorpay_order_id}`,
           status: 'verified',
           verified_at: new Date().toISOString(),
-          plan_granted: 'pro',
+          plan_granted: plan === 'cohort' ? 'pro' : 'free',
           notes: `Razorpay Order: ${razorpay_order_id} | Phone: ${phone || 'N/A'} | Plan: ${plan}`,
         });
       } catch (dbErr) {
         console.warn('Could not insert payment into Supabase ledger:', dbErr);
       }
 
-      // 2. Automatically upgrade user_profiles to 'pro' if userId is present
-      if (userId) {
+      // 2. Automatically upgrade user_profiles to 'pro' if userId is present and purchasing the flagship cohort
+      if (userId && plan === 'cohort') {
         try {
           await supabase
             .from('user_profiles')
@@ -99,6 +105,13 @@ export async function POST(req: NextRequest) {
 
     // 3. Automatically dispatch official email invoice
     const studentDisplayName = userName || (cleanEmail ? cleanEmail.split('@')[0] : 'Student');
+    const invoicePlanName =
+      plan === 'consultation'
+        ? '1-on-1 AI Consultation & Roadmap'
+        : plan === 'expert_session'
+        ? '1-on-1 AI Expert Deep Dive'
+        : '4-Week AI Intensive Cohort';
+
     try {
       await sendInvoiceEmail({
         studentName: studentDisplayName,
@@ -107,7 +120,7 @@ export async function POST(req: NextRequest) {
         paymentId: razorpay_payment_id,
         orderId: razorpay_order_id,
         amount: numericAmount,
-        planName: plan === 'expert_session' ? '1-on-1 AI Strategy Session' : '4-Week AI Intensive Cohort',
+        planName: invoicePlanName,
       });
     } catch (emailErr) {
       console.warn('[InvoiceEmail] Background email send error:', emailErr);

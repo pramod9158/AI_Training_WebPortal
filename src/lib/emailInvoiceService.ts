@@ -36,6 +36,38 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
   const formattedAmount = `₹${amount.toLocaleString('en-IN')}`;
   const portalUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-training-web-portal.vercel.app';
 
+  const isCohortPlan = amount >= 9000 || planName.toLowerCase().includes('cohort');
+  const isExpertPlan = amount === 5 || planName.toLowerCase().includes('expert');
+
+  const planDuration = isCohortPlan ? '1 Full Year' : isExpertPlan ? '1 Session + Audit' : '1 Session';
+
+  const planInclusions = isCohortPlan
+    ? `• 10 Core AI Engineering Modules & 56 Curated Video Topics<br>
+       • 4 Weeks of Live Guided Mentorship & Project Code Reviews<br>
+       • Architectural Mind Maps, Code Notes & Quiz Mastery<br>
+       • Dual Verifiable Certification (Internship + Course Completion)`
+    : isExpertPlan
+    ? `• 1-on-1 Personalized Session with an AI Industry Expert<br>
+       • Personalized Resume & Tech Profile Audit<br>
+       • Direct Q&A and Hands-on Guidance on Projects to Build<br>
+       • Personalized Upskilling Plan & Curriculum Recommendations`
+    : `• 1-on-1 AI Strategy & Doubt-Clearing Consultation Session<br>
+       • Personalized AI Learning Roadmap Tailored to Your Profile<br>
+       • Custom Upskilling Plan & Curriculum Recommendations<br>
+       • Career Transition Advisory for AI/LLM Engineering`;
+
+  const bannerTitle = isCohortPlan
+    ? 'Cohort Pass Active — Full Portal Unlocked'
+    : isExpertPlan
+    ? 'Expert Deep Dive Session Booked'
+    : 'Consultation & Roadmap Session Booked';
+
+  const bannerSubtitle = isCohortPlan
+    ? `Welcome aboard, <strong>${studentName}</strong>! All 56 topics, video lectures, code notes & mastery quizzes are now accessible.`
+    : isExpertPlan
+    ? `Thank you, <strong>${studentName}</strong>! Our AI expert team will contact you within 24 hours to schedule your session & profile audit.`
+    : `Thank you, <strong>${studentName}</strong>! Our advisory team will contact you within 24 hours to schedule your 1-on-1 roadmap session.`;
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,10 +118,10 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
                   </td>
                   <td style="vertical-align: middle; padding-left: 12px;">
                     <p style="margin: 0; font-size: 13px; font-weight: 700; color: #065f46;">
-                      Cohort Pass Active — Full Portal Unlocked
+                      ${bannerTitle}
                     </p>
                     <p style="margin: 2px 0 0; font-size: 12px; color: #047857;">
-                      Welcome aboard, <strong>${studentName}</strong>! All 56 topics, video lectures, code notes & mastery quizzes are now accessible.
+                      ${bannerSubtitle}
                     </p>
                   </td>
                 </tr>
@@ -141,14 +173,11 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
                     <td style="padding: 16px 0; vertical-align: top;">
                       <strong style="font-size: 14px; color: #0f172a; display: block;">${planName}</strong>
                       <span style="font-size: 12px; color: #64748b; display: block; margin-top: 4px; line-height: 1.5;">
-                        • 10 Core AI Engineering Modules & 56 Curated Video Topics<br>
-                        • 4 Weeks of Live Guided Mentorship & Project Code Reviews<br>
-                        • Architectural Mind Maps, Code Notes & Quiz Mastery<br>
-                        • Dual Verifiable Certification (Internship + Course Completion)
+                        ${planInclusions}
                       </span>
                     </td>
                     <td align="center" style="padding: 16px 0; vertical-align: top; font-size: 13px; color: #475569; font-weight: 600;">
-                      1 Full Year
+                      ${planDuration}
                     </td>
                     <td align="right" style="padding: 16px 0; vertical-align: top; font-size: 14px; color: #0f172a; font-weight: 700;">
                       ${formattedAmount}

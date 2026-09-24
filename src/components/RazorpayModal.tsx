@@ -23,7 +23,7 @@ import Link from 'next/link';
 interface RazorpayModalProps {
   isOpen: boolean;
   onClose: () => void;
-  plan?: 'cohort' | 'expert_session';
+  plan?: 'cohort' | 'expert_session' | 'consultation';
 }
 
 // Helper to load Razorpay checkout script dynamically
@@ -57,12 +57,52 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
   const [verifiedPaymentId, setVerifiedPaymentId] = useState('');
 
   const isCohort = plan === 'cohort';
-  const originalPrice = isCohort ? '₹15,000' : '₹499';
-  const currentPrice = isCohort ? '₹9,999' : '₹19';
-  const priceInRupees = isCohort ? 9999 : 19;
+  const isExpert = plan === 'expert_session';
+  const isConsultation = plan === 'consultation';
+
+  const originalPrice = isCohort ? '₹15,000' : isExpert ? '₹499' : '₹299';
+  const currentPrice = isCohort ? '₹9,999' : isExpert ? '₹5' : '₹1';
+  const priceInRupees = isCohort ? 9999 : isExpert ? 5 : 1;
+  const savingsText = isCohort ? 'Save ₹5,001' : isExpert ? 'Save ₹494' : 'Save ₹298';
+
+  const planBadge = isCohort
+    ? 'Flagship Masterclass'
+    : isExpert
+    ? 'Popular Plan'
+    : 'Starter Consultation';
+
   const planTitle = isCohort
     ? '4-Week Intensive Cohort Program'
-    : '1-on-1 AI Expert Deep Dive';
+    : isExpert
+    ? '1-on-1 AI Expert Deep Dive'
+    : '1-on-1 AI Consultation & Roadmap';
+
+  const planSubtitle = isCohort
+    ? '1 Year full portal access + 4 weeks live mentoring'
+    : isExpert
+    ? 'Personalized 1-on-1 session with an AI Industry Expert'
+    : 'Personalized AI learning roadmap & 1-on-1 strategy session';
+
+  const inclusions = isCohort
+    ? [
+        '56 topics video lectures, notes, quizzes & code labs',
+        '4–5 portfolio-worthy agentic AI projects with code reviews',
+        'Dual Certificate: Internship + Program Completion',
+        'End-to-end placement assistance & mock interviews',
+      ]
+    : isExpert
+    ? [
+        'All features in Consultation (Roadmap & custom plan)',
+        '+1 Additional personalized session with an AI Industry Expert',
+        'Personalized resume & tech profile audit',
+        'Direct Q&A and hands-on guidance on projects to build',
+      ]
+    : [
+        'Personalized AI learning roadmap tailored to your profile',
+        'Custom upskilling plan & curriculum recommendations',
+        '1-on-1 strategy & doubt-clearing consultation session',
+        'Career transition advisory for AI/LLM engineering',
+      ];
 
   // Pre-fill profile info when opened
   useEffect(() => {
@@ -188,14 +228,21 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
 
             const verifyData = await verifyRes.json();
             if (verifyRes.ok && verifyData.success) {
-              // Immediately unlock Pro in local store
-              updateProfile({
-                plan: 'pro',
-                displayName: cleanName || profile.displayName,
-                email: cleanEmail || profile.email,
-              });
+              // Immediately unlock Pro in local store only if purchasing the flagship cohort
+              if (isCohort) {
+                updateProfile({
+                  plan: 'pro',
+                  displayName: cleanName || profile.displayName,
+                  email: cleanEmail || profile.email,
+                });
+              } else {
+                updateProfile({
+                  displayName: cleanName || profile.displayName,
+                  email: cleanEmail || profile.email,
+                });
+              }
 
-              // Clean up ?enroll=cohort and other checkout params from URL
+              // Clean up ?enroll=... and other checkout params from URL
               if (typeof window !== 'undefined') {
                 window.history.replaceState(null, '', window.location.pathname);
               }
@@ -276,10 +323,14 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
 
               <div>
                 <h4 className="text-2xl font-black text-slate-900 dark:text-white">
-                  Enrollment Confirmed! 🎉
+                  {isCohort ? 'Enrollment Confirmed! 🎉' : isExpert ? 'Session & Audit Booked! 🎉' : 'Session Booked! 🎉'}
                 </h4>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-sm mx-auto mt-1.5 leading-relaxed">
-                  Welcome to Waynautic Academy! Your {currentPrice} payment was verified via Razorpay and your 4-Week Cohort pass is now active.
+                  {isCohort
+                    ? `Welcome to Waynautic Academy! Your ${currentPrice} payment was verified via Razorpay and your 4-Week Cohort pass is now active.`
+                    : isExpert
+                    ? `Welcome to Waynautic Academy! Your ${currentPrice} payment was verified via Razorpay. Our expert team will contact you within 24 hours to schedule your session & profile audit.`
+                    : `Welcome to Waynautic Academy! Your ${currentPrice} payment was verified via Razorpay. Our advisory team will contact you within 24 hours to schedule your 1-on-1 roadmap session.`}
                 </p>
               </div>
 
@@ -299,7 +350,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
                 <div className="flex justify-between">
                   <span className="text-slate-500 dark:text-slate-400">Access Status:</span>
                   <span className="font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5" /> Full Portal Unlocked
+                    <Sparkles className="w-3.5 h-3.5" /> {isCohort ? 'Full Portal Unlocked' : isExpert ? 'Deep Dive Session Booked' : 'Roadmap Session Booked'}
                   </span>
                 </div>
               </div>
@@ -311,16 +362,27 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
               </div>
 
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link
-                  href="/curriculum"
-                  onClick={onClose}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:brightness-110 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all text-center flex items-center justify-center gap-2"
-                >
-                  <span>Start Learning Now</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+                {isCohort ? (
+                  <Link
+                    href="/curriculum"
+                    onClick={onClose}
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:brightness-110 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all text-center flex items-center justify-center gap-2"
+                  >
+                    <span>Start Learning Now</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:brightness-110 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all text-center flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>Return to Academy</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                )}
                 <a
-                  href={`/api/payment/preview-invoice?name=${encodeURIComponent(fullName || profile.displayName || 'Student')}&email=${encodeURIComponent(email || profile.email || '')}&amount=9999`}
+                  href={`/api/payment/preview-invoice?name=${encodeURIComponent(fullName || profile.displayName || 'Student')}&email=${encodeURIComponent(email || profile.email || '')}&amount=${priceInRupees}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-xs sm:text-sm transition-colors text-center flex items-center justify-center gap-1.5"
@@ -345,13 +407,13 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
               <div className="p-4 rounded-2xl bg-gradient-to-br from-cyan-500/5 via-blue-500/5 to-transparent border border-cyan-500/20 flex items-center justify-between">
                 <div>
                   <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
-                    Cohort Enrollment
+                    {planBadge}
                   </span>
                   <h4 className="font-extrabold text-slate-900 dark:text-white text-base">
                     {planTitle}
                   </h4>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    1 Year full portal access + 4 weeks live mentoring
+                    {planSubtitle}
                   </p>
                 </div>
 
@@ -363,29 +425,19 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
                     {currentPrice}
                   </div>
                   <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                    Save ₹5,001
+                    {savingsText}
                   </span>
                 </div>
               </div>
 
               {/* Inclusions summary */}
               <div className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>56 topics video lectures, notes, quizzes & code labs</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>4–5 portfolio-worthy agentic AI projects with code reviews</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>Dual Certificate: Internship + Program Completion</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>End-to-end placement assistance & mock interviews</span>
-                </div>
+                {inclusions.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
               </div>
 
               {/* Error Message */}

@@ -20,9 +20,12 @@ export async function POST(req: NextRequest) {
     let amountInPaise = 999900; // ₹9,999
     let description = '4-Week Intensive AI Cohort Program';
 
-    if (plan === 'expert_session') {
-      amountInPaise = 1900; // ₹19
-      description = '1-on-1 AI Expert Consultation Session';
+    if (plan === 'consultation') {
+      amountInPaise = 100; // ₹1 (100 paise)
+      description = '1-on-1 AI Consultation & Roadmap Session';
+    } else if (plan === 'expert_session') {
+      amountInPaise = 500; // ₹5 (500 paise)
+      description = '1-on-1 AI Expert Deep Dive Session';
     }
 
     const razorpay = new Razorpay({

@@ -685,7 +685,7 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
     try {
       let payQuery = supabase
         .from('payments')
-        .select('id, status')
+        .select('id, status, plan_granted, amount')
         .eq('status', 'verified');
       
       if (user.id && user.email) {
@@ -695,8 +695,10 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
       } else if (user.email) {
         payQuery = payQuery.ilike('user_email', user.email);
       }
-      const { data: payRows } = await payQuery.limit(1);
-      hasApprovedPayment = Boolean(payRows && payRows.length > 0);
+      const { data: payRows } = await payQuery;
+      hasApprovedPayment = Boolean(
+        payRows && payRows.some((p: any) => p.plan_granted === 'pro' || Number(p.amount) >= 9000)
+      );
     } catch (pErr) {
       console.warn('Payment check query error in fetchAndSyncCloudUser:', pErr);
     }
