@@ -56,7 +56,7 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
               <table width="100%" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="left" style="vertical-align: middle;">
-                    <img src="cid:waynautic-logo" alt="Waynautic Academy" width="160" style="display: block; max-width: 160px; height: auto; border: 0; outline: none;" />
+                    <img src="${portalUrl}/Waynautic%20Logo%20New.png" alt="Waynautic Academy" width="160" style="display: block; max-width: 160px; height: auto; border: 0; outline: none;" />
                   </td>
                   <td align="right" style="vertical-align: middle;">
                     <span style="display: inline-block; padding: 6px 14px; background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.4); border-radius: 30px; color: #38bdf8; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">

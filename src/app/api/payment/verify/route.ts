@@ -99,17 +99,19 @@ export async function POST(req: NextRequest) {
 
     // 3. Automatically dispatch official email invoice
     const studentDisplayName = userName || (cleanEmail ? cleanEmail.split('@')[0] : 'Student');
-    sendInvoiceEmail({
-      studentName: studentDisplayName,
-      studentEmail: cleanEmail,
-      studentPhone: phone || undefined,
-      paymentId: razorpay_payment_id,
-      orderId: razorpay_order_id,
-      amount: numericAmount,
-      planName: plan === 'expert_session' ? '1-on-1 AI Strategy Session' : '4-Week AI Intensive Cohort',
-    }).catch((emailErr) => {
+    try {
+      await sendInvoiceEmail({
+        studentName: studentDisplayName,
+        studentEmail: cleanEmail,
+        studentPhone: phone || undefined,
+        paymentId: razorpay_payment_id,
+        orderId: razorpay_order_id,
+        amount: numericAmount,
+        planName: plan === 'expert_session' ? '1-on-1 AI Strategy Session' : '4-Week AI Intensive Cohort',
+      });
+    } catch (emailErr) {
       console.warn('[InvoiceEmail] Background email send error:', emailErr);
-    });
+    }
 
     return NextResponse.json({
       success: true,
