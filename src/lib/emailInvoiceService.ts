@@ -272,7 +272,105 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
 }
 
 /**
- * Dispatches the official invoice email via SMTP with embedded Waynautic logo
+ * Sends official invoice via Microsoft Graph API directly from academy@waynautic.com
+ */
+async function sendInvoiceViaMicrosoftGraph(details: InvoiceDetails): Promise<{
+  success: boolean;
+  messageId?: string;
+  error?: string;
+}> {
+  const tenantId = process.env.AZURE_TENANT_ID;
+  const clientId = process.env.AZURE_CLIENT_ID;
+  const clientSecret = process.env.AZURE_CLIENT_SECRET;
+  const senderEmail = process.env.SENDER_EMAIL_ADDRESS || 'academy@waynautic.com';
+
+  if (!tenantId || !clientId || !clientSecret) {
+    throw new Error('Azure Entra ID credentials missing.');
+  }
+
+  // 1. Fetch OAuth2 bearer token from Microsoft identity platform
+  const tokenUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
+  const params = new URLSearchParams();
+  params.append('client_id', clientId);
+  params.append('scope', 'https://graph.microsoft.com/.default');
+  params.append('client_secret', clientSecret);
+  params.append('grant_type', 'client_credentials');
+
+  const tokenRes = await fetch(tokenUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString(),
+  });
+
+  const tokenData = await tokenRes.json();
+  if (!tokenRes.ok || !tokenData.access_token) {
+    throw new Error(
+      `Failed to acquire Microsoft Graph token: ${tokenData.error_description || tokenData.error || 'Unknown error'}`
+    );
+  }
+
+  // 2. Build invoice HTML and subject
+  const htmlContent = buildInvoiceHtml(details);
+  const subject = `Enrollment Confirmed & Invoice: 4-Week AI Intensive Cohort (Order #${details.orderId.slice(-6).toUpperCase()})`;
+
+  // 3. Dispatch email via Microsoft Graph /users/{email}/sendMail
+  const sendMailUrl = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(senderEmail)}/sendMail`;
+  const payload = {
+    message: {
+      subject,
+      body: {
+        contentType: 'HTML',
+        content: htmlContent,
+      },
+      toRecipients: [
+        {
+          emailAddress: {
+            address: details.studentEmail,
+            name: details.studentName,
+          },
+        },
+      ],
+      from: {
+        emailAddress: {
+          name: 'Waynautic Academy',
+          address: senderEmail,
+        },
+      },
+      replyTo: [
+        {
+          emailAddress: {
+            name: 'Waynautic Academy',
+            address: senderEmail,
+          },
+        },
+      ],
+    },
+    saveToSentItems: 'true',
+  };
+
+  const sendRes = await fetch(sendMailUrl, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${tokenData.access_token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (sendRes.status === 202 || sendRes.ok) {
+    const msgId = `graph_${Date.now()}`;
+    console.log(
+      `[InvoiceEmail] Official invoice sent via Microsoft Graph (${senderEmail}) to ${details.studentEmail}.`
+    );
+    return { success: true, messageId: msgId };
+  }
+
+  const errData = await sendRes.json().catch(() => ({}));
+  throw new Error(`Microsoft Graph API error (${sendRes.status}): ${JSON.stringify(errData)}`);
+}
+
+/**
+ * Dispatches the official invoice email (prioritizes Microsoft Graph API, with SMTP fallback)
  */
 export async function sendInvoiceEmail(details: InvoiceDetails): Promise<{
   success: boolean;
@@ -280,20 +378,28 @@ export async function sendInvoiceEmail(details: InvoiceDetails): Promise<{
   error?: string;
   skipped?: boolean;
 }> {
+  // 1. Try Microsoft Graph API (Official academy@waynautic.com)
+  if (process.env.AZURE_TENANT_ID && process.env.AZURE_CLIENT_ID && process.env.AZURE_CLIENT_SECRET) {
+    try {
+      return await sendInvoiceViaMicrosoftGraph(details);
+    } catch (graphErr) {
+      console.error('[InvoiceEmail] Microsoft Graph dispatch failed, falling back to SMTP:', graphErr);
+    }
+  }
+
+  // 2. Fallback to standard SMTP if Graph is not configured or encounters network error
   try {
     const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
     const smtpPort = Number(process.env.SMTP_PORT || 465);
     const smtpSecure = process.env.SMTP_SECURE !== 'false';
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
-    const smtpFrom = process.env.SMTP_FROM || `"Waynautic Academy" <${smtpUser || 'info@waynautic.com'}>`;
 
-    // If SMTP is not yet configured, log gracefully without breaking the user experience
     if (!smtpUser || !smtpPass) {
       console.warn(
-        `[InvoiceEmail] SMTP credentials not set (SMTP_USER / SMTP_PASS). Skipping live email dispatch for ${details.studentEmail}.`
+        `[InvoiceEmail] Neither Microsoft Graph nor SMTP credentials set. Skipping email dispatch for ${details.studentEmail}.`
       );
-      return { success: false, skipped: true, error: 'SMTP credentials not configured in environment variables.' };
+      return { success: false, skipped: true, error: 'Email service credentials not configured.' };
     }
 
     const transportConfig = smtpHost.includes('gmail')
@@ -309,41 +415,28 @@ export async function sendInvoiceEmail(details: InvoiceDetails): Promise<{
         };
 
     const transporter = nodemailer.createTransport(transportConfig as any);
-
     const htmlContent = buildInvoiceHtml(details);
 
-    // Resolve local path to the high-res yet lightweight logo (approx 80 KB)
-    const logoPath = path.join(process.cwd(), 'public', 'Waynautic Logo New.png');
-    const attachments: Array<{ filename: string; path: string; cid: string }> = [];
-
-    if (fs.existsSync(logoPath)) {
-      attachments.push({
-        filename: 'waynautic-logo.png',
-        path: logoPath,
-        cid: 'waynautic-logo',
-      });
-    }
-
+    const senderEmail = process.env.SENDER_EMAIL_ADDRESS || smtpUser || 'academy@waynautic.com';
     const info = await transporter.sendMail({
       from: {
         name: 'Waynautic Academy',
-        address: smtpUser || 'pramodkalyan27@gmail.com',
+        address: senderEmail,
       },
       sender: {
         name: 'Waynautic Academy',
-        address: smtpUser || 'pramodkalyan27@gmail.com',
+        address: senderEmail,
       },
       replyTo: {
         name: 'Waynautic Academy',
-        address: smtpUser || 'pramodkalyan27@gmail.com',
+        address: senderEmail,
       },
       to: details.studentEmail,
       subject: `Enrollment Confirmed & Invoice: 4-Week AI Intensive Cohort (Order #${details.orderId.slice(-6).toUpperCase()})`,
       html: htmlContent,
-      attachments,
     });
 
-    console.log(`[InvoiceEmail] Invoice successfully sent to ${details.studentEmail}. MessageId: ${info.messageId}`);
+    console.log(`[InvoiceEmail] Invoice sent via SMTP fallback to ${details.studentEmail}. MessageId: ${info.messageId}`);
     return { success: true, messageId: info.messageId };
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : String(err);
