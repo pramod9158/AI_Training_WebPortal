@@ -34,7 +34,7 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
 
   const invoiceNumber = `WN-INV-${new Date().getFullYear()}-${orderId.slice(-6).toUpperCase()}`;
   const formattedAmount = `₹${amount.toLocaleString('en-IN')}`;
-  const portalUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ai-training-web-portal.vercel.app';
+  const portalUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://academy.waynautic.com';
 
   const isCohortPlan = amount >= 9000 || planName.toLowerCase().includes('cohort');
   const isExpertPlan = amount === 5 || planName.toLowerCase().includes('expert');
