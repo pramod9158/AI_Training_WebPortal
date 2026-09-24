@@ -15,6 +15,7 @@ import {
   User as UserIcon,
   AlertCircle,
   Loader2,
+  Download,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import Link from 'next/link';
@@ -303,6 +304,12 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
                 </div>
               </div>
 
+              {/* Invoice Confirmation Notice */}
+              <div className="flex items-center justify-center gap-2 text-xs text-slate-600 dark:text-slate-300 bg-sky-50 dark:bg-slate-900/90 py-2.5 px-4 rounded-xl border border-sky-200 dark:border-slate-800 max-w-sm mx-auto">
+                <Mail className="w-4 h-4 text-cyan-500 shrink-0" />
+                <span className="truncate">An official invoice has been sent to <strong>{email || profile.email}</strong></span>
+              </div>
+
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link
                   href="/curriculum"
@@ -312,10 +319,19 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
                   <span>Start Learning Now</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
+                <a
+                  href={`/api/payment/preview-invoice?name=${encodeURIComponent(fullName || profile.displayName || 'Student')}&email=${encodeURIComponent(email || profile.email || '')}&amount=9999`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-xs sm:text-sm transition-colors text-center flex items-center justify-center gap-1.5"
+                >
+                  <Download className="w-4 h-4 text-cyan-500" />
+                  <span>View Invoice</span>
+                </a>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-sm transition-colors text-center"
+                  className="w-full sm:w-auto px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm transition-colors text-center"
                 >
                   Close
                 </button>
