@@ -26,16 +26,19 @@ export async function GET(req: NextRequest) {
 
   // 1. Verify SMTP Connection
   try {
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpSecure,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    });
+    const transportConfig = smtpHost.includes('gmail')
+      ? {
+          service: 'gmail',
+          auth: { user: smtpUser, pass: smtpPass },
+        }
+      : {
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpSecure,
+          auth: { user: smtpUser, pass: smtpPass },
+        };
 
+    const transporter = nodemailer.createTransport(transportConfig as any);
     await transporter.verify();
 
     // 2. If 'to' parameter is passed, dispatch a sample invoice

@@ -267,15 +267,19 @@ export async function sendInvoiceEmail(details: InvoiceDetails): Promise<{
       return { success: false, skipped: true, error: 'SMTP credentials not configured in environment variables.' };
     }
 
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpSecure,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    });
+    const transportConfig = smtpHost.includes('gmail')
+      ? {
+          service: 'gmail',
+          auth: { user: smtpUser, pass: smtpPass },
+        }
+      : {
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpSecure,
+          auth: { user: smtpUser, pass: smtpPass },
+        };
+
+    const transporter = nodemailer.createTransport(transportConfig as any);
 
     const htmlContent = buildInvoiceHtml(details);
 
