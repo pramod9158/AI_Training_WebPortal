@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Zap,
@@ -385,9 +386,75 @@ function HomePageContent() {
       <OnboardingTour isOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
 
       {/* ═══════════════════════════════════════════════════════════════════
+          ACHIEVEMENT & EXCELLENCE AWARD BANNER (Above Fees Structure)
+      ═══════════════════════════════════════════════════════════════════ */}
+      <section className="pt-10 sm:pt-14 pb-2 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-slate-900/90 border-2 border-amber-300/60 dark:border-amber-500/30 shadow-xl dark:shadow-amber-500/5">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
+            
+            {/* Left: Certificate Image */}
+            <div className="md:col-span-6 flex justify-center">
+              <a
+                href="https://lnkd.in/p/dPmtiGUF"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative block rounded-2xl overflow-hidden border-2 border-amber-200 dark:border-amber-500/30 shadow-lg transition-transform hover:scale-[1.02]"
+              >
+                <Image
+                  src="/Innovation-Certificate.jpg"
+                  alt="Winner of the Best AI/ML Testing Strategy 2025 at the GenAI and ML Awards"
+                  width={600}
+                  height={420}
+                  className="w-full h-auto object-cover"
+                />
+                <div className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/20 transition-colors flex items-center justify-center">
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity px-3.5 py-1.5 rounded-full bg-black/80 text-white text-xs font-mono font-bold shadow-lg">
+                    View on LinkedIn ↗
+                  </span>
+                </div>
+              </a>
+            </div>
+
+            {/* Right: Award Text & LinkedIn Link */}
+            <div className="md:col-span-6 space-y-4 text-left">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 border border-amber-300 dark:border-amber-500/40 text-amber-800 dark:text-amber-300 text-xs font-mono font-bold">
+                <span className="text-sm">🌟</span>
+                <span>Recognized for Excellence</span>
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
+                Winner of the Best AI/ML Testing Strategy 2025 at the GenAI and ML Awards.
+              </h2>
+
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                We are setting new industry benchmarks for AI reliability and strategy.
+              </p>
+
+              <div className="pt-2">
+                <a
+                  href="https://lnkd.in/p/dPmtiGUF"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex sm:inline-flex items-center justify-center space-x-2 w-full sm:w-auto px-4 xs:px-5 py-3 rounded-xl bg-[#0A66C2] hover:bg-[#004182] text-white !text-white font-extrabold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 min-h-[44px]"
+                  style={{ color: '#FFFFFF', backgroundColor: '#0A66C2' }}
+                >
+                  <svg className="w-4 h-4 fill-white shrink-0" viewBox="0 0 24 24" style={{ fill: '#FFFFFF', color: '#FFFFFF' }}>
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                  </svg>
+                  <span className="text-white !text-white font-extrabold text-center" style={{ color: '#FFFFFF' }}>View Announcement on LinkedIn</span>
+                  <ArrowRight className="w-4 h-4 text-white !text-white shrink-0" style={{ color: '#FFFFFF' }} />
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════
           SECTION 1 — AI UPSKILLING JOURNEY & PRICING PLANS
       ═══════════════════════════════════════════════════════════════════ */}
-      <section id="pricing" className="relative pt-12 pb-20 sm:pt-20 sm:pb-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="pricing" className="relative pt-8 pb-20 sm:pt-14 sm:pb-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Notice Banner if redirected from protected portal */}
         {noticeParam === 'enroll_required' && (

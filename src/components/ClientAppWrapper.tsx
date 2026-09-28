@@ -252,11 +252,11 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
           <header className="w-full py-5 px-4 flex items-center justify-center border-b border-slate-200/60 dark:border-slate-800/60 bg-white/80 dark:bg-[#0D121F]/80 backdrop-blur-xl shadow-sm">
             <Link href="/" className="inline-flex items-center group transition-transform hover:scale-[1.02]">
               <Image
-                src="/waynautic-logo.png"
+                src="/Waynautic%20Logo%20New.png"
                 alt="Waynautic Academy"
-                width={160}
-                height={36}
-                className="h-8 sm:h-9 w-auto object-contain"
+                width={320}
+                height={72}
+                className="h-10 sm:h-12 w-auto object-contain"
                 priority
               />
             </Link>

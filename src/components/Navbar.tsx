@@ -110,7 +110,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     router.push('/login');
   };
 
-  const navLinks = isLoggedIn
+  const desktopNavLinks = isLoggedIn
+    ? [
+        { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
+        { href: '/dashboard', label: 'Dashboard', icon: Trophy },
+      ]
+    : [
+        { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
+      ];
+
+  const mobileNavLinks = isLoggedIn
     ? [
         { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
         { href: '/dashboard', label: 'Dashboard', icon: Trophy },
@@ -123,26 +132,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/95 dark:bg-[#0B0F19]/90 border-b border-slate-200 dark:border-slate-800/80 transition-colors">
-      <div className="w-full px-2.5 xs:px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="w-full px-2.5 xs:px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
         {/* Left Section: Extreme Left Logo + Clean Nav Links */}
         <div className="flex items-center space-x-3 sm:space-x-6 lg:space-x-8 shrink-0">
           
-          {/* Brand Logo - Extreme Left & Prominent */}
+          {/* Brand Logo - Extreme Left & Prominent (Double Size) */}
           <Link href="/" className="flex items-center group py-1 shrink-0" aria-label="Waynautic Academy Home">
             <Image
-              src="/waynautic-logo.png"
-              alt="Waynautic"
-              width={180}
-              height={44}
-              className="h-7 sm:h-8 md:h-9 w-auto max-w-[125px] xs:max-w-[160px] sm:max-w-none object-contain transition-transform group-hover:scale-[1.02]"
+              src="/Waynautic%20Logo%20New.png"
+              alt="Waynautic Academy"
+              width={360}
+              height={88}
+              className="h-11 xs:h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform group-hover:scale-[1.02]"
               priority
             />
           </Link>
 
           {/* Desktop Navigation Links - Clean & Minimalist */}
           <nav className="hidden md:flex items-center space-x-1">
-            {navLinks.map((link) => {
+            {desktopNavLinks.map((link) => {
               const isActive = pathname === link.href || (link.href !== '/' && pathname?.startsWith(link.href));
               return (
                 <Link
@@ -207,7 +216,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         {/* Right Section: Focused & Consolidated Utilities */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
 
-
+          {/* About Link - Shifted to Right Section (as shown in layout) */}
+          <Link
+            href="/about"
+            className={`hidden md:flex items-center px-3 py-1.5 rounded-lg text-sm transition-colors ${
+              pathname === '/about'
+                ? 'font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
+                : 'font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
+            }`}
+          >
+            About
+          </Link>
 
           {/* Laptop / Desktop Theme Toggle Button */}
           <button
@@ -470,7 +489,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
           {/* Navigation Links */}
           <div className="space-y-1">
-            {navLinks.map((link) => {
+            {mobileNavLinks.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.href;
               return (

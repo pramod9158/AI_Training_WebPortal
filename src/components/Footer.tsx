@@ -75,11 +75,11 @@ export const Footer: React.FC = () => {
           <div className="space-y-4 sm:col-span-2 md:col-span-1 lg:col-span-1">
             <Link href="/" className="inline-block group">
               <Image
-                src="/waynautic-logo.png"
+                src="/Waynautic%20Logo%20New.png"
                 alt="Waynautic Academy"
-                width={150}
-                height={34}
-                className="h-7 w-auto object-contain transition-transform group-hover:scale-105"
+                width={260}
+                height={64}
+                className="h-9 sm:h-10 w-auto object-contain transition-transform group-hover:scale-105"
               />
             </Link>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
