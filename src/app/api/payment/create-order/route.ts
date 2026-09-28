@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       description = '1-on-1 AI Consultation & Roadmap Session';
     } else if (plan === 'expert_session') {
       amountInPaise = 1900; // ₹19 (1900 paise)
-      description = '1-on-1 AI Expert Deep Dive Session';
+      description = 'Live AI Webinar Session Pass';
     }
 
     const razorpay = new Razorpay({

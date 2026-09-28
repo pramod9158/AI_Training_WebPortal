@@ -68,32 +68,33 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
   const planBadge = isCohort
     ? 'Flagship Masterclass'
     : isExpert
-    ? 'Popular Plan'
+    ? 'Popular Webinar'
     : 'Starter Consultation';
 
   const planTitle = isCohort
     ? '4-Week Intensive Cohort Program'
     : isExpert
-    ? '1-on-1 AI Expert Deep Dive'
+    ? 'Live AI Webinar Session'
     : '1-on-1 AI Consultation & Roadmap';
 
   const planSubtitle = isCohort
-    ? '1 Year full portal access + 4 weeks live mentoring'
+    ? '1 Year full portal access + 4 weeks live mentoring + 3-month internship'
     : isExpert
-    ? 'Personalized 1-on-1 session with an AI Industry Expert'
+    ? 'Interactive Live AI Webinar with Q&A and project guidance'
     : 'Personalized AI learning roadmap & 1-on-1 strategy session';
 
   const inclusions = isCohort
     ? [
+        'Continue with Internship: 3 months after AI training',
         '56 topics video lectures, notes, quizzes & code labs',
         '4–5 portfolio-worthy agentic AI projects with code reviews',
-        'Dual Certificate: Internship + Program Completion',
+        'Dual Certificate: 3-Month Internship + Program Completion',
         'End-to-end placement assistance & mock interviews',
       ]
     : isExpert
     ? [
         'All features in Consultation (Roadmap & custom plan)',
-        '+1 Additional personalized session with an AI Industry Expert',
+        'Live interactive AI Webinar masterclass session',
         'Personalized resume & tech profile audit',
         'Direct Q&A and hands-on guidance on projects to build',
       ]
@@ -329,13 +330,13 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
 
               <div>
                 <h4 className="text-2xl font-black text-slate-900 dark:text-white">
-                  {isCohort ? 'Enrollment Confirmed! 🎉' : isExpert ? 'Session & Audit Booked! 🎉' : 'Session Booked! 🎉'}
+                  {isCohort ? 'Enrollment Confirmed! 🎉' : isExpert ? 'Webinar Pass Confirmed! 🎉' : 'Session Booked! 🎉'}
                 </h4>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-sm mx-auto mt-1.5 leading-relaxed">
                   {isCohort
                     ? `Welcome to Waynautic Academy! Your ${currentPrice} payment was verified via Razorpay and your 4-Week Cohort pass is now active.`
                     : isExpert
-                    ? `Welcome to Waynautic Academy! Your ${currentPrice} payment was verified via Razorpay. Our expert team will contact you within 24 hours to schedule your session & profile audit.`
+                    ? `Welcome to Waynautic Academy! Your ${currentPrice} payment was verified via Razorpay. Your Live AI Webinar pass is confirmed and our team will email you the access details.`
                     : `Welcome to Waynautic Academy! Your ${currentPrice} payment was verified via Razorpay. Our advisory team will contact you within 24 hours to schedule your 1-on-1 roadmap session.`}
                 </p>
               </div>
@@ -356,7 +357,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
                 <div className="flex justify-between">
                   <span className="text-slate-500 dark:text-slate-400">Access Status:</span>
                   <span className="font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5" /> {isCohort ? 'Full Portal Unlocked' : isExpert ? 'Deep Dive Session Booked' : 'Roadmap Session Booked'}
+                    <Sparkles className="w-3.5 h-3.5" /> {isCohort ? 'Full Portal Unlocked' : isExpert ? 'Webinar Pass Active' : 'Roadmap Session Booked'}
                   </span>
                 </div>
               </div>

@@ -85,7 +85,7 @@ const FAQS: { category: string; q: string; a: string }[] = [
   { category: 'Learning', q: 'Will I build real AI projects?', a: 'Yes — you will build 4 to 5 agentic, market-ready AI projects during the program. These are portfolio-ready projects that demonstrate your skills to employers, not just theory or toy examples.' },
   { category: 'Learning', q: 'Do I get a personal mentor?', a: 'Yes. Every student is assigned a dedicated mentor who provides personalized guidance throughout the program, answers your questions, and keeps you on track to complete the curriculum.' },
   { category: 'Learning', q: 'What makes Waynautic different from free YouTube tutorials?', a: 'Waynautic provides a structured, mentor-guided path with live sessions, agentic AI projects, streak tracking, quizzes, certificates, mock interviews, and placement support — all designed for developers who want real skills, not just surface-level content.' },
-  { category: 'Placements & Certificates', q: 'What certificates do I get after completing the program?', a: 'Upon successful completion, you receive two certificates: (1) an Internship Certificate for the hands-on project work, and (2) a Program Completion Certificate from Waynautic Academy — both recognized credentials you can showcase on LinkedIn and your resume.' },
+  { category: 'Placements & Certificates', q: 'What certificates do I get after completing the program?', a: 'Upon successful completion of the 4-week AI training, you continue with a 3-month industry internship — the main highlight of our program. You receive two credentials: (1) an official 3-Month Internship Certificate for your production project work, and (2) a Program Completion Certificate from Waynautic Academy — both recognized credentials you can showcase on LinkedIn and your resume.' },
   { category: 'Placements & Certificates', q: 'How long do I get access to the academy portal?', a: 'You get 1 full year of access to the Waynautic Academy portal after enrollment — including all 56 topics, future content updates, live session recordings, and resources added during your access period.' },
   { category: 'Placements & Certificates', q: 'What placement assistance does Waynautic provide?', a: 'We provide comprehensive placement support including: mock interviews with real feedback, resume building assistance, LinkedIn profile optimization, and guidance on how to apply for AI/ML Engineer and LLM Engineer roles effectively.' },
   { category: 'Placements & Certificates', q: 'Will I be job-ready after completing this program?', a: 'Yes — that is our goal. By the end of the program you will have real AI projects in your portfolio, a polished resume and LinkedIn profile, interview practice, and two certificates. You will be equipped to confidently apply for AI engineering roles.' },
@@ -568,11 +568,11 @@ function HomePageContent() {
             </a>
           </div>
 
-          {/* Card 2: Pay ₹19 — Expert Deep Dive */}
+          {/* Card 2: Pay ₹19 — Live AI Webinar */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Expert Deep Dive</h3>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Live AI Webinar</h3>
                 <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
                   Popular
                 </span>
@@ -585,7 +585,7 @@ function HomePageContent() {
                   <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Intro Offer</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
-                  Everything in Starter tier + an additional 1-on-1 session with an AI Expert.
+                  Everything in Starter tier + live interactive AI Webinar masterclass session.
                 </p>
               </div>
 
@@ -601,7 +601,7 @@ function HomePageContent() {
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-cyan-500 shrink-0 mt-0.5" />
                   <span className="text-slate-700 dark:text-slate-300">
-                    <strong>+1 Additional personalized session</strong> with an AI Industry Expert
+                    <strong>Live Interactive AI Webinar</strong> masterclass session
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
@@ -631,7 +631,7 @@ function HomePageContent() {
               }}
               className="w-full py-3.5 px-6 rounded-2xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-sm text-center transition-all shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
             >
-              <span>Get Started for ₹19</span>
+              <span>Join Webinar for ₹19</span>
               <ArrowRight className="w-4 h-4 text-cyan-400 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
@@ -649,7 +649,7 @@ function HomePageContent() {
                 <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">4-Week Intensive Cohort</h3>
               </div>
 
-              <div className="mb-6">
+              <div className="mb-4">
                 <div className="flex items-baseline gap-2 flex-wrap">
                   <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹20,000</span>
                   <span className="text-4xl sm:text-5xl font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">₹9,999</span>
@@ -660,9 +660,28 @@ function HomePageContent() {
                 </p>
               </div>
 
+              {/* Main Program Highlight Box */}
+              <div className="mb-5 p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-cyan-500/15 border-2 border-emerald-500/40 dark:border-emerald-400/40 flex items-start gap-2.5 shadow-sm">
+                <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 block">
+                    ⭐ Main Program Highlight
+                  </span>
+                  <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-snug block mt-0.5">
+                    Continue with Internship — 3 months after AI Training
+                  </span>
+                </div>
+              </div>
+
               <div className="h-px w-full bg-cyan-100 dark:bg-cyan-950 mb-6" />
 
               <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                  <span className="text-slate-900 dark:text-white font-bold">
+                    <strong>Continue with Internship:</strong> 3-Month Industry Internship right after 4-week AI training
+                  </span>
+                </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-cyan-500 shrink-0 mt-0.5" />
                   <span className="text-slate-700 dark:text-slate-200">
@@ -690,7 +709,7 @@ function HomePageContent() {
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-cyan-500 shrink-0 mt-0.5" />
                   <span className="text-slate-700 dark:text-slate-200">
-                    <strong>Dual Certification:</strong> Internship Certificate + Course Completion
+                    <strong>Dual Certification:</strong> 3-Month Internship Certificate + Program Completion
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
@@ -773,8 +792,8 @@ function HomePageContent() {
             },
             {
               icon: <Award className="w-5 h-5 sm:w-6 sm:h-6" />,
-              title: 'Internship + Completion Certificate',
-              desc: 'Earn an Internship Certificate for your project work and a Program Completion Certificate from Waynautic Academy — credentials you can proudly display on LinkedIn and your resume.',
+              title: '3-Month Internship + Certificate',
+              desc: 'Continue with an industry internship of 3 months right after your 4-week AI training! Earn a verifiable Internship Certificate and Program Completion Certificate from Waynautic Academy to showcase on your LinkedIn and resume.',
               color: 'from-emerald-500 to-teal-600',
               points: [],
             },

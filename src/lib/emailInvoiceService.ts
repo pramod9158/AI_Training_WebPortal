@@ -39,15 +39,16 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
   const isCohortPlan = amount >= 9000 || planName.toLowerCase().includes('cohort');
   const isExpertPlan = amount === 5 || planName.toLowerCase().includes('expert');
 
-  const planDuration = isCohortPlan ? '1 Full Year' : isExpertPlan ? '1 Session + Audit' : '1 Session';
+  const planDuration = isCohortPlan ? '1 Full Year + 3-Month Internship' : isExpertPlan ? 'Live Webinar Pass' : '1 Session';
 
   const planInclusions = isCohortPlan
-    ? `• 10 Core AI Engineering Modules & 56 Curated Video Topics<br>
+    ? `• <strong>Continue with Internship:</strong> 3-Month Industry Internship after AI Training<br>
+       • 10 Core AI Engineering Modules & 56 Curated Video Topics<br>
        • 4 Weeks of Live Guided Mentorship & Project Code Reviews<br>
        • Architectural Mind Maps, Code Notes & Quiz Mastery<br>
-       • Dual Verifiable Certification (Internship + Course Completion)`
+       • Dual Verifiable Certification (3-Month Internship + Course Completion)`
     : isExpertPlan
-    ? `• 1-on-1 Personalized Session with an AI Industry Expert<br>
+    ? `• Live Interactive AI Webinar & Masterclass Session<br>
        • Personalized Resume & Tech Profile Audit<br>
        • Direct Q&A and Hands-on Guidance on Projects to Build<br>
        • Personalized Upskilling Plan & Curriculum Recommendations`
@@ -59,13 +60,13 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
   const bannerTitle = isCohortPlan
     ? 'Cohort Pass Active — Full Portal Unlocked'
     : isExpertPlan
-    ? 'Expert Deep Dive Session Booked'
+    ? 'Live AI Webinar Pass Confirmed'
     : 'Consultation & Roadmap Session Booked';
 
   const bannerSubtitle = isCohortPlan
     ? `Welcome aboard, <strong>${studentName}</strong>! All 56 topics, video lectures, code notes & mastery quizzes are now accessible.`
     : isExpertPlan
-    ? `Thank you, <strong>${studentName}</strong>! Our AI expert team will contact you within 24 hours to schedule your session & profile audit.`
+    ? `Thank you, <strong>${studentName}</strong>! Your Live AI Webinar pass is confirmed. We will email you the webinar link and access details.`
     : `Thank you, <strong>${studentName}</strong>! Our advisory team will contact you within 24 hours to schedule your 1-on-1 roadmap session.`;
 
   return `<!DOCTYPE html>

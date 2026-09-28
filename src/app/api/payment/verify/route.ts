@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
       plan === 'consultation'
         ? '1-on-1 AI Consultation & Roadmap'
         : plan === 'expert_session'
-        ? '1-on-1 AI Expert Deep Dive'
+        ? 'Live AI Webinar Session'
         : '4-Week AI Intensive Cohort';
 
     try {
