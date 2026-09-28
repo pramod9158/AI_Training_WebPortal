@@ -60,10 +60,10 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
   const isExpert = plan === 'expert_session';
   const isConsultation = plan === 'consultation';
 
-  const originalPrice = isCohort ? '₹15,000' : isExpert ? '₹499' : '₹299';
+  const originalPrice = isCohort ? '₹20,000' : isExpert ? '₹499' : '₹299';
   const currentPrice = isCohort ? '₹9,999' : isExpert ? '₹19' : '₹1';
   const priceInRupees = isCohort ? 9999 : isExpert ? 19 : 1;
-  const savingsText = isCohort ? 'Save ₹5,001' : isExpert ? 'Save ₹480' : 'Save ₹298';
+  const savingsText = isCohort ? 'Save ₹10,001' : isExpert ? 'Save ₹480' : 'Save ₹298';
 
   const planBadge = isCohort
     ? 'Flagship Masterclass'

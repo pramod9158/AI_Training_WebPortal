@@ -564,7 +564,7 @@ function HomePageContent() {
 
               <div className="mb-6">
                 <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹15,000</span>
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹20,000</span>
                   <span className="text-4xl sm:text-5xl font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">₹9,999</span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">all-inclusive</span>
                 </div>
