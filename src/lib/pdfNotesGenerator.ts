@@ -38,7 +38,7 @@ export interface ModulePdfData {
  */
 async function fetchLogoBase64(): Promise<string | null> {
   try {
-    const res = await fetch('/waynautic-logo.png');
+    const res = await fetch('/Waynautic%20Logo%20New.png');
     if (!res.ok) return null;
     const blob = await res.blob();
     return await new Promise<string>((resolve) => {

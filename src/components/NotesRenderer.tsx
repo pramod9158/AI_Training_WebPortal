@@ -233,7 +233,7 @@ export const NotesRenderer: React.FC<NotesRendererProps> = React.memo(({
           <div className="flex items-center justify-between">
             <div className="flex items-center h-7">
               <img
-                src="/waynautic-logo.png"
+                src="/Waynautic%20Logo%20New.png"
                 alt="Waynautic"
                 className="h-6 w-auto object-contain max-h-6"
                 crossOrigin="anonymous"

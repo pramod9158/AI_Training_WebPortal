@@ -388,7 +388,27 @@ function HomePageContent() {
       {/* ═══════════════════════════════════════════════════════════════════
           ACHIEVEMENT & EXCELLENCE AWARD BANNER (Above Fees Structure)
       ═══════════════════════════════════════════════════════════════════ */}
-      <section className="pt-10 sm:pt-14 pb-2 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="pt-10 sm:pt-14 pb-4 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300 text-xs font-mono font-bold tracking-wider mb-3.5 shadow-sm">
+            <Award className="w-4 h-4 text-amber-500" />
+            Industry Recognition & Accreditations
+          </div>
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15] mb-3">
+            Learn from an{' '}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600">
+              Award-Winning
+            </span>{' '}
+            AI Engineering Team
+          </h2>
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
+            Our curriculum and mentorship are built on proven industry excellence, recognized nationally for breakthrough AI testing strategies and production systems.
+          </p>
+        </div>
+
+        {/* Certificate & Award Card */}
         <div className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-slate-900/90 border-2 border-amber-300/60 dark:border-amber-500/30 shadow-xl dark:shadow-amber-500/5">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
             
