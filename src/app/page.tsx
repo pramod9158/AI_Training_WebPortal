@@ -179,10 +179,12 @@ function HomePageContent() {
   // Auto-open modal if returning from auth with ?enroll=cohort or ?enroll=expert_session or ?enroll=consultation
   useEffect(() => {
     if (enrollParam === 'cohort' || enrollParam === 'expert_session' || enrollParam === 'consultation') {
-      if (enrollParam === 'expert_session') {
+      if (enrollParam === 'consultation') {
+        window.open('https://wa.me/919158998226?text=' + encodeURIComponent('Hi Waynautic Academy, I want to book a Free 1-on-1 AI Consultation & Roadmap Session'), '_blank');
+        router.replace('/');
+        return;
+      } else if (enrollParam === 'expert_session') {
         setSelectedPlan('expert_session');
-      } else if (enrollParam === 'consultation') {
-        setSelectedPlan('consultation');
       } else {
         setSelectedPlan('cohort');
       }
@@ -417,7 +419,7 @@ function HomePageContent() {
         {/* 3 Pricing & Consultation Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
           
-          {/* Card 1: 1-on-1 AI Consultation — Pay ₹1 */}
+          {/* Card 1: 1-on-1 AI Consultation — Free */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
             <div>
               <div className="flex items-center justify-between mb-4">
@@ -430,8 +432,8 @@ function HomePageContent() {
               <div className="mb-6">
                 <div className="flex items-baseline gap-2 flex-wrap">
                   <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹299</span>
-                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">₹1</span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-bold">Intro Offer</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">Free</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">100% Free</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
                   Get a personalized AI learning roadmap based on your current job & background.
@@ -468,24 +470,18 @@ function HomePageContent() {
               </ul>
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                if (!isLoggedIn) {
-                  router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=consultation'));
-                } else {
-                  setSelectedPlan('consultation');
-                  setPaymentModalOpen(true);
-                }
-              }}
+            <a
+              href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20book%20a%20Free%201-on-1%20AI%20Consultation%20%26%20Roadmap%20Session"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full py-3.5 px-6 rounded-2xl border-2 border-slate-300 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-500 text-slate-800 dark:text-white font-bold text-sm text-center transition-all flex items-center justify-center gap-2 group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
             >
-              <span>Book Session for ₹1</span>
+              <span>Book Free Session</span>
               <ArrowRight className="w-4 h-4 text-cyan-500 group-hover:translate-x-0.5 transition-transform" />
-            </button>
+            </a>
           </div>
 
-          {/* Card 2: Pay ₹5 — Expert Deep Dive */}
+          {/* Card 2: Pay ₹19 — Expert Deep Dive */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
             <div>
               <div className="flex items-center justify-between mb-4">
@@ -498,7 +494,7 @@ function HomePageContent() {
               <div className="mb-6">
                 <div className="flex items-baseline gap-2 flex-wrap">
                   <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹499</span>
-                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">₹5</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">₹19</span>
                   <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Intro Offer</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
@@ -548,7 +544,7 @@ function HomePageContent() {
               }}
               className="w-full py-3.5 px-6 rounded-2xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-sm text-center transition-all shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
             >
-              <span>Get Started for ₹5</span>
+              <span>Get Started for ₹19</span>
               <ArrowRight className="w-4 h-4 text-cyan-400 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>

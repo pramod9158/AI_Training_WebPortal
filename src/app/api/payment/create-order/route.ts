@@ -21,10 +21,10 @@ export async function POST(req: NextRequest) {
     let description = '4-Week Intensive AI Cohort Program';
 
     if (plan === 'consultation') {
-      amountInPaise = 100; // ₹1 (100 paise)
+      amountInPaise = 100; // Legacy fallback
       description = '1-on-1 AI Consultation & Roadmap Session';
     } else if (plan === 'expert_session') {
-      amountInPaise = 500; // ₹5 (500 paise)
+      amountInPaise = 1900; // ₹19 (1900 paise)
       description = '1-on-1 AI Expert Deep Dive Session';
     }
 

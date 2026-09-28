@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
       : plan === 'consultation'
       ? 1
       : plan === 'expert_session'
-      ? 5
+      ? 19
       : 9999;
 
     // Record verified transaction in Supabase
