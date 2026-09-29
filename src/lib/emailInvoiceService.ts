@@ -33,6 +33,13 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
   } = details;
 
   const invoiceNumber = `WN-INV-${new Date().getFullYear()}-${orderId.slice(-6).toUpperCase()}`;
+  
+  // Calculate 18% inclusive GST breakdown (e.g. 8474 Base + 1525 GST = 9999 Total)
+  const baseAmount = Math.round(amount / 1.18);
+  const gstAmount = amount - baseAmount;
+
+  const formattedBase = `₹${baseAmount.toLocaleString('en-IN')}`;
+  const formattedGst = `₹${gstAmount.toLocaleString('en-IN')}`;
   const formattedAmount = `₹${amount.toLocaleString('en-IN')}`;
   const portalUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://academy.waynautic.com';
 
@@ -166,7 +173,7 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
                   <tr style="border-bottom: 2px solid #e2e8f0;">
                     <th align="left" style="padding: 10px 0; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 0.5px;">Item Description</th>
                     <th align="center" style="padding: 10px 0; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 0.5px;">Duration</th>
-                    <th align="right" style="padding: 10px 0; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 0.5px;">Amount</th>
+                    <th align="right" style="padding: 10px 0; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 0.5px;">Base Amount</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -181,7 +188,7 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
                       ${planDuration}
                     </td>
                     <td align="right" style="padding: 16px 0; vertical-align: top; font-size: 14px; color: #0f172a; font-weight: 700;">
-                      ${formattedAmount}
+                      ${formattedBase}
                     </td>
                   </tr>
                 </tbody>
@@ -194,16 +201,16 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
             <td style="padding: 8px 36px 20px;">
               <table width="100%" border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td width="60%"></td>
-                  <td width="40%">
+                  <td width="50%"></td>
+                  <td width="50%">
                     <table width="100%" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td align="left" style="padding: 6px 0; font-size: 13px; color: #64748b;">Subtotal:</td>
-                        <td align="right" style="padding: 6px 0; font-size: 13px; color: #0f172a; font-weight: 600;">${formattedAmount}</td>
+                        <td align="left" style="padding: 6px 0; font-size: 13px; color: #64748b;">Course Base Fee:</td>
+                        <td align="right" style="padding: 6px 0; font-size: 13px; color: #0f172a; font-weight: 600;">${formattedBase}</td>
                       </tr>
                       <tr>
-                        <td align="left" style="padding: 6px 0; font-size: 13px; color: #64748b;">GST / Taxes:</td>
-                        <td align="right" style="padding: 6px 0; font-size: 13px; color: #059669; font-weight: 600;">Inclusive</td>
+                        <td align="left" style="padding: 6px 0; font-size: 13px; color: #64748b;">GST (18%):</td>
+                        <td align="right" style="padding: 6px 0; font-size: 13px; color: #059669; font-weight: 600;">+ ${formattedGst}</td>
                       </tr>
                       <tr style="border-top: 2px solid #0f172a;">
                         <td align="left" style="padding: 12px 0; font-size: 16px; color: #0f172a; font-weight: 800;">Total Paid:</td>
