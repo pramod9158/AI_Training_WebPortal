@@ -188,7 +188,7 @@ export async function saveBarcodeConfig(_config?: Partial<BarcodePaymentConfig>)
 /* -------------------------------------------------------------
  * 3. PAYMENT MANAGEMENT & VERIFICATION
  * -----------------------------------------------------------*/
-function getLocalPayments(): PaymentRecord[] {
+export function getLocalPayments(): PaymentRecord[] {
   if (typeof window === 'undefined') return SEED_PAYMENTS;
   const saved = localStorage.getItem(LOCAL_PAYMENTS_KEY);
   if (saved) {
@@ -202,7 +202,7 @@ function getLocalPayments(): PaymentRecord[] {
   return SEED_PAYMENTS;
 }
 
-function saveLocalPayments(payments: PaymentRecord[]): void {
+export function saveLocalPayments(payments: PaymentRecord[]): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(LOCAL_PAYMENTS_KEY, JSON.stringify(payments));
   window.dispatchEvent(new Event('waynautic_payments_changed'));

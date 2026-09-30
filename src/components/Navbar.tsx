@@ -23,11 +23,13 @@ import {
   ChevronDown,
   Trophy,
   Sun,
-  Moon
+  Moon,
+  Receipt
 } from 'lucide-react';
 import { useWaynauticStore, setStoredTheme } from '@/lib/store';
 import { getAllTopics, getResumeLearningUrl } from '@/lib/curriculumService';
 import { getAvatarPreset } from '@/data/avatarPresets';
+import { getLocalPayments } from '@/lib/adminService';
 import dynamic from 'next/dynamic';
 import { NotificationDrawer } from './NotificationDrawer';
 import { SearchModal } from './SearchModal';
@@ -50,6 +52,33 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
   const isProUser = profile.plan === 'pro' || profile.plan === 'enterprise';
+  const [hasWebinarPass, setHasWebinarPass] = useState(false);
+
+  useEffect(() => {
+    const checkPasses = () => {
+      try {
+        const cleanEmail = (profile.email || '').trim().toLowerCase();
+        const local = getLocalPayments();
+        const userPayments = local.filter((p: any) => {
+          const pEmail = (p.userEmail || '').trim().toLowerCase();
+          return (cleanEmail && pEmail === cleanEmail) || (profile.userId && p.userId === profile.userId);
+        });
+        const isWebinar = userPayments.some(
+          (p: any) =>
+            p.status === 'verified' &&
+            (Number(p.amount) === 19 ||
+              Number(p.amount) === 5 ||
+              (p.notes || '').toLowerCase().includes('webinar') ||
+              (p.notes || '').toLowerCase().includes('expert'))
+        );
+        setHasWebinarPass(isWebinar);
+      } catch (e) {}
+    };
+    checkPasses();
+    window.addEventListener('waynautic_payments_changed', checkPasses);
+    return () => window.removeEventListener('waynautic_payments_changed', checkPasses);
+  }, [profile.email, profile.userId]);
+
   const resumeUrl = getResumeLearningUrl(profile, progress);
   const allTopics = getAllTopics();
   let resumeTopic = profile.lastAccessedTopicId 
@@ -302,6 +331,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30">
                           PRO
                         </span>
+                      ) : hasWebinarPass ? (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30">
+                          WEBINAR
+                        </span>
                       ) : (
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-500">
                           FREE
@@ -349,6 +382,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     >
                       <User className="w-4 h-4 text-slate-400" />
                       <span>Profile & Settings</span>
+                    </Link>
+
+                    <Link
+                      href="/profile?tab=orders"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      <Receipt className="w-4 h-4 text-emerald-500" />
+                      <span>My Orders & Transactions</span>
                     </Link>
 
                     <Link
@@ -454,6 +496,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                       <span className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                         PRO
                       </span>
+                    ) : hasWebinarPass ? (
+                      <span className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        WEBINAR
+                      </span>
                     ) : (
                       <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                         FREE
@@ -539,6 +585,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     {bookmarks.length}
                   </span>
                 )}
+              </Link>
+            )}
+
+            {isLoggedIn && (
+              <Link
+                href="/profile?tab=orders"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 min-h-[44px] transition-colors"
+              >
+                <Receipt className="w-5 h-5 text-emerald-500 shrink-0" />
+                <span>My Orders & Transactions</span>
               </Link>
             )}
 

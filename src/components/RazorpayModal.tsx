@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import Link from 'next/link';
+import { getLocalPayments, saveLocalPayments } from '@/lib/adminService';
+import { PaymentRecord } from '@/lib/adminTypes';
 
 interface RazorpayModalProps {
   isOpen: boolean;
@@ -243,6 +245,31 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
                 });
               }
 
+              // Also store order locally in waynautic_payments for immediate profile reflection
+              try {
+                const existing = getLocalPayments();
+                const newRecord: PaymentRecord = {
+                  id: `razorpay_${response.razorpay_payment_id}`,
+                  userId: profile.userId,
+                  userEmail: cleanEmail,
+                  userName: cleanName,
+                  amount: priceInRupees,
+                  currency: 'INR',
+                  paymentMethod: 'razorpay',
+                  transactionReference: response.razorpay_payment_id,
+                  barcodeId: `razorpay_${response.razorpay_order_id}`,
+                  status: 'verified',
+                  planGranted: isCohort ? 'pro' : 'free',
+                  notes: `Razorpay Order: ${response.razorpay_order_id} | Plan: ${plan}`,
+                  verifiedAt: new Date().toISOString(),
+                  createdAt: new Date().toISOString(),
+                };
+                saveLocalPayments([newRecord, ...existing.filter((p: any) => p.transactionReference !== newRecord.transactionReference)]);
+                window.dispatchEvent(new Event('waynautic_payments_changed'));
+              } catch (saveErr) {
+                console.warn('Could not save local payment backup:', saveErr);
+              }
+
               // Clean up ?enroll=... and other checkout params from URL
               if (typeof window !== 'undefined') {
                 window.history.replaceState(null, '', window.location.pathname);
@@ -389,7 +416,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
                   </button>
                 )}
                 <a
-                  href={`/api/payment/preview-invoice?name=${encodeURIComponent(fullName || profile.displayName || 'Student')}&email=${encodeURIComponent(email || profile.email || '')}&amount=${priceInRupees}`}
+                  href={`/api/payment/preview-invoice?name=${encodeURIComponent(fullName || profile.displayName || 'Student')}&email=${encodeURIComponent(email || profile.email || '')}&amount=${priceInRupees}&plan=${encodeURIComponent(planTitle)}&paymentId=${encodeURIComponent(verifiedPaymentId)}&orderId=${encodeURIComponent(verifiedPaymentId)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-xs sm:text-sm transition-colors text-center flex items-center justify-center gap-1.5"

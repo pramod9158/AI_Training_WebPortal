@@ -53,7 +53,7 @@ export interface PaymentRecord {
   userName?: string;
   amount: number;
   currency: string;
-  paymentMethod: 'barcode_qr' | 'upi' | 'cash' | 'card' | 'bank_transfer';
+  paymentMethod: 'barcode_qr' | 'upi' | 'cash' | 'card' | 'bank_transfer' | 'razorpay';
   transactionReference: string;
   barcodeId: string;
   status: 'pending' | 'verified' | 'rejected';

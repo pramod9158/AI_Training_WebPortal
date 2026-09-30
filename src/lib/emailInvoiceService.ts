@@ -14,6 +14,24 @@ export interface InvoiceDetails {
 }
 
 /**
+ * Determines appropriate email subject based on enrolled program
+ */
+export function getEmailSubject(details: InvoiceDetails): string {
+  const { amount, planName = '', orderId } = details;
+  const isCohortPlan = amount >= 9000 || planName.toLowerCase().includes('cohort');
+  const isExpertPlan = amount === 19 || amount === 5 || planName.toLowerCase().includes('expert') || planName.toLowerCase().includes('webinar');
+
+  const displayPlan = isCohortPlan
+    ? '4-Week AI Intensive Cohort'
+    : isExpertPlan
+    ? 'Live AI Webinar Session'
+    : (planName && planName !== '4-Week AI Intensive Cohort' ? planName : '1-on-1 AI Consultation & Roadmap');
+
+  const orderSuffix = orderId ? ` (Order #${orderId.slice(-6).toUpperCase()})` : '';
+  return `Enrollment Confirmed & Invoice: ${displayPlan}${orderSuffix}`;
+}
+
+/**
  * Builds an ultra-professional, responsive HTML email invoice
  */
 export function buildInvoiceHtml(details: InvoiceDetails): string {
@@ -44,7 +62,13 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
   const portalUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://academy.waynautic.com';
 
   const isCohortPlan = amount >= 9000 || planName.toLowerCase().includes('cohort');
-  const isExpertPlan = amount === 5 || planName.toLowerCase().includes('expert');
+  const isExpertPlan = amount === 19 || amount === 5 || planName.toLowerCase().includes('expert') || planName.toLowerCase().includes('webinar');
+
+  const effectivePlanName = isCohortPlan
+    ? (planName && !planName.toLowerCase().includes('expert') && !planName.toLowerCase().includes('webinar') ? planName : '4-Week AI Intensive Cohort')
+    : isExpertPlan
+    ? 'Live AI Webinar Session'
+    : (planName && planName !== '4-Week AI Intensive Cohort' ? planName : '1-on-1 AI Consultation & Roadmap');
 
   const planDuration = isCohortPlan ? '1 Full Year + 3-Month Internship' : isExpertPlan ? 'Live Webinar Pass' : '1 Session';
 
@@ -179,7 +203,7 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
                 <tbody>
                   <tr style="border-bottom: 1px solid #f1f5f9;">
                     <td style="padding: 16px 0; vertical-align: top;">
-                      <strong style="font-size: 14px; color: #0f172a; display: block;">${planName}</strong>
+                      <strong style="font-size: 14px; color: #0f172a; display: block;">${effectivePlanName}</strong>
                       <span style="font-size: 12px; color: #64748b; display: block; margin-top: 4px; line-height: 1.5;">
                         ${planInclusions}
                       </span>
@@ -308,7 +332,7 @@ async function sendInvoiceViaMicrosoftGraph(details: InvoiceDetails): Promise<{
 
   // 2. Build invoice HTML and subject
   const htmlContent = buildInvoiceHtml(details);
-  const subject = `Enrollment Confirmed & Invoice: 4-Week AI Intensive Cohort (Order #${details.orderId.slice(-6).toUpperCase()})`;
+  const subject = getEmailSubject(details);
 
   // 3. Dispatch email via Microsoft Graph /users/{email}/sendMail
   const sendMailUrl = `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(senderEmail)}/sendMail`;
@@ -429,7 +453,7 @@ export async function sendInvoiceEmail(details: InvoiceDetails): Promise<{
         address: senderEmail,
       },
       to: details.studentEmail,
-      subject: `Enrollment Confirmed & Invoice: 4-Week AI Intensive Cohort (Order #${details.orderId.slice(-6).toUpperCase()})`,
+      subject: getEmailSubject(details),
       html: htmlContent,
     });
 

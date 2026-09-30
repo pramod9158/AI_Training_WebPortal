@@ -24,6 +24,13 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'Waynautic Academy | AI & Software Engineering Mastery',
   description: 'Production-ready AI & dev skills platform teaching LLMs, Prompt Engineering, Model APIs, AI IDEs, Local AI, Vector DBs, and RAG systems.',
+  icons: {
+    icon: [
+      { url: '/Waynautic%20Logo%20Icon%20Only.png', type: 'image/png' },
+    ],
+    shortcut: '/Waynautic%20Logo%20Icon%20Only.png',
+    apple: '/Waynautic%20Logo%20Icon%20Only.png',
+  },
   openGraph: {
     title: 'Waynautic Academy - AI & Dev Skills',
     description: 'Learn AI engineering, Python, Git, Vector Databases, and RAG pipelines.',
@@ -41,6 +48,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
+        <link rel="icon" type="image/png" href="/Waynautic%20Logo%20Icon%20Only.png" />
+        <link rel="shortcut icon" type="image/png" href="/Waynautic%20Logo%20Icon%20Only.png" />
+        <link rel="apple-touch-icon" href="/Waynautic%20Logo%20Icon%20Only.png" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
