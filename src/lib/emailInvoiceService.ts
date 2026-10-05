@@ -315,7 +315,7 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
               <p style="margin: 0; font-size: 12px; color: #94a3b8;">
                 Have questions or need assistance? Reach out to us on WhatsApp: 
                 <a href="https://wa.me/919158998226" style="color: #38bdf8; text-decoration: none; font-weight: 700;">+91 9158998226</a>
-                or email <a href="mailto:info@waynautic.com" style="color: #38bdf8; text-decoration: none; font-weight: 700;">info@waynautic.com</a>.
+                or email <a href="mailto:academy@waynautic.com" style="color: #38bdf8; text-decoration: none; font-weight: 700;">academy@waynautic.com</a>.
               </p>
               <p style="margin: 12px 0 0; font-size: 11px; color: #64748b;">
                 © ${new Date().getFullYear()} Waynautic Academy. All rights reserved.<br>

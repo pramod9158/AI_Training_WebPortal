@@ -191,7 +191,7 @@ export default function TermsPage() {
               </p>
             </div>
             <p className="text-slate-600 dark:text-slate-300">
-              <strong>Mandatory Dispute Resolution:</strong> Prior to filing any formal legal action or consumer dispute, the student must notify Waynautic Academy in writing at <a href="mailto:info@waynautic.com" className="text-cyan-600 dark:text-cyan-400 underline font-semibold">info@waynautic.com</a> stating the exact nature of the grievance. Both parties agree to attempt amicable resolution in good faith for a minimum period of thirty (30) calendar days. If unresolved, the matter shall be referred to sole arbitration in Pune, conducted in English in accordance with the Indian Arbitration and Conciliation Act, 1996.
+              <strong>Mandatory Dispute Resolution:</strong> Prior to filing any formal legal action or consumer dispute, the student must notify Waynautic Academy in writing at <a href="mailto:academy@waynautic.com" className="text-cyan-600 dark:text-cyan-400 underline font-semibold">academy@waynautic.com</a> stating the exact nature of the grievance. Both parties agree to attempt amicable resolution in good faith for a minimum period of thirty (30) calendar days. If unresolved, the matter shall be referred to sole arbitration in Pune, conducted in English in accordance with the Indian Arbitration and Conciliation Act, 1996.
             </p>
           </section>
 
@@ -374,7 +374,7 @@ export default function TermsPage() {
             </p>
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1.5 text-xs sm:text-sm">
               <p><strong>Institution:</strong> Waynautic Academy (Waynautic Technologies)</p>
-              <p><strong>Official Email:</strong> <a href="mailto:info@waynautic.com" className="text-cyan-600 dark:text-cyan-400 font-semibold underline">info@waynautic.com</a> / <a href="mailto:academy@waynautic.com" className="text-cyan-600 dark:text-cyan-400 font-semibold underline">academy@waynautic.com</a></p>
+              <p><strong>Official Email:</strong> <a href="mailto:academy@waynautic.com" className="text-cyan-600 dark:text-cyan-400 font-semibold underline">academy@waynautic.com</a></p>
               <p><strong>Helpline & WhatsApp:</strong> <a href="https://wa.me/919158998226" className="text-cyan-600 dark:text-cyan-400 font-semibold underline">+91 9158998226</a></p>
               <p><strong>Jurisdiction & Operations:</strong> Pune, Maharashtra, 411041, India</p>
             </div>
