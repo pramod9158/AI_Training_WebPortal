@@ -16,6 +16,8 @@ import {
   AlertCircle,
   Loader2,
   Download,
+  ExternalLink,
+  Scale,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import Link from 'next/link';
@@ -53,6 +55,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -117,6 +120,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
         setEmail(profile.email);
       }
       setErrorMessage('');
+      setAgreedToTerms(false);
       setPaymentSuccess(false);
       setVerifiedPaymentId('');
       setLoading(false);
@@ -154,6 +158,11 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
 
     if (!cleanName) {
       setErrorMessage('Please enter your full name for your certificate credentials.');
+      return;
+    }
+
+    if (!agreedToTerms) {
+      setErrorMessage('Please review and check the agreement box for the Terms & Conditions (including the No-Refund Policy and Pune jurisdiction) to proceed.');
       return;
     }
 
@@ -535,12 +544,43 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
                 </div>
               </div>
 
+              {/* Terms and Conditions Affirmative Checkbox */}
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
+                <label className="flex items-start gap-2.5 cursor-pointer text-xs select-none">
+                  <input
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => {
+                      setAgreedToTerms(e.target.checked);
+                      if (errorMessage && e.target.checked) setErrorMessage('');
+                    }}
+                    className="mt-0.5 w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-cyan-600 focus:ring-cyan-500 accent-cyan-600 shrink-0 cursor-pointer"
+                  />
+                  <span className="text-slate-600 dark:text-slate-300 leading-snug">
+                    I have read and explicitly agree to the{' '}
+                    <Link
+                      href="/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-cyan-600 dark:text-cyan-400 font-bold underline hover:text-cyan-500 inline-flex items-center gap-0.5"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Terms & Conditions
+                      <ExternalLink className="w-3 h-3 inline ml-0.5" />
+                    </Link>
+                    , including the <strong className="text-rose-600 dark:text-rose-400 font-bold">100% No-Refund Policy</strong>, exclusive <strong className="text-slate-900 dark:text-white font-bold">Pune Jurisdiction</strong>, and <strong className="text-amber-600 dark:text-amber-400 font-bold">Placement Assistance Disclaimer (No Job Guarantee)</strong>.
+                  </span>
+                </label>
+              </div>
+
               {/* Pay Button */}
-              <div className="pt-2">
+              <div className="pt-1">
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 hover:brightness-110 text-white font-extrabold text-sm sm:text-base text-center transition-all shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
+                  disabled={loading || !agreedToTerms}
+                  className={`w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 hover:brightness-110 text-white font-extrabold text-sm sm:text-base text-center transition-all shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5 ${
+                    !agreedToTerms ? 'opacity-50 cursor-not-allowed hover:brightness-100 hover:translate-y-0 shadow-none' : ''
+                  }`}
                 >
                   {loading ? (
                     <>

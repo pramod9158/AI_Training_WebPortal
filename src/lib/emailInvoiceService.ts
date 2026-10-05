@@ -269,6 +269,46 @@ export function buildInvoiceHtml(details: InvoiceDetails): string {
           </tr>
 
 
+          <!-- Terms & Conditions / Legal Notice Box -->
+          <tr>
+            <td style="padding: 0 36px 28px;">
+              <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; font-size: 11px; color: #475569; line-height: 1.6;">
+                <div style="margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
+                  <strong style="color: #0f172a; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
+                    ⚖️ Official Enrollment Terms & Conditions Summary
+                  </strong>
+                  <span style="display: block; font-size: 10px; color: #64748b; margin-top: 2px;">
+                    Applicable to all paid training cohorts, webinars, and masterclasses
+                  </span>
+                </div>
+
+                <ul style="margin: 0; padding-left: 18px; space-y: 6px;">
+                  <li style="margin-bottom: 6px;">
+                    <strong style="color: #b91c1c;">100% Strict No-Refund Policy:</strong> All fees paid to Waynautic Academy are strictly non-refundable and non-transferable under any circumstances, including personal schedule conflicts, change of mind, or inability to attend sessions.
+                  </li>
+                  <li style="margin-bottom: 6px;">
+                    <strong style="color: #0369a1;">Exclusive Pune Jurisdiction:</strong> Any dispute, controversy, or claim arising out of your enrollment or training shall be governed exclusively by the laws of India and subject to the exclusive jurisdiction of the competent courts in <strong>Pune, Maharashtra, India</strong>.
+                  </li>
+                  <li style="margin-bottom: 6px;">
+                    <strong style="color: #d97706;">Placement Assistance (No Job Guarantee):</strong> Waynautic Academy provides placement assistance, resume reviews, and mock interviews. We <strong>do not guarantee, warrant, or promise</strong> employment, job placement, minimum CTC, or third-party interview calls. Hiring decisions remain the sole discretion of prospective employers.
+                  </li>
+                  <li style="margin-bottom: 6px;">
+                    <strong style="color: #475569;">Proprietary IP & Anti-Piracy:</strong> All video lectures, code repositories, mind maps, notes, and quiz materials are proprietary intellectual property. Screen recording, downloading, credential sharing, or redistribution is strictly prohibited and subject to legal prosecution under the Indian Copyright Act, 1957.
+                  </li>
+                  <li>
+                    <strong style="color: #047857;">Internship & Dual Certification:</strong> The 3-Month Industry Internship and dual credentials are awarded upon satisfactory completion of curriculum modules, quizzes, and assigned capstone projects.
+                  </li>
+                </ul>
+
+                <div style="margin-top: 12px; padding-top: 8px; border-top: 1px dashed #cbd5e1; text-align: center;">
+                  <a href="${portalUrl}/terms" style="color: #0284c7; font-weight: 700; text-decoration: underline; font-size: 11px;">
+                    Read the Complete Terms & Conditions and Policies Online &rarr;
+                  </a>
+                </div>
+              </div>
+            </td>
+          </tr>
+
           <!-- Footer Information -->
           <tr>
             <td style="background-color: #090D16; padding: 24px 36px; text-align: center; border-top: 1px solid #1e293b;">
