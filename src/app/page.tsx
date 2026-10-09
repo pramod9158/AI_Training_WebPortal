@@ -190,7 +190,7 @@ function HomePageContent() {
   useEffect(() => {
     if (enrollParam === 'cohort' || enrollParam === 'expert_session' || enrollParam === 'consultation') {
       if (enrollParam === 'consultation') {
-        window.open('https://wa.me/919158998226?text=' + encodeURIComponent('Hi Waynautic Academy, I want to book a Free 1-on-1 AI Consultation & Roadmap Session'), '_blank');
+        window.open('https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform', '_blank');
         router.replace('/');
         return;
       } else if (enrollParam === 'expert_session') {
@@ -567,7 +567,7 @@ function HomePageContent() {
             </div>
 
             <a
-              href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20book%20a%20Free%201-on-1%20AI%20Consultation%20%26%20Roadmap%20Session"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full py-3.5 px-6 rounded-2xl border-2 border-slate-300 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-500 text-slate-800 dark:text-white font-bold text-sm text-center transition-all flex items-center justify-center gap-2 group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
