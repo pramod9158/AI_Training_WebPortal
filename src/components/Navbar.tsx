@@ -181,47 +181,31 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             />
           </Link>
 
-          {/* Desktop Navigation Links: 1. Training Programs, 2. About, 3. Curriculum */}
-          <nav className="hidden md:flex items-center space-x-1">
+          {/* Desktop Navigation Links: 1. Training Programs, 2. Curriculum, 3. About Us */}
+          <nav className="hidden md:flex items-center space-x-7 lg:space-x-9 ml-4 lg:ml-6">
             {/* 1. Training Programs */}
             <Link
               href="/#pricing"
-              className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                false
-                  ? 'font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
-                  : 'font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
-              }`}
+              className="text-slate-800 dark:text-slate-200 hover:text-[#4338CA] dark:hover:text-cyan-400 font-medium text-[15px] transition-colors"
             >
               Training Programs
             </Link>
 
-            {/* 2. About */}
-            <Link
-              href="/about"
-              className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                pathname === '/about'
-                  ? 'font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
-                  : 'font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
-              }`}
-            >
-              About
-            </Link>
-
-            {/* 3. Curriculum Dropdown */}
+            {/* 2. Curriculum Dropdown */}
             <div className="relative" ref={curriculumRef}>
               <button
                 type="button"
                 onClick={() => setCurriculumDropdownOpen((v) => !v)}
-                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                className={`flex items-center gap-1.5 text-[15px] font-medium transition-colors cursor-pointer ${
                   pathname?.startsWith('/curriculum')
-                    ? 'font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
-                    : 'font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                    ? 'text-[#4338CA] dark:text-cyan-400 font-semibold'
+                    : 'text-slate-800 dark:text-slate-200 hover:text-[#4338CA] dark:hover:text-cyan-400'
                 }`}
                 aria-expanded={curriculumDropdownOpen}
                 aria-label="Curriculum programs"
               >
-                Curriculum
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${curriculumDropdownOpen ? 'rotate-180' : ''}`} />
+                <span>Curriculum</span>
+                <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${curriculumDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Curriculum Dropdown Panel */}
@@ -243,7 +227,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                           <Icon className="w-4 h-4" />
                         </div>
                         <div>
-                          <div className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-cyan-700 dark:group-hover:text-cyan-300 transition-colors leading-tight">{prog.label}</div>
+                          <div className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-[#4338CA] dark:group-hover:text-cyan-300 transition-colors leading-tight">{prog.label}</div>
                           <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{prog.desc}</div>
                         </div>
                       </Link>
@@ -253,6 +237,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               )}
             </div>
 
+            {/* 3. About Us */}
+            <Link
+              href="/about"
+              className={`text-[15px] font-medium transition-colors ${
+                pathname === '/about'
+                  ? 'text-[#4338CA] dark:text-cyan-400 font-semibold'
+                  : 'text-slate-800 dark:text-slate-200 hover:text-[#4338CA] dark:hover:text-cyan-400'
+              }`}
+            >
+              About Us
+            </Link>
+
             {/* Dashboard (logged in only) */}
             {dashboardLink.map((link) => {
               const isActive = pathname === link.href;
@@ -260,10 +256,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  className={`text-[15px] font-medium transition-colors ${
                     isActive
-                      ? 'font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
-                      : 'font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                      ? 'text-[#4338CA] dark:text-cyan-400 font-semibold'
+                      : 'text-slate-800 dark:text-slate-200 hover:text-[#4338CA] dark:hover:text-cyan-400'
                   }`}
                 >
                   {link.label}
@@ -274,62 +270,52 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
         </div>
 
-        {/* Center / Middle Section: Extended Search Bar — stretches across available center space */}
-        <div className="relative flex-1 min-w-0 max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-2 sm:mx-4">
-          <button
-            ref={searchBtnRef}
-            type="button"
-            onClick={() => {
-              setSearchOpen((prev) => !prev);
-              if (onOpenSearch && !searchOpen) onOpenSearch();
-            }}
-            className={`group flex items-center justify-between h-9 sm:h-10 px-3 sm:px-3.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border rounded-lg transition-colors text-left w-full cursor-pointer ${
-              searchOpen
-                ? 'border-blue-400 dark:border-cyan-500 ring-2 ring-blue-100 dark:ring-cyan-900/40'
-                : 'border-slate-700/80 dark:border-slate-300/80 hover:border-slate-900 dark:hover:border-white'
-            }`}
-            title="Search topics (Cmd+K)"
-            aria-label="What do you want to learn?"
-            aria-expanded={searchOpen}
-          >
-            <div className="flex items-center space-x-2 truncate">
-              <Search className={`w-4 h-4 transition-colors shrink-0 ${
+        {/* Center / Middle Section: Extended Search Bar — Shown ONLY when user is logged in */}
+        {isLoggedIn && (
+          <div className="relative flex-1 min-w-0 max-w-md lg:max-w-xl mx-2 sm:mx-6">
+            <button
+              ref={searchBtnRef}
+              type="button"
+              onClick={() => {
+                setSearchOpen((prev) => !prev);
+                if (onOpenSearch && !searchOpen) onOpenSearch();
+              }}
+              className={`group flex items-center justify-between h-9 sm:h-10 px-3 sm:px-3.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border rounded-lg transition-colors text-left w-full cursor-pointer ${
                 searchOpen
-                  ? 'text-[#0056D2] dark:text-cyan-400'
-                  : 'text-slate-500 dark:text-slate-400 group-hover:text-[#0056D2] dark:group-hover:text-cyan-400'
-              }`} />
-              <span className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium truncate">
-                <span className="hidden sm:inline">What do you want to learn?</span>
-                <span className="sm:hidden">Search...</span>
-              </span>
-            </div>
-            <kbd className="hidden md:inline px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-mono border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 ml-2 shrink-0">
-              ⌘K
-            </kbd>
-          </button>
+                  ? 'border-blue-400 dark:border-cyan-500 ring-2 ring-blue-100 dark:ring-cyan-900/40'
+                  : 'border-slate-700/80 dark:border-slate-300/80 hover:border-slate-900 dark:hover:border-white'
+              }`}
+              title="Search topics (Cmd+K)"
+              aria-label="What do you want to learn?"
+              aria-expanded={searchOpen}
+            >
+              <div className="flex items-center space-x-2 truncate">
+                <Search className={`w-4 h-4 transition-colors shrink-0 ${
+                  searchOpen
+                    ? 'text-[#0056D2] dark:text-cyan-400'
+                    : 'text-slate-500 dark:text-slate-400 group-hover:text-[#0056D2] dark:group-hover:text-cyan-400'
+                }`} />
+                <span className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium truncate">
+                  <span className="hidden sm:inline">What do you want to learn?</span>
+                  <span className="sm:hidden">Search...</span>
+                </span>
+              </div>
+              <kbd className="hidden md:inline px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-mono border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 ml-2 shrink-0">
+                ⌘K
+              </kbd>
+            </button>
 
-          {/* Inline anchored dropdown — Coursera style */}
-          <SearchModal
-            isOpen={searchOpen}
-            onClose={() => setSearchOpen(false)}
-            anchorRef={searchBtnRef}
-          />
-        </div>
+            {/* Inline anchored dropdown */}
+            <SearchModal
+              isOpen={searchOpen}
+              onClose={() => setSearchOpen(false)}
+              anchorRef={searchBtnRef}
+            />
+          </div>
+        )}
 
         {/* Right Section: Focused & Consolidated Utilities */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-
-          {/* About Link - Shifted to Right Section (as shown in layout) */}
-          <Link
-            href="/about"
-            className={`hidden md:flex items-center px-3 py-1.5 rounded-lg text-sm transition-colors ${
-              pathname === '/about'
-                ? 'font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
-                : 'font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
-            }`}
-          >
-            About
-          </Link>
+        <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
 
           {/* Laptop / Desktop Theme Toggle Button */}
           <button
@@ -350,6 +336,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
           {/* Notification Bell (Logged-in only) */}
           {isLoggedIn && <NotificationDrawer />}
+
+          {/* Contact Us Button (Logged in desktop view) */}
+          {isLoggedIn && (
+            <Link
+              href="/#contact"
+              className="hidden lg:inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#4338CA] hover:bg-[#3730A3] text-white font-semibold text-xs sm:text-sm transition-all shadow-sm hover:shadow-md shrink-0"
+            >
+              Contact Us
+            </Link>
+          )}
 
           {/* Consolidated User Profile Menu (Desktop; on mobile user accesses profile in drawer) */}
           {isLoggedIn ? (
@@ -504,12 +500,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               )}
             </div>
           ) : (
-            <Link
-              href="/login"
-              className="hidden sm:flex items-center justify-center h-9 sm:h-10 px-4 rounded-lg border border-slate-700 dark:border-slate-300 bg-white dark:bg-slate-900 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-xs sm:text-sm transition-colors shrink-0"
-            >
-              Log in
-            </Link>
+            <div className="hidden sm:flex items-center gap-2 sm:gap-3">
+              <Link
+                href="/login"
+                className="text-slate-800 dark:text-slate-200 hover:text-[#4338CA] dark:hover:text-white font-medium text-sm sm:text-[15px] px-3.5 py-2 rounded-lg transition-colors shrink-0"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/#contact"
+                className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#4338CA] hover:bg-[#3730A3] text-white font-semibold text-sm transition-all shadow-sm hover:shadow-md hover:scale-[1.02] shrink-0"
+              >
+                Contact Us
+              </Link>
+            </div>
           )}
 
           {/* Mobile Drawer Hamburger Button */}
@@ -597,19 +601,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               </button>
             </div>
           ) : (
-            <Link
-              href="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center space-x-2 py-3 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 font-bold text-sm rounded-xl shadow-sm min-h-[44px] transition-colors"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>Log In to Account</span>
-            </Link>
+            <div className="flex flex-col gap-2 mb-3">
+              <Link
+                href="/#contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full flex items-center justify-center py-3 bg-[#4338CA] hover:bg-[#3730A3] text-white font-bold text-sm rounded-xl shadow-sm min-h-[44px] transition-colors"
+              >
+                Contact Us
+              </Link>
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full flex items-center justify-center space-x-2 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-bold text-sm rounded-xl shadow-sm min-h-[44px] transition-colors"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Log In to Account</span>
+              </Link>
+            </div>
           )}
 
-          {/* Navigation Links */}
+          {/* Navigation Links: 1. Training Programs, 2. Curriculum, 3. About Us */}
           <div className="space-y-1">
-            {/* Training Programs */}
+            {/* 1. Training Programs */}
             <Link
               href="/#pricing"
               onClick={() => setMobileMenuOpen(false)}
@@ -619,21 +632,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <span>Training Programs</span>
             </Link>
 
-            {/* About */}
-            <Link
-              href="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold transition-colors min-h-[44px] ${
-                pathname === '/about'
-                  ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
-                  : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
-              }`}
-            >
-              <Sparkles className={`w-5 h-5 ${pathname === '/about' ? 'text-sky-600 dark:text-cyan-400' : 'text-slate-500 dark:text-slate-400'}`} />
-              <span>About</span>
-            </Link>
-
-            {/* Curriculum Expandable */}
+            {/* 2. Curriculum Expandable */}
             <div>
               <button
                 type="button"
@@ -665,6 +664,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 </div>
               )}
             </div>
+
+            {/* 3. About Us */}
+            <Link
+              href="/about"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold transition-colors min-h-[44px] ${
+                pathname === '/about'
+                  ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
+                  : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+              }`}
+            >
+              <Sparkles className={`w-5 h-5 ${pathname === '/about' ? 'text-sky-600 dark:text-cyan-400' : 'text-slate-500 dark:text-slate-400'}`} />
+              <span>About Us</span>
+            </Link>
 
             {/* Other nav links */}
             {mobileNavLinks.map((link) => {
