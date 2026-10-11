@@ -172,9 +172,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <Image
               src="/Waynautic%20Logo%20New.png"
               alt="Waynautic Technologies"
-              width={310}
-              height={63}
-              className="h-10 sm:h-11 lg:h-14 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+              width={225}
+              height={46}
+              className="h-[42px] sm:h-[46px] w-auto object-contain transition-transform group-hover:scale-[1.02]"
               priority
             />
           </Link>
@@ -340,7 +340,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           {isLoggedIn && (
             <Link
               href="/#contact"
-              className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 lg:px-6 lg:py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[17px] lg:text-[18px] font-medium rounded-md transition shadow-sm shrink-0 whitespace-nowrap"
+              className="hidden lg:inline-flex items-center justify-center h-[42px] sm:h-[46px] px-5 lg:px-6 bg-indigo-600 hover:bg-indigo-500 text-white text-[17px] lg:text-[18px] font-medium rounded-md transition shadow-sm shrink-0 whitespace-nowrap"
             >
               Contact Us
             </Link>
@@ -508,7 +508,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               </Link>
               <Link
                 href="/#contact"
-                className="inline-flex items-center justify-center px-5 py-2.5 lg:px-6 lg:py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[17px] lg:text-[18px] font-medium rounded-md transition shadow-sm shrink-0 whitespace-nowrap"
+                className="inline-flex items-center justify-center h-[42px] sm:h-[46px] px-5 lg:px-6 bg-indigo-600 hover:bg-indigo-500 text-white text-[17px] lg:text-[18px] font-medium rounded-md transition shadow-sm shrink-0 whitespace-nowrap"
               >
                 Contact Us
               </Link>

@@ -253,9 +253,9 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
               <Image
                 src="/Waynautic%20Logo%20New.png"
                 alt="Waynautic Academy"
-                width={310}
-                height={63}
-                className="h-10 sm:h-11 lg:h-14 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+                width={225}
+                height={46}
+                className="h-[42px] sm:h-[46px] w-auto object-contain transition-transform group-hover:scale-[1.02]"
                 priority
               />
             </Link>
