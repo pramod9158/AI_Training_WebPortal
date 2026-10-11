@@ -163,30 +163,30 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     : [];
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/95 dark:bg-[#0B0F19]/90 border-b border-slate-200 dark:border-slate-800/80 transition-colors">
-      <div className="w-full px-2.5 xs:px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full bg-white dark:bg-[#0B0F19] transition-colors">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 h-20 sm:h-[84px] flex items-center justify-between">
         
-        {/* Left Section: Extreme Left Logo + Clean Nav Links */}
-        <div className="flex items-center space-x-3 sm:space-x-6 lg:space-x-8 shrink-0">
-          
-          {/* Brand Logo - Extreme Left & Prominent (Double Size) */}
+        {/* Left Section: Waynautic Logo */}
+        <div className="flex items-center shrink-0">
           <Link href="/" className="flex items-center group py-1 shrink-0" aria-label="Waynautic Academy Home">
             <Image
               src="/Waynautic%20Logo%20New.png"
-              alt="Waynautic Academy"
-              width={360}
-              height={88}
-              className="h-11 xs:h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+              alt="Waynautic Technologies"
+              width={260}
+              height={64}
+              className="h-10 sm:h-11 md:h-12 w-auto object-contain transition-transform group-hover:scale-[1.02]"
               priority
             />
           </Link>
+        </div>
 
-          {/* Desktop Navigation Links: 1. Training Programs, 2. Curriculum, 3. About Us */}
-          <nav className="hidden md:flex items-center space-x-7 lg:space-x-9 ml-4 lg:ml-6">
+        {/* Center Section: Navigation Links (Training Programs, Curriculum, About Us) */}
+        <div className="hidden md:flex flex-1 justify-center px-4">
+          <nav className="flex items-center space-x-8 lg:space-x-12">
             {/* 1. Training Programs */}
             <Link
               href="/#pricing"
-              className="text-slate-800 dark:text-slate-200 hover:text-[#4338CA] dark:hover:text-cyan-400 font-medium text-[15px] transition-colors"
+              className="text-slate-800 dark:text-slate-200 hover:text-[#5f57e8] dark:hover:text-[#817bfa] font-medium text-base transition-colors"
             >
               Training Programs
             </Link>
@@ -196,10 +196,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <button
                 type="button"
                 onClick={() => setCurriculumDropdownOpen((v) => !v)}
-                className={`flex items-center gap-1.5 text-[15px] font-medium transition-colors cursor-pointer ${
+                className={`flex items-center gap-1.5 text-base font-medium transition-colors cursor-pointer ${
                   pathname?.startsWith('/curriculum')
-                    ? 'text-[#4338CA] dark:text-cyan-400 font-semibold'
-                    : 'text-slate-800 dark:text-slate-200 hover:text-[#4338CA] dark:hover:text-cyan-400'
+                    ? 'text-[#5f57e8] dark:text-[#817bfa] font-semibold'
+                    : 'text-slate-800 dark:text-slate-200 hover:text-[#5f57e8] dark:hover:text-[#817bfa]'
                 }`}
                 aria-expanded={curriculumDropdownOpen}
                 aria-label="Curriculum programs"
@@ -210,9 +210,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
               {/* Curriculum Dropdown Panel */}
               {curriculumDropdownOpen && (
-                <div className="absolute left-0 top-full mt-2 w-72 rounded-2xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                  <div className="px-3 py-1.5 mb-1">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Our Programs</span>
+                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-3 w-80 rounded-2xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="px-4 py-2 mb-1 border-b border-slate-100 dark:border-slate-800">
+                    <span className="text-xs font-mono uppercase tracking-widest text-slate-400">Our Programs</span>
                   </div>
                   {curriculumPrograms.map((prog) => {
                     const Icon = prog.icon;
@@ -221,14 +221,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                         key={prog.href}
                         href={prog.href}
                         onClick={() => setCurriculumDropdownOpen(false)}
-                        className="flex items-start gap-3 px-3 py-2.5 mx-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group"
+                        className="flex items-start gap-3.5 px-4 py-3 mx-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group"
                       >
-                        <div className={`w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 ${prog.color}`}>
+                        <div className={`w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 ${prog.color}`}>
                           <Icon className="w-4 h-4" />
                         </div>
                         <div>
-                          <div className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-[#4338CA] dark:group-hover:text-cyan-300 transition-colors leading-tight">{prog.label}</div>
-                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{prog.desc}</div>
+                          <div className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-[#5f57e8] dark:group-hover:text-cyan-300 transition-colors leading-tight">{prog.label}</div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{prog.desc}</div>
                         </div>
                       </Link>
                     );
@@ -240,10 +240,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             {/* 3. About Us */}
             <Link
               href="/about"
-              className={`text-[15px] font-medium transition-colors ${
+              className={`text-base font-medium transition-colors ${
                 pathname === '/about'
-                  ? 'text-[#4338CA] dark:text-cyan-400 font-semibold'
-                  : 'text-slate-800 dark:text-slate-200 hover:text-[#4338CA] dark:hover:text-cyan-400'
+                  ? 'text-[#5f57e8] dark:text-[#817bfa] font-semibold'
+                  : 'text-slate-800 dark:text-slate-200 hover:text-[#5f57e8] dark:hover:text-[#817bfa]'
               }`}
             >
               About Us
@@ -256,10 +256,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-[15px] font-medium transition-colors ${
+                  className={`text-base font-medium transition-colors ${
                     isActive
-                      ? 'text-[#4338CA] dark:text-cyan-400 font-semibold'
-                      : 'text-slate-800 dark:text-slate-200 hover:text-[#4338CA] dark:hover:text-cyan-400'
+                      ? 'text-[#5f57e8] dark:text-[#817bfa] font-semibold'
+                      : 'text-slate-800 dark:text-slate-200 hover:text-[#5f57e8] dark:hover:text-[#817bfa]'
                   }`}
                 >
                   {link.label}
@@ -267,7 +267,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               );
             })}
           </nav>
-
         </div>
 
         {/* Center / Middle Section: Extended Search Bar — Shown ONLY when user is logged in */}
@@ -341,7 +340,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           {isLoggedIn && (
             <Link
               href="/#contact"
-              className="hidden lg:inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#4338CA] hover:bg-[#3730A3] text-white font-semibold text-xs sm:text-sm transition-all shadow-sm hover:shadow-md shrink-0"
+              className="hidden lg:inline-flex items-center justify-center px-6 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-[#5f57e8] hover:bg-[#4e45e4] text-white font-medium text-base transition-all shadow-sm shrink-0"
             >
               Contact Us
             </Link>
@@ -500,16 +499,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               )}
             </div>
           ) : (
-            <div className="hidden sm:flex items-center gap-2 sm:gap-3">
+            <div className="hidden sm:flex items-center gap-4 sm:gap-6">
               <Link
                 href="/login"
-                className="text-slate-800 dark:text-slate-200 hover:text-[#4338CA] dark:hover:text-white font-medium text-sm sm:text-[15px] px-3.5 py-2 rounded-lg transition-colors shrink-0"
+                className="text-slate-800 dark:text-slate-200 hover:text-[#5f57e8] dark:hover:text-white font-medium text-base transition-colors shrink-0"
               >
                 Log in
               </Link>
               <Link
                 href="/#contact"
-                className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#4338CA] hover:bg-[#3730A3] text-white font-semibold text-sm transition-all shadow-sm hover:shadow-md hover:scale-[1.02] shrink-0"
+                className="inline-flex items-center justify-center px-6 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-[#5f57e8] hover:bg-[#4e45e4] text-white font-medium text-base transition-all shadow-sm shrink-0"
               >
                 Contact Us
               </Link>
@@ -605,7 +604,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <Link
                 href="/#contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center py-3 bg-[#4338CA] hover:bg-[#3730A3] text-white font-bold text-sm rounded-xl shadow-sm min-h-[44px] transition-colors"
+                className="w-full flex items-center justify-center py-3 bg-[#5f57e8] hover:bg-[#4e45e4] text-white font-semibold text-base rounded-xl shadow-sm min-h-[44px] transition-colors"
               >
                 Contact Us
               </Link>

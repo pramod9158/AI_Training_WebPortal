@@ -265,7 +265,7 @@ function HomePageContent() {
         <OnboardingTour isOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
 
         {/* Hero Section */}
-        <section className="relative pt-8 pb-16 sm:pt-20 sm:pb-28 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <section className="relative pt-8 pb-16 sm:pt-20 sm:pb-28 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           {/* Top Announcement Badge */}
           <div className="flex justify-center mb-5 sm:mb-6">
             <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 text-[11px] sm:text-xs font-mono tracking-wide shadow-sm shadow-cyan-500/10 max-w-full text-center flex-wrap justify-center gap-1.5">
@@ -335,7 +335,7 @@ function HomePageContent() {
         </section>
 
         {/* Modules Overview — logged-in users */}
-        <section className="py-12 sm:py-20 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <section className="py-12 sm:py-20 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="mb-8 sm:mb-12">
             <span className="text-xs font-mono uppercase tracking-widest text-cyan-400">Structured Curriculum</span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white">10 Core Modules</h2>
@@ -419,7 +419,7 @@ function HomePageContent() {
       {/* ===================================================================
           ACHIEVEMENT & EXCELLENCE AWARD BANNER (Above Fees Structure)
       =================================================================== */}
-      <section className="pt-10 sm:pt-14 pb-4 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="pt-10 sm:pt-14 pb-4 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
@@ -505,7 +505,7 @@ function HomePageContent() {
       {/* ===================================================================
           SECTION 1 — AI UPSKILLING JOURNEY & PRICING PLANS
       =================================================================== */}
-      <section id="pricing" className="relative pt-8 pb-20 sm:pt-14 sm:pb-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="pricing" className="relative pt-8 pb-20 sm:pt-14 sm:pb-28 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         
         {/* Notice Banner if redirected from protected portal */}
         {noticeParam === 'enroll_required' && (
@@ -1006,7 +1006,7 @@ function HomePageContent() {
       {/* ===================================================================
           SECTION 1B — PROGRAM POLICIES & TERMS OF ENROLLMENT
       =================================================================== */}
-      <section className="relative -mt-6 sm:-mt-10 mb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative -mt-6 sm:-mt-10 mb-12 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="rounded-3xl p-6 sm:p-8 bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-200 dark:border-slate-800 pb-5">
             <div>
@@ -1086,7 +1086,7 @@ function HomePageContent() {
       {/* ===================================================================
           SECTION 5 — WHY CHOOSE US
       =================================================================== */}
-      <section id="contact" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="contact" className="py-16 sm:py-24 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="text-center mb-12 sm:mb-16">
           <span className="inline-block text-xs font-mono uppercase tracking-widest text-cyan-600 dark:text-cyan-400 mb-3">
             Our Advantage
@@ -1171,7 +1171,7 @@ function HomePageContent() {
           SECTION 6 — FAQ
       =================================================================== */}
       <section className="py-16 sm:py-24 bg-slate-50 dark:bg-slate-900/60">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
           {/* Header */}
           <div className="text-center mb-10 sm:mb-14">
             <span className="inline-block text-xs font-mono uppercase tracking-widest text-cyan-600 dark:text-cyan-400 mb-3">FAQs</span>
@@ -1211,7 +1211,7 @@ function HomePageContent() {
       {/* ===================================================================
           SECTION 7 — CONTACT / CTA BANNER
       =================================================================== */}
-      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="relative rounded-3xl overflow-hidden">
           {/* BG gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-cyan-950/80 to-violet-950/80" />

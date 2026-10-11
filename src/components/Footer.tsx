@@ -64,7 +64,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="bg-slate-50 dark:bg-[#070A12] border-t border-slate-200 dark:border-slate-800/80 pt-10 pb-8 text-slate-600 dark:text-slate-400 text-sm transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         
         {/* ==================================================================== */}
         {/* PLATFORM NAVIGATION & LINKS (5-COLUMN GRID)                          */}
