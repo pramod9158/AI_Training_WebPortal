@@ -83,8 +83,8 @@ const DIFF_BADGE_BG: Record<string, string> = {
 const FAQ_CATEGORIES = ['Courses', 'Learning', 'Placements & Certificates', 'Policies & Terms'];
 
 const FAQS: { category: string; q: string; a: string }[] = [
-  { category: 'Courses', q: 'What topics does Waynautic Academy cover?', a: 'We cover Python, Git, Model Providers (OpenAI/Claude/Gemini), Prompt Engineering, LLMs, AI-Powered IDEs, Vector Databases, RAG Systems, MCP Foundations, and Local AI Deployment — 56 topics across 10 structured modules.' },
-  { category: 'Courses', q: 'Is the curriculum beginner-friendly?', a: 'Yes! We start with Python and Git fundamentals before progressing to advanced AI topics. The curriculum is designed for students and working professionals across all streams — no prior AI experience needed.' },
+  { category: 'Courses', q: 'What topics and programs does Waynautic Academy offer?', a: 'We offer 3 industry-aligned flagship programs: (1) Automation Testing Program (Selenium, Playwright, Azure DevOps, Jira, CI/CD), (2) Performance Testing Program (JMeter, LoadRunner, K6, Grafana, Datadog), and (3) AI Training Program (Python, LLMs, Prompt Engineering, Vector Databases, RAG Systems, AI Agents). All programs include 4 weeks of live training followed by a 3-month industry internship.' },
+  { category: 'Courses', q: 'Is the curriculum beginner-friendly?', a: 'Yes! All 3 tracks start with strong coding and foundational tools before progressing to advanced enterprise architectures. The curriculum is designed for students and working professionals across all streams — no prior experience needed.' },
   { category: 'Courses', q: 'How long does the program take?', a: 'The structured path is designed to be completed in 4 weeks — covering basics to advanced AI in a fast, focused format. The curriculum is also available for self-paced learners who want to go at their own speed.' },
   { category: 'Courses', q: 'How many topics and modules are available?', a: 'Currently 56 in-depth topics organized across 10 core modules. Each topic includes video lectures, live session reinforcement, reading notes, and interactive quizzes.' },
   { category: 'Learning', q: 'Is the learning self-paced or does it include live sessions?', a: 'Both! Every topic is covered via recorded video lectures, and reinforced through live sessions with your mentor. You get the flexibility of recorded content plus the depth of live interaction.' },
@@ -137,12 +137,12 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
     <button
-      className="w-full text-left px-5 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-cyan-400/50 dark:hover:border-cyan-500/40 transition-all group"
+      className="w-full text-left px-6 sm:px-8 py-5 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 hover:border-cyan-400/50 dark:hover:border-cyan-500/40 shadow-sm hover:shadow-md transition-all group"
       onClick={() => setOpen(!open)}
       type="button"
     >
-      <div className="flex items-center justify-between gap-3">
-        <span className="font-semibold text-slate-900 dark:text-white text-sm sm:text-base group-hover:text-cyan-700 dark:group-hover:text-cyan-300 transition-colors text-left">
+      <div className="flex items-center justify-between gap-4">
+        <span className="font-bold text-slate-900 dark:text-white text-base sm:text-lg group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors text-left leading-snug">
           {q}
         </span>
         {open
@@ -151,7 +151,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         }
       </div>
       {open && (
-        <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 leading-relaxed text-left">
+        <p className="mt-4 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed text-left border-t border-slate-100 dark:border-slate-800/80 pt-3.5">
           {a}
         </p>
       )}
@@ -611,22 +611,25 @@ function HomePageContent() {
               onClick={() => setSelectedProgram('functional')}
               className={`text-left p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 flex flex-col justify-between cursor-pointer relative overflow-hidden group ${
                 selectedProgram === 'functional'
-                  ? 'bg-violet-50/80 dark:bg-[#130E26] border-violet-500 shadow-xl shadow-violet-500/15 ring-2 ring-violet-500/30'
-                  : 'bg-white dark:bg-[#0D121F] border-slate-200 dark:border-slate-800 hover:border-violet-300 dark:hover:border-violet-700 hover:shadow-lg'
+                  ? 'bg-[#130E26] border-violet-500 shadow-xl shadow-violet-500/20 ring-2 ring-violet-500/30 text-white'
+                  : 'bg-white dark:bg-[#0D121F] border-slate-200 dark:border-slate-800 hover:border-violet-300 dark:hover:border-violet-700 hover:shadow-lg text-slate-900 dark:text-white'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-extrabold uppercase tracking-wider ${
-                    selectedProgram === 'functional'
-                      ? 'bg-violet-600 text-white shadow-sm'
-                      : 'bg-violet-100 dark:bg-violet-950/70 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800'
-                  }`}>
-                    Track 01 • Automation
+                  <span
+                    style={{ color: '#ffffff' }}
+                    className={`px-3 py-1 rounded-lg text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-wider !text-white shadow-sm transition-all ${
+                      selectedProgram === 'functional'
+                        ? 'bg-violet-600 shadow-lg shadow-violet-600/40 ring-2 ring-violet-400/60'
+                        : 'bg-violet-600/90 dark:bg-violet-700 hover:bg-violet-600'
+                    }`}
+                  >
+                    Track 01: Automation
                   </span>
                   {selectedProgram === 'functional' ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-violet-600 dark:text-violet-400">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-violet-400">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-violet-400" />
                       <span>Viewing Plans</span>
                     </span>
                   ) : (
@@ -639,25 +642,32 @@ function HomePageContent() {
                 <div className="flex items-center gap-2.5 mb-2">
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                     selectedProgram === 'functional'
-                      ? 'bg-violet-600 text-white'
+                      ? 'bg-violet-600 text-white shadow-md shadow-violet-600/30'
                       : 'bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400'
                   }`}>
                     <Code2 className="w-5 h-5" />
                   </div>
-                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                  <h3
+                    style={{ color: selectedProgram === 'functional' ? '#ffffff' : undefined }}
+                    className={`text-base sm:text-lg font-extrabold leading-tight ${selectedProgram === 'functional' ? '!text-white' : 'text-slate-900 dark:text-white'}`}
+                  >
                     Automation Testing Program
                   </h3>
                 </div>
 
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                <p className={`text-xs leading-relaxed mb-4 ${selectedProgram === 'functional' ? 'text-violet-200/95 font-medium' : 'text-slate-600 dark:text-slate-400'}`}>
                   Master end-to-end automation with industry frameworks, CI/CD pipelines &amp; internship.
                 </p>
 
-                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-800">
+                <div className={`flex flex-wrap gap-1.5 pt-2 border-t ${selectedProgram === 'functional' ? 'border-violet-800/60' : 'border-slate-200/80 dark:border-slate-800'}`}>
                   {['Selenium', 'Playwright', 'Azure DevOps', 'Jira', 'CI/CD'].map((tool) => (
                     <span
                       key={tool}
-                      className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-violet-100/70 dark:bg-violet-950/50 text-violet-800 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800/40"
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold ${
+                        selectedProgram === 'functional'
+                          ? 'bg-violet-950/90 text-violet-200 border border-violet-700/60'
+                          : 'bg-violet-100/70 dark:bg-violet-950/50 text-violet-800 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800/40'
+                      }`}
                     >
                       {tool}
                     </span>
@@ -665,7 +675,9 @@ function HomePageContent() {
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-dashed border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-violet-600 dark:text-violet-400">
+              <div className={`mt-4 pt-3 border-t border-dashed flex items-center justify-between text-xs font-bold ${
+                selectedProgram === 'functional' ? 'border-violet-800/60 text-violet-300' : 'border-slate-200 dark:border-slate-800 text-violet-600 dark:text-violet-400'
+              }`}>
                 <span>{selectedProgram === 'functional' ? 'Current Active Plans' : 'Switch to Automation'}</span>
                 <ArrowRight className={`w-3.5 h-3.5 transition-transform ${selectedProgram === 'functional' ? 'translate-x-1' : 'group-hover:translate-x-1'}`} />
               </div>
@@ -677,22 +689,25 @@ function HomePageContent() {
               onClick={() => setSelectedProgram('performance')}
               className={`text-left p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 flex flex-col justify-between cursor-pointer relative overflow-hidden group ${
                 selectedProgram === 'performance'
-                  ? 'bg-amber-50/80 dark:bg-[#1A1407] border-amber-500 shadow-xl shadow-amber-500/15 ring-2 ring-amber-500/30'
-                  : 'bg-white dark:bg-[#0D121F] border-slate-200 dark:border-slate-800 hover:border-amber-300 dark:hover:border-amber-700 hover:shadow-lg'
+                  ? 'bg-[#1A1407] border-amber-500 shadow-xl shadow-amber-500/20 ring-2 ring-amber-500/30 text-white'
+                  : 'bg-white dark:bg-[#0D121F] border-slate-200 dark:border-slate-800 hover:border-amber-300 dark:hover:border-amber-700 hover:shadow-lg text-slate-900 dark:text-white'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-extrabold uppercase tracking-wider ${
-                    selectedProgram === 'performance'
-                      ? 'bg-amber-600 text-white shadow-sm'
-                      : 'bg-amber-100 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
-                  }`}>
-                    Track 02 • Performance
+                  <span
+                    style={{ color: '#ffffff' }}
+                    className={`px-3 py-1 rounded-lg text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-wider !text-white shadow-sm transition-all ${
+                      selectedProgram === 'performance'
+                        ? 'bg-amber-600 shadow-lg shadow-amber-600/40 ring-2 ring-amber-400/60'
+                        : 'bg-amber-600/90 dark:bg-amber-700 hover:bg-amber-600'
+                    }`}
+                  >
+                    Track 02: Performance
                   </span>
                   {selectedProgram === 'performance' ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 dark:text-amber-400">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
                       <span>Viewing Plans</span>
                     </span>
                   ) : (
@@ -705,25 +720,32 @@ function HomePageContent() {
                 <div className="flex items-center gap-2.5 mb-2">
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                     selectedProgram === 'performance'
-                      ? 'bg-amber-600 text-white'
+                      ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30'
                       : 'bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400'
                   }`}>
                     <TrendingUp className="w-5 h-5" />
                   </div>
-                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                  <h3
+                    style={{ color: selectedProgram === 'performance' ? '#ffffff' : undefined }}
+                    className={`text-base sm:text-lg font-extrabold leading-tight ${selectedProgram === 'performance' ? '!text-white' : 'text-slate-900 dark:text-white'}`}
+                  >
                     Performance Testing Program
                   </h3>
                 </div>
 
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                <p className={`text-xs leading-relaxed mb-4 ${selectedProgram === 'performance' ? 'text-amber-200/95 font-medium' : 'text-slate-600 dark:text-slate-400'}`}>
                   Master load testing, stress benchmarking &amp; enterprise APM telemetry tools.
                 </p>
 
-                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-800">
+                <div className={`flex flex-wrap gap-1.5 pt-2 border-t ${selectedProgram === 'performance' ? 'border-amber-800/60' : 'border-slate-200/80 dark:border-slate-800'}`}>
                   {['JMeter', 'LoadRunner', 'K6', 'Grafana', 'Datadog'].map((tool) => (
                     <span
                       key={tool}
-                      className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-amber-100/70 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/40"
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold ${
+                        selectedProgram === 'performance'
+                          ? 'bg-amber-950/90 text-amber-200 border border-amber-700/60'
+                          : 'bg-amber-100/70 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/40'
+                      }`}
                     >
                       {tool}
                     </span>
@@ -731,7 +753,9 @@ function HomePageContent() {
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-dashed border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400">
+              <div className={`mt-4 pt-3 border-t border-dashed flex items-center justify-between text-xs font-bold ${
+                selectedProgram === 'performance' ? 'border-amber-800/60 text-amber-300' : 'border-slate-200 dark:border-slate-800 text-amber-600 dark:text-amber-400'
+              }`}>
                 <span>{selectedProgram === 'performance' ? 'Current Active Plans' : 'Switch to Performance'}</span>
                 <ArrowRight className={`w-3.5 h-3.5 transition-transform ${selectedProgram === 'performance' ? 'translate-x-1' : 'group-hover:translate-x-1'}`} />
               </div>
@@ -743,22 +767,25 @@ function HomePageContent() {
               onClick={() => setSelectedProgram('ai')}
               className={`text-left p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 flex flex-col justify-between cursor-pointer relative overflow-hidden group ${
                 selectedProgram === 'ai'
-                  ? 'bg-cyan-50/80 dark:bg-[#071324] border-cyan-500 shadow-xl shadow-cyan-500/15 ring-2 ring-cyan-500/30'
-                  : 'bg-white dark:bg-[#0D121F] border-slate-200 dark:border-slate-800 hover:border-cyan-300 dark:hover:border-cyan-700 hover:shadow-lg'
+                  ? 'bg-[#071324] border-cyan-500 shadow-xl shadow-cyan-500/20 ring-2 ring-cyan-500/30 text-white'
+                  : 'bg-white dark:bg-[#0D121F] border-slate-200 dark:border-slate-800 hover:border-cyan-300 dark:hover:border-cyan-700 hover:shadow-lg text-slate-900 dark:text-white'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-extrabold uppercase tracking-wider ${
-                    selectedProgram === 'ai'
-                      ? 'bg-cyan-600 text-white shadow-sm'
-                      : 'bg-cyan-100 dark:bg-cyan-950/70 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800'
-                  }`}>
-                    Track 03 • AI Engineering
+                  <span
+                    style={{ color: '#ffffff' }}
+                    className={`px-3 py-1 rounded-lg text-[10px] sm:text-[11px] font-mono font-extrabold uppercase tracking-wider !text-white shadow-sm transition-all ${
+                      selectedProgram === 'ai'
+                        ? 'bg-cyan-600 shadow-lg shadow-cyan-600/40 ring-2 ring-cyan-400/60'
+                        : 'bg-cyan-600/90 dark:bg-cyan-700 hover:bg-cyan-600'
+                    }`}
+                  >
+                    Track 03: AI Engineering
                   </span>
                   {selectedProgram === 'ai' ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-600 dark:text-cyan-400">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-400">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
                       <span>Viewing Plans</span>
                     </span>
                   ) : (
@@ -771,25 +798,32 @@ function HomePageContent() {
                 <div className="flex items-center gap-2.5 mb-2">
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                     selectedProgram === 'ai'
-                      ? 'bg-cyan-600 text-white'
+                      ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
                       : 'bg-cyan-100 dark:bg-cyan-900/50 text-cyan-600 dark:text-cyan-400'
                   }`}>
                     <Brain className="w-5 h-5" />
                   </div>
-                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                  <h3
+                    style={{ color: selectedProgram === 'ai' ? '#ffffff' : undefined }}
+                    className={`text-base sm:text-lg font-extrabold leading-tight ${selectedProgram === 'ai' ? '!text-white' : 'text-slate-900 dark:text-white'}`}
+                  >
                     AI Training Program
                   </h3>
                 </div>
 
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                <p className={`text-xs leading-relaxed mb-4 ${selectedProgram === 'ai' ? 'text-cyan-200/95 font-medium' : 'text-slate-600 dark:text-slate-400'}`}>
                   Build production RAG pipelines, agentic workflows, and deploy custom LLMs.
                 </p>
 
-                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-800">
+                <div className={`flex flex-wrap gap-1.5 pt-2 border-t ${selectedProgram === 'ai' ? 'border-cyan-800/60' : 'border-slate-200/80 dark:border-slate-800'}`}>
                   {['LLMs', 'Prompt Eng', 'Vector DB', 'RAG Systems', 'AI Agents'].map((tool) => (
                     <span
                       key={tool}
-                      className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-cyan-100/70 dark:bg-cyan-950/50 text-cyan-800 dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800/40"
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold ${
+                        selectedProgram === 'ai'
+                          ? 'bg-cyan-950/90 text-cyan-200 border border-cyan-700/60'
+                          : 'bg-cyan-100/70 dark:bg-cyan-950/50 text-cyan-800 dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800/40'
+                      }`}
                     >
                       {tool}
                     </span>
@@ -797,7 +831,9 @@ function HomePageContent() {
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-dashed border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-cyan-600 dark:text-cyan-400">
+              <div className={`mt-4 pt-3 border-t border-dashed flex items-center justify-between text-xs font-bold ${
+                selectedProgram === 'ai' ? 'border-cyan-800/60 text-cyan-300' : 'border-slate-200 dark:border-slate-800 text-cyan-600 dark:text-cyan-400'
+              }`}>
                 <span>{selectedProgram === 'ai' ? 'Current Active Plans' : 'Switch to AI Training'}</span>
                 <ArrowRight className={`w-3.5 h-3.5 transition-transform ${selectedProgram === 'ai' ? 'translate-x-1' : 'group-hover:translate-x-1'}`} />
               </div>
@@ -1420,7 +1456,7 @@ function HomePageContent() {
           SECTION 6 — FAQ
       =================================================================== */}
       <section className="py-16 sm:py-24 bg-slate-50 dark:bg-slate-900/60">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
           {/* Header */}
           <div className="text-center mb-10 sm:mb-14">
             <span className="inline-block text-xs font-mono uppercase tracking-widest text-cyan-600 dark:text-cyan-400 mb-3">FAQs</span>
@@ -1469,44 +1505,60 @@ function HomePageContent() {
 
           <div className="relative z-10 px-6 sm:px-12 lg:px-16 py-14 sm:py-20 flex flex-col lg:flex-row items-center justify-between gap-10">
             {/* Left */}
-            <div className="text-center lg:text-left max-w-xl">
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
-                Ready to Build Your{' '}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-violet-400">
-                  AI Engineering Career?
+            <div className="text-center lg:text-left max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 text-xs font-mono font-bold uppercase tracking-wider mb-3">
+                <Rocket className="w-3.5 h-3.5" />
+                <span>3 Flagship Engineering Programs</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight">
+                Ready to Accelerate Your Career in{' '}
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-amber-300 to-cyan-400">
+                  Automation, Performance, or AI?
                 </span>
               </h2>
-              <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
-                Join hundreds of developers already upskilling with Waynautic Academy.
-                Have questions? Our team is just one WhatsApp message away.
+              <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-6">
+                Join our 4-week code-first masterclasses followed by a guaranteed <strong>3-Month Industry Internship</strong>. Choose between <strong>Automation Testing (Selenium &amp; Playwright)</strong>, <strong>Performance Testing (JMeter &amp; K6)</strong>, or <strong>AI Engineering (LLMs &amp; RAG)</strong> — complete with personalized mentorship, dual certification, and full placement assistance.
               </p>
+
+              {/* 3 Tracks Pills */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-2.5">
+                <span className="px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/40 text-xs font-mono font-bold flex items-center gap-1.5">
+                  <Code2 className="w-3.5 h-3.5 text-violet-400" /> Track 01: Automation Testing
+                </span>
+                <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-mono font-bold flex items-center gap-1.5">
+                  <TrendingUp className="w-3.5 h-3.5 text-amber-400" /> Track 02: Performance Testing
+                </span>
+                <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-mono font-bold flex items-center gap-1.5">
+                  <Brain className="w-3.5 h-3.5 text-cyan-400" /> Track 03: AI Engineering
+                </span>
+              </div>
             </div>
 
             {/* Right: Contact options */}
-            <div className="flex flex-col gap-4 shrink-0 w-full lg:w-64">
+            <div className="flex flex-col gap-4 shrink-0 w-full lg:w-72">
               <a
-                href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20learn%20more%20about%20your%20AI%20engineering%20curriculum"
+                href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20learn%20more%20about%20your%20programs%20(Automation%20Testing%2C%20Performance%20Testing%2C%20AI%20Engineering)%20and%20the%203-month%20internship"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm shadow-xl shadow-emerald-500/30 hover:-translate-y-0.5 transition-all"
+                className="flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm shadow-xl shadow-emerald-500/30 hover:-translate-y-0.5 transition-all cursor-pointer"
               >
                 <MessageCircle className="w-5 h-5 fill-white" />
                 Chat on WhatsApp
               </a>
               <a
-                href="mailto:pramod.gogadare@waynautic.com?subject=Enquiry%20-%20Waynautic%20Academy%20AI%20Program&body=Hi%20Pramod%2C%0A%0AI%20am%20interested%20in%20learning%20more%20about%20the%20Waynautic%20Academy%20AI%20Engineering%20Program.%0A%0APlease%20share%20more%20details.%0A%0AThank%20you"
+                href="mailto:pramod.gogadare@waynautic.com?subject=Enquiry%20-%20Waynautic%20Academy%20Programs%20(Automation%2C%20Performance%2C%20AI)&body=Hi%20Pramod%2C%0A%0AI%20am%20interested%20in%20learning%20more%20about%20Waynautic%20Academy%20Programs%20(Automation%20Testing%2C%20Performance%20Testing%2C%20AI%20Engineering)%20and%20the%203-month%20internship.%0A%0APlease%20share%20the%20curriculum%20and%20batch%20details.%0A%0AThank%20you"
                 onClick={(e) => {
                   // Fallback: if mailto doesn't open within 500ms, open Gmail compose
                   const timeout = setTimeout(() => {
                     window.open(
-                      'https://mail.google.com/mail/?view=cm&to=pramod.gogadare@waynautic.com&su=Enquiry%20-%20Waynautic%20Academy%20AI%20Program&body=Hi%20Pramod%2C%0A%0AI%20am%20interested%20in%20learning%20more%20about%20the%20Waynautic%20Academy%20AI%20Engineering%20Program.%0A%0APlease%20share%20more%20details.',
+                      'https://mail.google.com/mail/?view=cm&to=pramod.gogadare@waynautic.com&su=Enquiry%20-%20Waynautic%20Academy%20Programs&body=Hi%20Pramod%2C%0A%0AI%20am%20interested%20in%20learning%20more%20about%20Waynautic%20Academy%20Programs%20(Automation%20Testing%2C%20Performance%20Testing%2C%20AI%20Engineering)%20and%20the%203-month%20internship.%0A%0APlease%20share%20the%20curriculum%20and%20batch%20details.',
                       '_blank'
                     );
                   }, 500);
                   // If tab stays active (mailto opened successfully), cancel Gmail fallback
                   window.addEventListener('blur', () => clearTimeout(timeout), { once: true });
                 }}
-                className="flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-white/10 border border-white/20 text-white font-bold text-sm hover:bg-white/15 hover:-translate-y-0.5 transition-all backdrop-blur-sm"
+                className="flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-white/10 border border-white/20 text-white font-bold text-sm hover:bg-white/15 hover:-translate-y-0.5 transition-all backdrop-blur-sm cursor-pointer"
               >
                 <Mail className="w-5 h-5" />
                 Send us an Email
@@ -1518,7 +1570,7 @@ function HomePageContent() {
 
       {/* --- Floating WhatsApp button --------------------------------------- */}
       <a
-        href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20learn%20more%20about%20your%20AI%20engineering%20curriculum"
+        href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20learn%20more%20about%20your%20programs%20(Automation%20Testing%2C%20Performance%20Testing%2C%20AI%20Engineering)"
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white shadow-2xl shadow-emerald-500/40 flex items-center justify-center hover:scale-110 transition-all"

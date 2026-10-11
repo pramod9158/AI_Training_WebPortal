@@ -57,7 +57,7 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
     {
       id: 'automation-testing',
       title: 'Automation Testing',
-      track: 'Track 01',
+      track: 'Track 01: Automation',
       icon: Code2,
       href: '/curriculum/automation-testing',
       color: 'violet',
@@ -66,7 +66,7 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
     {
       id: 'performance-testing',
       title: 'Performance Testing',
-      track: 'Track 02',
+      track: 'Track 02: Performance',
       icon: TrendingUp,
       href: '/curriculum/performance-testing',
       color: 'amber',
@@ -75,7 +75,7 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
     {
       id: 'ai-training',
       title: 'AI Training Program',
-      track: 'Track 03',
+      track: 'Track 03: AI Engineering',
       icon: Brain,
       href: '/curriculum/ai-training',
       color: 'cyan',
@@ -132,7 +132,7 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
                     href={tab.href}
                     className={`flex items-center justify-between p-3.5 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-200 ${
                       isActive
-                        ? 'bg-white dark:bg-[#0D121F] shadow-lg border-2 border-indigo-500/80 dark:border-indigo-400/80 ring-2 ring-indigo-500/20'
+                        ? 'bg-slate-900 dark:bg-[#0D121F] shadow-lg border-2 border-indigo-500/80 dark:border-indigo-400/80 ring-2 ring-indigo-500/30 text-white'
                         : 'hover:bg-white/60 dark:hover:bg-slate-800/50 border border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
@@ -146,21 +146,29 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className={`text-[10px] font-mono font-bold uppercase tracking-wider ${
-                            isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'
-                          }`}>
+                          <span
+                            style={{ color: isActive ? '#ffffff' : undefined }}
+                            className={`text-[10px] font-mono font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                              isActive
+                                ? 'bg-indigo-600 !text-white shadow-sm'
+                                : 'text-slate-500 dark:text-slate-400 bg-slate-200/60 dark:bg-slate-800'
+                            }`}
+                          >
                             {tab.track}
                           </span>
                           {isActive && (
-                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-                              Active
+                            <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                              Active Track
                             </span>
                           )}
                         </div>
-                        <div className="text-sm font-extrabold text-slate-900 dark:text-white truncate">
+                        <div
+                          style={{ color: isActive ? '#ffffff' : undefined }}
+                          className={`text-sm font-extrabold truncate ${isActive ? '!text-white' : 'text-slate-900 dark:text-white'}`}
+                        >
                           {tab.title}
                         </div>
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate hidden sm:block">
+                        <div className={`text-[11px] truncate hidden sm:block ${isActive ? 'text-slate-300' : 'text-slate-500 dark:text-slate-400'}`}>
                           {tab.desc}
                         </div>
                       </div>
