@@ -31,11 +31,18 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const isAdminPage = pathname?.startsWith('/admin');
 
+  const isPublicCurriculumPage = 
+    pathname === '/curriculum/automation-testing' ||
+    pathname === '/curriculum/performance-testing' ||
+    pathname === '/curriculum/ai-training';
+
   const isProtectedPortalRoute = 
-    pathname === '/curriculum' || pathname?.startsWith('/curriculum/') ||
-    pathname === '/dashboard' || pathname?.startsWith('/dashboard/') ||
-    pathname === '/paths' || pathname?.startsWith('/paths/') ||
-    pathname === '/onboarding' || pathname?.startsWith('/onboarding/');
+    !isPublicCurriculumPage && (
+      pathname === '/curriculum' || pathname?.startsWith('/curriculum/') ||
+      pathname === '/dashboard' || pathname?.startsWith('/dashboard/') ||
+      pathname === '/paths' || pathname?.startsWith('/paths/') ||
+      pathname === '/onboarding' || pathname?.startsWith('/onboarding/')
+    );
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
   const isEnrolled = profile.plan === 'pro' || profile.plan === 'enterprise' || profile.role === 'admin' || profile.role === 'instructor';

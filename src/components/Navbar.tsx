@@ -149,9 +149,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   // Curriculum sub-programs for dropdown
   const curriculumPrograms = [
-    { href: '/#automation-testing', label: 'Automation Testing Program', icon: Code2, color: 'text-violet-600 dark:text-violet-400', desc: 'Selenium, Playwright, Azure, Jira, CI/CD' },
-    { href: '/#performance-testing', label: 'Performance Testing Program', icon: Zap, color: 'text-amber-600 dark:text-amber-400', desc: 'JMeter, LoadRunner, K6, Grafana, Datadog' },
-    { href: '/#ai-training', label: 'AI Training Program', icon: Brain, color: 'text-cyan-600 dark:text-cyan-400', desc: 'LLMs, Prompt Eng, Vector DBs, RAG, Agents' },
+    { href: '/curriculum/automation-testing', label: 'Automation Testing Program', icon: Code2, color: 'text-violet-600 dark:text-violet-400', desc: 'Selenium, Playwright, Azure, Jira, CI/CD' },
+    { href: '/curriculum/performance-testing', label: 'Performance Testing Program', icon: Zap, color: 'text-amber-600 dark:text-amber-400', desc: 'JMeter, LoadRunner, K6, Grafana, Datadog' },
+    { href: '/curriculum/ai-training', label: 'AI Training Program', icon: Brain, color: 'text-cyan-600 dark:text-cyan-400', desc: 'LLMs, Prompt Eng, Vector DBs, RAG, Agents' },
   ];
 
   const dashboardLink = isLoggedIn ? [{ href: '/dashboard', label: 'Dashboard', icon: Trophy }] : [];
@@ -180,13 +180,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           </Link>
         </div>
 
-        {/* Center Section: Navigation Links (Training Programs, Curriculum, About Us) — exactly matching waynautic.com */}
+        {/* Center Section: Navigation Links (Training Programs, Curriculum, About Us) — shifted to align bottom with logo */}
         <div className="hidden lg:flex flex-1 justify-center px-4">
-          <nav className="flex items-center gap-8 lg:gap-10">
+          <nav className="flex items-center gap-8 lg:gap-10" style={{ transform: 'translateY(8px)' }}>
             {/* 1. Training Programs */}
             <Link
               href="/#pricing"
-              className="text-[17px] lg:text-[18px] font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap"
+              className="text-[19px] lg:text-[20px] font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap"
             >
               Training Programs
             </Link>
@@ -196,16 +196,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <button
                 type="button"
                 onClick={() => setCurriculumDropdownOpen((v) => !v)}
-                className={`flex items-center gap-1.5 text-[17px] lg:text-[18px] font-medium transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 text-[19px] lg:text-[20px] font-semibold transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                   pathname?.startsWith('/curriculum')
-                    ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
+                    ? 'text-indigo-600 dark:text-indigo-400 font-bold'
                     : 'text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400'
                 }`}
                 aria-expanded={curriculumDropdownOpen}
                 aria-label="Curriculum programs"
               >
                 <span>Curriculum</span>
-                <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${curriculumDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-4.5 h-4.5 text-gray-500 transition-transform duration-200 ${curriculumDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Curriculum Dropdown Panel */}
@@ -240,9 +240,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             {/* 3. About Us */}
             <Link
               href="/about"
-              className={`text-[17px] lg:text-[18px] font-medium transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
+              className={`text-[19px] lg:text-[20px] font-semibold transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                 pathname === '/about'
-                  ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
+                  ? 'text-indigo-600 dark:text-indigo-400 font-bold'
                   : 'text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400'
               }`}
             >
@@ -256,9 +256,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-[17px] lg:text-[18px] font-medium transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
+                  className={`text-[19px] lg:text-[20px] font-semibold transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                     isActive
-                      ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
+                      ? 'text-indigo-600 dark:text-indigo-400 font-bold'
                       : 'text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400'
                   }`}
                 >
@@ -314,7 +314,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         )}
 
         {/* Right Section: Focused & Consolidated Utilities */}
-        <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3.5 shrink-0" style={{ transform: 'translateY(8px)' }}>
 
           {/* Laptop / Desktop Theme Toggle Button */}
           <button
@@ -336,15 +336,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           {/* Notification Bell (Logged-in only) */}
           {isLoggedIn && <NotificationDrawer />}
 
-          {/* Contact Us Button (Logged in desktop view) — exactly matching waynautic.com */}
-          {isLoggedIn && (
-            <Link
-              href="/#contact"
-              className="hidden lg:inline-flex items-center justify-center h-[42px] sm:h-[46px] px-5 lg:px-6 bg-indigo-600 hover:bg-indigo-500 text-white text-[17px] lg:text-[18px] font-medium rounded-md transition shadow-sm shrink-0 whitespace-nowrap"
-            >
-              Contact Us
-            </Link>
-          )}
 
           {/* Consolidated User Profile Menu (Desktop; on mobile user accesses profile in drawer) */}
           {isLoggedIn ? (
@@ -502,15 +493,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <div className="hidden lg:flex items-center gap-6 lg:gap-8">
               <Link
                 href="/login"
-                className="text-[17px] lg:text-[18px] font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition whitespace-nowrap shrink-0"
+                className="text-[19px] lg:text-[20px] font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition whitespace-nowrap shrink-0"
               >
                 Log in
-              </Link>
-              <Link
-                href="/#contact"
-                className="inline-flex items-center justify-center h-[42px] sm:h-[46px] px-5 lg:px-6 bg-indigo-600 hover:bg-indigo-500 text-white text-[17px] lg:text-[18px] font-medium rounded-md transition shadow-sm shrink-0 whitespace-nowrap"
-              >
-                Contact Us
               </Link>
             </div>
           )}

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { MODULES } from '@/data/seedModules';
 import { getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { SkillTree } from '@/components/SkillTree';
@@ -28,6 +29,38 @@ export default function CurriculumPage() {
   return (
     <div className="min-h-screen py-6 sm:py-12 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       
+      {/* 3 Specialized Tracks Banner */}
+      <div className="mb-10 p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-violet-500/10 via-amber-500/10 to-cyan-500/10 border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div>
+          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-indigo-600 dark:text-cyan-400 block mb-1">
+            ✨ 4-Week Cohorts &amp; 3-Month Industry Internships
+          </span>
+          <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
+            Explore Detailed Program Syllabi by Career Track:
+          </h2>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/curriculum/automation-testing"
+            className="px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800 shadow-sm hover:scale-105 transition-all"
+          >
+            Track 01: Automation Testing →
+          </Link>
+          <Link
+            href="/curriculum/performance-testing"
+            className="px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 shadow-sm hover:scale-105 transition-all"
+          >
+            Track 02: Performance Testing →
+          </Link>
+          <Link
+            href="/curriculum/ai-training"
+            className="px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800 shadow-sm hover:scale-105 transition-all"
+          >
+            Track 03: AI Training →
+          </Link>
+        </div>
+      </div>
+
       {/* Page Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
         <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 text-xs font-mono">
