@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -24,7 +24,9 @@ import {
   Trophy,
   Sun,
   Moon,
-  Receipt
+  Receipt,
+  Brain,
+  Code2
 } from 'lucide-react';
 import { useWaynauticStore, setStoredTheme } from '@/lib/store';
 import { getAllTopics, getResumeLearningUrl } from '@/lib/curriculumService';
@@ -47,8 +49,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [curriculumDropdownOpen, setCurriculumDropdownOpen] = useState(false);
+  const [mobileCurriculumOpen, setMobileCurriculumOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const searchBtnRef = useRef<HTMLButtonElement>(null);
+  const curriculumRef = useRef<HTMLDivElement>(null);
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
   const isProUser = profile.plan === 'pro' || profile.plan === 'enterprise';
@@ -95,14 +100,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setUserMenuOpen(false);
       }
+      if (curriculumRef.current && !curriculumRef.current.contains(event.target as Node)) {
+        setCurriculumDropdownOpen(false);
+      }
     };
-    if (userMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [userMenuOpen]);
+  }, [userMenuOpen, curriculumDropdownOpen]);
 
   // Global Cmd+K shortcut to open/close search
   useEffect(() => {
@@ -121,6 +127,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     setUserMenuOpen(false);
     setMobileMenuOpen(false);
     setSearchOpen(false);
+    setCurriculumDropdownOpen(false);
+    setMobileCurriculumOpen(false);
   }, [pathname]);
 
   const handleBookmarksClick = async () => {
@@ -139,25 +147,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     router.push('/login');
   };
 
-  const desktopNavLinks = isLoggedIn
-    ? [
-        { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
-        { href: '/dashboard', label: 'Dashboard', icon: Trophy },
-      ]
-    : [
-        { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
-      ];
+  // Curriculum sub-programs for dropdown
+  const curriculumPrograms = [
+    { href: '/curriculum', label: 'AI Training Program', icon: Brain, color: 'text-cyan-600 dark:text-cyan-400', desc: 'LLMs, Prompt Eng, Vector DBs, RAG' },
+    { href: '/#automation-testing', label: 'Automation Testing Program', icon: Code2, color: 'text-violet-600 dark:text-violet-400', desc: 'Selenium, Playwright, Azure, Jira' },
+    { href: '/#performance-testing', label: 'Performance Testing Program', icon: Zap, color: 'text-amber-600 dark:text-amber-400', desc: 'JMeter, K6, Grafana, Datadog' },
+  ];
+
+  const dashboardLink = isLoggedIn ? [{ href: '/dashboard', label: 'Dashboard', icon: Trophy }] : [];
 
   const mobileNavLinks = isLoggedIn
     ? [
-        { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
         { href: '/dashboard', label: 'Dashboard', icon: Trophy },
-        { href: '/about', label: 'About', icon: Sparkles },
       ]
-    : [
-        { href: '/curriculum', label: 'Curriculum', icon: BookOpen },
-        { href: '/about', label: 'About', icon: Sparkles },
-      ];
+    : [];
 
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/95 dark:bg-[#0B0F19]/90 border-b border-slate-200 dark:border-slate-800/80 transition-colors">
@@ -178,10 +181,81 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             />
           </Link>
 
-          {/* Desktop Navigation Links - Clean & Minimalist */}
+          {/* Desktop Navigation Links: 1. Training Programs, 2. About, 3. Curriculum */}
           <nav className="hidden md:flex items-center space-x-1">
-            {desktopNavLinks.map((link) => {
-              const isActive = pathname === link.href || (link.href !== '/' && pathname?.startsWith(link.href));
+            {/* 1. Training Programs */}
+            <Link
+              href="/#pricing"
+              className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                false
+                  ? 'font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
+                  : 'font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
+              }`}
+            >
+              Training Programs
+            </Link>
+
+            {/* 2. About */}
+            <Link
+              href="/about"
+              className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                pathname === '/about'
+                  ? 'font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
+                  : 'font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
+              }`}
+            >
+              About
+            </Link>
+
+            {/* 3. Curriculum Dropdown */}
+            <div className="relative" ref={curriculumRef}>
+              <button
+                type="button"
+                onClick={() => setCurriculumDropdownOpen((v) => !v)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  pathname?.startsWith('/curriculum')
+                    ? 'font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
+                    : 'font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                }`}
+                aria-expanded={curriculumDropdownOpen}
+                aria-label="Curriculum programs"
+              >
+                Curriculum
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${curriculumDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Curriculum Dropdown Panel */}
+              {curriculumDropdownOpen && (
+                <div className="absolute left-0 top-full mt-2 w-72 rounded-2xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="px-3 py-1.5 mb-1">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Our Programs</span>
+                  </div>
+                  {curriculumPrograms.map((prog) => {
+                    const Icon = prog.icon;
+                    return (
+                      <Link
+                        key={prog.href}
+                        href={prog.href}
+                        onClick={() => setCurriculumDropdownOpen(false)}
+                        className="flex items-start gap-3 px-3 py-2.5 mx-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group"
+                      >
+                        <div className={`w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 ${prog.color}`}>
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-cyan-700 dark:group-hover:text-cyan-300 transition-colors leading-tight">{prog.label}</div>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{prog.desc}</div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Dashboard (logged in only) */}
+            {dashboardLink.map((link) => {
+              const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.href}
@@ -535,6 +609,64 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
           {/* Navigation Links */}
           <div className="space-y-1">
+            {/* Training Programs */}
+            <Link
+              href="/#pricing"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold transition-colors min-h-[44px] text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
+            >
+              <Zap className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+              <span>Training Programs</span>
+            </Link>
+
+            {/* About */}
+            <Link
+              href="/about"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold transition-colors min-h-[44px] ${
+                pathname === '/about'
+                  ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
+                  : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+              }`}
+            >
+              <Sparkles className={`w-5 h-5 ${pathname === '/about' ? 'text-sky-600 dark:text-cyan-400' : 'text-slate-500 dark:text-slate-400'}`} />
+              <span>About</span>
+            </Link>
+
+            {/* Curriculum Expandable */}
+            <div>
+              <button
+                type="button"
+                onClick={() => setMobileCurriculumOpen((v) => !v)}
+                className="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-bold transition-colors min-h-[44px] text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
+              >
+                <div className="flex items-center space-x-3">
+                  <BookOpen className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+                  <span>Curriculum</span>
+                </div>
+                <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${mobileCurriculumOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {mobileCurriculumOpen && (
+                <div className="ml-4 mt-1 space-y-0.5 border-l-2 border-slate-200 dark:border-slate-700 pl-3">
+                  {curriculumPrograms.map((prog) => {
+                    const Icon = prog.icon;
+                    return (
+                      <Link
+                        key={prog.href}
+                        href={prog.href}
+                        onClick={() => { setMobileMenuOpen(false); setMobileCurriculumOpen(false); }}
+                        className="flex items-center space-x-2.5 px-2.5 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 min-h-[40px] transition-colors"
+                      >
+                        <Icon className={`w-4 h-4 shrink-0 ${prog.color}`} />
+                        <span>{prog.label}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Other nav links */}
             {mobileNavLinks.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.href;

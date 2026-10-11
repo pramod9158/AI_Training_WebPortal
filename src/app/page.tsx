@@ -52,7 +52,7 @@ import { useWaynauticStore } from '@/lib/store';
 import { OnboardingTour } from '@/components/OnboardingTour';
 import { RazorpayModal } from '@/components/RazorpayModal';
 
-// ─── Module icon mapping ─────────────────────────────────────────────────────
+// â”€â”€â”€ Module icon mapping â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const MODULE_ICON_MAP: Record<string, React.ReactNode> = {
   Terminal: <Terminal className="w-6 h-6" />,
   GitBranch: <GitBranch className="w-6 h-6" />,
@@ -78,22 +78,22 @@ const DIFF_BADGE_BG: Record<string, string> = {
   Advanced: 'from-rose-500 to-pink-600',
 };
 
-// ─── FAQ data ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ FAQ data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const FAQ_CATEGORIES = ['Courses', 'Learning', 'Placements & Certificates', 'Policies & Terms'];
 
 const FAQS: { category: string; q: string; a: string }[] = [
-  { category: 'Courses', q: 'What topics does Waynautic Academy cover?', a: 'We cover Python, Git, Model Providers (OpenAI/Claude/Gemini), Prompt Engineering, LLMs, AI-Powered IDEs, Vector Databases, RAG Systems, MCP Foundations, and Local AI Deployment — 56 topics across 10 structured modules.' },
-  { category: 'Courses', q: 'Is the curriculum beginner-friendly?', a: 'Yes! We start with Python and Git fundamentals before progressing to advanced AI topics. The curriculum is designed for students and working professionals across all streams — no prior AI experience needed.' },
-  { category: 'Courses', q: 'How long does the program take?', a: 'The structured path is designed to be completed in 4 weeks — covering basics to advanced AI in a fast, focused format. The curriculum is also available for self-paced learners who want to go at their own speed.' },
+  { category: 'Courses', q: 'What topics does Waynautic Academy cover?', a: 'We cover Python, Git, Model Providers (OpenAI/Claude/Gemini), Prompt Engineering, LLMs, AI-Powered IDEs, Vector Databases, RAG Systems, MCP Foundations, and Local AI Deployment â€” 56 topics across 10 structured modules.' },
+  { category: 'Courses', q: 'Is the curriculum beginner-friendly?', a: 'Yes! We start with Python and Git fundamentals before progressing to advanced AI topics. The curriculum is designed for students and working professionals across all streams â€” no prior AI experience needed.' },
+  { category: 'Courses', q: 'How long does the program take?', a: 'The structured path is designed to be completed in 4 weeks â€” covering basics to advanced AI in a fast, focused format. The curriculum is also available for self-paced learners who want to go at their own speed.' },
   { category: 'Courses', q: 'How many topics and modules are available?', a: 'Currently 56 in-depth topics organized across 10 core modules. Each topic includes video lectures, live session reinforcement, reading notes, and interactive quizzes.' },
   { category: 'Learning', q: 'Is the learning self-paced or does it include live sessions?', a: 'Both! Every topic is covered via recorded video lectures, and reinforced through live sessions with your mentor. You get the flexibility of recorded content plus the depth of live interaction.' },
-  { category: 'Learning', q: 'Will I build real AI projects?', a: 'Yes — you will build 4 to 5 agentic, market-ready AI projects during the program. These are portfolio-ready projects that demonstrate your skills to employers, not just theory or toy examples.' },
+  { category: 'Learning', q: 'Will I build real AI projects?', a: 'Yes â€” you will build 4 to 5 agentic, market-ready AI projects during the program. These are portfolio-ready projects that demonstrate your skills to employers, not just theory or toy examples.' },
   { category: 'Learning', q: 'Do I get a personal mentor?', a: 'Yes. Every student is assigned a dedicated mentor who provides personalized guidance throughout the program, answers your questions, and keeps you on track to complete the curriculum.' },
-  { category: 'Learning', q: 'What makes Waynautic different from free YouTube tutorials?', a: 'Waynautic provides a structured, mentor-guided path with live sessions, agentic AI projects, streak tracking, quizzes, certificates, mock interviews, and placement support — all designed for developers who want real skills, not just surface-level content.' },
-  { category: 'Placements & Certificates', q: 'What certificates do I get after completing the program?', a: 'Upon successful completion of the 4-week AI training, you continue with a 3-month industry internship — the main highlight of our program. You receive two credentials: (1) an official 3-Month Internship Certificate for your production project work, and (2) a Program Completion Certificate from Waynautic Academy — both recognized credentials you can showcase on LinkedIn and your resume.' },
-  { category: 'Placements & Certificates', q: 'How long do I get access to the academy portal?', a: 'You get 1 full year of access to the Waynautic Academy portal after enrollment — including all 56 topics, future content updates, live session recordings, and resources added during your access period.' },
+  { category: 'Learning', q: 'What makes Waynautic different from free YouTube tutorials?', a: 'Waynautic provides a structured, mentor-guided path with live sessions, agentic AI projects, streak tracking, quizzes, certificates, mock interviews, and placement support â€” all designed for developers who want real skills, not just surface-level content.' },
+  { category: 'Placements & Certificates', q: 'What certificates do I get after completing the program?', a: 'Upon successful completion of the 4-week AI training, you continue with a 3-month industry internship â€” the main highlight of our program. You receive two credentials: (1) an official 3-Month Internship Certificate for your production project work, and (2) a Program Completion Certificate from Waynautic Academy â€” both recognized credentials you can showcase on LinkedIn and your resume.' },
+  { category: 'Placements & Certificates', q: 'How long do I get access to the academy portal?', a: 'You get 1 full year of access to the Waynautic Academy portal after enrollment â€” including all 56 topics, future content updates, live session recordings, and resources added during your access period.' },
   { category: 'Placements & Certificates', q: 'What placement assistance does Waynautic provide?', a: 'We provide comprehensive placement support including: mock interviews with real feedback, resume building assistance, LinkedIn profile optimization, and guidance on how to apply for AI/ML Engineer and LLM Engineer roles effectively.' },
-  { category: 'Placements & Certificates', q: 'Will I be job-ready after completing this program?', a: 'Yes — that is our goal. By the end of the program you will have real AI projects in your portfolio, a polished resume and LinkedIn profile, interview practice, and two certificates. You will be equipped to confidently apply for AI engineering roles.' },
+  { category: 'Placements & Certificates', q: 'Will I be job-ready after completing this program?', a: 'Yes â€” that is our goal. By the end of the program you will have real AI projects in your portfolio, a polished resume and LinkedIn profile, interview practice, and two certificates. You will be equipped to confidently apply for AI engineering roles.' },
   { category: 'Placements & Certificates', q: 'Who is this program designed for?', a: 'This program is open to college students and working professionals across all streams. No prior AI experience is required. Whether you are looking to switch careers or upskill in your current role, this program will get you AI-ready.' },
   { category: 'Placements & Certificates', q: 'How do I enroll or get more details?', a: 'Reach out directly to Pramod Gogadare on WhatsApp at +91 9158998226. Our team will walk you through the enrollment process, batch details, and answer any questions you have.' },
   { category: 'Policies & Terms', q: 'What is the fee refund policy?', a: 'All program fees, webinar passes, and consultation charges are strictly 100% non-refundable and non-transferable under all circumstances once paid. This policy applies unconditionally to personal schedule conflicts, change of mind, or inability to attend sessions.' },
@@ -102,7 +102,7 @@ const FAQS: { category: string; q: string; a: string }[] = [
   { category: 'Policies & Terms', q: 'Can I download or share the curriculum materials?', a: 'No. All videos, code repositories, mind maps, notes, and quiz questions are proprietary intellectual property. Unauthorized screen recording, downloading, credential sharing, or redistribution is strictly prohibited and subject to legal prosecution under the Indian Copyright Act, 1957.' },
 ];
 
-// ─── Animated Counter ────────────────────────────────────────────────────────
+// â”€â”€â”€ Animated Counter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -131,7 +131,7 @@ function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: str
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
-// ─── FAQ Accordion Item ───────────────────────────────────────────────────────
+// â”€â”€â”€ FAQ Accordion Item â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
@@ -158,7 +158,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-// ─── Hero floating card keywords ─────────────────────────────────────────────
+// â”€â”€â”€ Hero floating card keywords â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const HERO_TAGS = [
   { label: 'LLMs', color: 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-300 border-cyan-400/30' },
   { label: 'Prompt Engineering', color: 'bg-violet-500/15 text-violet-600 dark:text-violet-300 border-violet-400/30' },
@@ -170,7 +170,7 @@ const HERO_TAGS = [
   { label: 'MCP Foundations', color: 'bg-rose-500/15 text-rose-600 dark:text-rose-300 border-rose-400/30' },
 ];
 
-// ─── Main Component ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Main Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function HomePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -180,6 +180,7 @@ function HomePageContent() {
   const [selectedPlan, setSelectedPlan] = useState<'cohort' | 'expert_session' | 'consultation'>('cohort');
   const [topics, setTopics] = useState(getAllTopics());
   const [faqCategory, setFaqCategory] = useState('Courses');
+  const [selectedProgram, setSelectedProgram] = useState<'ai' | 'functional' | 'performance'>('ai');
   const isLoggedIn = Boolean(profile.userId || profile.email);
   const isEnrolled = profile.plan === 'pro' || profile.plan === 'enterprise';
 
@@ -217,6 +218,27 @@ function HomePageContent() {
     if (typeof window !== 'undefined' && (window.location.hash.includes('error=') || window.location.hash.includes('error_code='))) {
       window.history.replaceState(null, '', window.location.pathname);
     }
+
+    const handleHash = () => {
+      const hash = window.location.hash;
+      if (hash === '#automation-testing') {
+        setSelectedProgram('functional');
+        setTimeout(() => {
+          document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else if (hash === '#performance-testing') {
+        setSelectedProgram('performance');
+        setTimeout(() => {
+          document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else if (hash === '#pricing') {
+        document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
   useEffect(() => {
@@ -230,9 +252,9 @@ function HomePageContent() {
 
   const filteredFaqs = FAQS.filter((f) => f.category === faqCategory);
 
-  // ═════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   // LOGGED-IN VIEW: Only for ACTIVE PAID STUDENTS (isEnrolled)
-  // ═════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   if (isLoggedIn && isEnrolled) {
     return (
       <div className="relative overflow-hidden min-h-screen">
@@ -312,7 +334,7 @@ function HomePageContent() {
           )}
         </section>
 
-        {/* Modules Overview — logged-in users */}
+        {/* Modules Overview â€” logged-in users */}
         <section className="py-12 sm:py-20 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="mb-8 sm:mb-12">
             <span className="text-xs font-mono uppercase tracking-widest text-cyan-400">Structured Curriculum</span>
@@ -380,13 +402,13 @@ function HomePageContent() {
     );
   }
 
-  // ═════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   // GUEST / VISITOR VIEW: Full Marketing & Value Landing Page
-  // ═════════════════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   return (
     <div className="relative overflow-x-hidden">
 
-      {/* ── Ambient background glows ─────────────────────────────────────── */}
+      {/* â”€â”€ Ambient background glows â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-60 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-gradient-to-br from-cyan-500/10 via-blue-600/8 to-violet-600/10 blur-[140px] rounded-full" />
         <div className="absolute top-1/3 -right-40 w-[500px] h-[500px] bg-gradient-to-bl from-violet-500/8 to-transparent blur-[120px] rounded-full" />
@@ -394,9 +416,9 @@ function HomePageContent() {
 
       <OnboardingTour isOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
 
-      {/* ═══════════════════════════════════════════════════════════════════
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
           ACHIEVEMENT & EXCELLENCE AWARD BANNER (Above Fees Structure)
-      ═══════════════════════════════════════════════════════════════════ */}
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <section className="pt-10 sm:pt-14 pb-4 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -438,7 +460,7 @@ function HomePageContent() {
                 />
                 <div className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/20 transition-colors flex items-center justify-center">
                   <span className="opacity-0 group-hover:opacity-100 transition-opacity px-3.5 py-1.5 rounded-full bg-black/80 text-white text-xs font-mono font-bold shadow-lg">
-                    View on LinkedIn ↗
+                    View on LinkedIn â†—
                   </span>
                 </div>
               </a>
@@ -447,7 +469,7 @@ function HomePageContent() {
             {/* Right: Award Text & LinkedIn Link */}
             <div className="md:col-span-6 space-y-4 text-left">
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 border border-amber-300 dark:border-amber-500/40 text-amber-800 dark:text-amber-300 text-xs font-mono font-bold">
-                <span className="text-sm">🌟</span>
+                <span className="text-sm">ðŸŒŸ</span>
                 <span>Recognized for Excellence</span>
               </div>
 
@@ -480,9 +502,9 @@ function HomePageContent() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 1 — AI UPSKILLING JOURNEY & PRICING PLANS
-      ═══════════════════════════════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          SECTION 1 â€” AI UPSKILLING JOURNEY & PRICING PLANS
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <section id="pricing" className="relative pt-8 pb-20 sm:pt-14 sm:pb-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Notice Banner if redirected from protected portal */}
@@ -496,15 +518,15 @@ function HomePageContent() {
         )}
 
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 text-xs font-mono font-bold tracking-wider mb-4 shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
-            AI Training & Mentorship Programs
+            Training &amp; Mentorship Programs
           </div>
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15] mb-4">
             Choose Your{' '}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500">
-              AI Upskilling Journey
+              Upskilling Journey
             </span>
           </h1>
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
@@ -512,10 +534,34 @@ function HomePageContent() {
           </p>
         </div>
 
-        {/* 3 Pricing & Consultation Cards Grid */}
+        {/* â”€â”€ Program Selector Tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-10 sm:mb-14">
+          {[
+            { key: 'ai' as const, label: 'AI Training Program', icon: Brain, active: 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25 border-transparent', inactive: 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-cyan-400/60 hover:text-slate-900 dark:hover:text-white' },
+            { key: 'functional' as const, label: 'Automation Testing Program', icon: Code2, active: 'bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/25 border-transparent', inactive: 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-violet-400/60 hover:text-slate-900 dark:hover:text-white' },
+            { key: 'performance' as const, label: 'Performance Testing Program', icon: TrendingUp, active: 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/25 border-transparent', inactive: 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-amber-400/60 hover:text-slate-900 dark:hover:text-white' },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isActive = selectedProgram === tab.key;
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setSelectedProgram(tab.key)}
+                className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-2xl border font-bold text-sm transition-all duration-200 ${isActive ? tab.active : tab.inactive}`}
+              >
+                <Icon className="w-4 h-4 shrink-0" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* â”€â”€ AI Training Program Cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {selectedProgram === 'ai' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
           
-          {/* Card 1: 1-on-1 AI Consultation — Free */}
+          {/* Card 1: 1-on-1 AI Consultation â€” Free */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
             <div>
               <div className="flex items-center justify-between mb-4">
@@ -527,7 +573,7 @@ function HomePageContent() {
 
               <div className="mb-6">
                 <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹299</span>
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">â‚¹299</span>
                   <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">Free</span>
                   <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">100% Free</span>
                 </div>
@@ -577,7 +623,7 @@ function HomePageContent() {
             </a>
           </div>
 
-          {/* Card 2: Pay ₹19 — Live AI Webinar */}
+          {/* Card 2: Pay â‚¹19 â€” Live AI Webinar */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
             <div>
               <div className="flex items-center justify-between mb-4">
@@ -589,8 +635,8 @@ function HomePageContent() {
 
               <div className="mb-6">
                 <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹499</span>
-                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">₹19</span>
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">â‚¹499</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">â‚¹19</span>
                   <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Intro Offer</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
@@ -640,12 +686,12 @@ function HomePageContent() {
               }}
               className="w-full py-3.5 px-6 rounded-2xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-sm text-center transition-all shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
             >
-              <span>Join Webinar for ₹19</span>
+              <span>Join Webinar for â‚¹19</span>
               <ArrowRight className="w-4 h-4 text-cyan-400 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
 
-          {/* Card 3: Pay ₹9,999 — 4-Week Intensive Cohort (Flagship Tier) */}
+          {/* Card 3: Pay â‚¹9,999 â€” 4-Week Intensive Cohort (Flagship Tier) */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-white via-white to-cyan-50/30 dark:from-[#0D121F] dark:via-[#0D121F] dark:to-[#071324] border-2 border-cyan-400 dark:border-cyan-500 shadow-2xl shadow-cyan-500/20 ring-2 ring-cyan-400/20 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02]">
             {/* Top Badge */}
             <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-[11px] font-mono font-extrabold uppercase tracking-wider shadow-lg shadow-cyan-500/30 flex items-center gap-1.5">
@@ -660,8 +706,8 @@ function HomePageContent() {
 
               <div className="mb-4">
                 <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹20,000</span>
-                  <span className="text-4xl sm:text-5xl font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">₹9,999</span>
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">â‚¹20,000</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-cyan-600 dark:text-cyan-400 font-mono">â‚¹9,999</span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">(including 18% GST)</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
@@ -674,10 +720,10 @@ function HomePageContent() {
                 <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 block">
-                    ⭐ Main Program Highlight
+                    â­ Main Program Highlight
                   </span>
                   <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-snug block mt-0.5">
-                    Continue with Internship — 3 months after AI Training
+                    Continue with Internship â€” 3 months after AI Training
                   </span>
                 </div>
               </div>
@@ -694,7 +740,7 @@ function HomePageContent() {
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-cyan-500 shrink-0 mt-0.5" />
                   <span className="text-slate-700 dark:text-slate-200">
-                    <strong>All benefits from ₹19 & Free tiers included</strong>
+                    <strong>All benefits from â‚¹19 & Free tiers included</strong>
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
@@ -712,7 +758,7 @@ function HomePageContent() {
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-cyan-500 shrink-0 mt-0.5" />
                   <span className="text-slate-700 dark:text-slate-200">
-                    <strong>4–5 agentic AI portfolio projects</strong> with mentor code reviews
+                    <strong>4â€“5 agentic AI portfolio projects</strong> with mentor code reviews
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
@@ -748,11 +794,218 @@ function HomePageContent() {
           </div>
 
         </div>
+        )}
+
+        {/* ── Automation Testing Program Cards ────────────────────────────── */}
+        {selectedProgram === 'functional' && (
+        <div id="automation-testing" className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
+
+          {/* Card 1: Free Consultation */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Free Consultation</h3>
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Starter</span>
+              </div>
+              <div className="mb-6">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹299</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">Free</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">100% Free</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Get a personalized automation testing roadmap based on your background.</p>
+              </div>
+              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Personalized QA roadmap</strong> for automation testing career</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Career advisory for SDET &amp; QA Automation roles</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">1-on-1 session: Selenium, Playwright, Azure &amp; Jira guidance</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">CI/CD pipeline integration strategy</span></li>
+              </ul>
+            </div>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform" target="_blank" rel="noopener noreferrer" className="w-full py-3.5 px-6 rounded-2xl border-2 border-slate-300 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-500 text-slate-800 dark:text-white font-bold text-sm text-center transition-all flex items-center justify-center gap-2 group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50">
+              <span>Book Free Session</span><ArrowRight className="w-4 h-4 text-violet-500 group-hover:translate-x-0.5 transition-transform" />
+            </a>
+          </div>
+
+          {/* Card 2: ₹19 Webinar */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Live Testing Webinar</h3>
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">Popular</span>
+              </div>
+              <div className="mb-6">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹499</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">₹19</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Intro Offer</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Live webinar on Selenium &amp; Playwright automation with CI/CD integration.</p>
+              </div>
+              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>All Consultation features</strong> included</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Live Webinar:</strong> Selenium &amp; Playwright frameworks in action</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Azure DevOps &amp; CI/CD pipeline basics walkthrough</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Resume &amp; LinkedIn profile audit</span></li>
+              </ul>
+            </div>
+            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=expert_session')); } else { setSelectedPlan('expert_session'); setPaymentModalOpen(true); } }} className="w-full py-3.5 px-6 rounded-2xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-sm text-center transition-all shadow-lg flex items-center justify-center gap-2 group cursor-pointer">
+              <span>Join Webinar for ₹19</span><ArrowRight className="w-4 h-4 text-violet-400 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
+
+          {/* Card 3: ₹9,999 Flagship */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-white via-white to-violet-50/30 dark:from-[#0D121F] dark:via-[#0D121F] dark:to-[#0A0714] border-2 border-violet-400 dark:border-violet-500 shadow-2xl shadow-violet-500/20 ring-2 ring-violet-400/20 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02]">
+            <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-gradient-to-r from-violet-500 to-indigo-600 text-white text-[11px] font-mono font-extrabold uppercase tracking-wider shadow-lg shadow-violet-500/30 flex items-center gap-1.5">
+              <Zap className="w-3 h-3 fill-white" />Flagship Masterclass
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-4 mt-1">
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">4-Week Intensive Cohort</h3>
+              </div>
+              <div className="mb-4">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹20,000</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-violet-600 dark:text-violet-400 font-mono">₹9,999</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">(including 18% GST)</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Complete 4-week live training in automation testing + 3-month industry internship.</p>
+              </div>
+              <div className="mb-5 p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-violet-500/15 via-indigo-500/10 to-blue-500/15 border-2 border-violet-500/40 dark:border-violet-400/40 flex items-start gap-2.5 shadow-sm">
+                <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-violet-700 dark:text-violet-300 block">⭐ Main Program Highlight</span>
+                  <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-snug block mt-0.5">Continue with Internship — 3 months after Automation Testing Training</span>
+                </div>
+              </div>
+              <div className="h-px w-full bg-violet-100 dark:bg-violet-950 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /><span className="text-slate-900 dark:text-white font-bold"><strong>3-Month Industry Internship</strong> right after 4-week training</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Selenium &amp; Playwright</strong> — end-to-end functional automation</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Azure DevOps, Jira &amp; CI/CD</strong> pipeline integration</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>4–5 automation projects</strong> with mentor code reviews</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Dual Certification:</strong> 3-Month Internship + Program Completion</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200">Mock interviews, resume building &amp; LinkedIn profile optimization</span></li>
+              </ul>
+            </div>
+            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=cohort')); } else { setSelectedPlan('cohort'); setPaymentModalOpen(true); } }} className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-violet-500 via-indigo-600 to-blue-600 hover:brightness-110 text-white font-bold text-sm sm:text-base text-center transition-all shadow-xl shadow-violet-500/30 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5">
+              <span>Enroll in 4-Week Program</span><ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+        </div>
+        )}
+
+        {/* ── Performance Testing Program Cards ───────────────────────────── */}
+        {selectedProgram === 'performance' && (
+        <div id="performance-testing" className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
+
+          {/* Card 1: Free Consultation */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Free Consultation</h3>
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Starter</span>
+              </div>
+              <div className="mb-6">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹299</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">Free</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">100% Free</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Personalized performance engineering roadmap based on your background.</p>
+              </div>
+              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Personalized performance testing roadmap</strong> for your profile</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Career advisory for Performance Engineer &amp; SRE roles</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">1-on-1 session: JMeter, K6, LoadRunner &amp; APM guidance</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">APM tools overview: Grafana, Datadog &amp; AppDynamics</span></li>
+              </ul>
+            </div>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform" target="_blank" rel="noopener noreferrer" className="w-full py-3.5 px-6 rounded-2xl border-2 border-slate-300 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-500 text-slate-800 dark:text-white font-bold text-sm text-center transition-all flex items-center justify-center gap-2 group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50">
+              <span>Book Free Session</span><ArrowRight className="w-4 h-4 text-amber-500 group-hover:translate-x-0.5 transition-transform" />
+            </a>
+          </div>
+
+          {/* Card 2: ₹19 Webinar */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Live Perf Webinar</h3>
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">Popular</span>
+              </div>
+              <div className="mb-6">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹499</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">₹19</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Intro Offer</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Live interactive webinar covering JMeter, K6 &amp; APM monitoring essentials.</p>
+              </div>
+              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>All Consultation features</strong> included</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Live Webinar:</strong> JMeter &amp; K6 load testing fundamentals</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Grafana &amp; Datadog monitoring dashboards hands-on</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Resume &amp; LinkedIn profile audit for performance roles</span></li>
+              </ul>
+            </div>
+            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=expert_session')); } else { setSelectedPlan('expert_session'); setPaymentModalOpen(true); } }} className="w-full py-3.5 px-6 rounded-2xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-sm text-center transition-all shadow-lg flex items-center justify-center gap-2 group cursor-pointer">
+              <span>Join Webinar for ₹19</span><ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
+
+          {/* Card 3: ₹9,999 Flagship */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-white via-white to-amber-50/30 dark:from-[#0D121F] dark:via-[#0D121F] dark:to-[#130A00] border-2 border-amber-400 dark:border-amber-500 shadow-2xl shadow-amber-500/20 ring-2 ring-amber-400/20 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02]">
+            <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[11px] font-mono font-extrabold uppercase tracking-wider shadow-lg shadow-amber-500/30 flex items-center gap-1.5">
+              <Zap className="w-3 h-3 fill-white" />Flagship Masterclass
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-4 mt-1">
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">4-Week Intensive Cohort</h3>
+              </div>
+              <div className="mb-4">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹20,000</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-amber-600 dark:text-amber-400 font-mono">₹9,999</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">(including 18% GST)</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Complete 4-week live performance testing training + 3-month industry internship.</p>
+              </div>
+              <div className="mb-5 p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-yellow-500/15 border-2 border-amber-500/40 dark:border-amber-400/40 flex items-start gap-2.5 shadow-sm">
+                <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-300 block">⭐ Main Program Highlight</span>
+                  <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-snug block mt-0.5">Continue with Internship — 3 months after Performance Testing Training</span>
+                </div>
+              </div>
+              <div className="h-px w-full bg-amber-100 dark:bg-amber-950 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /><span className="text-slate-900 dark:text-white font-bold"><strong>3-Month Industry Internship</strong> right after 4-week training</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>JMeter, LoadRunner &amp; K6</strong> — industry-grade load &amp; stress testing</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>AppDynamics, Grafana &amp; Datadog</strong> — APM &amp; observability</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Azure DevOps, Jira &amp; CI/CD</strong> pipeline integration</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>4–5 real-world performance projects</strong> with mentor reviews</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Dual Certification:</strong> 3-Month Internship + Program Completion</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200">Mock interviews, resume building &amp; LinkedIn profile optimization</span></li>
+              </ul>
+            </div>
+            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=cohort')); } else { setSelectedPlan('cohort'); setPaymentModalOpen(true); } }} className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:brightness-110 text-white font-bold text-sm sm:text-base text-center transition-all shadow-xl shadow-amber-500/30 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5">
+              <span>Enroll in 4-Week Program</span><ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+        </div>
+        )}
+
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 1B — PROGRAM POLICIES & TERMS OF ENROLLMENT
-      ═══════════════════════════════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          SECTION 1B â€” PROGRAM POLICIES & TERMS OF ENROLLMENT
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <section className="relative -mt-6 sm:-mt-10 mb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="rounded-3xl p-6 sm:p-8 bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-200 dark:border-slate-800 pb-5">
@@ -830,9 +1083,9 @@ function HomePageContent() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 5 — WHY CHOOSE US
-      ═══════════════════════════════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          SECTION 5 â€” WHY CHOOSE US
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 sm:mb-16">
           <span className="inline-block text-xs font-mono uppercase tracking-widest text-cyan-600 dark:text-cyan-400 mb-3">
@@ -845,7 +1098,7 @@ function HomePageContent() {
             </span>
           </h2>
           <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            We built what we wish existed — a no-fluff, depth-first AI engineering curriculum for serious developers.
+            We built what we wish existed â€” a no-fluff, depth-first AI engineering curriculum for serious developers.
           </p>
         </div>
 
@@ -853,7 +1106,7 @@ function HomePageContent() {
           {[
             {
               icon: <BookOpen className="w-5 h-5 sm:w-6 sm:h-6" />,
-              title: '56 Topics — Video + Live Sessions',
+              title: '56 Topics â€” Video + Live Sessions',
               desc: 'Every topic is covered through recorded video lectures and reinforced through live sessions with your mentor. Maximum depth, maximum flexibility.',
               color: 'from-cyan-500 to-blue-600',
               points: [],
@@ -867,15 +1120,15 @@ function HomePageContent() {
             },
             {
               icon: <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />,
-              title: '4–5 Agentic, Market-Ready Projects',
-              desc: 'Build real, portfolio-worthy AI projects — not just theory exercises. Walk away with work you can demo in any job interview.',
+              title: '4â€“5 Agentic, Market-Ready Projects',
+              desc: 'Build real, portfolio-worthy AI projects â€” not just theory exercises. Walk away with work you can demo in any job interview.',
               color: 'from-violet-500 to-pink-500',
               points: [],
             },
             {
               icon: <Users className="w-5 h-5 sm:w-6 sm:h-6" />,
               title: 'Personalized Mentor',
-              desc: 'Every student gets a dedicated mentor for personalized training, doubt-solving, and career guidance — one-on-one, not generic group sessions.',
+              desc: 'Every student gets a dedicated mentor for personalized training, doubt-solving, and career guidance â€” one-on-one, not generic group sessions.',
               color: 'from-amber-500 to-orange-500',
               points: [],
             },
@@ -914,9 +1167,9 @@ function HomePageContent() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 6 — FAQ
-      ═══════════════════════════════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          SECTION 6 â€” FAQ
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <section className="py-16 sm:py-24 bg-slate-50 dark:bg-slate-900/60">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
@@ -955,9 +1208,9 @@ function HomePageContent() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 7 — CONTACT / CTA BANNER
-      ═══════════════════════════════════════════════════════════════════ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          SECTION 7 â€” CONTACT / CTA BANNER
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
       <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative rounded-3xl overflow-hidden">
           {/* BG gradient */}
@@ -1014,7 +1267,7 @@ function HomePageContent() {
         </div>
       </section>
 
-      {/* ─── Floating WhatsApp button ─────────────────────────────────────── */}
+      {/* â”€â”€â”€ Floating WhatsApp button â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <a
         href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20learn%20more%20about%20your%20AI%20engineering%20curriculum"
         target="_blank"
@@ -1048,3 +1301,4 @@ export default function HomePage() {
     </React.Suspense>
   );
 }
+
