@@ -1,17 +1,20 @@
 import type { Metadata, Viewport } from 'next';
-import { Space_Grotesk, Inter } from 'next/font/google';
+import { Manrope } from 'next/font/google';
 import './globals.css';
 import { ClientAppWrapper } from '@/components/ClientAppWrapper';
 
-const spaceGrotesk = Space_Grotesk({
+// Waynautic brand font — used for both headings and body
+const manropeHeading = Manrope({
   subsets: ['latin'],
   variable: '--font-heading',
+  weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
 });
 
-const inter = Inter({
+const manropeBody = Manrope({
   subsets: ['latin'],
   variable: '--font-body',
+  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 });
 
@@ -46,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${manropeHeading.variable} ${manropeBody.variable}`} suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" href="/Waynautic%20Logo%20Icon%20Only.png" />
         <link rel="shortcut icon" type="image/png" href="/Waynautic%20Logo%20Icon%20Only.png" />
