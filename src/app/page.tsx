@@ -51,6 +51,7 @@ import { getAllTopics, getResumeTopic, getResumeLearningUrl } from '@/lib/curric
 import { useWaynauticStore } from '@/lib/store';
 import { OnboardingTour } from '@/components/OnboardingTour';
 import { RazorpayModal } from '@/components/RazorpayModal';
+import { VideoPlayer } from '@/components/VideoPlayer';
 
 // --- Module icon mapping -----------------------------------------------------
 const MODULE_ICON_MAP: Record<string, React.ReactNode> = {
@@ -265,7 +266,7 @@ function HomePageContent() {
         <OnboardingTour isOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
 
         {/* Hero Section */}
-        <section className="relative pt-8 pb-16 sm:pt-20 sm:pb-28 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <section className="relative pt-8 pb-16 sm:pt-20 sm:pb-28 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
           {/* Top Announcement Badge */}
           <div className="flex justify-center mb-5 sm:mb-6">
             <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 text-[11px] sm:text-xs font-mono tracking-wide shadow-sm shadow-cyan-500/10 max-w-full text-center flex-wrap justify-center gap-1.5">
@@ -335,7 +336,7 @@ function HomePageContent() {
         </section>
 
         {/* Modules Overview — logged-in users */}
-        <section className="py-12 sm:py-20 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <section className="py-12 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
           <div className="mb-8 sm:mb-12">
             <span className="text-xs font-mono uppercase tracking-widest text-cyan-400">Structured Curriculum</span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white">10 Core Modules</h2>
@@ -419,7 +420,7 @@ function HomePageContent() {
       {/* ===================================================================
           ACHIEVEMENT & EXCELLENCE AWARD BANNER (Above Fees Structure)
       =================================================================== */}
-      <section className="pt-10 sm:pt-14 pb-4 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section className="pt-10 sm:pt-14 pb-4 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
@@ -427,7 +428,7 @@ function HomePageContent() {
             <Award className="w-4 h-4 text-amber-500" />
             Industry Recognition & Accreditations
           </div>
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15] mb-3">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15] mb-3 break-words">
             Learn from an{' '}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600">
               Award-Winning
@@ -440,7 +441,7 @@ function HomePageContent() {
         </div>
 
         {/* Certificate & Award Card */}
-        <div className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-slate-900/90 border-2 border-amber-300/60 dark:border-amber-500/30 shadow-xl dark:shadow-amber-500/5">
+        <div className="p-4 xs:p-6 sm:p-8 lg:p-10 rounded-3xl bg-white dark:bg-slate-900/90 border-2 border-amber-300/60 dark:border-amber-500/30 shadow-xl dark:shadow-amber-500/5">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             {/* Left: Certificate Image */}
@@ -505,7 +506,7 @@ function HomePageContent() {
       {/* ===================================================================
           SECTION 1 — AI UPSKILLING JOURNEY & PRICING PLANS
       =================================================================== */}
-      <section id="pricing" className="relative pt-8 pb-20 sm:pt-14 sm:pb-28 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section id="pricing" className="relative pt-8 pb-20 sm:pt-14 sm:pb-28 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         
         {/* Notice Banner if redirected from protected portal */}
         {noticeParam === 'enroll_required' && (
@@ -523,7 +524,7 @@ function HomePageContent() {
             <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
             Training &amp; Mentorship Programs
           </div>
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15] mb-4">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15] mb-4 break-words">
             Choose Your{' '}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500">
               Upskilling Journey
@@ -532,6 +533,50 @@ function HomePageContent() {
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
             Personalized roadmaps, 1-on-1 industry mentorship, and comprehensive cohort training tailored for developers and tech professionals.
           </p>
+        </div>
+
+        {/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+            LIVE SESSION PREVIEW & TEACHING METHODOLOGY SHOWCASE (Directly Above Fees Cards)
+        = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  */}
+        <div className="max-w-4xl mx-auto mb-12 sm:mb-16">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 text-xs font-mono font-bold tracking-wider mb-3 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse" />
+              Live Class Sneak Peek
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              See How We Teach in Real Live Sessions
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2 max-w-xl mx-auto leading-relaxed">
+              Watch an authentic excerpt from our live cohort mentorship classes. Experience our hands-on coding, live problem-solving, and mentor-student interaction before enrolling.
+            </p>
+          </div>
+
+          {/* Embedded Video Player Window */}
+          <div className="rounded-3xl overflow-hidden border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D121F] shadow-2xl p-2 sm:p-3">
+            <VideoPlayer
+              url="https://youtu.be/WAjTmgYvjA8"
+              title="Waynautic Live Training Masterclass — Live Session Sneak Peek"
+              topicId="live-session-preview"
+              moduleTitle="Waynautic Live Mentorship Class"
+            />
+          </div>
+
+          {/* Value / Trust Badges below video */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4 text-center">
+            <div className="p-3 rounded-2xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2.5 shadow-sm">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">100% Practical &amp; Code-First</span>
+            </div>
+            <div className="p-3 rounded-2xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2.5 shadow-sm">
+              <CheckCircle2 className="w-4 h-4 text-indigo-500 shrink-0" />
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Live Doubt Clearing &amp; Q&amp;A</span>
+            </div>
+            <div className="p-3 rounded-2xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2.5 shadow-sm">
+              <CheckCircle2 className="w-4 h-4 text-cyan-500 shrink-0" />
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Real Industry Mentors</span>
+            </div>
+          </div>
         </div>
 
         {/* -- Program Selector Tabs ----------------------------------- */}
@@ -548,7 +593,7 @@ function HomePageContent() {
                 key={tab.key}
                 type="button"
                 onClick={() => setSelectedProgram(tab.key)}
-                className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-2xl border font-bold text-sm transition-all duration-200 ${isActive ? tab.active : tab.inactive}`}
+                className={`flex items-center justify-center gap-2 px-3.5 sm:px-5 py-2.5 rounded-2xl border font-bold text-xs sm:text-sm transition-all duration-200 w-full xs:w-auto ${isActive ? tab.active : tab.inactive}`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
                 <span>{tab.label}</span>
@@ -1006,7 +1051,7 @@ function HomePageContent() {
       {/* ===================================================================
           SECTION 1B — PROGRAM POLICIES & TERMS OF ENROLLMENT
       =================================================================== */}
-      <section className="relative -mt-6 sm:-mt-10 mb-12 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section className="relative -mt-6 sm:-mt-10 mb-12 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         <div className="rounded-3xl p-6 sm:p-8 bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-200 dark:border-slate-800 pb-5">
             <div>
@@ -1086,7 +1131,7 @@ function HomePageContent() {
       {/* ===================================================================
           SECTION 5 — WHY CHOOSE US
       =================================================================== */}
-      <section id="contact" className="py-16 sm:py-24 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section id="contact" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         <div className="text-center mb-12 sm:mb-16">
           <span className="inline-block text-xs font-mono uppercase tracking-widest text-cyan-600 dark:text-cyan-400 mb-3">
             Our Advantage
@@ -1171,7 +1216,7 @@ function HomePageContent() {
           SECTION 6 — FAQ
       =================================================================== */}
       <section className="py-16 sm:py-24 bg-slate-50 dark:bg-slate-900/60">
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
           {/* Header */}
           <div className="text-center mb-10 sm:mb-14">
             <span className="inline-block text-xs font-mono uppercase tracking-widest text-cyan-600 dark:text-cyan-400 mb-3">FAQs</span>
@@ -1211,7 +1256,7 @@ function HomePageContent() {
       {/* ===================================================================
           SECTION 7 — CONTACT / CTA BANNER
       =================================================================== */}
-      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         <div className="relative rounded-3xl overflow-hidden">
           {/* BG gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-cyan-950/80 to-violet-950/80" />

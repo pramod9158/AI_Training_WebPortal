@@ -163,30 +163,30 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     : [];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white dark:bg-[#0B0F19] transition-colors">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 h-20 sm:h-[84px] flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-sm border-none shadow-none transition-colors">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 sm:py-5 lg:py-6 flex items-center justify-between">
         
-        {/* Left Section: Waynautic Logo */}
+        {/* Left Section: Waynautic Logo — exactly matching waynautic.com (h-10 w-auto lg:h-14) */}
         <div className="flex items-center shrink-0">
-          <Link href="/" className="flex items-center group py-1 shrink-0" aria-label="Waynautic Academy Home">
+          <Link href="/" className="flex items-center gap-2 group py-1 shrink-0" aria-label="Waynautic Academy Home">
             <Image
               src="/Waynautic%20Logo%20New.png"
               alt="Waynautic Technologies"
-              width={260}
-              height={64}
-              className="h-10 sm:h-11 md:h-12 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+              width={310}
+              height={63}
+              className="h-10 sm:h-11 lg:h-14 w-auto object-contain transition-transform group-hover:scale-[1.02]"
               priority
             />
           </Link>
         </div>
 
-        {/* Center Section: Navigation Links (Training Programs, Curriculum, About Us) */}
-        <div className="hidden md:flex flex-1 justify-center px-4">
-          <nav className="flex items-center space-x-8 lg:space-x-12">
+        {/* Center Section: Navigation Links (Training Programs, Curriculum, About Us) — exactly matching waynautic.com */}
+        <div className="hidden lg:flex flex-1 justify-center px-4">
+          <nav className="flex items-center gap-8 lg:gap-10">
             {/* 1. Training Programs */}
             <Link
               href="/#pricing"
-              className="text-slate-800 dark:text-slate-200 hover:text-[#5f57e8] dark:hover:text-[#817bfa] font-medium text-base transition-colors"
+              className="text-[17px] lg:text-[18px] font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap"
             >
               Training Programs
             </Link>
@@ -196,16 +196,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <button
                 type="button"
                 onClick={() => setCurriculumDropdownOpen((v) => !v)}
-                className={`flex items-center gap-1.5 text-base font-medium transition-colors cursor-pointer ${
+                className={`flex items-center gap-1.5 text-[17px] lg:text-[18px] font-medium transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                   pathname?.startsWith('/curriculum')
-                    ? 'text-[#5f57e8] dark:text-[#817bfa] font-semibold'
-                    : 'text-slate-800 dark:text-slate-200 hover:text-[#5f57e8] dark:hover:text-[#817bfa]'
+                    ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
+                    : 'text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400'
                 }`}
                 aria-expanded={curriculumDropdownOpen}
                 aria-label="Curriculum programs"
               >
                 <span>Curriculum</span>
-                <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${curriculumDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${curriculumDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Curriculum Dropdown Panel */}
@@ -227,7 +227,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                           <Icon className="w-4 h-4" />
                         </div>
                         <div>
-                          <div className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-[#5f57e8] dark:group-hover:text-cyan-300 transition-colors leading-tight">{prog.label}</div>
+                          <div className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-cyan-300 transition-colors leading-tight">{prog.label}</div>
                           <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{prog.desc}</div>
                         </div>
                       </Link>
@@ -240,10 +240,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             {/* 3. About Us */}
             <Link
               href="/about"
-              className={`text-base font-medium transition-colors ${
+              className={`text-[17px] lg:text-[18px] font-medium transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                 pathname === '/about'
-                  ? 'text-[#5f57e8] dark:text-[#817bfa] font-semibold'
-                  : 'text-slate-800 dark:text-slate-200 hover:text-[#5f57e8] dark:hover:text-[#817bfa]'
+                  ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
+                  : 'text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400'
               }`}
             >
               About Us
@@ -256,10 +256,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-base font-medium transition-colors ${
+                  className={`text-[17px] lg:text-[18px] font-medium transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                     isActive
-                      ? 'text-[#5f57e8] dark:text-[#817bfa] font-semibold'
-                      : 'text-slate-800 dark:text-slate-200 hover:text-[#5f57e8] dark:hover:text-[#817bfa]'
+                      ? 'text-indigo-600 dark:text-indigo-400 font-semibold'
+                      : 'text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400'
                   }`}
                 >
                   {link.label}
@@ -336,11 +336,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
           {/* Notification Bell (Logged-in only) */}
           {isLoggedIn && <NotificationDrawer />}
 
-          {/* Contact Us Button (Logged in desktop view) */}
+          {/* Contact Us Button (Logged in desktop view) — exactly matching waynautic.com */}
           {isLoggedIn && (
             <Link
               href="/#contact"
-              className="hidden lg:inline-flex items-center justify-center px-6 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-[#5f57e8] hover:bg-[#4e45e4] text-white font-medium text-base transition-all shadow-sm shrink-0"
+              className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 lg:px-6 lg:py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[17px] lg:text-[18px] font-medium rounded-md transition shadow-sm shrink-0 whitespace-nowrap"
             >
               Contact Us
             </Link>
@@ -499,29 +499,29 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               )}
             </div>
           ) : (
-            <div className="hidden sm:flex items-center gap-4 sm:gap-6">
+            <div className="hidden lg:flex items-center gap-6 lg:gap-8">
               <Link
                 href="/login"
-                className="text-slate-800 dark:text-slate-200 hover:text-[#5f57e8] dark:hover:text-white font-medium text-base transition-colors shrink-0"
+                className="text-[17px] lg:text-[18px] font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition whitespace-nowrap shrink-0"
               >
                 Log in
               </Link>
               <Link
                 href="/#contact"
-                className="inline-flex items-center justify-center px-6 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-[#5f57e8] hover:bg-[#4e45e4] text-white font-medium text-base transition-all shadow-sm shrink-0"
+                className="inline-flex items-center justify-center px-5 py-2.5 lg:px-6 lg:py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[17px] lg:text-[18px] font-medium rounded-md transition shadow-sm shrink-0 whitespace-nowrap"
               >
                 Contact Us
               </Link>
             </div>
           )}
 
-          {/* Mobile Drawer Hamburger Button */}
+          {/* Mobile Drawer Hamburger Button — matching waynautic.com */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center"
+            className="lg:hidden p-2 text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg focus:outline-none min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
           </button>
 
         </div>
@@ -529,7 +529,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-[#0D121F] border-b-2 border-slate-200 dark:border-slate-800 px-4 pt-3 pb-6 space-y-2.5 animate-in slide-in-from-top-4 duration-200 shadow-2xl max-h-[calc(100dvh-4rem)] overflow-y-auto">
+        <div className="lg:hidden bg-white dark:bg-[#0D121F] border-b-2 border-slate-200 dark:border-slate-800 px-4 pt-3 pb-6 space-y-2.5 animate-in slide-in-from-top-4 duration-200 shadow-2xl max-h-[calc(100dvh-4rem)] overflow-y-auto">
           
           {/* User Profile Header in Mobile Drawer (or Login Button when logged out) */}
           {isLoggedIn ? (
@@ -600,18 +600,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               </button>
             </div>
           ) : (
-            <div className="flex flex-col gap-2 mb-3">
+            <div className="flex flex-col gap-2.5 mb-3">
               <Link
                 href="/#contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center py-3 bg-[#5f57e8] hover:bg-[#4e45e4] text-white font-semibold text-base rounded-xl shadow-sm min-h-[44px] transition-colors"
+                className="w-full flex items-center justify-center py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-base rounded-md shadow-sm min-h-[44px] transition-colors"
               >
                 Contact Us
               </Link>
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center space-x-2 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-bold text-sm rounded-xl shadow-sm min-h-[44px] transition-colors"
+                className="w-full flex items-center justify-center space-x-2 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white font-medium text-base rounded-md shadow-sm min-h-[44px] transition-colors"
               >
                 <LogIn className="w-4 h-4" />
                 <span>Log In to Account</span>

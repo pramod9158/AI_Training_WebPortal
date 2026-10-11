@@ -64,7 +64,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="bg-slate-50 dark:bg-[#070A12] border-t border-slate-200 dark:border-slate-800/80 pt-10 pb-8 text-slate-600 dark:text-slate-400 text-sm transition-colors">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         
         {/* ==================================================================== */}
         {/* PLATFORM NAVIGATION & LINKS (5-COLUMN GRID)                          */}
@@ -197,7 +197,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 space-y-3 sm:space-y-0">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 space-y-3 sm:space-y-0 text-center sm:text-left">
           <p>© {new Date().getFullYear()} Waynautic Academy. All rights reserved. Pune, Maharashtra.</p>
           <div className="flex items-center space-x-4">
             <Link href="/terms" className="hover:text-slate-800 dark:hover:text-slate-300 transition-colors font-medium">

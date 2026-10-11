@@ -248,15 +248,14 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
 
         {/* ── Auth UI layer (sits above the blurred background) ────────────── */}
         <div className="relative z-10 flex flex-col min-h-screen">
-          {/* Minimal header with exact same logo as landing page */}
-          <header className="w-full h-20 px-4 flex items-center justify-center border-b border-slate-200 dark:border-slate-800/80 bg-white/95 dark:bg-[#0B0F19]/90 backdrop-blur-md shadow-sm transition-colors">
+          <header className="w-full h-20 px-4 flex items-center justify-center bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-sm transition-colors border-none shadow-none">
             <Link href="/" className="inline-flex items-center group py-1 transition-transform hover:scale-[1.02]" aria-label="Waynautic Academy Home">
               <Image
                 src="/Waynautic%20Logo%20New.png"
                 alt="Waynautic Academy"
-                width={360}
-                height={88}
-                className="h-11 xs:h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+                width={310}
+                height={63}
+                className="h-10 sm:h-11 lg:h-14 w-auto object-contain transition-transform group-hover:scale-[1.02]"
                 priority
               />
             </Link>

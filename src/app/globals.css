@@ -333,6 +333,10 @@ html:not(.dark) {
   .bg-\[\#5850EC\],
   .bg-\[\#5850EC\] span,
   .bg-\[\#5850EC\] svg,
+  .bg-indigo-600,
+  .bg-indigo-600 *,
+  .bg-indigo-500,
+  .bg-indigo-500 *,
   button[type="submit"].bg-\[\#5850EC\],
   button[type="submit"].bg-\[\#5850EC\] span,
   button[type="submit"].bg-\[\#5850EC\] svg,
@@ -575,22 +579,11 @@ html:not(.dark) {
     border-color: #E5E5E5 !important;
   }
 
-  header {
-    background-color: rgba(255, 255, 255, 0.95) !important;
-    border-bottom: 2px solid #E5E5E5 !important;
-  }
-
-  header nav a {
-    border: 2px solid transparent !important;
-    font-weight: 700 !important;
-  }
-
-  header nav a.bg-cyan-950\/40,
-  header nav a[class*="text-cyan-400"] {
-    background-color: #DDF4FF !important;
-    color: #1899D6 !important;
-    border: 2px solid #84D8FF !important;
-    box-shadow: 0 2px 0 0 #84D8FF !important;
+  header,
+  header > div {
+    border: none !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
   }
 
   footer {
