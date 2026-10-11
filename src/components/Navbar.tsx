@@ -149,9 +149,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   // Curriculum sub-programs for dropdown
   const curriculumPrograms = [
-    { href: '/curriculum', label: 'AI Training Program', icon: Brain, color: 'text-cyan-600 dark:text-cyan-400', desc: 'LLMs, Prompt Eng, Vector DBs, RAG' },
-    { href: '/#automation-testing', label: 'Automation Testing Program', icon: Code2, color: 'text-violet-600 dark:text-violet-400', desc: 'Selenium, Playwright, Azure, Jira' },
-    { href: '/#performance-testing', label: 'Performance Testing Program', icon: Zap, color: 'text-amber-600 dark:text-amber-400', desc: 'JMeter, K6, Grafana, Datadog' },
+    { href: '/#automation-testing', label: 'Automation Testing Program', icon: Code2, color: 'text-violet-600 dark:text-violet-400', desc: 'Selenium, Playwright, Azure, Jira, CI/CD' },
+    { href: '/#performance-testing', label: 'Performance Testing Program', icon: Zap, color: 'text-amber-600 dark:text-amber-400', desc: 'JMeter, LoadRunner, K6, Grafana, Datadog' },
+    { href: '/#ai-training', label: 'AI Training Program', icon: Brain, color: 'text-cyan-600 dark:text-cyan-400', desc: 'LLMs, Prompt Eng, Vector DBs, RAG, Agents' },
   ];
 
   const dashboardLink = isLoggedIn ? [{ href: '/dashboard', label: 'Dashboard', icon: Trophy }] : [];

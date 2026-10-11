@@ -181,7 +181,7 @@ function HomePageContent() {
   const [selectedPlan, setSelectedPlan] = useState<'cohort' | 'expert_session' | 'consultation'>('cohort');
   const [topics, setTopics] = useState(getAllTopics());
   const [faqCategory, setFaqCategory] = useState('Courses');
-  const [selectedProgram, setSelectedProgram] = useState<'ai' | 'functional' | 'performance'>('ai');
+  const [selectedProgram, setSelectedProgram] = useState<'ai' | 'functional' | 'performance'>('functional');
   const isLoggedIn = Boolean(profile.userId || profile.email);
   const isEnrolled = profile.plan === 'pro' || profile.plan === 'enterprise';
 
@@ -229,6 +229,11 @@ function HomePageContent() {
         }, 100);
       } else if (hash === '#performance-testing') {
         setSelectedProgram('performance');
+        setTimeout(() => {
+          document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else if (hash === '#ai-training') {
+        setSelectedProgram('ai');
         setTimeout(() => {
           document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
         }, 100);
@@ -579,32 +584,436 @@ function HomePageContent() {
           </div>
         </div>
 
-        {/* -- Program Selector Tabs ----------------------------------- */}
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-10 sm:mb-14">
-          {[
-            { key: 'ai' as const, label: 'AI Training Program', icon: Brain, active: 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25 border-transparent', inactive: 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-cyan-400/60 hover:text-slate-900 dark:hover:text-white' },
-            { key: 'functional' as const, label: 'Automation Testing Program', icon: Code2, active: 'bg-gradient-to-r from-violet-500 to-indigo-600 text-white shadow-lg shadow-violet-500/25 border-transparent', inactive: 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-violet-400/60 hover:text-slate-900 dark:hover:text-white' },
-            { key: 'performance' as const, label: 'Performance Testing Program', icon: TrendingUp, active: 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/25 border-transparent', inactive: 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-amber-400/60 hover:text-slate-900 dark:hover:text-white' },
-          ].map((tab) => {
-            const Icon = tab.icon;
-            const isActive = selectedProgram === tab.key;
-            return (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => setSelectedProgram(tab.key)}
-                className={`flex items-center justify-center gap-2 px-3.5 sm:px-5 py-2.5 rounded-2xl border font-bold text-xs sm:text-sm transition-all duration-200 w-full xs:w-auto ${isActive ? tab.active : tab.inactive}`}
-              >
-                <Icon className="w-4 h-4 shrink-0" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
+        {/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+            3-TRACK PROGRAM SELECTOR — HIGH VISIBILITY SHOWCASE
+            Track 01: Automation Testing Program
+            Track 02: Performance Testing Program
+            Track 03: AI Training Program
+        = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  */}
+        <div className="max-w-6xl mx-auto mb-10 sm:mb-14">
+          
+          {/* Section Guide Header */}
+          <div className="text-center mb-6">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 mb-2 shadow-sm">
+              ✨ 3 Specialized Career Tracks Available
+            </span>
+            <p className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
+              Click any of the 3 tracks below to switch fees structure, syllabus &amp; 3-month internship:
+            </p>
+          </div>
+
+          {/* 3 Prominent Side-by-Side Track Switcher Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 items-stretch">
+            
+            {/* TRACK 01: Automation Testing Program */}
+            <button
+              type="button"
+              onClick={() => setSelectedProgram('functional')}
+              className={`text-left p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 flex flex-col justify-between cursor-pointer relative overflow-hidden group ${
+                selectedProgram === 'functional'
+                  ? 'bg-violet-50/80 dark:bg-[#130E26] border-violet-500 shadow-xl shadow-violet-500/15 ring-2 ring-violet-500/30'
+                  : 'bg-white dark:bg-[#0D121F] border-slate-200 dark:border-slate-800 hover:border-violet-300 dark:hover:border-violet-700 hover:shadow-lg'
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-extrabold uppercase tracking-wider ${
+                    selectedProgram === 'functional'
+                      ? 'bg-violet-600 text-white shadow-sm'
+                      : 'bg-violet-100 dark:bg-violet-950/70 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800'
+                  }`}>
+                    Track 01 • Automation
+                  </span>
+                  {selectedProgram === 'functional' ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-violet-600 dark:text-violet-400">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Viewing Plans</span>
+                    </span>
+                  ) : (
+                    <span className="text-[11px] font-semibold text-slate-400 group-hover:text-violet-500 transition-colors">
+                      Click to View
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                    selectedProgram === 'functional'
+                      ? 'bg-violet-600 text-white'
+                      : 'bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400'
+                  }`}>
+                    <Code2 className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                    Automation Testing Program
+                  </h3>
+                </div>
+
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                  Master end-to-end automation with industry frameworks, CI/CD pipelines &amp; internship.
+                </p>
+
+                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-800">
+                  {['Selenium', 'Playwright', 'Azure DevOps', 'Jira', 'CI/CD'].map((tool) => (
+                    <span
+                      key={tool}
+                      className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-violet-100/70 dark:bg-violet-950/50 text-violet-800 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800/40"
+                    >
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-dashed border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-violet-600 dark:text-violet-400">
+                <span>{selectedProgram === 'functional' ? 'Current Active Plans' : 'Switch to Automation'}</span>
+                <ArrowRight className={`w-3.5 h-3.5 transition-transform ${selectedProgram === 'functional' ? 'translate-x-1' : 'group-hover:translate-x-1'}`} />
+              </div>
+            </button>
+
+            {/* TRACK 02: Performance Testing Program */}
+            <button
+              type="button"
+              onClick={() => setSelectedProgram('performance')}
+              className={`text-left p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 flex flex-col justify-between cursor-pointer relative overflow-hidden group ${
+                selectedProgram === 'performance'
+                  ? 'bg-amber-50/80 dark:bg-[#1A1407] border-amber-500 shadow-xl shadow-amber-500/15 ring-2 ring-amber-500/30'
+                  : 'bg-white dark:bg-[#0D121F] border-slate-200 dark:border-slate-800 hover:border-amber-300 dark:hover:border-amber-700 hover:shadow-lg'
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-extrabold uppercase tracking-wider ${
+                    selectedProgram === 'performance'
+                      ? 'bg-amber-600 text-white shadow-sm'
+                      : 'bg-amber-100 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                  }`}>
+                    Track 02 • Performance
+                  </span>
+                  {selectedProgram === 'performance' ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 dark:text-amber-400">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Viewing Plans</span>
+                    </span>
+                  ) : (
+                    <span className="text-[11px] font-semibold text-slate-400 group-hover:text-amber-500 transition-colors">
+                      Click to View
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                    selectedProgram === 'performance'
+                      ? 'bg-amber-600 text-white'
+                      : 'bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400'
+                  }`}>
+                    <TrendingUp className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                    Performance Testing Program
+                  </h3>
+                </div>
+
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                  Master load testing, stress benchmarking &amp; enterprise APM telemetry tools.
+                </p>
+
+                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-800">
+                  {['JMeter', 'LoadRunner', 'K6', 'Grafana', 'Datadog'].map((tool) => (
+                    <span
+                      key={tool}
+                      className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-amber-100/70 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/40"
+                    >
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-dashed border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400">
+                <span>{selectedProgram === 'performance' ? 'Current Active Plans' : 'Switch to Performance'}</span>
+                <ArrowRight className={`w-3.5 h-3.5 transition-transform ${selectedProgram === 'performance' ? 'translate-x-1' : 'group-hover:translate-x-1'}`} />
+              </div>
+            </button>
+
+            {/* TRACK 03: AI Training Program */}
+            <button
+              type="button"
+              onClick={() => setSelectedProgram('ai')}
+              className={`text-left p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 flex flex-col justify-between cursor-pointer relative overflow-hidden group ${
+                selectedProgram === 'ai'
+                  ? 'bg-cyan-50/80 dark:bg-[#071324] border-cyan-500 shadow-xl shadow-cyan-500/15 ring-2 ring-cyan-500/30'
+                  : 'bg-white dark:bg-[#0D121F] border-slate-200 dark:border-slate-800 hover:border-cyan-300 dark:hover:border-cyan-700 hover:shadow-lg'
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-extrabold uppercase tracking-wider ${
+                    selectedProgram === 'ai'
+                      ? 'bg-cyan-600 text-white shadow-sm'
+                      : 'bg-cyan-100 dark:bg-cyan-950/70 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800'
+                  }`}>
+                    Track 03 • AI Engineering
+                  </span>
+                  {selectedProgram === 'ai' ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-600 dark:text-cyan-400">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Viewing Plans</span>
+                    </span>
+                  ) : (
+                    <span className="text-[11px] font-semibold text-slate-400 group-hover:text-cyan-500 transition-colors">
+                      Click to View
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                    selectedProgram === 'ai'
+                      ? 'bg-cyan-600 text-white'
+                      : 'bg-cyan-100 dark:bg-cyan-900/50 text-cyan-600 dark:text-cyan-400'
+                  }`}>
+                    <Brain className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                    AI Training Program
+                  </h3>
+                </div>
+
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                  Build production RAG pipelines, agentic workflows, and deploy custom LLMs.
+                </p>
+
+                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-800">
+                  {['LLMs', 'Prompt Eng', 'Vector DB', 'RAG Systems', 'AI Agents'].map((tool) => (
+                    <span
+                      key={tool}
+                      className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-cyan-100/70 dark:bg-cyan-950/50 text-cyan-800 dark:text-cyan-300 border border-cyan-200/60 dark:border-cyan-800/40"
+                    >
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-dashed border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-cyan-600 dark:text-cyan-400">
+                <span>{selectedProgram === 'ai' ? 'Current Active Plans' : 'Switch to AI Training'}</span>
+                <ArrowRight className={`w-3.5 h-3.5 transition-transform ${selectedProgram === 'ai' ? 'translate-x-1' : 'group-hover:translate-x-1'}`} />
+              </div>
+            </button>
+
+          </div>
         </div>
 
-        {/* -- AI Training Program Cards ------------------------------- */}
+        {/* ── Automation Testing Program Cards ────────────────────────────── */}
+        {selectedProgram === 'functional' && (
+        <div id="automation-testing" className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
+
+          {/* Card 1: Free Consultation */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Free Consultation</h3>
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Starter</span>
+              </div>
+              <div className="mb-6">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹299</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">Free</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">100% Free</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Get a personalized automation testing roadmap based on your background.</p>
+              </div>
+              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Personalized QA roadmap</strong> for automation testing career</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Career advisory for SDET &amp; QA Automation roles</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">1-on-1 session: Selenium, Playwright, Azure &amp; Jira guidance</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">CI/CD pipeline integration strategy</span></li>
+              </ul>
+            </div>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform" target="_blank" rel="noopener noreferrer" className="w-full py-3.5 px-6 rounded-2xl border-2 border-slate-300 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-500 text-slate-800 dark:text-white font-bold text-sm text-center transition-all flex items-center justify-center gap-2 group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50">
+              <span>Book Free Session</span><ArrowRight className="w-4 h-4 text-violet-500 group-hover:translate-x-0.5 transition-transform" />
+            </a>
+          </div>
+
+          {/* Card 2: ₹19 Webinar */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Live Testing Webinar</h3>
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">Popular</span>
+              </div>
+              <div className="mb-6">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹499</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">₹19</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Intro Offer</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Live webinar on Selenium &amp; Playwright automation with CI/CD integration.</p>
+              </div>
+              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>All Consultation features</strong> included</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Live Webinar:</strong> Selenium &amp; Playwright frameworks in action</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Azure DevOps &amp; CI/CD pipeline basics walkthrough</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Resume &amp; LinkedIn profile audit</span></li>
+              </ul>
+            </div>
+            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=expert_session')); } else { setSelectedPlan('expert_session'); setPaymentModalOpen(true); } }} className="w-full py-3.5 px-6 rounded-2xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-sm text-center transition-all shadow-lg flex items-center justify-center gap-2 group cursor-pointer">
+              <span>Join Webinar for ₹19</span><ArrowRight className="w-4 h-4 text-violet-400 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
+
+          {/* Card 3: ₹9,999 Flagship */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-white via-white to-violet-50/30 dark:from-[#0D121F] dark:via-[#0D121F] dark:to-[#0A0714] border-2 border-violet-400 dark:border-violet-500 shadow-2xl shadow-violet-500/20 ring-2 ring-violet-400/20 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02]">
+            <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-gradient-to-r from-violet-500 to-indigo-600 text-white text-[11px] font-mono font-extrabold uppercase tracking-wider shadow-lg shadow-violet-500/30 flex items-center gap-1.5">
+              <Zap className="w-3 h-3 fill-white" />Flagship Masterclass
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-4 mt-1">
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">4-Week Intensive Cohort</h3>
+              </div>
+              <div className="mb-4">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹20,000</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-violet-600 dark:text-violet-400 font-mono">₹9,999</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">(including 18% GST)</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Complete 4-week live training in automation testing + 3-month industry internship.</p>
+              </div>
+              <div className="mb-5 p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-violet-500/15 via-indigo-500/10 to-blue-500/15 border-2 border-violet-500/40 dark:border-violet-400/40 flex items-start gap-2.5 shadow-sm">
+                <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-violet-700 dark:text-violet-300 block">⭐ Main Program Highlight</span>
+                  <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-snug block mt-0.5">Continue with Internship — 3 months after Automation Testing Training</span>
+                </div>
+              </div>
+              <div className="h-px w-full bg-violet-100 dark:bg-violet-950 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /><span className="text-slate-900 dark:text-white font-bold"><strong>3-Month Industry Internship</strong> right after 4-week training</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Selenium &amp; Playwright</strong> — end-to-end functional automation</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Azure DevOps, Jira &amp; CI/CD</strong> pipeline integration</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>4–5 automation projects</strong> with mentor code reviews</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Dual Certification:</strong> 3-Month Internship + Program Completion</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200">Mock interviews, resume building &amp; LinkedIn profile optimization</span></li>
+              </ul>
+            </div>
+            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=cohort')); } else { setSelectedPlan('cohort'); setPaymentModalOpen(true); } }} className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-violet-500 via-indigo-600 to-blue-600 hover:brightness-110 text-white font-bold text-sm sm:text-base text-center transition-all shadow-xl shadow-violet-500/30 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5">
+              <span>Enroll in 4-Week Program</span><ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+        </div>
+        )}
+
+        {/* ── Performance Testing Program Cards ───────────────────────────── */}
+        {selectedProgram === 'performance' && (
+        <div id="performance-testing" className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
+
+          {/* Card 1: Free Consultation */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Free Consultation</h3>
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Starter</span>
+              </div>
+              <div className="mb-6">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹299</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">Free</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">100% Free</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Personalized performance engineering roadmap based on your background.</p>
+              </div>
+              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Personalized performance testing roadmap</strong> for your profile</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Career advisory for Performance Engineer &amp; SRE roles</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">1-on-1 session: JMeter, K6, LoadRunner &amp; APM guidance</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">APM tools overview: Grafana, Datadog &amp; AppDynamics</span></li>
+              </ul>
+            </div>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform" target="_blank" rel="noopener noreferrer" className="w-full py-3.5 px-6 rounded-2xl border-2 border-slate-300 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-500 text-slate-800 dark:text-white font-bold text-sm text-center transition-all flex items-center justify-center gap-2 group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50">
+              <span>Book Free Session</span><ArrowRight className="w-4 h-4 text-amber-500 group-hover:translate-x-0.5 transition-transform" />
+            </a>
+          </div>
+
+          {/* Card 2: ₹19 Webinar */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Live Perf Webinar</h3>
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">Popular</span>
+              </div>
+              <div className="mb-6">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹499</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">₹19</span>
+                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Intro Offer</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Live interactive webinar covering JMeter, K6 &amp; APM monitoring essentials.</p>
+              </div>
+              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>All Consultation features</strong> included</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Live Webinar:</strong> JMeter &amp; K6 load testing fundamentals</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Grafana &amp; Datadog monitoring dashboards hands-on</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Resume &amp; LinkedIn profile audit for performance roles</span></li>
+              </ul>
+            </div>
+            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=expert_session')); } else { setSelectedPlan('expert_session'); setPaymentModalOpen(true); } }} className="w-full py-3.5 px-6 rounded-2xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-sm text-center transition-all shadow-lg flex items-center justify-center gap-2 group cursor-pointer">
+              <span>Join Webinar for ₹19</span><ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
+
+          {/* Card 3: ₹9,999 Flagship */}
+          <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-white via-white to-amber-50/30 dark:from-[#0D121F] dark:via-[#0D121F] dark:to-[#130A00] border-2 border-amber-400 dark:border-amber-500 shadow-2xl shadow-amber-500/20 ring-2 ring-amber-400/20 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02]">
+            <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[11px] font-mono font-extrabold uppercase tracking-wider shadow-lg shadow-amber-500/30 flex items-center gap-1.5">
+              <Zap className="w-3 h-3 fill-white" />Flagship Masterclass
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-4 mt-1">
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">4-Week Intensive Cohort</h3>
+              </div>
+              <div className="mb-4">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹20,000</span>
+                  <span className="text-4xl sm:text-5xl font-extrabold text-amber-600 dark:text-amber-400 font-mono">₹9,999</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">(including 18% GST)</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Complete 4-week live performance testing training + 3-month industry internship.</p>
+              </div>
+              <div className="mb-5 p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-yellow-500/15 border-2 border-amber-500/40 dark:border-amber-400/40 flex items-start gap-2.5 shadow-sm">
+                <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-300 block">⭐ Main Program Highlight</span>
+                  <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-snug block mt-0.5">Continue with Internship — 3 months after Performance Testing Training</span>
+                </div>
+              </div>
+              <div className="h-px w-full bg-amber-100 dark:bg-amber-950 mb-6" />
+              <ul className="space-y-3.5 mb-8 text-sm">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /><span className="text-slate-900 dark:text-white font-bold"><strong>3-Month Industry Internship</strong> right after 4-week training</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>JMeter, LoadRunner &amp; K6</strong> — industry-grade load &amp; stress testing</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>AppDynamics, Grafana &amp; Datadog</strong> — APM &amp; observability</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Azure DevOps, Jira &amp; CI/CD</strong> pipeline integration</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>4–5 real-world performance projects</strong> with mentor reviews</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Dual Certification:</strong> 3-Month Internship + Program Completion</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200">Mock interviews, resume building &amp; LinkedIn profile optimization</span></li>
+              </ul>
+            </div>
+            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=cohort')); } else { setSelectedPlan('cohort'); setPaymentModalOpen(true); } }} className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:brightness-110 text-white font-bold text-sm sm:text-base text-center transition-all shadow-xl shadow-amber-500/30 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5">
+              <span>Enroll in 4-Week Program</span><ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+        </div>
+        )}
+
+      {/* -- AI Training Program Cards ------------------------------- */}
         {selectedProgram === 'ai' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
+        <div id="ai-training" className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
           
           {/* Card 1: 1-on-1 AI Consultation — Free */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
@@ -841,212 +1250,7 @@ function HomePageContent() {
         </div>
         )}
 
-        {/* ── Automation Testing Program Cards ────────────────────────────── */}
-        {selectedProgram === 'functional' && (
-        <div id="automation-testing" className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
-
-          {/* Card 1: Free Consultation */}
-          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Free Consultation</h3>
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Starter</span>
-              </div>
-              <div className="mb-6">
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹299</span>
-                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">Free</span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">100% Free</span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Get a personalized automation testing roadmap based on your background.</p>
-              </div>
-              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
-              <ul className="space-y-3.5 mb-8 text-sm">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Personalized QA roadmap</strong> for automation testing career</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Career advisory for SDET &amp; QA Automation roles</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">1-on-1 session: Selenium, Playwright, Azure &amp; Jira guidance</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">CI/CD pipeline integration strategy</span></li>
-              </ul>
-            </div>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform" target="_blank" rel="noopener noreferrer" className="w-full py-3.5 px-6 rounded-2xl border-2 border-slate-300 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-500 text-slate-800 dark:text-white font-bold text-sm text-center transition-all flex items-center justify-center gap-2 group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50">
-              <span>Book Free Session</span><ArrowRight className="w-4 h-4 text-violet-500 group-hover:translate-x-0.5 transition-transform" />
-            </a>
-          </div>
-
-          {/* Card 2: ₹19 Webinar */}
-          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Live Testing Webinar</h3>
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">Popular</span>
-              </div>
-              <div className="mb-6">
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹499</span>
-                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">₹19</span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Intro Offer</span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Live webinar on Selenium &amp; Playwright automation with CI/CD integration.</p>
-              </div>
-              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
-              <ul className="space-y-3.5 mb-8 text-sm">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>All Consultation features</strong> included</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Live Webinar:</strong> Selenium &amp; Playwright frameworks in action</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Azure DevOps &amp; CI/CD pipeline basics walkthrough</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Resume &amp; LinkedIn profile audit</span></li>
-              </ul>
-            </div>
-            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=expert_session')); } else { setSelectedPlan('expert_session'); setPaymentModalOpen(true); } }} className="w-full py-3.5 px-6 rounded-2xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-sm text-center transition-all shadow-lg flex items-center justify-center gap-2 group cursor-pointer">
-              <span>Join Webinar for ₹19</span><ArrowRight className="w-4 h-4 text-violet-400 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-          </div>
-
-          {/* Card 3: ₹9,999 Flagship */}
-          <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-white via-white to-violet-50/30 dark:from-[#0D121F] dark:via-[#0D121F] dark:to-[#0A0714] border-2 border-violet-400 dark:border-violet-500 shadow-2xl shadow-violet-500/20 ring-2 ring-violet-400/20 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02]">
-            <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-gradient-to-r from-violet-500 to-indigo-600 text-white text-[11px] font-mono font-extrabold uppercase tracking-wider shadow-lg shadow-violet-500/30 flex items-center gap-1.5">
-              <Zap className="w-3 h-3 fill-white" />Flagship Masterclass
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-4 mt-1">
-                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">4-Week Intensive Cohort</h3>
-              </div>
-              <div className="mb-4">
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹20,000</span>
-                  <span className="text-4xl sm:text-5xl font-extrabold text-violet-600 dark:text-violet-400 font-mono">₹9,999</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">(including 18% GST)</span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Complete 4-week live training in automation testing + 3-month industry internship.</p>
-              </div>
-              <div className="mb-5 p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-violet-500/15 via-indigo-500/10 to-blue-500/15 border-2 border-violet-500/40 dark:border-violet-400/40 flex items-start gap-2.5 shadow-sm">
-                <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0 mt-0.5" />
-                <div>
-                  <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-violet-700 dark:text-violet-300 block">⭐ Main Program Highlight</span>
-                  <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-snug block mt-0.5">Continue with Internship — 3 months after Automation Testing Training</span>
-                </div>
-              </div>
-              <div className="h-px w-full bg-violet-100 dark:bg-violet-950 mb-6" />
-              <ul className="space-y-3.5 mb-8 text-sm">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /><span className="text-slate-900 dark:text-white font-bold"><strong>3-Month Industry Internship</strong> right after 4-week training</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Selenium &amp; Playwright</strong> — end-to-end functional automation</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Azure DevOps, Jira &amp; CI/CD</strong> pipeline integration</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>4–5 automation projects</strong> with mentor code reviews</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Dual Certification:</strong> 3-Month Internship + Program Completion</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200">Mock interviews, resume building &amp; LinkedIn profile optimization</span></li>
-              </ul>
-            </div>
-            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=cohort')); } else { setSelectedPlan('cohort'); setPaymentModalOpen(true); } }} className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-violet-500 via-indigo-600 to-blue-600 hover:brightness-110 text-white font-bold text-sm sm:text-base text-center transition-all shadow-xl shadow-violet-500/30 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5">
-              <span>Enroll in 4-Week Program</span><ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-
-        </div>
-        )}
-
-        {/* ── Performance Testing Program Cards ───────────────────────────── */}
-        {selectedProgram === 'performance' && (
-        <div id="performance-testing" className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
-
-          {/* Card 1: Free Consultation */}
-          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Free Consultation</h3>
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Starter</span>
-              </div>
-              <div className="mb-6">
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹299</span>
-                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">Free</span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">100% Free</span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Personalized performance engineering roadmap based on your background.</p>
-              </div>
-              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
-              <ul className="space-y-3.5 mb-8 text-sm">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Personalized performance testing roadmap</strong> for your profile</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Career advisory for Performance Engineer &amp; SRE roles</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">1-on-1 session: JMeter, K6, LoadRunner &amp; APM guidance</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">APM tools overview: Grafana, Datadog &amp; AppDynamics</span></li>
-              </ul>
-            </div>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform" target="_blank" rel="noopener noreferrer" className="w-full py-3.5 px-6 rounded-2xl border-2 border-slate-300 dark:border-slate-700 hover:border-slate-900 dark:hover:border-slate-500 text-slate-800 dark:text-white font-bold text-sm text-center transition-all flex items-center justify-center gap-2 group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50">
-              <span>Book Free Session</span><ArrowRight className="w-4 h-4 text-amber-500 group-hover:translate-x-0.5 transition-transform" />
-            </a>
-          </div>
-
-          {/* Card 2: ₹19 Webinar */}
-          <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Live Perf Webinar</h3>
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">Popular</span>
-              </div>
-              <div className="mb-6">
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹499</span>
-                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white font-mono">₹19</span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Intro Offer</span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Live interactive webinar covering JMeter, K6 &amp; APM monitoring essentials.</p>
-              </div>
-              <div className="h-px w-full bg-slate-100 dark:bg-slate-800 mb-6" />
-              <ul className="space-y-3.5 mb-8 text-sm">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>All Consultation features</strong> included</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300"><strong>Live Webinar:</strong> JMeter &amp; K6 load testing fundamentals</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Grafana &amp; Datadog monitoring dashboards hands-on</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-300">Resume &amp; LinkedIn profile audit for performance roles</span></li>
-              </ul>
-            </div>
-            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=expert_session')); } else { setSelectedPlan('expert_session'); setPaymentModalOpen(true); } }} className="w-full py-3.5 px-6 rounded-2xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-sm text-center transition-all shadow-lg flex items-center justify-center gap-2 group cursor-pointer">
-              <span>Join Webinar for ₹19</span><ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-          </div>
-
-          {/* Card 3: ₹9,999 Flagship */}
-          <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-white via-white to-amber-50/30 dark:from-[#0D121F] dark:via-[#0D121F] dark:to-[#130A00] border-2 border-amber-400 dark:border-amber-500 shadow-2xl shadow-amber-500/20 ring-2 ring-amber-400/20 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02]">
-            <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[11px] font-mono font-extrabold uppercase tracking-wider shadow-lg shadow-amber-500/30 flex items-center gap-1.5">
-              <Zap className="w-3 h-3 fill-white" />Flagship Masterclass
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-4 mt-1">
-                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">4-Week Intensive Cohort</h3>
-              </div>
-              <div className="mb-4">
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-xl sm:text-2xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">₹20,000</span>
-                  <span className="text-4xl sm:text-5xl font-extrabold text-amber-600 dark:text-amber-400 font-mono">₹9,999</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">(including 18% GST)</span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Complete 4-week live performance testing training + 3-month industry internship.</p>
-              </div>
-              <div className="mb-5 p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-yellow-500/15 border-2 border-amber-500/40 dark:border-amber-400/40 flex items-start gap-2.5 shadow-sm">
-                <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                <div>
-                  <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-300 block">⭐ Main Program Highlight</span>
-                  <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-snug block mt-0.5">Continue with Internship — 3 months after Performance Testing Training</span>
-                </div>
-              </div>
-              <div className="h-px w-full bg-amber-100 dark:bg-amber-950 mb-6" />
-              <ul className="space-y-3.5 mb-8 text-sm">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /><span className="text-slate-900 dark:text-white font-bold"><strong>3-Month Industry Internship</strong> right after 4-week training</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>JMeter, LoadRunner &amp; K6</strong> — industry-grade load &amp; stress testing</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>AppDynamics, Grafana &amp; Datadog</strong> — APM &amp; observability</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Azure DevOps, Jira &amp; CI/CD</strong> pipeline integration</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>4–5 real-world performance projects</strong> with mentor reviews</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200"><strong>Dual Certification:</strong> 3-Month Internship + Program Completion</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /><span className="text-slate-700 dark:text-slate-200">Mock interviews, resume building &amp; LinkedIn profile optimization</span></li>
-              </ul>
-            </div>
-            <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=cohort')); } else { setSelectedPlan('cohort'); setPaymentModalOpen(true); } }} className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:brightness-110 text-white font-bold text-sm sm:text-base text-center transition-all shadow-xl shadow-amber-500/30 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5">
-              <span>Enroll in 4-Week Program</span><ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-
-        </div>
-        )}
-
-      </section>
+        </section>
 
       {/* ===================================================================
           SECTION 1B — PROGRAM POLICIES & TERMS OF ENROLLMENT
