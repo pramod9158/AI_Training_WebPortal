@@ -277,8 +277,19 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
 
           {/* Minimal footer */}
           <footer className="py-5 px-4 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200/60 dark:border-slate-800/60 bg-white/70 dark:bg-[#0D121F]/70 backdrop-blur-xl font-medium">
-            © {new Date().getFullYear()} Waynautic Academy.{' '}
-            <span className="text-cyan-600 dark:text-cyan-400 font-semibold">All rights reserved.</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3">
+              <p>
+                © {new Date().getFullYear()} Waynautic Academy.{' '}
+                <span className="text-cyan-600 dark:text-cyan-400 font-semibold">All rights reserved.</span>
+              </p>
+              <span className="hidden sm:inline text-slate-400 dark:text-slate-600">•</span>
+              <Link
+                href="/terms"
+                className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-cyan-400 underline underline-offset-4 font-semibold transition-colors"
+              >
+                Terms and Conditions
+              </Link>
+            </div>
           </footer>
         </div>
       </div>
