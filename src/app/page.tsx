@@ -185,6 +185,18 @@ function HomePageContent() {
   const isLoggedIn = Boolean(profile.userId || profile.email);
   const isEnrolled = profile.plan === 'pro' || profile.plan === 'enterprise';
 
+  const handleSelectProgram = (prog: 'functional' | 'performance' | 'ai') => {
+    setSelectedProgram(prog);
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      setTimeout(() => {
+        const el = document.getElementById('fees-structure');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 60);
+    }
+  };
+
   const enrollParam = searchParams.get('enroll');
   const noticeParam = searchParams.get('notice');
 
@@ -602,13 +614,195 @@ function HomePageContent() {
             </p>
           </div>
 
-          {/* 3 Prominent Side-by-Side Track Switcher Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 items-stretch">
+          {/* Mobile 3-Track Segmented Tab Control (md:hidden) — Quick 1-tap switching without huge vertical scrolling */}
+          <div className="md:hidden mb-4">
+            <div className="grid grid-cols-3 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-inner">
+              <button
+                type="button"
+                onClick={() => handleSelectProgram('functional')}
+                className={`py-2.5 px-1 rounded-xl text-center font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
+                  selectedProgram === 'functional'
+                    ? 'bg-violet-600 text-white shadow-md shadow-violet-600/30 ring-1 ring-violet-400/50'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <div className="flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider font-extrabold">
+                  <Code2 className="w-3.5 h-3.5" />
+                  <span>Track 01</span>
+                </div>
+                <span className="text-[11px] font-bold leading-tight truncate w-full">Automation</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSelectProgram('performance')}
+                className={`py-2.5 px-1 rounded-xl text-center font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
+                  selectedProgram === 'performance'
+                    ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30 ring-1 ring-amber-400/50'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <div className="flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider font-extrabold">
+                  <TrendingUp className="w-3.5 h-3.5" />
+                  <span>Track 02</span>
+                </div>
+                <span className="text-[11px] font-bold leading-tight truncate w-full">Performance</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSelectProgram('ai')}
+                className={`py-2.5 px-1 rounded-xl text-center font-bold transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
+                  selectedProgram === 'ai'
+                    ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30 ring-1 ring-cyan-400/50'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <div className="flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider font-extrabold">
+                  <Brain className="w-3.5 h-3.5" />
+                  <span>Track 03</span>
+                </div>
+                <span className="text-[11px] font-bold leading-tight truncate w-full">AI Training</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Single Active Track Card View (md:hidden) — Avoids stacking 3 massive cards on small screens */}
+          <div className="md:hidden">
+            {selectedProgram === 'functional' && (
+              <div className="text-left p-5 rounded-3xl border-2 bg-[#130E26] border-violet-500 shadow-xl shadow-violet-500/20 ring-2 ring-violet-500/30 text-white">
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span style={{ color: '#ffffff' }} className="px-3 py-1 rounded-lg text-[10px] font-mono font-extrabold uppercase tracking-wider bg-violet-600 !text-white shadow-md ring-2 ring-violet-400/60">
+                    Track 01: Automation
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-violet-400">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-violet-400" />
+                    <span>Viewing Plans Below</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-violet-600 text-white shadow-md shadow-violet-600/30">
+                    <Code2 className="w-5 h-5" />
+                  </div>
+                  <h3 style={{ color: '#ffffff' }} className="text-base font-extrabold leading-tight !text-white">
+                    Automation Testing Program
+                  </h3>
+                </div>
+                <p className="text-xs leading-relaxed mb-4 text-violet-200/95 font-medium">
+                  Master end-to-end automation with industry frameworks, CI/CD pipelines &amp; guaranteed 3-month internship.
+                </p>
+                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-violet-800/60 mb-4">
+                  {['Selenium', 'Playwright', 'Azure DevOps', 'Jira', 'CI/CD'].map((tool) => (
+                    <span key={tool} className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-violet-950/90 text-violet-200 border border-violet-700/60">
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    document.getElementById('fees-structure')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                >
+                  <span>Fees for Track 01 Shown Below</span>
+                  <ChevronDown className="w-4 h-4 animate-bounce" />
+                </button>
+              </div>
+            )}
+
+            {selectedProgram === 'performance' && (
+              <div className="text-left p-5 rounded-3xl border-2 bg-[#1A1407] border-amber-500 shadow-xl shadow-amber-500/20 ring-2 ring-amber-500/30 text-white">
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span style={{ color: '#ffffff' }} className="px-3 py-1 rounded-lg text-[10px] font-mono font-extrabold uppercase tracking-wider bg-amber-600 !text-white shadow-md ring-2 ring-amber-400/60">
+                    Track 02: Performance
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Viewing Plans Below</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-amber-600 text-white shadow-md shadow-amber-600/30">
+                    <TrendingUp className="w-5 h-5" />
+                  </div>
+                  <h3 style={{ color: '#ffffff' }} className="text-base font-extrabold leading-tight !text-white">
+                    Performance Testing Program
+                  </h3>
+                </div>
+                <p className="text-xs leading-relaxed mb-4 text-amber-200/95 font-medium">
+                  Master load testing, stress benchmarking &amp; enterprise APM telemetry tools with 3-month internship.
+                </p>
+                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-amber-800/60 mb-4">
+                  {['JMeter', 'LoadRunner', 'K6', 'Grafana', 'Datadog'].map((tool) => (
+                    <span key={tool} className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-amber-950/90 text-amber-200 border border-amber-700/60">
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    document.getElementById('fees-structure')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                >
+                  <span>Fees for Track 02 Shown Below</span>
+                  <ChevronDown className="w-4 h-4 animate-bounce" />
+                </button>
+              </div>
+            )}
+
+            {selectedProgram === 'ai' && (
+              <div className="text-left p-5 rounded-3xl border-2 bg-[#071324] border-cyan-500 shadow-xl shadow-cyan-500/20 ring-2 ring-cyan-500/30 text-white">
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span style={{ color: '#ffffff' }} className="px-3 py-1 rounded-lg text-[10px] font-mono font-extrabold uppercase tracking-wider bg-cyan-600 !text-white shadow-md ring-2 ring-cyan-400/60">
+                    Track 03: AI Engineering
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-400">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Viewing Plans Below</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-cyan-600 text-white shadow-md shadow-cyan-600/30">
+                    <Brain className="w-5 h-5" />
+                  </div>
+                  <h3 style={{ color: '#ffffff' }} className="text-base font-extrabold leading-tight !text-white">
+                    AI Training Program
+                  </h3>
+                </div>
+                <p className="text-xs leading-relaxed mb-4 text-cyan-200/95 font-medium">
+                  Build production RAG pipelines, agentic workflows, and deploy custom LLMs with 3-month internship.
+                </p>
+                <div className="flex flex-wrap gap-1.5 pt-2 border-t border-cyan-800/60 mb-4">
+                  {['LLMs', 'Prompt Eng', 'Vector DB', 'RAG Systems', 'AI Agents'].map((tool) => (
+                    <span key={tool} className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-cyan-950/90 text-cyan-200 border border-cyan-700/60">
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    document.getElementById('fees-structure')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                >
+                  <span>Fees for Track 03 Shown Below</span>
+                  <ChevronDown className="w-4 h-4 animate-bounce" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop 3-Card Grid (hidden md:grid md:grid-cols-3) */}
+          <div className="hidden md:grid md:grid-cols-3 gap-4 sm:gap-5 items-stretch">
             
             {/* TRACK 01: Automation Testing Program */}
             <button
               type="button"
-              onClick={() => setSelectedProgram('functional')}
+              onClick={() => handleSelectProgram('functional')}
               className={`text-left p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 flex flex-col justify-between cursor-pointer relative overflow-hidden group ${
                 selectedProgram === 'functional'
                   ? 'bg-[#130E26] border-violet-500 shadow-xl shadow-violet-500/20 ring-2 ring-violet-500/30 text-white'
@@ -686,7 +880,7 @@ function HomePageContent() {
             {/* TRACK 02: Performance Testing Program */}
             <button
               type="button"
-              onClick={() => setSelectedProgram('performance')}
+              onClick={() => handleSelectProgram('performance')}
               className={`text-left p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 flex flex-col justify-between cursor-pointer relative overflow-hidden group ${
                 selectedProgram === 'performance'
                   ? 'bg-[#1A1407] border-amber-500 shadow-xl shadow-amber-500/20 ring-2 ring-amber-500/30 text-white'
@@ -764,7 +958,7 @@ function HomePageContent() {
             {/* TRACK 03: AI Training Program */}
             <button
               type="button"
-              onClick={() => setSelectedProgram('ai')}
+              onClick={() => handleSelectProgram('ai')}
               className={`text-left p-5 sm:p-6 rounded-3xl border-2 transition-all duration-200 flex flex-col justify-between cursor-pointer relative overflow-hidden group ${
                 selectedProgram === 'ai'
                   ? 'bg-[#071324] border-cyan-500 shadow-xl shadow-cyan-500/20 ring-2 ring-cyan-500/30 text-white'
@@ -842,6 +1036,79 @@ function HomePageContent() {
           </div>
         </div>
 
+        {/* ── ACTIVE TRACK FEE BANNER (Connecting Track & Fees) ─────────────── */}
+        <div id="fees-structure" className="max-w-6xl mx-auto mb-6 sm:mb-8 scroll-mt-24">
+          <div className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 shadow-xl ${
+            selectedProgram === 'functional'
+              ? 'bg-gradient-to-r from-violet-950/80 via-[#130E26] to-violet-950/80 border-violet-500/80 shadow-violet-500/10'
+              : selectedProgram === 'performance'
+              ? 'bg-gradient-to-r from-amber-950/80 via-[#1A1407] to-amber-950/80 border-amber-500/80 shadow-amber-500/10'
+              : 'bg-gradient-to-r from-cyan-950/80 via-[#071324] to-cyan-950/80 border-cyan-500/80 shadow-cyan-500/10'
+          }`}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-extrabold uppercase tracking-wider text-white shadow-sm ${
+                    selectedProgram === 'functional' ? 'bg-violet-600' : selectedProgram === 'performance' ? 'bg-amber-600' : 'bg-cyan-600'
+                  }`}>
+                    {selectedProgram === 'functional' && 'Track 01 Selected'}
+                    {selectedProgram === 'performance' && 'Track 02 Selected'}
+                    {selectedProgram === 'ai' && 'Track 03 Selected'}
+                  </span>
+                  <span className="text-xs font-semibold text-slate-300">
+                    Live Training + 3-Month Internship
+                  </span>
+                </div>
+                <h3 className="text-lg sm:text-2xl font-black text-white flex items-center gap-2">
+                  {selectedProgram === 'functional' && 'Automation Testing Program — Fees & Plans'}
+                  {selectedProgram === 'performance' && 'Performance Testing Program — Fees & Plans'}
+                  {selectedProgram === 'ai' && 'AI Training Program — Fees & Plans'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 mt-1">
+                  The 3 fee tiers below (Free, ₹19 Webinar, ₹9,999 Cohort) apply specifically to this selected track.
+                </p>
+              </div>
+
+              {/* Quick 1-Tap Switcher right at the fees header */}
+              <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-950/80 border border-white/10 shrink-0 self-start sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => setSelectedProgram('functional')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    selectedProgram === 'functional'
+                      ? 'bg-violet-600 text-white shadow-md'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Track 01
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedProgram('performance')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    selectedProgram === 'performance'
+                      ? 'bg-amber-600 text-white shadow-md'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Track 02
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedProgram('ai')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    selectedProgram === 'ai'
+                      ? 'bg-cyan-600 text-white shadow-md'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Track 03
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* ── Automation Testing Program Cards ────────────────────────────── */}
         {selectedProgram === 'functional' && (
         <div id="automation-testing" className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
@@ -849,6 +1116,9 @@ function HomePageContent() {
           {/* Card 1: Free Consultation */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
             <div>
+              <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-mono font-extrabold uppercase tracking-wider bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/20">
+                <Code2 className="w-3 h-3 text-violet-500" /> Track 01: Automation Testing
+              </div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">Free Consultation</h3>
                 <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Starter</span>
@@ -877,6 +1147,9 @@ function HomePageContent() {
           {/* Card 2: ₹19 Webinar */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
             <div>
+              <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-mono font-extrabold uppercase tracking-wider bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/20">
+                <Code2 className="w-3 h-3 text-violet-500" /> Track 01: Automation Testing
+              </div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">Live Testing Webinar</h3>
                 <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">Popular</span>
@@ -908,6 +1181,9 @@ function HomePageContent() {
               <Zap className="w-3 h-3 fill-white" />Flagship Masterclass
             </div>
             <div>
+              <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-mono font-extrabold uppercase tracking-wider bg-violet-500/15 text-violet-700 dark:text-violet-300 border border-violet-500/30">
+                <Code2 className="w-3 h-3 text-violet-500" /> Track 01: Automation Testing Flagship
+              </div>
               <div className="flex items-center justify-between mb-4 mt-1">
                 <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">4-Week Intensive Cohort</h3>
               </div>
@@ -937,7 +1213,7 @@ function HomePageContent() {
               </ul>
             </div>
             <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=cohort')); } else { setSelectedPlan('cohort'); setPaymentModalOpen(true); } }} className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-violet-500 via-indigo-600 to-blue-600 hover:brightness-110 text-white font-bold text-sm sm:text-base text-center transition-all shadow-xl shadow-violet-500/30 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5">
-              <span>Enroll in 4-Week Program</span><ArrowRight className="w-4 h-4" />
+              <span>Enroll in Track 01: Automation (₹9,999)</span><ArrowRight className="w-4 h-4" />
             </button>
           </div>
 
@@ -947,10 +1223,11 @@ function HomePageContent() {
         {/* ── Performance Testing Program Cards ───────────────────────────── */}
         {selectedProgram === 'performance' && (
         <div id="performance-testing" className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch max-w-6xl mx-auto">
-
-          {/* Card 1: Free Consultation */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
             <div>
+              <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-mono font-extrabold uppercase tracking-wider bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                <Server className="w-3 h-3 text-amber-500" /> Track 02: Performance Testing
+              </div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">Free Consultation</h3>
                 <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Starter</span>
@@ -979,6 +1256,9 @@ function HomePageContent() {
           {/* Card 2: ₹19 Webinar */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
             <div>
+              <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-mono font-extrabold uppercase tracking-wider bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                <Server className="w-3 h-3 text-amber-500" /> Track 02: Performance Testing
+              </div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">Live Perf Webinar</h3>
                 <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">Popular</span>
@@ -1010,6 +1290,9 @@ function HomePageContent() {
               <Zap className="w-3 h-3 fill-white" />Flagship Masterclass
             </div>
             <div>
+              <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-mono font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                <Server className="w-3 h-3 text-amber-500" /> Track 02: Performance Testing Flagship
+              </div>
               <div className="flex items-center justify-between mb-4 mt-1">
                 <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">4-Week Intensive Cohort</h3>
               </div>
@@ -1040,7 +1323,7 @@ function HomePageContent() {
               </ul>
             </div>
             <button type="button" onClick={() => { if (!isLoggedIn) { router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=cohort')); } else { setSelectedPlan('cohort'); setPaymentModalOpen(true); } }} className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:brightness-110 text-white font-bold text-sm sm:text-base text-center transition-all shadow-xl shadow-amber-500/30 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5">
-              <span>Enroll in 4-Week Program</span><ArrowRight className="w-4 h-4" />
+              <span>Enroll in Track 02: Performance (₹9,999)</span><ArrowRight className="w-4 h-4" />
             </button>
           </div>
 
@@ -1054,6 +1337,9 @@ function HomePageContent() {
           {/* Card 1: 1-on-1 AI Consultation — Free */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
             <div>
+              <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-mono font-extrabold uppercase tracking-wider bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">
+                <Brain className="w-3 h-3 text-cyan-500" /> Track 03: AI Training Program
+              </div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">Free Consultation</h3>
                 <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
@@ -1116,6 +1402,9 @@ function HomePageContent() {
           {/* Card 2: Pay ₹19 — Live AI Webinar */}
           <div className="relative rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700">
             <div>
+              <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-mono font-extrabold uppercase tracking-wider bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">
+                <Brain className="w-3 h-3 text-cyan-500" /> Track 03: AI Training Program
+              </div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">Live AI Webinar</h3>
                 <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
@@ -1190,6 +1479,9 @@ function HomePageContent() {
             </div>
 
             <div>
+              <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-mono font-extrabold uppercase tracking-wider bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30">
+                <Brain className="w-3 h-3 text-cyan-500" /> Track 03: AI Training Flagship
+              </div>
               <div className="flex items-center justify-between mb-4 mt-1">
                 <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">4-Week Intensive Cohort</h3>
               </div>
@@ -1210,7 +1502,7 @@ function HomePageContent() {
                 <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 block">
-                    ⭐ Main Program Highlight
+                    ⭐  Main Program Highlight
                   </span>
                   <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-snug block mt-0.5">
                     Continue with Internship — 3 months after AI Training
@@ -1278,7 +1570,7 @@ function HomePageContent() {
               }}
               className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 hover:brightness-110 text-white font-bold text-sm sm:text-base text-center transition-all shadow-xl shadow-cyan-500/30 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
             >
-              <span>Enroll in 4-Week Program</span>
+              <span>Enroll in Track 03: AI Training (₹9,999)</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

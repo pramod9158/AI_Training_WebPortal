@@ -164,17 +164,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-sm border-none shadow-none transition-colors">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 sm:py-5 lg:py-6 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-4 lg:py-6 flex items-center justify-between">
         
-        {/* Left Section: Waynautic Logo — exactly matching waynautic.com (h-10 w-auto lg:h-14) */}
+        {/* Left Section: Waynautic Logo — responsive: compact on mobile, full size on desktop */}
         <div className="flex items-center shrink-0">
-          <Link href="/" className="flex items-center gap-2 group py-1 shrink-0" aria-label="Waynautic Academy Home">
+          <Link href="/" className="flex items-center gap-2 group py-0.5 sm:py-1 shrink-0" aria-label="Waynautic Academy Home">
             <Image
               src="/Waynautic%20Logo%20New.png"
               alt="Waynautic Technologies"
               width={225}
               height={46}
-              className="h-[42px] sm:h-[46px] w-auto object-contain transition-transform group-hover:scale-[1.02]"
+              className="h-[26px] xs:h-[28px] sm:h-[40px] lg:h-[46px] w-auto object-contain transition-transform group-hover:scale-[1.02]"
               priority
             />
           </Link>
@@ -500,13 +500,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             </div>
           )}
 
-          {/* Mobile Drawer Hamburger Button — matching waynautic.com */}
+          {/* Mobile Drawer Hamburger Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg focus:outline-none min-w-[44px] min-h-[44px] flex items-center justify-center"
+            className="lg:hidden p-1.5 text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center transition-colors"
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
 
         </div>
