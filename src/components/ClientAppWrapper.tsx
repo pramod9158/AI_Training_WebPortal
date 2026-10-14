@@ -285,6 +285,8 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
               <span className="hidden sm:inline text-slate-400 dark:text-slate-600">•</span>
               <Link
                 href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-cyan-400 underline underline-offset-4 font-semibold transition-colors"
               >
                 Terms and Conditions

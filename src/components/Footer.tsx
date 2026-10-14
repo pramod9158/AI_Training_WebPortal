@@ -128,7 +128,7 @@ export const Footer: React.FC = () => {
               <li><Link href="/curriculum" className="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-300 transition-colors">Curriculum Directory</Link></li>
               <li><Link href="/dashboard" className="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-300 transition-colors">Student Dashboard</Link></li>
               <li><Link href="/profile" className="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-300 transition-colors">Profile & Settings</Link></li>
-              <li><Link href="/terms" className="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-300 transition-colors font-medium">Terms and Conditions</Link></li>
+              <li><Link href="/terms" target="_blank" rel="noopener noreferrer" className="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-300 transition-colors font-medium">Terms and Conditions</Link></li>
               <li><Link href="/onboarding" className="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-300 transition-colors">Interactive Tour</Link></li>
             </ul>
           </div>
@@ -202,6 +202,8 @@ export const Footer: React.FC = () => {
           <div className="flex items-center space-x-4">
             <Link 
               href="/terms" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-cyan-400 underline underline-offset-4 font-semibold transition-colors"
             >
               Terms and Conditions

@@ -39,11 +39,6 @@ import {
   LayoutGrid,
   Lightbulb,
   PhoneCall,
-  Scale,
-  Lock,
-  FileText,
-  AlertTriangle,
-  Briefcase,
 } from 'lucide-react';
 import { MODULES } from '@/data/seedModules';
 import { TOPICS } from '@/data/seedTopics';
@@ -1567,85 +1562,7 @@ function HomePageContent() {
 
         </section>
 
-      {/* ===================================================================
-          SECTION 1B — PROGRAM POLICIES & TERMS OF ENROLLMENT
-      =================================================================== */}
-      <section className="relative -mt-6 sm:-mt-10 mb-12 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-        <div className="rounded-3xl p-6 sm:p-8 bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-200 dark:border-slate-800 pb-5">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider mb-1.5">
-                <Scale className="w-3.5 h-3.5" />
-                <span>Program Transparency & Legal Policies</span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-                Official Terms of Enrollment
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-                Standard policies applicable to all enrolled students across our paid training programs, webinars, and internship cohorts.
-              </p>
-            </div>
-
-            <Link
-              href="/terms"
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 font-bold text-xs sm:text-sm shadow-sm transition-all group shrink-0"
-            >
-              <FileText className="w-4 h-4 text-cyan-500" />
-              <span>Read Full Terms & Conditions</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-          </div>
-
-          {/* 4 Core Pillars Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            
-            {/* 1. Strict No-Refund */}
-            <div className="p-4 rounded-2xl bg-white dark:bg-[#0D121F] border border-rose-200/80 dark:border-rose-900/40 shadow-sm">
-              <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-xs mb-1.5">
-                <AlertTriangle className="w-4 h-4 shrink-0" />
-                <span>100% Strict No-Refund</span>
-              </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Fees once paid are final, non-refundable, and non-transferable under all circumstances including personal schedule conflicts.
-              </p>
-            </div>
-
-            {/* 2. Exclusive Pune Jurisdiction */}
-            <div className="p-4 rounded-2xl bg-white dark:bg-[#0D121F] border border-cyan-200/80 dark:border-cyan-900/40 shadow-sm">
-              <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-bold text-xs mb-1.5">
-                <Scale className="w-4 h-4 shrink-0" />
-                <span>Pune Jurisdiction</span>
-              </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                All agreements, dispute resolutions, and claims are governed by Indian law under the exclusive jurisdiction of Pune courts.
-              </p>
-            </div>
-
-            {/* 3. Placement Assistance Only */}
-            <div className="p-4 rounded-2xl bg-white dark:bg-[#0D121F] border border-amber-200/80 dark:border-amber-900/40 shadow-sm">
-              <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold text-xs mb-1.5">
-                <Briefcase className="w-4 h-4 shrink-0" />
-                <span>Placement Assistance Only</span>
-              </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                We provide resume reviews & mock interviews. We do not guarantee jobs or salary packages; hiring rests with external employers.
-              </p>
-            </div>
-
-            {/* 4. Proprietary IP & Anti-Piracy */}
-            <div className="p-4 rounded-2xl bg-white dark:bg-[#0D121F] border border-purple-200/80 dark:border-purple-900/40 shadow-sm">
-              <div className="flex items-center gap-2 text-purple-600 dark:text-purple-400 font-bold text-xs mb-1.5">
-                <Lock className="w-4 h-4 shrink-0" />
-                <span>Proprietary IP & Anti-Piracy</span>
-              </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Curriculum, code notes & videos are copyrighted. Screen recording, downloading, or redistribution is strictly prohibited by law.
-              </p>
-            </div>
-
-          </div>
-        </div>
-      </section>
+      
 
       {/* ===================================================================
           SECTION 5 — WHY CHOOSE US
