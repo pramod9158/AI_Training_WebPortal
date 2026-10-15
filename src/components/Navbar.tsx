@@ -163,30 +163,34 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     : [];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-sm border-none shadow-none transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-4 lg:py-6 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-white/85 dark:bg-[#0B0F19]/85 backdrop-blur-lg border-b border-slate-900/10 dark:border-slate-800/60 transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 h-20 flex items-center justify-between">
         
-        {/* Left Section: Waynautic Logo — responsive: compact on mobile, full size on desktop */}
+        {/* Left Section: Waynautic Logo — matching waynautic.netlify.app */}
         <div className="flex items-center shrink-0">
-          <Link href="/" className="flex items-center gap-2 group py-0.5 sm:py-1 shrink-0" aria-label="Waynautic Academy Home">
+          <Link href="/" className="flex items-center gap-2 group shrink-0" aria-label="Waynautic Academy Home">
             <Image
               src="/Waynautic%20Logo%20New.png"
               alt="Waynautic Technologies"
               width={225}
               height={46}
-              className="h-[26px] xs:h-[28px] sm:h-[40px] lg:h-[46px] w-auto object-contain transition-transform group-hover:scale-[1.02]"
+              className="h-9 sm:h-10 w-auto object-contain transition-transform group-hover:scale-[1.02]"
               priority
             />
           </Link>
         </div>
 
-        {/* Center Section: Navigation Links (Training Programs, Curriculum, About Us) — shifted to align bottom with logo */}
+        {/* Center Section: Navigation Links — matching waynautic.netlify.app font size (text-sm) and font-semibold */}
         <div className="hidden lg:flex flex-1 justify-center px-4">
-          <nav className="flex items-center gap-8 lg:gap-10" style={{ transform: 'translateY(8px)' }}>
+          <nav className="flex items-center gap-1 xl:gap-2">
             {/* 1. Training Programs */}
             <Link
               href="/#pricing"
-              className="text-[19px] lg:text-[20px] font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap"
+              className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
+                pathname === '/#pricing'
+                  ? 'text-indigo-600 dark:text-cyan-400 bg-slate-100/60 dark:bg-slate-800/60'
+                  : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/70'
+              }`}
             >
               Training Programs
             </Link>
@@ -196,16 +200,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <button
                 type="button"
                 onClick={() => setCurriculumDropdownOpen((v) => !v)}
-                className={`flex items-center gap-1.5 text-[19px] lg:text-[20px] font-semibold transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1 rounded-md px-4 py-2 text-sm font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                   pathname?.startsWith('/curriculum')
-                    ? 'text-indigo-600 dark:text-indigo-400 font-bold'
-                    : 'text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400'
+                    ? 'text-indigo-600 dark:text-cyan-400 bg-slate-100/60 dark:bg-slate-800/60'
+                    : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/70'
                 }`}
                 aria-expanded={curriculumDropdownOpen}
                 aria-label="Curriculum programs"
               >
                 <span>Curriculum</span>
-                <ChevronDown className={`w-4.5 h-4.5 text-gray-500 transition-transform duration-200 ${curriculumDropdownOpen ? 'rotate-180' : ''}`} />
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.6"
+                  className={`transition-transform duration-300 ${curriculumDropdownOpen ? 'rotate-180' : ''}`}
+                >
+                  <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
 
               {/* Curriculum Dropdown Panel */}
@@ -240,10 +254,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             {/* 3. About Us */}
             <Link
               href="/about"
-              className={`text-[19px] lg:text-[20px] font-semibold transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
+              className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                 pathname === '/about'
-                  ? 'text-indigo-600 dark:text-indigo-400 font-bold'
-                  : 'text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400'
+                  ? 'text-indigo-600 dark:text-cyan-400 bg-slate-100/60 dark:bg-slate-800/60'
+                  : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/70'
               }`}
             >
               About Us
@@ -256,10 +270,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-[19px] lg:text-[20px] font-semibold transition bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
+                  className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                     isActive
-                      ? 'text-indigo-600 dark:text-indigo-400 font-bold'
-                      : 'text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400'
+                      ? 'text-indigo-600 dark:text-cyan-400 bg-slate-100/60 dark:bg-slate-800/60'
+                      : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/70'
                   }`}
                 >
                   {link.label}
@@ -314,7 +328,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         )}
 
         {/* Right Section: Focused & Consolidated Utilities */}
-        <div className="flex items-center gap-2 sm:gap-3.5 shrink-0" style={{ transform: 'translateY(8px)' }}>
+        <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
 
           {/* Laptop / Desktop Theme Toggle Button */}
           <button
@@ -490,14 +504,48 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               )}
             </div>
           ) : (
-            <div className="hidden lg:flex items-center gap-6 lg:gap-8">
+            <div className="hidden lg:flex items-center gap-3">
               <Link
                 href="/login"
-                className="text-[19px] lg:text-[20px] font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition whitespace-nowrap shrink-0"
+                className="rounded-md px-3.5 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/70 transition-colors whitespace-nowrap shrink-0"
               >
                 Log in
               </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.dispatchEvent(new CustomEvent('waynautic_open_contact_modal'));
+                  }
+                }}
+                className="inline-flex items-center justify-center text-sm font-semibold px-5 py-2.5 rounded-md text-white shadow-sm transition-all duration-300 hover:opacity-95 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shrink-0"
+                style={{
+                  background: 'linear-gradient(100deg, #1a3fb0, #29abe2)',
+                  boxShadow: '0 0 0 1px rgba(41,171,226,.15), 0 8px 32px -8px rgba(124,58,237,.25)',
+                }}
+              >
+                Talk to Us
+              </button>
             </div>
+          )}
+
+          {/* Talk to Us Button (Desktop; when user is logged in) */}
+          {isLoggedIn && (
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new CustomEvent('waynautic_open_contact_modal'));
+                }
+              }}
+              className="hidden xl:inline-flex items-center justify-center text-sm font-semibold px-4 py-2 rounded-md text-white shadow-sm transition-all duration-300 hover:opacity-95 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shrink-0"
+              style={{
+                background: 'linear-gradient(100deg, #1a3fb0, #29abe2)',
+                boxShadow: '0 0 0 1px rgba(41,171,226,.15), 0 8px 32px -8px rgba(124,58,237,.25)',
+              }}
+            >
+              Talk to Us
+            </button>
           )}
 
           {/* Mobile Drawer Hamburger Button */}
@@ -781,6 +829,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   <span>Dark</span>
                 </>
               )}
+            </button>
+          </div>
+
+          {/* Mobile Talk to Us CTA */}
+          <div className="pt-2">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new CustomEvent('waynautic_open_contact_modal'));
+                }
+              }}
+              className="w-full py-3 rounded-lg text-sm font-semibold text-white shadow-sm flex items-center justify-center space-x-2 cursor-pointer"
+              style={{
+                background: 'linear-gradient(100deg, #1a3fb0, #29abe2)',
+                boxShadow: '0 0 0 1px rgba(41,171,226,.15), 0 8px 32px -8px rgba(124,58,237,.25)',
+              }}
+            >
+              <span>Talk to Us</span>
             </button>
           </div>
         </div>
