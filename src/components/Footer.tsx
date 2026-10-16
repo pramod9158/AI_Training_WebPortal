@@ -64,7 +64,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="bg-slate-50 dark:bg-[#070A12] border-t border-slate-200 dark:border-slate-800/80 pt-10 pb-8 text-slate-600 dark:text-slate-400 text-sm transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+      <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
         
         {/* ==================================================================== */}
         {/* PLATFORM NAVIGATION & LINKS (5-COLUMN GRID)                          */}
@@ -75,10 +75,10 @@ export const Footer: React.FC = () => {
           <div className="space-y-4 sm:col-span-2 md:col-span-1 lg:col-span-1">
             <Link href="/" className="inline-block group">
               <Image
-                src="/Waynautic%20Logo%20New.png"
+                src="/Waynautic_Academy_Logo_Transparent.png"
                 alt="Waynautic Academy"
-                width={260}
-                height={64}
+                width={200}
+                height={50}
                 className="h-9 sm:h-10 w-auto object-contain transition-transform group-hover:scale-105"
               />
             </Link>

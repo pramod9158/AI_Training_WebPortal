@@ -130,30 +130,31 @@ function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: str
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
-// --- FAQ Accordion Item -------------------------------------------------------
+// --- FAQ Accordion Item (AccioJob Style) -------------------------------------
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <button
-      className="w-full text-left px-6 sm:px-8 py-5 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 hover:border-cyan-400/50 dark:hover:border-cyan-500/40 shadow-sm hover:shadow-md transition-all group"
-      onClick={() => setOpen(!open)}
-      type="button"
-    >
-      <div className="flex items-center justify-between gap-4">
-        <span className="font-bold text-slate-900 dark:text-white text-base sm:text-lg group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors text-left leading-snug">
+    <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0d1426] transition-all hover:border-slate-300 dark:hover:border-slate-700 shadow-xs overflow-hidden">
+      <button
+        className="w-full text-left px-5 sm:px-6 py-4.5 sm:py-5 flex items-center justify-between gap-4 cursor-pointer group"
+        onClick={() => setOpen(!open)}
+        type="button"
+      >
+        <span className="font-bold text-slate-900 dark:text-white text-base sm:text-lg group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">
           {q}
         </span>
-        {open
-          ? <ChevronUp className="w-5 h-5 text-cyan-500 shrink-0" />
-          : <ChevronDown className="w-5 h-5 text-slate-400 group-hover:text-cyan-500 transition-colors shrink-0" />
-        }
-      </div>
+        <ChevronDown
+          className={`w-5 h-5 shrink-0 transition-transform duration-200 ${
+            open ? 'rotate-180 text-blue-600' : 'text-slate-400 group-hover:text-slate-600'
+          }`}
+        />
+      </button>
       {open && (
-        <p className="mt-4 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed text-left border-t border-slate-100 dark:border-slate-800/80 pt-3.5">
+        <div className="px-5 sm:px-6 pb-5 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/80 pt-3.5">
           {a}
-        </p>
+        </div>
       )}
-    </button>
+    </div>
   );
 }
 
@@ -176,6 +177,8 @@ function HomePageContent() {
   const { profile, progress, streak } = useWaynauticStore();
   const [onboardingOpen, setOnboardingOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [certModalOpen, setCertModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'cohort' | 'expert_session' | 'consultation'>('cohort');
   const [topics, setTopics] = useState(getAllTopics());
   const [faqCategory, setFaqCategory] = useState('Courses');
@@ -440,7 +443,7 @@ function HomePageContent() {
         <div className="absolute top-0 left-1/4 w-[600px] h-[400px] bg-gradient-radial from-blue-500/10 to-transparent blur-[100px] rounded-full pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] bg-gradient-radial from-violet-500/8 to-transparent blur-[80px] rounded-full pointer-events-none" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-16 sm:py-24">
+        <div className="relative w-full px-4 sm:px-8 md:px-12 lg:px-[2in] py-16 sm:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
             {/* LEFT: Headline + subtitle + trust badges */}
@@ -533,7 +536,7 @@ function HomePageContent() {
               <div
                 className="relative rounded-2xl p-5 sm:p-6 overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform group"
                 style={{ background: 'linear-gradient(135deg, #1e0c50 0%, #2d0c6a 100%)' }}
-                onClick={() => document.getElementById('certificate')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => setCertModalOpen(true)}
               >
                 <div className="absolute bottom-0 right-0 w-44 h-44 bg-violet-500/15 rounded-full translate-y-10 translate-x-10 blur-2xl pointer-events-none" />
                 <div className="relative">
@@ -576,9 +579,9 @@ function HomePageContent() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        document.getElementById('certificate')?.scrollIntoView({ behavior: 'smooth' });
+                        setCertModalOpen(true);
                       }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-[#1e0c50] font-bold text-xs hover:bg-violet-50 transition-colors shadow-sm shrink-0"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-[#1e0c50] font-bold text-xs hover:bg-violet-50 transition-colors shadow-sm shrink-0 cursor-pointer"
                     >
                       See Certificate ↗
                     </button>
@@ -591,45 +594,10 @@ function HomePageContent() {
       </section>
 
       {/* ===================================================================
-          IMPACT STATS — Dark navy section with big numbers (AccioJob puzzle cards)
-      =================================================================== */}
-      <section className="py-12 sm:py-16" style={{ background: '#0d1b3e' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-          <div className="text-center mb-10">
-            <p className="text-blue-400 text-sm font-bold uppercase tracking-widest mb-1">Our Impact So Far</p>
-            <h2 className="text-2xl sm:text-3xl font-black text-white">Impact Created</h2>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { value: 50, suffix: '+', label: 'STUDENTS ENROLLED', icon: <Users className="w-6 h-6" /> },
-              { value: 12, suffix: ' LPA', label: 'HIGHEST PACKAGE', icon: <TrendingUp className="w-6 h-6" /> },
-              { value: 30, suffix: '+', label: 'PARTNER COMPANIES', icon: <Target className="w-6 h-6" /> },
-              { value: 100, suffix: '%', label: 'PLACEMENT ASSISTANCE', icon: <Award className="w-6 h-6" /> },
-            ].map(({ value, suffix, label, icon }) => (
-              <div
-                key={label}
-                className="relative rounded-2xl p-6 sm:p-8 text-center overflow-hidden group hover:scale-105 transition-transform"
-                style={{ background: 'linear-gradient(135deg, #0e2a5c 0%, #0f1f4a 100%)' }}
-              >
-                <div className="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors rounded-2xl" />
-                <div className="relative">
-                  <div className="flex justify-center mb-3 text-blue-400">{icon}</div>
-                  <div className="text-3xl sm:text-4xl font-black text-white mb-1.5">
-                    <AnimatedCounter target={value} suffix={suffix} />
-                  </div>
-                  <p className="text-blue-300 text-[11px] sm:text-xs font-bold uppercase tracking-widest leading-tight">{label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===================================================================
           COURSES SECTION — AccioJob-style lavender cards with tabs
       =================================================================== */}
       <section id="courses" className="py-16 sm:py-24 bg-[#f8fafc] dark:bg-[#080d1c]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+        <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
 
           {/* Header */}
           <div className="text-center mb-10 sm:mb-12">
@@ -1223,39 +1191,62 @@ function HomePageContent() {
       </section>
 
       {/* ===================================================================
-          LIVE SESSION PREVIEW — Video section
+          LIVE SESSION PREVIEW — Video trigger section (AccioJob Style)
       =================================================================== */}
       <section className="py-16 sm:py-24 bg-white dark:bg-[#080d1c]">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-          <div className="text-center mb-8 sm:mb-10">
+        <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
+          <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-blue-200 dark:border-blue-800/50 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 text-xs font-bold tracking-wider mb-3">
               <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
               Live Class Sneak Peek
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3">
-              See How We Teach in Real Live Sessions
+              See How We Teach in Real Life
             </h2>
             <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
               Watch an authentic excerpt from our live cohort mentorship classes — hands-on coding, live problem-solving, and mentor-student interaction.
             </p>
           </div>
 
-          <div className="rounded-3xl overflow-hidden border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D121F] shadow-2xl p-2 sm:p-3">
-            <VideoPlayer
-              url="https://youtu.be/WAjTmgYvjA8"
-              title="Waynautic Live Training Masterclass — Live Session Sneak Peek"
-              topicId="live-session-preview"
-              moduleTitle="Waynautic Live Mentorship Class"
-            />
+          {/* Interactive Video Banner with Play Button */}
+          <div className="relative rounded-3xl overflow-hidden border-2 border-slate-200 dark:border-slate-800 bg-gradient-to-br from-[#0c1a40] via-[#0e2a5c] to-[#1e0c50] shadow-2xl p-8 sm:p-14 text-center text-white">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.25)_0%,transparent_70%)] pointer-events-none" />
+            
+            <div className="relative max-w-xl mx-auto flex flex-col items-center">
+              <button
+                type="button"
+                onClick={() => setVideoModalOpen(true)}
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#2563eb] hover:bg-[#1d4fd8] text-white flex items-center justify-center shadow-2xl shadow-blue-500/50 hover:scale-110 transition-all duration-300 mb-6 group cursor-pointer"
+                aria-label="Play video"
+              >
+                <Play className="w-8 h-8 sm:w-10 sm:h-10 fill-white translate-x-0.5 group-hover:scale-105 transition-transform" />
+              </button>
+
+              <h3 className="text-xl sm:text-2xl font-black mb-2">
+                Live Cohort Mentorship Class Excerpt
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 mb-6 leading-relaxed">
+                Experience the authentic interactive class atmosphere — screen sharing, live code debugging, and direct student Q&amp;A.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => setVideoModalOpen(true)}
+                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-white text-[#0e2a5c] font-black text-sm hover:bg-blue-50 transition-all shadow-lg hover:-translate-y-0.5 cursor-pointer"
+              >
+                <Play className="w-4 h-4 fill-[#0e2a5c]" />
+                Watch Live Class Video
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 mt-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
             {[
               { icon: <CheckCircle2 className="w-4 h-4 text-emerald-500" />, text: '100% Practical & Code-First' },
               { icon: <CheckCircle2 className="w-4 h-4 text-blue-500" />, text: 'Live Doubt Clearing & Q&A' },
               { icon: <CheckCircle2 className="w-4 h-4 text-violet-500" />, text: 'Real Industry Mentors' },
             ].map(({ icon, text }) => (
-              <div key={text} className="p-3 rounded-2xl bg-[#f8fafc] dark:bg-[#0f1525] border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2 shadow-sm text-center">
+              <div key={text} className="p-3.5 rounded-2xl bg-[#f8fafc] dark:bg-[#0f1525] border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2 shadow-sm text-center">
                 {icon}
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{text}</span>
               </div>
@@ -1265,102 +1256,10 @@ function HomePageContent() {
       </section>
 
       {/* ===================================================================
-          ACHIEVEMENT / CERTIFICATE SECTION — Alternating layout (title left, card right)
-          Exactly like AccioJob's feature sections
-      =================================================================== */}
-      <section id="certificate" className="py-16 sm:py-24 bg-[#f8fafc] dark:bg-[#080d1c]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-            {/* LEFT: Title & description */}
-            <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-wider mb-5">
-                <Award className="w-3.5 h-3.5 text-amber-500" />
-                Industry Recognition & Accreditations
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white leading-[1.2] mb-5 tracking-tight">
-                Learn from an{' '}
-                <span className="text-[#2563eb]">Award-Winning</span>{' '}
-                AI Engineering Team
-              </h2>
-
-              <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed mb-6">
-                Our curriculum and mentorship are built on proven industry excellence, recognized nationally for breakthrough AI testing strategies and production systems.
-              </p>
-
-              <ul className="space-y-3.5 mb-8">
-                {[
-                  'Winner — Best AI/ML Testing Strategy 2025',
-                  'GenAI and ML Awards by leading industry body',
-                  'Setting new industry benchmarks for AI reliability',
-                  'Curriculum shaped by real production projects',
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 flex items-center justify-center shrink-0 mt-0.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#2563eb]" />
-                    </div>
-                    <span className="text-sm text-slate-700 dark:text-slate-300 font-medium">{item}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <a
-                href="https://lnkd.in/p/dPmtiGUF"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl bg-[#0A66C2] hover:bg-[#004182] text-white font-bold text-sm shadow-md hover:-translate-y-0.5 transition-all"
-              >
-                <svg className="w-4 h-4 fill-white shrink-0" viewBox="0 0 24 24">
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                </svg>
-                View Announcement on LinkedIn
-                <ArrowRight className="w-4 h-4" />
-              </a>
-            </div>
-
-            {/* RIGHT: Certificate card preview */}
-            <div className="flex justify-center lg:justify-end">
-              <div className="relative max-w-md w-full">
-                {/* Decorative blur */}
-                <div className="absolute -inset-4 bg-gradient-to-br from-amber-500/10 to-blue-500/10 rounded-3xl blur-2xl" />
-                <div className="relative bg-white dark:bg-[#0e1730] rounded-2xl border-2 border-amber-200 dark:border-amber-800/50 shadow-2xl overflow-hidden">
-                  <div className="p-4 border-b border-amber-100 dark:border-amber-900/30 bg-amber-50/50 dark:bg-amber-950/20">
-                    <div className="flex items-center gap-2">
-                      <Award className="w-5 h-5 text-amber-500" />
-                      <span className="text-sm font-bold text-amber-800 dark:text-amber-300">Industry Achievement Certificate</span>
-                    </div>
-                  </div>
-                  <a
-                    href="https://lnkd.in/p/dPmtiGUF"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group block"
-                  >
-                    <Image
-                      src="/Innovation-Certificate.jpg"
-                      alt="Winner of the Best AI/ML Testing Strategy 2025 at the GenAI and ML Awards"
-                      width={480}
-                      height={340}
-                      className="w-full h-auto object-cover group-hover:opacity-95 transition-opacity"
-                    />
-                    <div className="p-4">
-                      <p className="text-xs font-black text-slate-900 dark:text-white">🌟 Best AI/ML Testing Strategy 2025</p>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">GenAI and ML Awards · Click to view on LinkedIn</p>
-                    </div>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===================================================================
           WHY CHOOSE US — Feature grid (AccioJob alternating section style)
       =================================================================== */}
-      <section className="py-16 sm:py-24 bg-white dark:bg-[#080d1c]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+      <section className="py-16 sm:py-24 bg-[#f8fafc] dark:bg-[#080d1c]">
+        <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
 
           {/* Header */}
           <div className="text-center mb-12 sm:mb-16">
@@ -1404,49 +1303,59 @@ function HomePageContent() {
       </section>
 
       {/* ===================================================================
-          FAQ SECTION
+          FAQ SECTION — AccioJob 2-Column Layout
       =================================================================== */}
       <section className="py-16 sm:py-24 bg-[#f8fafc] dark:bg-[#080d1c]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+        <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
           {/* Header */}
           <div className="text-center mb-10 sm:mb-14">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#2563eb] mb-3">FAQs</span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white">
+            <span className="inline-block text-xs font-bold uppercase tracking-widest border-b-2 border-blue-600 pb-0.5 text-slate-900 dark:text-white">
+              FAQS
+            </span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mt-3 mb-4">
               <span className="text-[#2563eb]">Frequently</span> Asked Questions
             </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+              Everything you need to know about our curriculum, live sessions, certification, and policies.
+            </p>
           </div>
 
-          {/* Category Tabs */}
-          <div className="flex items-center justify-center gap-2 sm:gap-2.5 mb-8 flex-wrap">
-            {FAQ_CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setFaqCategory(cat)}
-                type="button"
-                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                  faqCategory === cat
-                    ? 'bg-[#2563eb] text-white shadow-lg shadow-blue-500/25'
-                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-700'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          {/* AccioJob 2-Column: Left Category Sidebar + Right Accordion */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Left Category Sidebar */}
+            <div className="lg:col-span-3">
+              <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0d1426] p-2 flex flex-col gap-1.5 shadow-sm sticky top-28">
+                {FAQ_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setFaqCategory(cat)}
+                    type="button"
+                    className={`w-full py-3 px-4 rounded-xl text-center text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                      faqCategory === cat
+                        ? 'bg-[#e8f1ff] dark:bg-blue-950/60 text-[#2563eb] dark:text-blue-400 shadow-xs'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-          {/* FAQ Items */}
-          <div className="space-y-3">
-            {filteredFaqs.map((faq) => (
-              <FaqItem key={faq.q} q={faq.q} a={faq.a} />
-            ))}
+            {/* Right Accordion List */}
+            <div className="lg:col-span-9 space-y-3.5">
+              {filteredFaqs.map((faq) => (
+                <FaqItem key={faq.q} q={faq.q} a={faq.a} />
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* ===================================================================
-          CTA BANNER — Dark navy, AccioJob style
+          CTA BANNER — Dark navy, AccioJob style (2-inch indent)
       =================================================================== */}
-      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+      <section className="py-16 sm:py-24 w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
         <div className="relative rounded-3xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #0d1b3e 0%, #0e2a5c 50%, #1a0d4a 100%)' }}>
           {/* Grid pattern */}
           <div className="absolute inset-0 opacity-20" style={{
@@ -1505,6 +1414,81 @@ function HomePageContent() {
           </div>
         </div>
       </section>
+
+      {/* Video Player Modal (Triggered by 'Watch Live Class Video' button) */}
+      {videoModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md">
+          <div className="relative w-full max-w-4xl bg-slate-950 rounded-3xl overflow-hidden border border-slate-800 shadow-2xl">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/80">
+              <div className="flex items-center gap-2.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <h4 className="text-sm font-bold text-white">Live Cohort Class Excerpt — Waynautic Academy</h4>
+              </div>
+              <button
+                type="button"
+                onClick={() => setVideoModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-sm font-bold transition-colors cursor-pointer"
+                aria-label="Close video"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-2 sm:p-4 bg-black">
+              <VideoPlayer
+                url="https://youtu.be/WAjTmgYvjA8"
+                title="Waynautic Live Training Masterclass — Live Session Sneak Peek"
+                topicId="live-session-preview"
+                moduleTitle="Waynautic Live Mentorship Class"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Certificate Modal (Triggered from Hero Achievement Card) */}
+      {certModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md">
+          <div className="relative w-full max-w-2xl bg-slate-900 rounded-3xl overflow-hidden border border-amber-500/40 shadow-2xl">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/80">
+              <div className="flex items-center gap-2">
+                <Award className="w-5 h-5 text-amber-400" />
+                <h4 className="text-sm font-bold text-white">GenAI &amp; ML Awards 2025 Certificate</h4>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCertModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-sm font-bold transition-colors cursor-pointer"
+                aria-label="Close certificate"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-4 sm:p-6 bg-slate-950 flex flex-col items-center">
+              <div className="rounded-2xl overflow-hidden border-2 border-amber-400/50 shadow-xl mb-4 bg-black">
+                <Image
+                  src="/Innovation-Certificate.jpg"
+                  alt="Waynautic Innovation Certificate - GenAI & ML Awards 2025"
+                  width={600}
+                  height={420}
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+              <div className="text-center mb-4">
+                <h3 className="text-lg font-black text-white mb-1">Winner — Best AI/ML Testing Strategy</h3>
+                <p className="text-xs text-slate-400 max-w-md">Awarded nationally for groundbreaking enterprise AI testing architectures and industry-proven curricula.</p>
+              </div>
+              <a
+                href="https://lnkd.in/p/dPmtiGUF"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0A66C2] hover:bg-[#004182] text-white font-bold text-xs shadow-md transition-all"
+              >
+                View Announcement on LinkedIn ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Floating WhatsApp button */}
       <a

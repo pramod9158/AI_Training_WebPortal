@@ -164,16 +164,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white/85 dark:bg-[#0B0F19]/85 backdrop-blur-lg border-b border-slate-900/10 dark:border-slate-800/60 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 h-20 flex items-center justify-between">
+      <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in] h-20 flex items-center justify-between">
         
-        {/* Left Section: Waynautic Logo — matching waynautic.netlify.app */}
+        {/* Left Section: Waynautic Academy Logo */}
         <div className="flex items-center shrink-0">
           <Link href="/" className="flex items-center gap-2 group shrink-0" aria-label="Waynautic Academy Home">
             <Image
-              src="/Waynautic%20Logo%20New.png"
-              alt="Waynautic Technologies"
-              width={225}
-              height={46}
+              src="/Waynautic_Academy_Logo_Transparent.png"
+              alt="Waynautic Academy"
+              width={200}
+              height={50}
               className="h-9 sm:h-10 w-auto object-contain transition-transform group-hover:scale-[1.02]"
               priority
             />
