@@ -140,7 +140,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         onClick={() => setOpen(!open)}
         type="button"
       >
-        <span className="font-bold text-slate-900 dark:text-white text-base sm:text-lg group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">
+        <span className="font-bold text-[#111827] dark:text-white text-base sm:text-lg group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">
           {q}
         </span>
         <ChevronDown
@@ -150,7 +150,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         />
       </button>
       {open && (
-        <div className="px-5 sm:px-6 pb-5 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/80 pt-3.5">
+        <div className="px-5 sm:px-6 pb-5 text-sm sm:text-base text-[#374151] dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/80 pt-3.5">
           {a}
         </div>
       )}
@@ -425,7 +425,7 @@ function HomePageContent() {
   // GUEST / VISITOR VIEW: Full Marketing & Value Landing Page
   // =========================================================================
   return (
-    <div className="relative overflow-x-hidden bg-white dark:bg-[#0a0f1e]">
+    <div className="relative overflow-x-hidden bg-[#EEF2F7] dark:bg-[#0a0f1e]">
 
       {/* Onboarding Tour */}
       <OnboardingTour isOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
@@ -433,48 +433,47 @@ function HomePageContent() {
       {/* ===================================================================
           HERO SECTION — AccioJob style: left headline + right feature cards
       =================================================================== */}
-      <section className="relative bg-[#f8fafc] dark:bg-[#080d1c] overflow-hidden">
+      <section className="relative bg-[#EEF2F7] dark:bg-[#080d1c] overflow-hidden">
         {/* Subtle grid background */}
         <div className="absolute inset-0 pointer-events-none" style={{
           backgroundImage: `linear-gradient(to right, rgba(14,42,92,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(14,42,92,0.04) 1px, transparent 1px)`,
           backgroundSize: '40px 40px'
         }} />
         {/* Radial blue glow */}
-        <div className="absolute top-0 left-1/4 w-[600px] h-[400px] bg-gradient-radial from-blue-500/10 to-transparent blur-[100px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] bg-gradient-radial from-violet-500/8 to-transparent blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[400px] bg-gradient-radial from-blue-500/8 to-transparent blur-[100px] rounded-full pointer-events-none" />
 
-        <div className="relative w-full px-4 sm:px-8 md:px-12 lg:px-[2in] py-16 sm:py-24">
+        <div className="relative w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16 py-16 sm:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
             {/* LEFT: Headline + subtitle + trust badges */}
             <div>
               {/* Top badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-300 text-xs font-bold tracking-wide mb-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-300 text-xs font-bold tracking-wide mb-6 shadow-sm">
                 <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
                 Placement-Focused Tech Training Programs
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-black text-slate-900 dark:text-white leading-[1.15] mb-5 tracking-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-black text-[#111827] dark:text-white leading-[1.15] mb-5 tracking-tight">
                 Launch Your Tech Career with{' '}
                 <span className="text-[#2563eb]">Placement-Focused Courses</span>{' '}
                 &amp; 3-Month Industry Internship
               </h1>
 
-              <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 leading-relaxed mb-8 max-w-xl">
+              <p className="text-base sm:text-lg text-[#374151] dark:text-slate-400 leading-relaxed mb-8 max-w-xl">
                 Get job-ready through live, online, or self-paced courses. Learn from expert mentors, build real projects, and access placement opportunities with top companies.
               </p>
 
               {/* Trust badges */}
               <div className="flex flex-wrap gap-3 mb-8">
-                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-xs font-semibold text-[#374151] dark:text-slate-300">
                   <Award className="w-4 h-4 text-amber-500" />
                   Award-Winning Curriculum
                 </div>
-                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-xs font-semibold text-[#374151] dark:text-slate-300">
                   <Users className="w-4 h-4 text-blue-500" />
                   Expert Industry Mentors
                 </div>
-                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-xs font-semibold text-[#374151] dark:text-slate-300">
                   <Shield className="w-4 h-4 text-emerald-500" />
                   Dual Certification
                 </div>
@@ -505,21 +504,50 @@ function HomePageContent() {
             {/* RIGHT: Two stacked dark feature cards (AccioJob style) */}
             <div className="flex flex-col gap-4">
 
-              {/* Card 1: Courses */}
+              {/* Card 1: Courses — expanded flagship card */}
               <div
-                className="relative rounded-2xl p-6 overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform"
+                className="relative rounded-2xl p-7 overflow-hidden cursor-pointer hover:scale-[1.01] transition-transform"
                 style={{ background: 'linear-gradient(135deg, #0e2a5c 0%, #0f1f4a 100%)' }}
                 onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 rounded-full -translate-y-10 translate-x-10 blur-2xl" />
+                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full -translate-y-12 translate-x-12 blur-3xl" />
                 <div className="relative">
                   <span className="inline-block px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 text-[11px] font-bold uppercase tracking-wider mb-3">
                     3 Flagship Programs
                   </span>
                   <h3 className="text-xl font-black text-white mb-1">Industry-Ready Training</h3>
-                  <p className="text-blue-200/80 text-sm mb-4">Get placed through structured live training with real project work and mentorship.</p>
+                  <p className="text-blue-200/70 text-sm mb-4">4-week live cohort + 3-month industry internship. Placement-focused, mentor-guided.</p>
+
+                  {/* 3 Programs listed */}
+                  <div className="space-y-2.5 mb-5">
+                    {[
+                      { label: 'Automation Testing', sub: 'Selenium · Playwright · Azure DevOps · CI/CD', color: 'bg-indigo-500/20 border-indigo-500/30 text-indigo-200' },
+                      { label: 'Performance Testing', sub: 'JMeter · LoadRunner · K6 · Grafana · Datadog', color: 'bg-blue-500/20 border-blue-500/30 text-blue-200' },
+                      { label: 'AI Engineering & LLMs', sub: 'Python · LLMs · RAG · Vector DB · AI Agents', color: 'bg-violet-500/20 border-violet-500/30 text-violet-200' },
+                    ].map(prog => (
+                      <div key={prog.label} className={`px-3 py-2.5 rounded-xl border ${prog.color}`}>
+                        <div className="font-bold text-sm leading-tight">{prog.label}</div>
+                        <div className="text-[11px] opacity-80 mt-0.5">{prog.sub}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Key stats */}
+                  <div className="grid grid-cols-3 gap-2 mb-5">
+                    {[
+                      { val: '₹9,999', label: 'Starting Price' },
+                      { val: '3 Months', label: 'Internship' },
+                      { val: '56+', label: 'Topics' },
+                    ].map(s => (
+                      <div key={s.label} className="bg-white/10 rounded-xl px-2 py-2 text-center">
+                        <div className="text-white font-black text-sm">{s.val}</div>
+                        <div className="text-blue-200/70 text-[10px] font-semibold mt-0.5">{s.label}</div>
+                      </div>
+                    ))}
+                  </div>
+
                   <div className="flex flex-wrap gap-2 mb-5">
-                    {['Live Projects', 'Expert Mentors', 'Certificate', '3-Month Internship'].map(tag => (
+                    {['Live Projects', 'Expert Mentors', 'Certificate', 'Placement Help'].map(tag => (
                       <span key={tag} className="px-2.5 py-1 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-200 text-xs font-semibold">{tag}</span>
                     ))}
                   </div>
@@ -596,20 +624,20 @@ function HomePageContent() {
       {/* ===================================================================
           COURSES SECTION — AccioJob-style lavender cards with tabs
       =================================================================== */}
-      <section id="courses" className="py-16 sm:py-24 bg-[#f8fafc] dark:bg-[#080d1c]">
-        <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
+      <section id="courses" className="py-16 sm:py-24 bg-[#EEF2F7] dark:bg-[#080d1c]">
+        <div className="w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
 
           {/* Header */}
           <div className="text-center mb-10 sm:mb-12">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-4">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
               <Sparkles className="w-3.5 h-3.5" />
               3 Specialized Career Tracks
             </span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.15] mb-4 tracking-tight">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#111827] dark:text-white leading-[1.15] mb-4 tracking-tight">
               <span className="text-[#2563eb]">Live, Online,</span> and Self-Paced Courses{' '}
               <br className="hidden sm:block" />with Placement Assistance
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 text-base max-w-2xl mx-auto">
+            <p className="text-[#6B7280] dark:text-slate-400 text-base max-w-2xl mx-auto">
               Personalized roadmaps, 1-on-1 industry mentorship, and comprehensive cohort training tailored for developers and tech professionals.
             </p>
           </div>
@@ -676,79 +704,46 @@ function HomePageContent() {
             ].map(course => (
               <div
                 key={course.id}
-                className="rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0d1426] shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1.5"
+                className="rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0d1426] shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1.5"
               >
                 <div>
-                  {/* Card Header (Lavender / Tinted gradient with AccioJob style icon + duration pill) */}
+                  {/* Card Header */}
                   <div className={`p-6 border-b border-slate-100 dark:border-slate-800/60 ${course.headerBg}`}>
                     <div className="flex items-center justify-between mb-4">
                       <div className={`w-10 h-10 rounded-xl border flex items-center justify-center shadow-sm ${course.iconBg}`}>
                         {course.icon}
                       </div>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold shadow-xs">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 text-[#374151] dark:text-slate-300 text-xs font-semibold shadow-xs">
                         <Clock className="w-3.5 h-3.5 text-blue-500" />
                         {course.duration}
                       </span>
                     </div>
-                    <h3 className="text-xl font-black text-slate-900 dark:text-white leading-tight mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    <h3 className="text-xl font-black text-[#111827] dark:text-white leading-tight mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       {course.title}
                     </h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                    <p className="text-xs text-[#6B7280] dark:text-slate-400 font-medium">
                       {course.subTitle}
                     </p>
                   </div>
 
                   {/* Middle Tech Chips */}
                   <div className="p-6">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2.5">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] dark:text-slate-500 mb-2.5">
                       Key Tools &amp; Frameworks
                     </p>
-                    <div className="flex flex-wrap gap-1.5 mb-5 min-h-[58px]">
+                    <div className="flex flex-wrap gap-1.5 mb-5">
                       {course.tags.map(t => (
-                        <span key={t} className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60">
+                        <span key={t} className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 text-[#374151] dark:text-slate-300 border border-slate-200 dark:border-slate-700/60">
                           {t}
                         </span>
                       ))}
-                    </div>
-
-                    {/* 3-column stats bar (AccioJob signature course meta) */}
-                    <div className="grid grid-cols-3 divide-x divide-slate-200 dark:divide-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/70 dark:bg-slate-900/50 p-2.5 text-center mb-6">
-                      <div className="px-1">
-                        <FileText className="w-4 h-4 text-blue-500 mx-auto mb-1" />
-                        <span className="block text-[11px] font-black text-slate-900 dark:text-white leading-tight">{course.projects}</span>
-                        <span className="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Projects</span>
-                      </div>
-                      <div className="px-1">
-                        <Users className="w-4 h-4 text-blue-500 mx-auto mb-1" />
-                        <span className="block text-[11px] font-black text-slate-900 dark:text-white leading-tight">{course.students}</span>
-                        <span className="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Learners</span>
-                      </div>
-                      <div className="px-1">
-                        <Sparkles className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-                        <span className="block text-[11px] font-black text-slate-900 dark:text-white leading-tight">{course.nextBatch}</span>
-                        <span className="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Next Batch</span>
-                      </div>
-                    </div>
-
-                    {/* Pricing */}
-                    <div className="flex items-baseline justify-between mb-4">
-                      <div>
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-2xl font-black text-slate-900 dark:text-white font-mono">{course.price}</span>
-                          <span className="text-sm font-semibold text-slate-400 line-through font-mono">{course.crossedPrice}</span>
-                        </div>
-                        <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">GST Included · Limited Seats</span>
-                      </div>
-                      <span className="text-[10px] px-2 py-0.5 rounded font-bold uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                        Popular
-                      </span>
                     </div>
 
                     {/* Action buttons */}
                     <div className="grid grid-cols-2 gap-2">
                       <Link
                         href={course.curriculumUrl}
-                        className="py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-center flex items-center justify-center gap-1.5 transition-colors"
+                        className="py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 text-[#374151] dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-center flex items-center justify-center gap-1.5 transition-colors"
                       >
                         <FileText className="w-3.5 h-3.5" />
                         Curriculum
@@ -773,7 +768,7 @@ function HomePageContent() {
                   </div>
                 </div>
 
-                {/* Bottom solid strip (AccioJob scholarship / internship highlight) */}
+                {/* Bottom solid strip */}
                 <div className={`py-2 px-4 text-center text-white text-[11px] font-black uppercase tracking-wider ${course.bannerBg}`}>
                   {course.bannerText}
                 </div>
@@ -783,10 +778,10 @@ function HomePageContent() {
 
           {/* Section Divider & Granular Tier Explorer */}
           <div className="text-center mb-8">
-            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
+            <h3 className="text-xl sm:text-2xl font-black text-[#111827] dark:text-white tracking-tight mb-2">
               Compare Flexible Learning Tiers
             </h3>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
+            <p className="text-xs sm:text-sm text-[#6B7280] dark:text-slate-400 max-w-xl mx-auto">
               Select a track below to explore Free Consultation, Live ₹19 Interactive Webinar, or the Full 4-Week Cohort with 3-Month Internship.
             </p>
           </div>
@@ -1194,16 +1189,16 @@ function HomePageContent() {
           LIVE SESSION PREVIEW — Video trigger section (AccioJob Style)
       =================================================================== */}
       <section className="py-16 sm:py-24 bg-white dark:bg-[#080d1c]">
-        <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
+        <div className="w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-blue-200 dark:border-blue-800/50 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 text-xs font-bold tracking-wider mb-3">
               <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
               Live Class Sneak Peek
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#111827] dark:text-white tracking-tight mb-3">
               See How We Teach in Real Life
             </h2>
-            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base text-[#6B7280] dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
               Watch an authentic excerpt from our live cohort mentorship classes — hands-on coding, live problem-solving, and mentor-student interaction.
             </p>
           </div>
@@ -1246,9 +1241,9 @@ function HomePageContent() {
               { icon: <CheckCircle2 className="w-4 h-4 text-blue-500" />, text: 'Live Doubt Clearing & Q&A' },
               { icon: <CheckCircle2 className="w-4 h-4 text-violet-500" />, text: 'Real Industry Mentors' },
             ].map(({ icon, text }) => (
-              <div key={text} className="p-3.5 rounded-2xl bg-[#f8fafc] dark:bg-[#0f1525] border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2 shadow-sm text-center">
+              <div key={text} className="p-3.5 rounded-2xl bg-[#EEF2F7] dark:bg-[#0f1525] border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2 shadow-sm text-center">
                 {icon}
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{text}</span>
+                <span className="text-xs font-bold text-[#374151] dark:text-slate-200">{text}</span>
               </div>
             ))}
           </div>
@@ -1258,17 +1253,17 @@ function HomePageContent() {
       {/* ===================================================================
           WHY CHOOSE US — Feature grid (AccioJob alternating section style)
       =================================================================== */}
-      <section className="py-16 sm:py-24 bg-[#f8fafc] dark:bg-[#080d1c]">
-        <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
+      <section className="py-16 sm:py-24 bg-[#EEF2F7] dark:bg-[#080d1c]">
+        <div className="w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
 
           {/* Header */}
           <div className="text-center mb-12 sm:mb-16">
             <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#2563eb] mb-3">Our Advantage</span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#111827] dark:text-white mb-4 tracking-tight">
               Why Choose{' '}
               <span className="text-[#2563eb]">Waynautic Academy</span>
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto text-base">
+            <p className="text-[#6B7280] dark:text-slate-400 max-w-2xl mx-auto text-base">
               We built what we wish existed — a no-fluff, depth-first engineering curriculum for serious developers.
             </p>
           </div>
@@ -1284,7 +1279,7 @@ function HomePageContent() {
             ].map(({ icon, title, desc, color, bg }) => (
               <div
                 key={title}
-                className="group p-6 sm:p-7 rounded-2xl bg-[#f8fafc] dark:bg-[#0f1525] border border-slate-200 dark:border-slate-800 hover:shadow-xl hover:border-transparent transition-all duration-300"
+                className="group p-6 sm:p-7 rounded-2xl bg-white dark:bg-[#0f1525] border border-slate-200 dark:border-slate-800 hover:shadow-xl hover:border-transparent transition-all duration-300"
               >
                 <div className="flex items-center gap-3.5 mb-4">
                   <div
@@ -1293,9 +1288,9 @@ function HomePageContent() {
                   >
                     {icon}
                   </div>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-base leading-snug">{title}</h3>
+                  <h3 className="font-bold text-[#111827] dark:text-white text-base leading-snug">{title}</h3>
                 </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{desc}</p>
+                <p className="text-sm text-[#6B7280] dark:text-slate-400 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -1305,17 +1300,17 @@ function HomePageContent() {
       {/* ===================================================================
           FAQ SECTION — AccioJob 2-Column Layout
       =================================================================== */}
-      <section className="py-16 sm:py-24 bg-[#f8fafc] dark:bg-[#080d1c]">
-        <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
+      <section className="py-16 sm:py-24 bg-[#EEF2F7] dark:bg-[#080d1c]">
+        <div className="w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
           {/* Header */}
           <div className="text-center mb-10 sm:mb-14">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest border-b-2 border-blue-600 pb-0.5 text-slate-900 dark:text-white">
+            <span className="inline-block text-xs font-bold uppercase tracking-widest border-b-2 border-blue-600 pb-0.5 text-[#111827] dark:text-white">
               FAQS
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mt-3 mb-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111827] dark:text-white mt-3 mb-4">
               <span className="text-[#2563eb]">Frequently</span> Asked Questions
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+            <p className="text-[#6B7280] dark:text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
               Everything you need to know about our curriculum, live sessions, certification, and policies.
             </p>
           </div>
@@ -1333,7 +1328,7 @@ function HomePageContent() {
                     className={`w-full py-3 px-4 rounded-xl text-center text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                       faqCategory === cat
                         ? 'bg-[#e8f1ff] dark:bg-blue-950/60 text-[#2563eb] dark:text-blue-400 shadow-xs'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        : 'text-[#374151] dark:text-slate-400 hover:text-[#111827] dark:hover:text-white'
                     }`}
                   >
                     {cat}
@@ -1355,7 +1350,8 @@ function HomePageContent() {
       {/* ===================================================================
           CTA BANNER — Dark navy, AccioJob style (2-inch indent)
       =================================================================== */}
-      <section className="py-16 sm:py-24 w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
+      <section className="py-16 sm:py-24 w-full">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
         <div className="relative rounded-3xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #0d1b3e 0%, #0e2a5c 50%, #1a0d4a 100%)' }}>
           {/* Grid pattern */}
           <div className="absolute inset-0 opacity-20" style={{
@@ -1412,6 +1408,7 @@ function HomePageContent() {
               </a>
             </div>
           </div>
+        </div>
         </div>
       </section>
 
