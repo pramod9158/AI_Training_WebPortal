@@ -84,13 +84,13 @@ const FAQS: { category: string; q: string; a: string }[] = [
   { category: 'Courses', q: 'What topics and programs does Waynautic Academy offer?', a: 'We offer 3 industry-aligned flagship programs: (1) Automation Testing Program (Selenium, Playwright, Azure DevOps, Jira, CI/CD), (2) Performance Testing Program (JMeter, LoadRunner, K6, Grafana, Datadog), and (3) AI Training Program (Python, LLMs, Prompt Engineering, Vector Databases, RAG Systems, AI Agents). All programs include 4 weeks of live training followed by a 3-month industry internship.' },
   { category: 'Courses', q: 'Is the curriculum beginner-friendly?', a: 'Yes! All 3 tracks start with strong coding and foundational tools before progressing to advanced enterprise architectures. The curriculum is designed for students and working professionals across all streams — no prior experience needed.' },
   { category: 'Courses', q: 'How long does the program take?', a: 'The structured path is designed to be completed in 4 weeks — covering basics to advanced AI in a fast, focused format. The curriculum is also available for self-paced learners who want to go at their own speed.' },
-  { category: 'Courses', q: 'How many topics and modules are available?', a: 'Currently 56 in-depth topics organized across 10 core modules. Each topic includes video lectures, live session reinforcement, reading notes, and interactive quizzes.' },
+  { category: 'Courses', q: 'How is the curriculum structured across modules?', a: 'The curriculum is organized across core progressive modules. Each module includes video lectures, live session reinforcement, reading notes, and interactive quizzes.' },
   { category: 'Learning', q: 'Is the learning self-paced or does it include live sessions?', a: 'Both! Every topic is covered via recorded video lectures, and reinforced through live sessions with your mentor. You get the flexibility of recorded content plus the depth of live interaction.' },
   { category: 'Learning', q: 'Will I build real AI projects?', a: 'Yes — you will build 4 to 5 agentic, market-ready AI projects during the program. These are portfolio-ready projects that demonstrate your skills to employers, not just theory or toy examples.' },
   { category: 'Learning', q: 'Do I get a personal mentor?', a: 'Yes. Every student is assigned a dedicated mentor who provides personalized guidance throughout the program, answers your questions, and keeps you on track to complete the curriculum.' },
   { category: 'Learning', q: 'What makes Waynautic different from free YouTube tutorials?', a: 'Waynautic provides a structured, mentor-guided path with live sessions, agentic AI projects, streak tracking, quizzes, certificates, mock interviews, and placement support — all designed for developers who want real skills, not just surface-level content.' },
   { category: 'Placements & Certificates', q: 'What certificates do I get after completing the program?', a: 'Upon successful completion of the 4-week AI training, you continue with a 3-month industry internship — the main highlight of our program. You receive two credentials: (1) an official 3-Month Internship Certificate for your production project work, and (2) a Program Completion Certificate from Waynautic Academy — both recognized credentials you can showcase on LinkedIn and your resume.' },
-  { category: 'Placements & Certificates', q: 'How long do I get access to the academy portal?', a: 'You get 1 full year of access to the Waynautic Academy portal after enrollment — including all 56 topics, future content updates, live session recordings, and resources added during your access period.' },
+  { category: 'Placements & Certificates', q: 'How long do I get access to the academy portal?', a: 'You get 1 full year of access to the Waynautic Academy portal after enrollment — including all video topics, future content updates, live session recordings, and resources added during your access period.' },
   { category: 'Placements & Certificates', q: 'What placement assistance does Waynautic provide?', a: 'We provide comprehensive placement support including: mock interviews with real feedback, resume building assistance, LinkedIn profile optimization, and guidance on how to apply for AI/ML Engineer and LLM Engineer roles effectively.' },
   { category: 'Placements & Certificates', q: 'Will I be job-ready after completing this program?', a: 'Yes — that is our goal. By the end of the program you will have real AI projects in your portfolio, a polished resume and LinkedIn profile, interview practice, and two certificates. You will be equipped to confidently apply for AI engineering roles.' },
   { category: 'Placements & Certificates', q: 'Who is this program designed for?', a: 'This program is open to college students and working professionals across all streams. No prior AI experience is required. Whether you are looking to switch careers or upskill in your current role, this program will get you AI-ready.' },
@@ -408,7 +408,7 @@ function HomePageContent() {
           href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20have%20a%20question%20regarding%20my%20course"
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white shadow-2xl shadow-emerald-500/40 flex items-center justify-center hover:scale-110 transition-all"
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#28b574] hover:bg-[#22a166] text-white shadow-xl shadow-emerald-500/25 flex items-center justify-center hover:scale-110 transition-all"
           title="Chat with mentor on WhatsApp"
           aria-label="Chat on WhatsApp"
         >
@@ -425,7 +425,7 @@ function HomePageContent() {
   // GUEST / VISITOR VIEW: Full Marketing & Value Landing Page
   // =========================================================================
   return (
-    <div className="relative overflow-x-hidden bg-[#EEF2F7] dark:bg-[#0a0f1e]">
+    <div className="relative overflow-x-hidden bg-white dark:bg-[#0a0f1e]">
 
       {/* Onboarding Tour */}
       <OnboardingTour isOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
@@ -433,58 +433,52 @@ function HomePageContent() {
       {/* ===================================================================
           HERO SECTION — AccioJob style: left headline + right feature cards
       =================================================================== */}
-      <section className="relative bg-[#EEF2F7] dark:bg-[#080d1c] overflow-hidden">
-        {/* Subtle grid background */}
+      <section className="relative bg-white dark:bg-[#080d1c] overflow-hidden min-h-[80vh] flex items-center">
+        {/* Mesh-light hero gradient §2.2 */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: `linear-gradient(to right, rgba(14,42,92,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(14,42,92,0.04) 1px, transparent 1px)`,
-          backgroundSize: '40px 40px'
+          background: 'radial-gradient(ellipse 80% 60% at 20% 0%, rgba(41,171,226,0.14), transparent 60%), radial-gradient(ellipse 60% 50% at 100% 10%, rgba(124,58,237,0.12), transparent 60%), radial-gradient(ellipse 60% 50% at 50% 100%, rgba(217,70,168,0.08), transparent 60%)'
         }} />
-        {/* Radial blue glow */}
-        <div className="absolute top-0 left-1/4 w-[600px] h-[400px] bg-gradient-radial from-blue-500/8 to-transparent blur-[100px] rounded-full pointer-events-none" />
 
-        <div className="relative w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16 py-16 sm:py-24">
+        <div className="relative container-xl py-20 sm:py-28">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
             {/* LEFT: Headline + subtitle + trust badges */}
             <div>
-              {/* Top badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-300 text-xs font-bold tracking-wide mb-6 shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              {/* Eyebrow badge §7.2 */}
+              <div className="eyebrow dark:eyebrow-dark mb-6">
+                <span className="w-2 h-2 rounded-full bg-[#3563df] animate-pulse" />
                 Placement-Focused Tech Training Programs
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-black text-[#111827] dark:text-white leading-[1.15] mb-5 tracking-tight">
+              {/* H1 §3.2 — Home hero 36→48→60px, weight 600, tracking tight */}
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-semibold text-navy-900 dark:text-white leading-[1.08] mb-6 tracking-[-0.025em]">
                 Launch Your Tech Career with{' '}
-                <span className="text-[#2563eb]">Placement-Focused Courses</span>{' '}
+                <span style={{ color: '#3563df' }}>Placement-Focused Courses</span>{' '}
                 &amp; 3-Month Industry Internship
               </h1>
 
-              <p className="text-base sm:text-lg text-[#374151] dark:text-slate-400 leading-relaxed mb-8 max-w-xl">
+              {/* Lead paragraph §3.2 — 20px, relaxed */}
+              <p className="text-xl text-navy-800/70 dark:text-white/70 leading-relaxed mb-9 max-w-xl">
                 Get job-ready through live, online, or self-paced courses. Learn from expert mentors, build real projects, and access placement opportunities with top companies.
               </p>
 
-              {/* Trust badges */}
-              <div className="flex flex-wrap gap-3 mb-8">
-                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-xs font-semibold text-[#374151] dark:text-slate-300">
-                  <Award className="w-4 h-4 text-amber-500" />
-                  Award-Winning Curriculum
-                </div>
-                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-xs font-semibold text-[#374151] dark:text-slate-300">
-                  <Users className="w-4 h-4 text-blue-500" />
-                  Expert Industry Mentors
-                </div>
-                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-xs font-semibold text-[#374151] dark:text-slate-300">
-                  <Shield className="w-4 h-4 text-emerald-500" />
-                  Dual Certification
-                </div>
+              {/* Trust badges §7.4 card-surface style */}
+              <div className="flex flex-wrap gap-3 mb-9">
+                {[
+                  { icon: <Award className="w-4 h-4" style={{ color: '#3563df' }} />, label: 'Award-Winning Curriculum' },
+                  { icon: <Users className="w-4 h-4" style={{ color: '#3563df' }} />, label: 'Expert Industry Mentors' },
+                  { icon: <Shield className="w-4 h-4" style={{ color: '#3563df' }} />, label: 'Dual Certification' },
+                ].map(({ icon, label }) => (
+                  <div key={label} className="flex items-center gap-2 px-4 py-2 rounded-md bg-white dark:bg-navy-900 shadow-card text-sm font-medium text-navy-900 dark:text-white/80" style={{ border: '1px solid rgba(10,17,40,0.08)' }}>
+                    {icon}
+                    {label}
+                  </div>
+                ))}
               </div>
 
-              {/* CTAs */}
+              {/* CTAs §7.1 — primary gradient + outline */}
               <div className="flex flex-col sm:flex-row gap-3">
-                <a
-                  href="#courses"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#2563eb] hover:bg-[#1d4fd8] text-white font-bold text-sm shadow-lg shadow-blue-500/25 hover:-translate-y-0.5 transition-all"
-                >
+                <a href="#courses" className="btn-gradient text-base">
                   <BookOpen className="w-4 h-4" />
                   Explore Programs
                   <ArrowRight className="w-4 h-4" />
@@ -493,7 +487,7 @@ function HomePageContent() {
                   href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all"
+                  className="btn-outline text-base"
                 >
                   <Phone className="w-4 h-4" />
                   Talk to Us
@@ -507,53 +501,51 @@ function HomePageContent() {
               {/* Card 1: Courses — expanded flagship card */}
               <div
                 className="relative rounded-2xl p-7 overflow-hidden cursor-pointer hover:scale-[1.01] transition-transform"
-                style={{ background: 'linear-gradient(135deg, #0e2a5c 0%, #0f1f4a 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #1c3666 0%, #1a2c58 100%)' }}
                 onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full -translate-y-12 translate-x-12 blur-3xl" />
+                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-400/10 rounded-full -translate-y-12 translate-x-12 blur-3xl" />
                 <div className="relative">
-                  <span className="inline-block px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 text-[11px] font-bold uppercase tracking-wider mb-3">
+                  <span className="inline-block px-2.5 py-1 rounded-lg bg-blue-400/15 text-blue-200 text-[11px] font-bold uppercase tracking-wider mb-3">
                     3 Flagship Programs
                   </span>
                   <h3 className="text-xl font-black text-white mb-1">Industry-Ready Training</h3>
-                  <p className="text-blue-200/70 text-sm mb-4">4-week live cohort + 3-month industry internship. Placement-focused, mentor-guided.</p>
+                  <p className="text-blue-100/70 text-sm mb-4">4-week live cohort + 3-month industry internship. Placement-focused, mentor-guided.</p>
 
                   {/* 3 Programs listed */}
-                  <div className="space-y-2.5 mb-5">
+                  <div className="space-y-2 mb-5">
                     {[
-                      { label: 'Automation Testing', sub: 'Selenium · Playwright · Azure DevOps · CI/CD', color: 'bg-indigo-500/20 border-indigo-500/30 text-indigo-200' },
-                      { label: 'Performance Testing', sub: 'JMeter · LoadRunner · K6 · Grafana · Datadog', color: 'bg-blue-500/20 border-blue-500/30 text-blue-200' },
-                      { label: 'AI Engineering & LLMs', sub: 'Python · LLMs · RAG · Vector DB · AI Agents', color: 'bg-violet-500/20 border-violet-500/30 text-violet-200' },
+                      { label: 'Automation Testing', color: 'bg-indigo-500/15 border-indigo-400/20 text-indigo-100' },
+                      { label: 'Performance Testing', color: 'bg-blue-500/15 border-blue-400/20 text-blue-100' },
+                      { label: 'AI Engineering & LLMs', color: 'bg-violet-500/15 border-violet-400/20 text-violet-100' },
                     ].map(prog => (
-                      <div key={prog.label} className={`px-3 py-2.5 rounded-xl border ${prog.color}`}>
+                      <div key={prog.label} className={`px-3 py-2 rounded-xl border ${prog.color}`}>
                         <div className="font-bold text-sm leading-tight">{prog.label}</div>
-                        <div className="text-[11px] opacity-80 mt-0.5">{prog.sub}</div>
                       </div>
                     ))}
                   </div>
 
                   {/* Key stats */}
-                  <div className="grid grid-cols-3 gap-2 mb-5">
+                  <div className="grid grid-cols-2 gap-2 mb-5">
                     {[
                       { val: '₹9,999', label: 'Starting Price' },
                       { val: '3 Months', label: 'Internship' },
-                      { val: '56+', label: 'Topics' },
                     ].map(s => (
                       <div key={s.label} className="bg-white/10 rounded-xl px-2 py-2 text-center">
                         <div className="text-white font-black text-sm">{s.val}</div>
-                        <div className="text-blue-200/70 text-[10px] font-semibold mt-0.5">{s.label}</div>
+                        <div className="text-blue-100/70 text-[10px] font-semibold mt-0.5">{s.label}</div>
                       </div>
                     ))}
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-5">
                     {['Live Projects', 'Expert Mentors', 'Certificate', 'Placement Help'].map(tag => (
-                      <span key={tag} className="px-2.5 py-1 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-200 text-xs font-semibold">{tag}</span>
+                      <span key={tag} className="px-2.5 py-1 rounded-lg bg-blue-400/15 border border-blue-400/25 text-blue-100 text-xs font-semibold">{tag}</span>
                     ))}
                   </div>
                   <button
                     onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white text-[#0e2a5c] font-bold text-sm hover:bg-blue-50 transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/95 text-[#1c3666] font-bold text-sm hover:bg-white transition-colors"
                   >
                     View Programs ↗
                   </button>
@@ -563,7 +555,7 @@ function HomePageContent() {
               {/* Card 2: Achievement Certificate (AccioJob right card with visual Certificate preview) */}
               <div
                 className="relative rounded-2xl p-5 sm:p-6 overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform group"
-                style={{ background: 'linear-gradient(135deg, #1e0c50 0%, #2d0c6a 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #2f1d5e 0%, #3e1e6c 100%)' }}
                 onClick={() => setCertModalOpen(true)}
               >
                 <div className="absolute bottom-0 right-0 w-44 h-44 bg-violet-500/15 rounded-full translate-y-10 translate-x-10 blur-2xl pointer-events-none" />
@@ -609,7 +601,7 @@ function HomePageContent() {
                         e.stopPropagation();
                         setCertModalOpen(true);
                       }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-[#1e0c50] font-bold text-xs hover:bg-violet-50 transition-colors shadow-sm shrink-0 cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/95 text-[#2f1d5e] font-bold text-xs hover:bg-white transition-colors shadow-sm shrink-0 cursor-pointer"
                     >
                       See Certificate ↗
                     </button>
@@ -622,172 +614,27 @@ function HomePageContent() {
       </section>
 
       {/* ===================================================================
-          COURSES SECTION — AccioJob-style lavender cards with tabs
+          PROGRAMS & LEARNING TIERS SECTION
       =================================================================== */}
-      <section id="courses" className="py-16 sm:py-24 bg-[#EEF2F7] dark:bg-[#080d1c]">
-        <div className="w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+      <section id="courses" className="py-20 sm:py-28 bg-paper dark:bg-[#080d1c]">
+        <div className="container-xl">
 
-          {/* Header */}
-          <div className="text-center mb-10 sm:mb-12">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
+          {/* Section heading */}
+          <div className="text-center mb-10 max-w-2xl mx-auto">
+            <div className="eyebrow mb-4 dark:eyebrow-dark">
               <Sparkles className="w-3.5 h-3.5" />
-              3 Specialized Career Tracks
-            </span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#111827] dark:text-white leading-[1.15] mb-4 tracking-tight">
-              <span className="text-[#2563eb]">Live, Online,</span> and Self-Paced Courses{' '}
-              <br className="hidden sm:block" />with Placement Assistance
+              Specialized Career Tracks
+            </div>
+            <h2 className="font-display text-3xl sm:text-4xl font-semibold text-navy-900 dark:text-white tracking-tight mb-3">
+              Explore Programs &amp; Flexible Learning Tiers
             </h2>
-            <p className="text-[#6B7280] dark:text-slate-400 text-base max-w-2xl mx-auto">
-              Personalized roadmaps, 1-on-1 industry mentorship, and comprehensive cohort training tailored for developers and tech professionals.
-            </p>
-          </div>
-
-          {/* ===============================================================
-              ACCIOJOB-STYLE 3 FLAGSHIP COURSES LISTING
-          =============================================================== */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-16">
-            {[
-              {
-                id: 'functional',
-                title: 'Automation Testing',
-                subTitle: 'SDET & Automation Cohort',
-                duration: '4 Weeks + 3M Internship',
-                icon: <Code2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />,
-                iconBg: 'bg-indigo-100 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-800',
-                headerBg: 'bg-gradient-to-br from-[#ebeaff] to-[#f4f2ff] dark:from-[#131738] dark:to-[#1a1c3d]',
-                tags: ['Java', 'Selenium', 'Playwright', 'Azure DevOps', 'Jira', 'CI/CD'],
-                projects: '4-5 Projects',
-                students: '50+ Enrolled',
-                nextBatch: 'Nov 2026',
-                price: '₹9,999',
-                crossedPrice: '₹20,000',
-                curriculumUrl: '/curriculum/functional-testing',
-                bannerText: '3-MONTH INDUSTRY INTERNSHIP INCLUDED',
-                bannerBg: 'bg-[#4338ca] dark:bg-[#3730a3]',
-              },
-              {
-                id: 'performance',
-                title: 'Performance Testing',
-                subTitle: 'Load & APM Engineering',
-                duration: '4 Weeks + 3M Internship',
-                icon: <Zap className="w-5 h-5 text-blue-600 dark:text-blue-400" />,
-                iconBg: 'bg-blue-100 dark:bg-blue-950/60 border-blue-200 dark:border-blue-800',
-                headerBg: 'bg-gradient-to-br from-[#e8f1ff] to-[#f0f6ff] dark:from-[#0d1f3d] dark:to-[#13284f]',
-                tags: ['JMeter', 'LoadRunner', 'K6', 'Grafana', 'Datadog', 'AppDynamics'],
-                projects: '4-5 Projects',
-                students: '40+ Enrolled',
-                nextBatch: 'Nov 2026',
-                price: '₹9,999',
-                crossedPrice: '₹20,000',
-                curriculumUrl: '/curriculum/performance-testing',
-                bannerText: '3-MONTH INDUSTRY INTERNSHIP INCLUDED',
-                bannerBg: 'bg-[#1e40af] dark:bg-[#1e3a8a]',
-              },
-              {
-                id: 'ai',
-                title: 'AI Engineering & LLMs',
-                subTitle: 'GenAI, RAG & Agents',
-                duration: '4 Weeks + 3M Internship',
-                icon: <Brain className="w-5 h-5 text-violet-600 dark:text-violet-400" />,
-                iconBg: 'bg-violet-100 dark:bg-violet-950/60 border-violet-200 dark:border-violet-800',
-                headerBg: 'bg-gradient-to-br from-[#f2eafa] to-[#faf4ff] dark:from-[#21113b] dark:to-[#2c154f]',
-                tags: ['Python', 'LLMs', 'Prompt Eng', 'Vector DB', 'RAG', 'AI Agents'],
-                projects: '4-5 Projects',
-                students: '60+ Enrolled',
-                nextBatch: 'Nov 2026',
-                price: '₹9,999',
-                crossedPrice: '₹20,000',
-                curriculumUrl: '/curriculum/ai-engineering',
-                bannerText: '3-MONTH INDUSTRY INTERNSHIP INCLUDED',
-                bannerBg: 'bg-[#6b21a8] dark:bg-[#581c87]',
-              },
-            ].map(course => (
-              <div
-                key={course.id}
-                className="rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0d1426] shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group hover:-translate-y-1.5"
-              >
-                <div>
-                  {/* Card Header */}
-                  <div className={`p-6 border-b border-slate-100 dark:border-slate-800/60 ${course.headerBg}`}>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`w-10 h-10 rounded-xl border flex items-center justify-center shadow-sm ${course.iconBg}`}>
-                        {course.icon}
-                      </div>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 text-[#374151] dark:text-slate-300 text-xs font-semibold shadow-xs">
-                        <Clock className="w-3.5 h-3.5 text-blue-500" />
-                        {course.duration}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-black text-[#111827] dark:text-white leading-tight mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {course.title}
-                    </h3>
-                    <p className="text-xs text-[#6B7280] dark:text-slate-400 font-medium">
-                      {course.subTitle}
-                    </p>
-                  </div>
-
-                  {/* Middle Tech Chips */}
-                  <div className="p-6">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] dark:text-slate-500 mb-2.5">
-                      Key Tools &amp; Frameworks
-                    </p>
-                    <div className="flex flex-wrap gap-1.5 mb-5">
-                      {course.tags.map(t => (
-                        <span key={t} className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 text-[#374151] dark:text-slate-300 border border-slate-200 dark:border-slate-700/60">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="grid grid-cols-2 gap-2">
-                      <Link
-                        href={course.curriculumUrl}
-                        className="py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 text-[#374151] dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-center flex items-center justify-center gap-1.5 transition-colors"
-                      >
-                        <FileText className="w-3.5 h-3.5" />
-                        Curriculum
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleSelectProgram(course.id as any);
-                          if (!isLoggedIn) {
-                            router.push('/signup?redirectTo=' + encodeURIComponent('/?enroll=cohort'));
-                          } else {
-                            setSelectedPlan('cohort');
-                            setPaymentModalOpen(true);
-                          }
-                        }}
-                        className="py-2.5 px-3 rounded-xl bg-[#2563eb] hover:bg-[#1d4fd8] text-white text-xs font-bold text-center flex items-center justify-center gap-1 transition-all shadow-md shadow-blue-500/20 hover:-translate-y-0.5 cursor-pointer"
-                      >
-                        Enroll Now
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom solid strip */}
-                <div className={`py-2 px-4 text-center text-white text-[11px] font-black uppercase tracking-wider ${course.bannerBg}`}>
-                  {course.bannerText}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Section Divider & Granular Tier Explorer */}
-          <div className="text-center mb-8">
-            <h3 className="text-xl sm:text-2xl font-black text-[#111827] dark:text-white tracking-tight mb-2">
-              Compare Flexible Learning Tiers
-            </h3>
-            <p className="text-xs sm:text-sm text-[#6B7280] dark:text-slate-400 max-w-xl mx-auto">
+            <p className="text-base text-navy-800/65 dark:text-white/60 leading-relaxed">
               Select a track below to explore Free Consultation, Live ₹19 Interactive Webinar, or the Full 4-Week Cohort with 3-Month Internship.
             </p>
           </div>
 
           {/* Tab switcher */}
-          <div className="flex items-center justify-center gap-1 p-1 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm max-w-xl mx-auto mb-10">
+          <div className="flex items-center justify-center gap-1 p-1 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 shadow-sm max-w-xl mx-auto mb-10">
             {([
               { key: 'functional', label: 'Automation Testing' },
               { key: 'performance', label: 'Performance Testing' },
@@ -799,7 +646,7 @@ function HomePageContent() {
                 onClick={() => handleSelectProgram(key)}
                 className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   selectedProgram === key
-                    ? 'bg-[#2563eb] text-white shadow-md shadow-blue-500/25'
+                    ? 'bg-[#4d7ef5] text-white shadow-sm shadow-blue-500/20'
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -808,7 +655,7 @@ function HomePageContent() {
             ))}
           </div>
 
-          {/* Course Cards — AccioJob-style lavender/purple tinted cards */}
+          {/* Course Cards — Faint modern tinted cards */}
           <div id="fees-structure" className="scroll-mt-24">
             {/* Notice Banner if redirected from protected portal */}
             {noticeParam === 'enroll_required' && (
@@ -835,10 +682,9 @@ function HomePageContent() {
                     desc: 'Get a personalized automation testing roadmap based on your background.',
                     features: ['Personalized QA automation roadmap', 'Career advisory for SDET & QA roles', '1-on-1 Selenium, Playwright & Jira guidance', 'CI/CD pipeline integration strategy'],
                     cta: 'Book Free Session',
-                    ctaStyle: 'border-2 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50',
+                    ctaStyle: 'border-2 border-slate-300/80 dark:border-slate-700 text-slate-700 dark:text-white hover:bg-slate-50/80 dark:hover:bg-slate-800/50',
                     ctaHref: 'https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform',
                     featured: false,
-                    stats: ['Selenium & Playwright', 'Azure DevOps', 'Jira & CI/CD'],
                   },
                   {
                     tier: 'Live Webinar',
@@ -851,15 +697,14 @@ function HomePageContent() {
                     desc: 'Live interactive webinar on Selenium & Playwright automation with CI/CD.',
                     features: ['All Consultation features included', 'Live Webinar: Selenium & Playwright', 'Azure DevOps & CI/CD pipeline basics', 'Resume & LinkedIn profile audit'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white',
+                    ctaStyle: 'bg-slate-700/80 hover:bg-slate-700 text-white shadow-sm',
                     ctaHref: null,
                     featured: false,
-                    stats: ['Selenium', 'Playwright', 'CI/CD'],
                   },
                   {
                     tier: '4-Week Intensive Cohort',
                     badge: '⚡ Flagship Masterclass',
-                    badgeColor: 'bg-[#2563eb] text-white border-blue-600',
+                    badgeColor: 'bg-[#4d7ef5] text-white border-blue-400',
                     price: '₹9,999',
                     crossedPrice: '₹20,000',
                     priceTag: 'GST Included',
@@ -867,22 +712,21 @@ function HomePageContent() {
                     desc: '4-week live training in automation testing + guaranteed 3-month industry internship.',
                     features: ['3-Month Industry Internship (main highlight)', 'Selenium & Playwright automation', 'Azure DevOps, Jira & CI/CD pipeline', '4-5 automation projects with code reviews', 'Dual Certification: Internship + Completion', 'Mock interviews & LinkedIn optimization'],
                     cta: 'Enroll in Automation (₹9,999)',
-                    ctaStyle: 'bg-[#2563eb] hover:bg-[#1d4fd8] text-white shadow-lg shadow-blue-500/25',
+                    ctaStyle: 'bg-[#4d7ef5] hover:bg-[#3f72e8] text-white shadow-md shadow-blue-500/15',
                     ctaHref: null,
                     featured: true,
-                    stats: ['Selenium', 'Playwright', 'JMeter', 'Azure DevOps'],
                   },
-                ].map(({ tier, badge, badgeColor, price, crossedPrice, priceTag, priceTagColor, desc, features, cta, ctaStyle, ctaHref, featured, stats }) => (
+                ].map(({ tier, badge, badgeColor, price, crossedPrice, priceTag, priceTagColor, desc, features, cta, ctaStyle, ctaHref, featured }) => (
                   <div
                     key={tier}
-                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl ${
+                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-xl ${
                       featured
-                        ? 'bg-white dark:bg-[#0e1730] border-2 border-[#2563eb] shadow-xl shadow-blue-500/10'
-                        : 'bg-[#f1f0f7] dark:bg-[#0f1525] border border-slate-200 dark:border-slate-800 shadow-md hover:border-slate-300 dark:hover:border-slate-700'
+                        ? 'bg-white dark:bg-[#0e1730] border-2 border-[#5b8ef5]/70 shadow-lg shadow-blue-500/5'
+                        : 'bg-[#f8f9fc] dark:bg-[#0d1322] border border-slate-200/70 dark:border-slate-800 shadow-sm hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
                     {featured && (
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#2563eb] text-white text-[11px] font-black uppercase tracking-wider shadow-md whitespace-nowrap">
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#4d7ef5] text-white text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
                         ⚡ Most Popular
                       </div>
                     )}
@@ -892,16 +736,7 @@ function HomePageContent() {
                         <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${badgeColor}`}>{badge}</span>
                       </div>
 
-                      {/* Duration / stats pills */}
-                      <div className="flex flex-wrap gap-1.5 mb-4">
-                        {stats.map(s => (
-                          <span key={s} className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="mb-4">
+                      <div className="mb-4 mt-2">
                         <div className="flex items-baseline gap-2 flex-wrap">
                           <span className="text-xl font-bold text-slate-400 dark:text-slate-500 line-through font-mono">{crossedPrice}</span>
                           <span className="text-4xl font-extrabold text-slate-900 dark:text-white font-mono">{price}</span>
@@ -969,10 +804,9 @@ function HomePageContent() {
                     desc: 'Personalized performance engineering roadmap based on your background.',
                     features: ['Personalized performance testing roadmap', 'Career advisory for Performance Engineer & SRE roles', '1-on-1 JMeter, K6, LoadRunner guidance', 'APM tools: Grafana, Datadog & AppDynamics'],
                     cta: 'Book Free Session',
-                    ctaStyle: 'border-2 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50',
+                    ctaStyle: 'border-2 border-slate-300/80 dark:border-slate-700 text-slate-700 dark:text-white hover:bg-slate-50/80 dark:hover:bg-slate-800/50',
                     ctaHref: 'https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform',
                     featured: false,
-                    stats: ['JMeter', 'K6', 'Grafana'],
                   },
                   {
                     tier: 'Live Perf Webinar',
@@ -985,15 +819,14 @@ function HomePageContent() {
                     desc: 'Live interactive webinar covering JMeter, K6 & APM monitoring essentials.',
                     features: ['All Consultation features included', 'Live Webinar: JMeter & K6 load testing', 'Grafana & Datadog dashboards hands-on', 'Resume & LinkedIn audit for perf roles'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white',
+                    ctaStyle: 'bg-slate-700/80 hover:bg-slate-700 text-white shadow-sm',
                     ctaHref: null,
                     featured: false,
-                    stats: ['JMeter', 'K6', 'Grafana'],
                   },
                   {
                     tier: '4-Week Intensive Cohort',
                     badge: '⚡ Flagship Masterclass',
-                    badgeColor: 'bg-[#2563eb] text-white border-blue-600',
+                    badgeColor: 'bg-[#4d7ef5] text-white border-blue-400',
                     price: '₹9,999',
                     crossedPrice: '₹20,000',
                     priceTag: 'GST Included',
@@ -1001,22 +834,21 @@ function HomePageContent() {
                     desc: '4-week live performance testing training + guaranteed 3-month industry internship.',
                     features: ['3-Month Industry Internship (main highlight)', 'JMeter, LoadRunner & K6 load testing', 'AppDynamics, Grafana & Datadog APM', 'Azure DevOps, Jira & CI/CD integration', '4-5 real-world performance projects', 'Dual Certification + placement assistance'],
                     cta: 'Enroll in Performance (₹9,999)',
-                    ctaStyle: 'bg-[#2563eb] hover:bg-[#1d4fd8] text-white shadow-lg shadow-blue-500/25',
+                    ctaStyle: 'bg-[#4d7ef5] hover:bg-[#3f72e8] text-white shadow-md shadow-blue-500/15',
                     ctaHref: null,
                     featured: true,
-                    stats: ['JMeter', 'LoadRunner', 'K6', 'Grafana'],
                   },
-                ].map(({ tier, badge, badgeColor, price, crossedPrice, priceTag, priceTagColor, desc, features, cta, ctaStyle, ctaHref, featured, stats }) => (
+                ].map(({ tier, badge, badgeColor, price, crossedPrice, priceTag, priceTagColor, desc, features, cta, ctaStyle, ctaHref, featured }) => (
                   <div
                     key={tier}
-                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl ${
+                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-xl ${
                       featured
-                        ? 'bg-white dark:bg-[#0e1730] border-2 border-[#2563eb] shadow-xl shadow-blue-500/10'
-                        : 'bg-[#f1f0f7] dark:bg-[#0f1525] border border-slate-200 dark:border-slate-800 shadow-md hover:border-slate-300 dark:hover:border-slate-700'
+                        ? 'bg-white dark:bg-[#0e1730] border-2 border-[#5b8ef5]/70 shadow-lg shadow-blue-500/5'
+                        : 'bg-[#f8f9fc] dark:bg-[#0d1322] border border-slate-200/70 dark:border-slate-800 shadow-sm hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
                     {featured && (
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#2563eb] text-white text-[11px] font-black uppercase tracking-wider shadow-md whitespace-nowrap">
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#4d7ef5] text-white text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
                         ⚡ Most Popular
                       </div>
                     )}
@@ -1025,12 +857,7 @@ function HomePageContent() {
                         <h3 className="text-lg font-black text-slate-900 dark:text-white">{tier}</h3>
                         <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${badgeColor}`}>{badge}</span>
                       </div>
-                      <div className="flex flex-wrap gap-1.5 mb-4">
-                        {stats.map(s => (
-                          <span key={s} className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">{s}</span>
-                        ))}
-                      </div>
-                      <div className="mb-4">
+                      <div className="mb-4 mt-2">
                         <div className="flex items-baseline gap-2 flex-wrap">
                           <span className="text-xl font-bold text-slate-400 line-through font-mono">{crossedPrice}</span>
                           <span className="text-4xl font-extrabold text-slate-900 dark:text-white font-mono">{price}</span>
@@ -1083,10 +910,9 @@ function HomePageContent() {
                     desc: 'Get a personalized AI learning roadmap based on your current job & background.',
                     features: ['Personalized AI learning roadmap', 'Custom upskilling plan & curriculum', '1-on-1 strategy & doubt-clearing session', 'Career transition advisory for AI/LLM roles'],
                     cta: 'Book Free Session',
-                    ctaStyle: 'border-2 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50',
+                    ctaStyle: 'border-2 border-slate-300/80 dark:border-slate-700 text-slate-700 dark:text-white hover:bg-slate-50/80 dark:hover:bg-slate-800/50',
                     ctaHref: 'https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform',
                     featured: false,
-                    stats: ['LLMs', 'RAG', 'AI Agents'],
                   },
                   {
                     tier: 'Live AI Webinar',
@@ -1099,38 +925,36 @@ function HomePageContent() {
                     desc: 'Live interactive AI Webinar masterclass. Everything in Starter + live session.',
                     features: ['All Consultation features included', 'Live Interactive AI Webinar masterclass', 'Personalized resume & tech profile audit', 'Direct Q&A and hands-on project guidance'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white',
+                    ctaStyle: 'bg-slate-700/80 hover:bg-slate-700 text-white shadow-sm',
                     ctaHref: null,
                     featured: false,
-                    stats: ['LLMs', 'Prompt Eng', 'Vector DB'],
                   },
                   {
                     tier: '4-Week Intensive Cohort',
                     badge: '⚡ Flagship Masterclass',
-                    badgeColor: 'bg-[#2563eb] text-white border-blue-600',
+                    badgeColor: 'bg-[#4d7ef5] text-white border-blue-400',
                     price: '₹9,999',
                     crossedPrice: '₹20,000',
                     priceTag: 'GST Included',
                     priceTagColor: 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400',
                     desc: '4-week live AI training + guaranteed 3-month industry internship in AI engineering.',
-                    features: ['3-Month Industry Internship (main highlight)', 'All benefits from ₹19 & Free tiers', '4 weeks live personalized AI training', 'Full Academy Portal: 56+ video topics', '4–5 agentic AI portfolio projects', 'Dual Certification + placement assistance'],
+                    features: ['3-Month Industry Internship (main highlight)', 'All benefits from ₹19 & Free tiers', '4 weeks live personalized AI training', 'Full Academy Portal: In-depth video lectures', '4–5 agentic AI portfolio projects', 'Dual Certification + placement assistance'],
                     cta: 'Enroll in AI Engineering (₹9,999)',
-                    ctaStyle: 'bg-[#2563eb] hover:bg-[#1d4fd8] text-white shadow-lg shadow-blue-500/25',
+                    ctaStyle: 'bg-[#4d7ef5] hover:bg-[#3f72e8] text-white shadow-md shadow-blue-500/15',
                     ctaHref: null,
                     featured: true,
-                    stats: ['LLMs', 'RAG Systems', 'AI Agents', 'Vector DB'],
                   },
-                ].map(({ tier, badge, badgeColor, price, crossedPrice, priceTag, priceTagColor, desc, features, cta, ctaStyle, ctaHref, featured, stats }) => (
+                ].map(({ tier, badge, badgeColor, price, crossedPrice, priceTag, priceTagColor, desc, features, cta, ctaStyle, ctaHref, featured }) => (
                   <div
                     key={tier}
-                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl ${
+                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-xl ${
                       featured
-                        ? 'bg-white dark:bg-[#0e1730] border-2 border-[#2563eb] shadow-xl shadow-blue-500/10'
-                        : 'bg-[#f1f0f7] dark:bg-[#0f1525] border border-slate-200 dark:border-slate-800 shadow-md hover:border-slate-300 dark:hover:border-slate-700'
+                        ? 'bg-white dark:bg-[#0e1730] border-2 border-[#5b8ef5]/70 shadow-lg shadow-blue-500/5'
+                        : 'bg-[#f8f9fc] dark:bg-[#0d1322] border border-slate-200/70 dark:border-slate-800 shadow-sm hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
                     {featured && (
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#2563eb] text-white text-[11px] font-black uppercase tracking-wider shadow-md whitespace-nowrap">
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#4d7ef5] text-white text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
                         ⚡ Most Popular
                       </div>
                     )}
@@ -1139,12 +963,7 @@ function HomePageContent() {
                         <h3 className="text-lg font-black text-slate-900 dark:text-white">{tier}</h3>
                         <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${badgeColor}`}>{badge}</span>
                       </div>
-                      <div className="flex flex-wrap gap-1.5 mb-4">
-                        {stats.map(s => (
-                          <span key={s} className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">{s}</span>
-                        ))}
-                      </div>
-                      <div className="mb-4">
+                      <div className="mb-4 mt-2">
                         <div className="flex items-baseline gap-2 flex-wrap">
                           <span className="text-xl font-bold text-slate-400 line-through font-mono">{crossedPrice}</span>
                           <span className="text-4xl font-extrabold text-slate-900 dark:text-white font-mono">{price}</span>
@@ -1188,62 +1007,48 @@ function HomePageContent() {
       {/* ===================================================================
           LIVE SESSION PREVIEW — Video trigger section (AccioJob Style)
       =================================================================== */}
-      <section className="py-16 sm:py-24 bg-white dark:bg-[#080d1c]">
-        <div className="w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-blue-200 dark:border-blue-800/50 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 text-xs font-bold tracking-wider mb-3">
-              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+      {/* ===================================================================
+          LIVE SESSION PREVIEW — Video trigger section
+      =================================================================== */}
+      <section className="py-20 sm:py-28 bg-white dark:bg-[#080d1c]">
+        <div className="container-xl">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-blue-200/60 dark:border-blue-800/40 bg-blue-50/60 dark:bg-blue-950/30 text-blue-600 dark:text-blue-300 text-xs font-bold tracking-wider mb-3">
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
               Live Class Sneak Peek
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#111827] dark:text-white tracking-tight mb-3">
+            <h2 className="font-display text-3xl sm:text-4xl font-semibold text-navy-900 dark:text-white tracking-tight mb-3">
               See How We Teach in Real Life
             </h2>
-            <p className="text-sm sm:text-base text-[#6B7280] dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
+            <p className="text-lg text-navy-800/65 dark:text-white/65 max-w-xl mx-auto leading-relaxed mb-6">
               Watch an authentic excerpt from our live cohort mentorship classes — hands-on coding, live problem-solving, and mentor-student interaction.
             </p>
-          </div>
 
-          {/* Interactive Video Banner with Play Button */}
-          <div className="relative rounded-3xl overflow-hidden border-2 border-slate-200 dark:border-slate-800 bg-gradient-to-br from-[#0c1a40] via-[#0e2a5c] to-[#1e0c50] shadow-2xl p-8 sm:p-14 text-center text-white">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.25)_0%,transparent_70%)] pointer-events-none" />
-            
-            <div className="relative max-w-xl mx-auto flex flex-col items-center">
+            {/* ONLY "watch live class demo" button (card removed as per user instruction #4) */}
+            <div className="flex items-center justify-center">
               <button
                 type="button"
                 onClick={() => setVideoModalOpen(true)}
-                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#2563eb] hover:bg-[#1d4fd8] text-white flex items-center justify-center shadow-2xl shadow-blue-500/50 hover:scale-110 transition-all duration-300 mb-6 group cursor-pointer"
-                aria-label="Play video"
+                className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-xl text-white font-bold text-sm transition-all duration-200 cursor-pointer shadow-md shadow-blue-500/15 hover:shadow-lg hover:-translate-y-0.5"
+                style={{
+                  background: 'linear-gradient(100deg, #4374d9, #54b2e8)',
+                }}
               >
-                <Play className="w-8 h-8 sm:w-10 sm:h-10 fill-white translate-x-0.5 group-hover:scale-105 transition-transform" />
-              </button>
-
-              <h3 className="text-xl sm:text-2xl font-black mb-2">
-                Live Cohort Mentorship Class Excerpt
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-300 mb-6 leading-relaxed">
-                Experience the authentic interactive class atmosphere — screen sharing, live code debugging, and direct student Q&amp;A.
-              </p>
-
-              <button
-                type="button"
-                onClick={() => setVideoModalOpen(true)}
-                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-white text-[#0e2a5c] font-black text-sm hover:bg-blue-50 transition-all shadow-lg hover:-translate-y-0.5 cursor-pointer"
-              >
-                <Play className="w-4 h-4 fill-[#0e2a5c]" />
-                Watch Live Class Video
+                <Play className="w-4 h-4 fill-white" />
+                Watch Live Class Demo
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-8">
             {[
-              { icon: <CheckCircle2 className="w-4 h-4 text-emerald-500" />, text: '100% Practical & Code-First' },
-              { icon: <CheckCircle2 className="w-4 h-4 text-blue-500" />, text: 'Live Doubt Clearing & Q&A' },
-              { icon: <CheckCircle2 className="w-4 h-4 text-violet-500" />, text: 'Real Industry Mentors' },
+              { icon: <CheckCircle2 className="w-4 h-4 text-emerald-500/80" />, text: '100% Practical & Code-First' },
+              { icon: <CheckCircle2 className="w-4 h-4 text-blue-500/80" />, text: 'Live Doubt Clearing & Q&A' },
+              { icon: <CheckCircle2 className="w-4 h-4 text-violet-500/80" />, text: 'Real Industry Mentors' },
             ].map(({ icon, text }) => (
-              <div key={text} className="p-3.5 rounded-2xl bg-[#EEF2F7] dark:bg-[#0f1525] border border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2 shadow-sm text-center">
+              <div key={text} className="p-3.5 rounded-2xl bg-[#f8f9fc] dark:bg-[#0f1525] border border-slate-200/60 dark:border-slate-800 flex items-center justify-center gap-2 shadow-sm text-center">
                 {icon}
-                <span className="text-xs font-bold text-[#374151] dark:text-slate-200">{text}</span>
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{text}</span>
               </div>
             ))}
           </div>
@@ -1251,46 +1056,46 @@ function HomePageContent() {
       </section>
 
       {/* ===================================================================
-          WHY CHOOSE US — Feature grid (AccioJob alternating section style)
+          WHY CHOOSE US — Feature grid
       =================================================================== */}
-      <section className="py-16 sm:py-24 bg-[#EEF2F7] dark:bg-[#080d1c]">
-        <div className="w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+      <section className="py-20 sm:py-28 bg-paper dark:bg-[#080d1c]">
+        <div className="container-xl">
 
-          {/* Header */}
-          <div className="text-center mb-12 sm:mb-16">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#2563eb] mb-3">Our Advantage</span>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#111827] dark:text-white mb-4 tracking-tight">
+          {/* Section heading block §7.3 */}
+          <div className="text-center mb-12 sm:mb-14 max-w-2xl mx-auto">
+            <div className="eyebrow mb-5 dark:eyebrow-dark">Our Advantage</div>
+            <h2 className="font-display text-3xl sm:text-4xl font-semibold text-navy-900 dark:text-white tracking-tight mb-4">
               Why Choose{' '}
-              <span className="text-[#2563eb]">Waynautic Academy</span>
+              <span style={{ color: '#3563df' }}>Waynautic Academy</span>
             </h2>
-            <p className="text-[#6B7280] dark:text-slate-400 max-w-2xl mx-auto text-base">
+            <p className="text-lg text-navy-800/65 dark:text-white/65 leading-relaxed">
               We built what we wish existed — a no-fluff, depth-first engineering curriculum for serious developers.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {[
-              { icon: <BookOpen className="w-5 h-5" />, title: '56 Topics — Video + Live Sessions', desc: 'Every topic covered via recorded lectures and reinforced through live sessions with your mentor.', color: '#2563eb', bg: '#eff6ff' },
-              { icon: <Clock className="w-5 h-5" />, title: '4-Week Structured Path', desc: 'A fast, focused journey from fundamentals to advanced production-grade skills and architectures.', color: '#7c3aed', bg: '#f5f3ff' },
-              { icon: <Rocket className="w-5 h-5" />, title: '4–5 Agentic Portfolio Projects', desc: 'Build real, portfolio-worthy projects — not toy examples. Work you can demo in any job interview.', color: '#db2777', bg: '#fdf2f8' },
-              { icon: <Users className="w-5 h-5" />, title: 'Personalized 1-on-1 Mentor', desc: 'Every student gets a dedicated mentor for personalized training, doubt-solving, and career guidance.', color: '#d97706', bg: '#fffbeb' },
-              { icon: <Award className="w-5 h-5" />, title: '3-Month Internship + Certificate', desc: 'Continue with an industry internship right after your training. Earn both an Internship & Completion Certificate.', color: '#059669', bg: '#ecfdf5' },
-              { icon: <Target className="w-5 h-5" />, title: 'Full Placement Assistance', desc: 'End-to-end job market preparation: mock interviews, resume building, LinkedIn optimization, and 1-year portal access.', color: '#dc2626', bg: '#fff1f2' },
+              { icon: <BookOpen className="w-5 h-5" />, title: 'Video Lectures + Live Sessions', desc: 'Every concept covered via recorded lectures and reinforced through live sessions with your mentor.', color: '#4d7ef5', bg: '#f1f5fd' },
+              { icon: <Clock className="w-5 h-5" />, title: '4-Week Structured Path', desc: 'A fast, focused journey from fundamentals to advanced production-grade skills and architectures.', color: '#8b5cf6', bg: '#f7f5ff' },
+              { icon: <Rocket className="w-5 h-5" />, title: '4–5 Agentic Portfolio Projects', desc: 'Build real, portfolio-worthy projects — not toy examples. Work you can demo in any job interview.', color: '#e05898', bg: '#fdf4f9' },
+              { icon: <Users className="w-5 h-5" />, title: 'Personalized 1-on-1 Mentor', desc: 'Every student gets a dedicated mentor for personalized training, doubt-solving, and career guidance.', color: '#e58f27', bg: '#fef9ee' },
+              { icon: <Award className="w-5 h-5" />, title: '3-Month Internship + Certificate', desc: 'Continue with an industry internship right after your training. Earn both an Internship & Completion Certificate.', color: '#16a374', bg: '#f0fdf7' },
+              { icon: <Target className="w-5 h-5" />, title: 'Full Placement Assistance', desc: 'End-to-end job market preparation: mock interviews, resume building, LinkedIn optimization, and 1-year portal access.', color: '#e04c4c', bg: '#fef3f3' },
             ].map(({ icon, title, desc, color, bg }) => (
               <div
                 key={title}
-                className="group p-6 sm:p-7 rounded-2xl bg-white dark:bg-[#0f1525] border border-slate-200 dark:border-slate-800 hover:shadow-xl hover:border-transparent transition-all duration-300"
+                className="group card-surface-hover p-7 transition-all duration-300 border border-slate-200/60 dark:border-slate-800/80"
               >
-                <div className="flex items-center gap-3.5 mb-4">
+                <div className="flex items-center gap-4 mb-4">
                   <div
-                    className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
-                    style={{ backgroundColor: bg, color }}
+                    className="w-12 h-12 rounded-md flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
+                    style={{ backgroundColor: bg, color, border: '1px solid rgba(10,17,40,0.08)' }}
                   >
                     {icon}
                   </div>
-                  <h3 className="font-bold text-[#111827] dark:text-white text-base leading-snug">{title}</h3>
+                  <h3 className="font-display font-bold text-navy-900 dark:text-white text-lg leading-snug">{title}</h3>
                 </div>
-                <p className="text-sm text-[#6B7280] dark:text-slate-400 leading-relaxed">{desc}</p>
+                <p className="text-sm text-navy-800/65 dark:text-white/60 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -1300,17 +1105,15 @@ function HomePageContent() {
       {/* ===================================================================
           FAQ SECTION — AccioJob 2-Column Layout
       =================================================================== */}
-      <section className="py-16 sm:py-24 bg-[#EEF2F7] dark:bg-[#080d1c]">
-        <div className="w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
-          {/* Header */}
-          <div className="text-center mb-10 sm:mb-14">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest border-b-2 border-blue-600 pb-0.5 text-[#111827] dark:text-white">
-              FAQS
-            </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111827] dark:text-white mt-3 mb-4">
-              <span className="text-[#2563eb]">Frequently</span> Asked Questions
+      <section className="py-20 sm:py-28 bg-white dark:bg-[#080d1c]">
+        <div className="container-xl">
+          {/* Section heading block §7.3 */}
+          <div className="text-center mb-12 sm:mb-14 max-w-2xl mx-auto">
+            <div className="eyebrow mb-5 dark:eyebrow-dark">FAQs</div>
+            <h2 className="font-display text-3xl sm:text-4xl font-semibold text-navy-900 dark:text-white tracking-tight mb-4">
+              <span style={{ color: '#3563df' }}>Frequently</span> Asked Questions
             </h2>
-            <p className="text-[#6B7280] dark:text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+            <p className="text-lg text-navy-800/65 dark:text-white/65 leading-relaxed">
               Everything you need to know about our curriculum, live sessions, certification, and policies.
             </p>
           </div>
@@ -1319,17 +1122,18 @@ function HomePageContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Category Sidebar */}
             <div className="lg:col-span-3">
-              <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0d1426] p-2 flex flex-col gap-1.5 shadow-sm sticky top-28">
+              <div className="card-surface p-2 flex flex-col gap-1 sticky top-28">
                 {FAQ_CATEGORIES.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setFaqCategory(cat)}
                     type="button"
-                    className={`w-full py-3 px-4 rounded-xl text-center text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                    className={`w-full py-3 px-4 rounded-md text-center text-sm font-semibold transition-all duration-200 cursor-pointer ${
                       faqCategory === cat
-                        ? 'bg-[#e8f1ff] dark:bg-blue-950/60 text-[#2563eb] dark:text-blue-400 shadow-xs'
-                        : 'text-[#374151] dark:text-slate-400 hover:text-[#111827] dark:hover:text-white'
+                        ? 'text-white dark:text-white'
+                        : 'text-navy-800/70 dark:text-white/60 hover:text-navy-900 dark:hover:text-white hover:bg-paper dark:hover:bg-white/5'
                     }`}
+                    style={faqCategory === cat ? { background: 'linear-gradient(100deg,#3b6cd8,#4faee6)', boxShadow: '0 4px 14px -3px rgba(59, 108, 216, 0.22)' } : {}}
                   >
                     {cat}
                   </button>
@@ -1348,31 +1152,31 @@ function HomePageContent() {
       </section>
 
       {/* ===================================================================
-          CTA BANNER — Dark navy, AccioJob style (2-inch indent)
+          CTA BANNER — AccioJob style
       =================================================================== */}
-      <section className="py-16 sm:py-24 w-full">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
-        <div className="relative rounded-3xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #0d1b3e 0%, #0e2a5c 50%, #1a0d4a 100%)' }}>
+      <section className="py-20 sm:py-28 bg-paper dark:bg-[#080d1c]">
+        <div className="container-xl">
+        <div className="relative rounded-lg overflow-hidden" style={{ background: '#151d38', boxShadow: '0 4px 20px -4px rgba(10, 19, 48, 0.15)' }}>
           {/* Grid pattern */}
           <div className="absolute inset-0 opacity-20" style={{
             backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)`,
             backgroundSize: '30px 30px'
           }} />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] bg-gradient-to-r from-blue-500/20 to-violet-500/20 blur-[80px] rounded-full" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] bg-gradient-to-r from-blue-500/15 to-violet-500/15 blur-[80px] rounded-full" />
 
-          <div className="relative z-10 px-6 sm:px-12 lg:px-16 py-14 sm:py-20 flex flex-col lg:flex-row items-center justify-between gap-10">
+          <div className="relative z-10 px-8 sm:px-14 lg:px-16 py-14 sm:py-20 flex flex-col lg:flex-row items-center justify-between gap-10">
             {/* Left */}
             <div className="text-center lg:text-left max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-slate-200 text-xs font-bold uppercase tracking-wider mb-4">
+              <div className="eyebrow-dark mb-5">
                 <Rocket className="w-3.5 h-3.5" />
                 3 Flagship Engineering Programs
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight">
+              <h2 className="font-display text-3xl sm:text-4xl font-semibold text-white mb-4 leading-tight tracking-tight">
                 Ready to Accelerate Your Career in{' '}
-                <span className="text-blue-300">Automation, Performance, or AI?</span>
+                <span style={{ color: '#4faee6' }}>Automation, Performance, or AI?</span>
               </h2>
-              <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-6">
-                Join our 4-week code-first masterclasses followed by a guaranteed <strong>3-Month Industry Internship</strong>. Choose between <strong>Automation Testing</strong>, <strong>Performance Testing</strong>, or <strong>AI Engineering</strong> — with personalized mentorship, dual certification, and full placement assistance.
+              <p className="text-lg text-white/70 leading-relaxed mb-6">
+                Join our 4-week code-first masterclasses followed by a guaranteed <strong className="text-white">3-Month Industry Internship</strong>. Choose between <strong className="text-white">Automation Testing</strong>, <strong className="text-white">Performance Testing</strong>, or <strong className="text-white">AI Engineering</strong> — with personalized mentorship, dual certification, and full placement assistance.
               </p>
               {/* 3 Track Pills */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
@@ -1394,7 +1198,7 @@ function HomePageContent() {
                 href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20learn%20more%20about%20your%20programs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm shadow-xl shadow-emerald-500/30 hover:-translate-y-0.5 transition-all"
+                className="flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-[#28b574] hover:bg-[#22a166] text-white font-bold text-sm shadow-lg shadow-emerald-500/20 hover:-translate-y-0.5 transition-all"
               >
                 <MessageCircle className="w-5 h-5 fill-white" />
                 Chat on WhatsApp
@@ -1492,7 +1296,7 @@ function HomePageContent() {
         href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20learn%20more%20about%20your%20programs"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white shadow-2xl shadow-emerald-500/40 flex items-center justify-center hover:scale-110 transition-all"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#28b574] hover:bg-[#22a166] text-white shadow-xl shadow-emerald-500/25 flex items-center justify-center hover:scale-110 transition-all"
         title="Chat with us on WhatsApp"
         aria-label="Chat on WhatsApp"
       >

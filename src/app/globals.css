@@ -14,27 +14,27 @@
   --navy-900:    #0a1128;
   --navy-800:    #0f1a3d;
   --navy-700:    #152452;
-  --brand-blue:  #1a3fb0;
-  --brand-cyan:  #29abe2;
-  --brand-violet:#7c3aed;
-  --brand-magenta:#d946a8;
+  --brand-blue:  #3563df;
+  --brand-cyan:  #4faee6;
+  --brand-violet:#8b5cf6;
+  --brand-magenta:#df5ba9;
   --white:       #ffffff;
-  --paper:       #f4f6f8;
-  --paper-2:     #eceff2;
-  --ink-soft:    #4a5364;
-  --line:        #d8dee4;
-  --border:      rgba(10, 17, 40, 0.10);
+  --paper:       #f8f9fa;
+  --paper-2:     #f0f3f6;
+  --ink-soft:    #555e70;
+  --line:        #dce2e8;
+  --border:      rgba(10, 17, 40, 0.08);
   --text:        #0a1128;
   --text-body:   rgba(15, 26, 61, 0.70);
   --text-muted:  rgba(15, 26, 61, 0.60);
 
   /* gradients */
-  --gradient-button: linear-gradient(100deg, #1a3fb0, #29abe2);
-  --gradient-brand:  linear-gradient(115deg, #1a3fb0 0%, #29abe2 32%, #7c3aed 68%, #d946a8 100%);
+  --gradient-button: linear-gradient(100deg, #3b6cd8, #4faee6);
+  --gradient-brand:  linear-gradient(115deg, #3563df 0%, #4faee6 32%, #8b5cf6 68%, #df5ba9 100%);
   --mesh-light:
-    radial-gradient(ellipse 80% 60% at 20% 0%,  rgba(41,171,226,0.14), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 100% 10%, rgba(124,58,237,0.12), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(217,70,168,0.08), transparent 60%);
+    radial-gradient(ellipse 80% 60% at 20% 0%,  rgba(79,174,230,0.10), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 100% 10%, rgba(139,92,246,0.08), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(223,91,169,0.05), transparent 60%);
 
   /* fonts */
   --font-heading: 'Space Grotesk',  system-ui, sans-serif;
@@ -124,10 +124,10 @@ h1, h2, h3, h4, h5, h6 {
   /* Primary button — §7.1 */
   .btn-gradient {
     @apply relative inline-flex items-center justify-center gap-2 rounded-md px-6 py-3 font-semibold text-white transition-all duration-300;
-    background: linear-gradient(100deg, #1a3fb0, #29abe2);
+    background: linear-gradient(100deg, #3b6cd8, #4faee6);
     background-size: 160% 100%;
     background-position: 0% 0%;
-    box-shadow: var(--shadow-glow);
+    box-shadow: 0 4px 14px -3px rgba(59, 108, 216, 0.22);
   }
   .btn-gradient:hover {
     background-position: 100% 0%;
@@ -140,12 +140,12 @@ h1, h2, h3, h4, h5, h6 {
   /* Secondary button — §7.1 */
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2 rounded-md border bg-white px-6 py-3 font-semibold transition-all duration-300;
-    border-color: rgba(10, 17, 40, 0.15);
+    border-color: rgba(10, 17, 40, 0.12);
     color: #0a1128;
   }
   .btn-outline:hover {
-    border-color: rgba(26, 63, 176, 0.4);
-    background: rgba(26, 63, 176, 0.05);
+    border-color: rgba(53, 99, 223, 0.35);
+    background: rgba(53, 99, 223, 0.04);
     transform: translateY(-2px);
   }
 
@@ -153,9 +153,9 @@ h1, h2, h3, h4, h5, h6 {
   .eyebrow {
     @apply inline-flex items-center gap-2 rounded-md px-4 py-1.5 font-mono text-xs font-medium uppercase;
     letter-spacing: 0.14em;
-    border: 1px solid rgba(26, 63, 176, 0.20);
-    background: rgba(26, 63, 176, 0.05);
-    color: #1a3fb0;
+    border: 1px solid rgba(53, 99, 223, 0.15);
+    background: rgba(53, 99, 223, 0.04);
+    color: #3563df;
   }
   /* Eyebrow on dark background */
   .eyebrow-dark {
