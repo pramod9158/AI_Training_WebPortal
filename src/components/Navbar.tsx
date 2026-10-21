@@ -44,6 +44,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const pathname = usePathname();
+  const isLandingPage = pathname === '/' || !pathname;
   const router = useRouter();
   const { profile, progress, streak, bookmarks, updateProfile, signOut, toggleBookmarkTopic } = useWaynauticStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -330,22 +331,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
         {/* Right Section: Focused & Consolidated Utilities */}
         <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
 
-          {/* Laptop / Desktop Theme Toggle Button */}
-          <button
-            onClick={() => {
-              const nextTheme = profile.theme === 'dark' ? 'light' : 'dark';
-              setStoredTheme(nextTheme);
-            }}
-            className="hidden md:flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
-            title={profile.theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            aria-label="Toggle theme appearance"
-          >
-            {profile.theme === 'dark' ? (
-              <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
-            ) : (
-              <Moon className="w-4 h-4 text-slate-600 hover:-rotate-12 transition-transform" />
-            )}
-          </button>
+          {/* Laptop / Desktop Theme Toggle Button — hidden on landing page */}
+          {!isLandingPage && (
+            <button
+              onClick={() => {
+                const nextTheme = profile.theme === 'dark' ? 'light' : 'dark';
+                setStoredTheme(nextTheme);
+              }}
+              className="hidden md:flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
+              title={profile.theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label="Toggle theme appearance"
+            >
+              {profile.theme === 'dark' ? (
+                <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-600 hover:-rotate-12 transition-transform" />
+              )}
+            </button>
+          )}
 
           {/* Notification Bell (Logged-in only) */}
           {isLoggedIn && <NotificationDrawer />}
@@ -799,30 +802,32 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
           </div>
 
-          {/* Mobile Theme Toggle */}
-          <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
-            <button
-              onClick={() => {
-                const nextTheme = profile.theme === 'dark' ? 'light' : 'dark';
-                setStoredTheme(nextTheme);
-              }}
-              className="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-center space-x-2 min-h-[44px]"
-              title="Toggle theme appearance"
-              aria-label="Toggle theme appearance"
-            >
-              {profile.theme === 'dark' ? (
-                <>
-                  <Sun className="w-4 h-4 text-amber-400" />
-                  <span>Light</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="w-4 h-4 text-slate-600" />
-                  <span>Dark</span>
-                </>
-              )}
-            </button>
-          </div>
+          {/* Mobile Theme Toggle — hidden on landing page */}
+          {!isLandingPage && (
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+              <button
+                onClick={() => {
+                  const nextTheme = profile.theme === 'dark' ? 'light' : 'dark';
+                  setStoredTheme(nextTheme);
+                }}
+                className="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-center space-x-2 min-h-[44px]"
+                title="Toggle theme appearance"
+                aria-label="Toggle theme appearance"
+              >
+                {profile.theme === 'dark' ? (
+                  <>
+                    <Sun className="w-4 h-4 text-amber-400" />
+                    <span>Light</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon className="w-4 h-4 text-slate-600" />
+                    <span>Dark</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
 
           {/* Mobile Talk to Us CTA */}
           <div className="pt-2">

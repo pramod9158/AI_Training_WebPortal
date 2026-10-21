@@ -67,19 +67,19 @@ export const Footer: React.FC = () => {
       <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in]">
         
         {/* ==================================================================== */}
-        {/* PLATFORM NAVIGATION & LINKS (5-COLUMN GRID)                          */}
+        {/* PLATFORM NAVIGATION & LINKS (12-COLUMN RESPONSIVE GRID)             */}
         {/* ==================================================================== */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 py-8 border-b border-slate-200 dark:border-slate-800/60">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-12 gap-8 py-8 border-b border-slate-200 dark:border-slate-800/60">
           
-          {/* Col 1: Platform Brand */}
-          <div className="space-y-4 sm:col-span-2 md:col-span-1 lg:col-span-1">
+          {/* Col 1: Platform Brand (Spans 4 columns on desktop so logo and copy have ample room) */}
+          <div className="space-y-4 sm:col-span-2 md:col-span-3 lg:col-span-4">
             <Link href="/" className="inline-block group">
               <Image
                 src="/Waynautic_Academy_Logo_Transparent.png"
                 alt="Waynautic Academy"
-                width={480}
-                height={120}
-                className="h-16 sm:h-20 md:h-22 lg:h-24 w-auto max-w-[280px] sm:max-w-none object-contain transition-transform group-hover:scale-105"
+                width={360}
+                height={90}
+                className="h-12 sm:h-14 w-auto max-w-full object-contain transition-transform group-hover:scale-105"
               />
             </Link>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
@@ -88,7 +88,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Col 2: Core Modules */}
-          <div>
+          <div className="lg:col-span-2">
             <h4 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider mb-3.5 flex items-center space-x-1.5">
               <BookOpen className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
               <span>Core Modules</span>
@@ -103,7 +103,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Col 3: Advanced Tracks */}
-          <div>
+          <div className="lg:col-span-2">
             <h4 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider mb-3.5 flex items-center space-x-1.5">
               <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-violet-400" />
               <span>Advanced Tracks</span>
@@ -118,7 +118,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Col 4: Platform Navigation */}
-          <div>
+          <div className="lg:col-span-2">
             <h4 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider mb-3.5 flex items-center space-x-1.5">
               <Compass className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
               <span>Navigation</span>
@@ -134,7 +134,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Col 5: Contact Us (Right beside Navigation) */}
-          <div id="contact" className="space-y-3">
+          <div id="contact" className="sm:col-span-2 md:col-span-3 lg:col-span-2 space-y-3">
             <h4 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider mb-3.5 flex items-center space-x-1.5">
               <Mail className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
               <span>Contact Us</span>

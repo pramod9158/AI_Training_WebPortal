@@ -490,21 +490,12 @@ function HomePageContent() {
                 ))}
               </div>
 
-              {/* CTAs §7.1 — primary gradient + outline */}
+              {/* CTAs §7.1 — primary gradient */}
               <div className="flex flex-col sm:flex-row gap-3">
                 <a href="#courses" className="btn-gradient text-base">
                   <BookOpen className="w-4 h-4" />
                   Explore Programs
                   <ArrowRight className="w-4 h-4" />
-                </a>
-                <a
-                  href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-outline text-base"
-                >
-                  <Phone className="w-4 h-4" />
-                  Talk to Us
                 </a>
               </div>
             </div>
