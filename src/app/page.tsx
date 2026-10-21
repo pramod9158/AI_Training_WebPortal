@@ -512,36 +512,44 @@ function HomePageContent() {
             {/* RIGHT: Two stacked dark feature cards (AccioJob style) */}
             <div className="flex flex-col gap-4">
 
-              {/* Card 1: Courses — expanded flagship card */}
-              <div
-                className="relative rounded-2xl p-7 overflow-hidden transition-transform"
-                style={{ background: 'linear-gradient(135deg, #0a1330 0%, #0f1a3d 100%)', boxShadow: '0 0 0 1px rgba(41,171,226,.15), 0 8px 32px -8px rgba(124,58,237,.25)' }}
-              >
-                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-400/10 rounded-full -translate-y-12 translate-x-12 blur-3xl" />
-                <div className="relative">
-                  <span className="inline-block px-2.5 py-1 rounded-lg bg-brand-blue/20 border border-brand-cyan/30 text-brand-cyan text-[11px] font-bold uppercase tracking-wider mb-3">
-                    3 Flagship Programs
+              {/* Card 1: Courses — styled like Screenshot 4 white card */}
+              <div className="relative rounded-2xl p-6 sm:p-7 overflow-hidden transition-all duration-300 bg-white dark:bg-navy-900 border border-navy-900/10 dark:border-white/10 shadow-card hover:shadow-glow">
+                {/* Top mockup window bar matching Screenshot 4 */}
+                <div className="flex items-center justify-between pb-3 mb-4 border-b border-navy-900/[0.07] dark:border-white/10">
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-full bg-paper dark:bg-white/5 border border-navy-900/[0.06] dark:border-white/10 text-[10px] font-mono text-navy-800/60 dark:text-white/60 font-medium">
+                    flagship-programs
                   </span>
-                  <h3 className="text-xl font-black text-white mb-1">Industry-Ready Training</h3>
-                  <p className="text-white/70 text-sm mb-4">4-week live cohort + 3-month industry internship. Placement-focused, mentor-guided.</p>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-blue/10 dark:bg-brand-cyan/15 text-brand-blue dark:text-brand-cyan text-[11px] font-bold">
+                    3 Career Tracks
+                  </span>
+                </div>
+
+                <div className="relative">
+                  <h3 className="text-xl font-bold text-navy-900 dark:text-white mb-1">Industry-Ready Training</h3>
+                  <p className="text-navy-800/70 dark:text-white/70 text-sm mb-4">4-week live cohort + 3-month industry internship. Placement-focused, mentor-guided.</p>
 
                   {/* 3 Programs listed — each clicks directly to that program's fee structure */}
-                  <div className="space-y-2 mb-5">
+                  <div className="space-y-2 mb-4">
                     {[
-                      { key: 'functional' as const, label: 'Automation Testing', color: 'bg-brand-blue/15 border-brand-blue/30 text-white hover:border-brand-cyan/60 hover:bg-brand-blue/25' },
-                      { key: 'performance' as const, label: 'Performance Testing', color: 'bg-brand-blue/15 border-brand-blue/30 text-white hover:border-brand-cyan/60 hover:bg-brand-blue/25' },
-                      { key: 'ai' as const, label: 'AI Engineering & LLMs', color: 'bg-brand-blue/15 border-brand-blue/30 text-white hover:border-brand-cyan/60 hover:bg-brand-blue/25' },
+                      { key: 'functional' as const, label: 'Automation Testing' },
+                      { key: 'performance' as const, label: 'Performance Testing' },
+                      { key: 'ai' as const, label: 'AI Engineering & LLMs' },
                     ].map(prog => (
                       <div
                         key={prog.label}
                         onClick={(e) => scrollToProgramFees(prog.key, e)}
-                        className={`px-3.5 py-2.5 rounded-xl border ${prog.color} cursor-pointer hover:scale-[1.02] hover:bg-white/10 transition-all flex items-center justify-between group/item`}
+                        className="px-3.5 py-2.5 rounded-xl border border-navy-900/10 dark:border-white/10 bg-paper/70 dark:bg-white/5 hover:bg-brand-blue/5 dark:hover:bg-brand-blue/15 hover:border-brand-blue/30 cursor-pointer hover:scale-[1.01] transition-all flex items-center justify-between group/item"
                         role="button"
                         tabIndex={0}
                         title={`View fees structure for ${prog.label}`}
                       >
-                        <div className="font-bold text-sm leading-tight text-white group-hover/item:text-blue-100 transition-colors">{prog.label}</div>
-                        <span className="text-xs font-semibold text-brand-cyan/90 group-hover/item:text-white flex items-center gap-1 transition-colors">
+                        <div className="font-bold text-sm leading-tight text-navy-900 dark:text-white group-hover/item:text-brand-blue dark:group-hover/item:text-brand-cyan transition-colors">{prog.label}</div>
+                        <span className="text-xs font-semibold text-brand-blue dark:text-brand-cyan flex items-center gap-1 transition-colors">
                           Fees &amp; Tiers
                           <ArrowRight className="w-3.5 h-3.5 group-hover/item:translate-x-0.5 transition-transform" />
                         </span>
@@ -550,21 +558,21 @@ function HomePageContent() {
                   </div>
 
                   {/* Key stats */}
-                  <div className="grid grid-cols-2 gap-2 mb-5">
+                  <div className="grid grid-cols-2 gap-2 mb-4">
                     {[
                       { val: '₹9,999', label: 'Starting Price' },
                       { val: '3 Months', label: 'Internship' },
                     ].map(s => (
-                      <div key={s.label} className="bg-white/5 border border-white/10 rounded-xl px-2 py-2 text-center">
-                        <div className="text-white font-black text-sm">{s.val}</div>
-                        <div className="text-white/70 text-[10px] font-semibold mt-0.5">{s.label}</div>
+                      <div key={s.label} className="bg-paper dark:bg-white/5 border border-navy-900/[0.07] dark:border-white/10 rounded-xl px-2 py-2 text-center">
+                        <div className="text-navy-900 dark:text-white font-bold text-sm">{s.val}</div>
+                        <div className="text-navy-800/60 dark:text-white/60 text-[10px] font-semibold mt-0.5">{s.label}</div>
                       </div>
                     ))}
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-5">
                     {['Live Projects', 'Expert Mentors', 'Certificate', 'Placement Help'].map(tag => (
-                      <span key={tag} className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/80 text-xs font-semibold">{tag}</span>
+                      <span key={tag} className="px-2.5 py-1 rounded-lg bg-paper dark:bg-white/5 border border-navy-900/[0.07] dark:border-white/10 text-navy-800/80 dark:text-white/80 text-xs font-medium">{tag}</span>
                     ))}
                   </div>
                   <button
@@ -573,31 +581,29 @@ function HomePageContent() {
                       const el = document.getElementById('fees-structure');
                       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white text-navy-900 font-bold text-sm hover:bg-white/90 transition-colors cursor-pointer"
+                    className="btn-gradient w-full text-sm py-2.5 rounded-lg text-white font-bold shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     View Fees Structure ↗
                   </button>
                 </div>
               </div>
 
-              {/* Card 2: Achievement Certificate (AccioJob right card with visual Certificate preview) */}
+              {/* Card 2: Achievement Certificate — styled like Screenshot 4 white card */}
               <div
-                className="relative rounded-2xl p-5 sm:p-6 overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform group"
-                style={{ background: 'linear-gradient(135deg, #0a1330 0%, #152452 100%)', boxShadow: '0 0 0 1px rgba(41,171,226,.15), 0 8px 32px -8px rgba(124,58,237,.25)' }}
+                className="relative rounded-2xl p-5 sm:p-6 overflow-hidden transition-all duration-300 bg-white dark:bg-navy-900 border border-navy-900/10 dark:border-white/10 shadow-card hover:shadow-glow cursor-pointer group"
                 onClick={() => setCertModalOpen(true)}
               >
-                <div className="absolute bottom-0 right-0 w-44 h-44 bg-violet-500/15 rounded-full translate-y-10 translate-x-10 blur-2xl pointer-events-none" />
                 <div className="relative">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-brand-blue/20 border border-brand-cyan/30 text-amber-300 text-[11px] font-bold uppercase tracking-wider">
-                      <Award className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/25 text-amber-700 dark:text-amber-400 text-[11px] font-bold uppercase tracking-wider">
+                      <Award className="w-3.5 h-3.5 text-amber-500" />
                       Achievement Certificate
                     </span>
-                    <span className="text-[10px] font-mono font-bold text-brand-cyan/80 uppercase">GenAI &amp; ML 2025</span>
+                    <span className="text-[10px] font-mono font-bold text-navy-800/60 dark:text-white/60 uppercase">GenAI &amp; ML 2025</span>
                   </div>
 
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-24 h-16 sm:w-28 sm:h-20 shrink-0 rounded-xl overflow-hidden border-2 border-amber-400/50 shadow-lg group-hover:border-amber-400 transition-all bg-black/40 relative">
+                    <div className="w-24 h-16 sm:w-28 sm:h-20 shrink-0 rounded-xl overflow-hidden border border-navy-900/10 dark:border-white/15 shadow-sm group-hover:border-amber-400 transition-all bg-slate-100 dark:bg-black/40 relative">
                       <Image
                         src="/Innovation-Certificate.jpg"
                         alt="Achievement Certificate - GenAI & ML Awards 2025"
@@ -610,26 +616,26 @@ function HomePageContent() {
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-base sm:text-lg font-black text-white leading-snug mb-1">
+                      <h3 className="text-base sm:text-lg font-bold text-navy-900 dark:text-white leading-snug mb-1">
                         National Excellence Award
                       </h3>
-                      <p className="text-white/70 text-xs leading-relaxed line-clamp-2">
+                      <p className="text-navy-800/70 dark:text-white/70 text-xs leading-relaxed line-clamp-2">
                         Winner — Best AI/ML Testing Strategy. Recognized nationally for industry-leading curriculum.
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 pt-3 border-t border-violet-500/20">
+                  <div className="flex items-center justify-between gap-3 pt-3 border-t border-navy-900/[0.07] dark:border-white/10">
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded-md bg-violet-500/30 text-violet-200 text-[10px] font-bold">Dual Certified</span>
-                      <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 text-[10px] font-bold">Industry Recognized</span>
+                      <span className="px-2 py-0.5 rounded-md bg-brand-blue/10 text-brand-blue dark:bg-brand-blue/20 dark:text-brand-cyan text-[10px] font-bold">Dual Certified</span>
+                      <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 text-[10px] font-bold">Industry Recognized</span>
                     </div>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setCertModalOpen(true);
                       }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-navy-900 font-bold text-xs hover:bg-white/90 transition-colors shadow-sm shrink-0 cursor-pointer"
+                      className="btn-gradient text-xs px-3.5 py-1.5 rounded-md text-white font-bold shadow-xs shrink-0 cursor-pointer"
                     >
                       See Certificate ↗
                     </button>
@@ -725,7 +731,7 @@ function HomePageContent() {
                     desc: 'Live interactive webinar on Selenium & Playwright automation with CI/CD.',
                     features: ['All Consultation features included', 'Live Webinar: Selenium & Playwright', 'Azure DevOps & CI/CD pipeline basics', 'Resume & LinkedIn profile audit'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-navy-900 hover:bg-navy-950 text-white font-semibold shadow-soft',
+                    ctaStyle: 'bg-brand-blue hover:bg-[#15328c] text-white font-semibold shadow-sm',
                     ctaHref: null,
                     featured: false,
                   },
@@ -847,7 +853,7 @@ function HomePageContent() {
                     desc: 'Live interactive webinar covering JMeter, K6 & APM monitoring essentials.',
                     features: ['All Consultation features included', 'Live Webinar: JMeter & K6 load testing', 'Grafana & Datadog dashboards hands-on', 'Resume & LinkedIn audit for perf roles'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-navy-900 hover:bg-navy-950 text-white font-semibold shadow-soft',
+                    ctaStyle: 'bg-brand-blue hover:bg-[#15328c] text-white font-semibold shadow-sm',
                     ctaHref: null,
                     featured: false,
                   },
@@ -953,7 +959,7 @@ function HomePageContent() {
                     desc: 'Live interactive AI Webinar masterclass. Everything in Starter + live session.',
                     features: ['All Consultation features included', 'Live Interactive AI Webinar masterclass', 'Personalized resume & tech profile audit', 'Direct Q&A and hands-on project guidance'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-navy-900 hover:bg-navy-950 text-white font-semibold shadow-soft',
+                    ctaStyle: 'bg-brand-blue hover:bg-[#15328c] text-white font-semibold shadow-sm',
                     ctaHref: null,
                     featured: false,
                   },
@@ -1149,38 +1155,44 @@ function HomePageContent() {
       =================================================================== */}
       <section className="py-20 sm:py-28 bg-paper dark:bg-[#080d1c]">
         <div className="container-xl">
-        <div className="relative rounded-lg overflow-hidden cta-dark" style={{ background: '#0a1330', boxShadow: '0 0 0 1px rgba(41,171,226,.15), 0 8px 32px -8px rgba(124,58,237,.25)' }}>
-          {/* Grid pattern */}
-          <div className="absolute inset-0 opacity-20" style={{
-            backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)`,
-            backgroundSize: '30px 30px'
-          }} />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] bg-gradient-to-r from-blue-500/15 to-violet-500/15 blur-[80px] rounded-full" />
+        <div className="relative rounded-2xl overflow-hidden bg-white dark:bg-navy-900 border border-navy-900/10 dark:border-white/10 shadow-card">
+          {/* Top mockup window bar matching Screenshot 4 */}
+          <div className="flex items-center justify-between px-6 sm:px-8 py-3.5 border-b border-navy-900/[0.07] dark:border-white/10 bg-paper/60 dark:bg-white/5">
+            <div className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+              <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+              <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+            </div>
+            <span className="px-3 py-0.5 rounded-full bg-white dark:bg-navy-950 border border-navy-900/[0.06] dark:border-white/10 text-xs font-mono text-navy-800/60 dark:text-white/60 font-medium">
+              career-accelerator
+            </span>
+            <div className="w-12" />
+          </div>
 
-          <div className="relative z-10 px-8 sm:px-14 lg:px-16 py-14 sm:py-20 flex flex-col lg:flex-row items-center justify-between gap-10">
+          <div className="relative z-10 px-8 sm:px-14 lg:px-16 py-12 sm:py-16 flex flex-col lg:flex-row items-center justify-between gap-10">
             {/* Left */}
             <div className="text-center lg:text-left max-w-2xl">
-              <div className="eyebrow-dark mb-5">
+              <div className="eyebrow mb-5">
                 <Rocket className="w-3.5 h-3.5" />
                 3 Flagship Engineering Programs
               </div>
-              <h2 className="font-display text-3xl sm:text-4xl font-semibold text-white mb-4 leading-tight tracking-tight">
+              <h2 className="font-display text-3xl sm:text-4xl font-semibold text-navy-900 dark:text-white mb-4 leading-tight tracking-tight">
                 Ready to Accelerate Your Career in{' '}
-                <span style={{ color: '#29abe2' }}>Automation, Performance, or AI?</span>
+                <span className="text-brand-blue">Automation, Performance, or AI?</span>
               </h2>
-              <p className="text-lg text-white/70 leading-relaxed mb-6">
-                Join our 4-week code-first masterclasses followed by a guaranteed <strong className="text-white">3-Month Industry Internship</strong>. Choose between <strong className="text-white">Automation Testing</strong>, <strong className="text-white">Performance Testing</strong>, or <strong className="text-white">AI Engineering</strong> — with personalized mentorship, dual certification, and full placement assistance.
+              <p className="text-lg text-navy-800/75 dark:text-white/75 leading-relaxed mb-6">
+                Join our 4-week code-first masterclasses followed by a guaranteed <strong className="text-navy-900 dark:text-white font-bold">3-Month Industry Internship</strong>. Choose between <strong className="text-navy-900 dark:text-white font-bold">Automation Testing</strong>, <strong className="text-navy-900 dark:text-white font-bold">Performance Testing</strong>, or <strong className="text-navy-900 dark:text-white font-bold">AI Engineering</strong> — with personalized mentorship, dual certification, and full placement assistance.
               </p>
               {/* 3 Track Pills */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
-                <span className="px-3.5 py-1.5 rounded-full bg-white/10 text-white border border-white/20 text-xs font-bold flex items-center gap-1.5">
-                  <Code2 className="w-3.5 h-3.5" /> Track 01: Automation Testing
+                <span className="px-3.5 py-1.5 rounded-full bg-paper dark:bg-white/5 text-navy-800 dark:text-white border border-navy-900/10 dark:border-white/10 text-xs font-semibold flex items-center gap-1.5">
+                  <Code2 className="w-3.5 h-3.5 text-brand-blue" /> Track 01: Automation Testing
                 </span>
-                <span className="px-3.5 py-1.5 rounded-full bg-white/10 text-white border border-white/20 text-xs font-bold flex items-center gap-1.5">
-                  <TrendingUp className="w-3.5 h-3.5" /> Track 02: Performance Testing
+                <span className="px-3.5 py-1.5 rounded-full bg-paper dark:bg-white/5 text-navy-800 dark:text-white border border-navy-900/10 dark:border-white/10 text-xs font-semibold flex items-center gap-1.5">
+                  <TrendingUp className="w-3.5 h-3.5 text-brand-blue" /> Track 02: Performance Testing
                 </span>
-                <span className="px-3.5 py-1.5 rounded-full bg-white/10 text-white border border-white/20 text-xs font-bold flex items-center gap-1.5">
-                  <Brain className="w-3.5 h-3.5" /> Track 03: AI Engineering
+                <span className="px-3.5 py-1.5 rounded-full bg-paper dark:bg-white/5 text-navy-800 dark:text-white border border-navy-900/10 dark:border-white/10 text-xs font-semibold flex items-center gap-1.5">
+                  <Brain className="w-3.5 h-3.5 text-brand-blue" /> Track 03: AI Engineering
                 </span>
               </div>
             </div>
@@ -1191,14 +1203,14 @@ function HomePageContent() {
                 href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20learn%20more%20about%20your%20programs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-sm shadow-soft hover:-translate-y-0.5 transition-all"
+                className="flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-sm shadow-soft hover:-translate-y-0.5 transition-all"
               >
                 <MessageCircle className="w-5 h-5 fill-white" />
                 Chat on WhatsApp
               </a>
               <a
                 href="mailto:pramod.gogadare@waynautic.com?subject=Enquiry%20-%20Waynautic%20Academy%20Programs"
-                className="flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-white/10 border border-white/20 text-white font-bold text-sm hover:bg-white/15 hover:-translate-y-0.5 transition-all backdrop-blur-sm"
+                className="btn-outline flex items-center justify-center gap-2.5 px-7 py-4 text-sm font-semibold rounded-xl text-center"
               >
                 <Mail className="w-5 h-5" />
                 Send us an Email
