@@ -255,14 +255,14 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
 
         {/* ── Auth UI layer (sits above the blurred background) ────────────── */}
         <div className="relative z-10 flex flex-col min-h-screen">
-          <header className="w-full h-20 px-4 flex items-center justify-center bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-sm transition-colors border-none shadow-none">
+          <header className="w-full min-h-[5rem] sm:min-h-[5.5rem] py-3 px-4 flex items-center justify-center bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-sm transition-colors border-none shadow-none">
             <Link href="/" className="inline-flex items-center group py-1 transition-transform hover:scale-[1.02]" aria-label="Waynautic Academy Home">
               <Image
                 src="/Waynautic_Academy_Logo_Transparent.png"
                 alt="Waynautic Academy"
-                width={200}
-                height={50}
-                className="h-[42px] sm:h-[46px] w-auto object-contain transition-transform group-hover:scale-[1.02]"
+                width={480}
+                height={120}
+                className="h-14 sm:h-20 md:h-22 lg:h-24 w-auto max-w-[260px] sm:max-w-none object-contain transition-transform group-hover:scale-[1.02]"
                 priority
               />
             </Link>

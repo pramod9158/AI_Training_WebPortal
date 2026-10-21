@@ -77,9 +77,9 @@ export const Footer: React.FC = () => {
               <Image
                 src="/Waynautic_Academy_Logo_Transparent.png"
                 alt="Waynautic Academy"
-                width={240}
-                height={60}
-                className="h-10 sm:h-11 md:h-12 w-auto object-contain transition-transform group-hover:scale-105"
+                width={480}
+                height={120}
+                className="h-16 sm:h-20 md:h-22 lg:h-24 w-auto max-w-[280px] sm:max-w-none object-contain transition-transform group-hover:scale-105"
               />
             </Link>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">

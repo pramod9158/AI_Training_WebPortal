@@ -1039,18 +1039,37 @@ function HomePageContent() {
       </section>
 
       {/* ===================================================================
-          LIVE SESSION PREVIEW — Video trigger section
+          LIVE SESSION PREVIEW — Video trigger section (from Screenshot 1)
       =================================================================== */}
-      <section className="py-12 sm:py-16 bg-white dark:bg-[#080d1c]">
-        <div className="container-xl flex items-center justify-center">
-          <button
-            type="button"
-            onClick={() => setVideoModalOpen(true)}
-            className="btn-gradient text-sm px-8 py-3.5 shadow-glow inline-flex items-center gap-2.5 cursor-pointer"
-          >
-            <Play className="w-4 h-4 fill-white" />
-            Watch Live Class Video
-          </button>
+      <section className="py-16 sm:py-20 bg-white dark:bg-[#080d1c]">
+        <div className="container-xl text-center px-4">
+          {/* Eyebrow badge from Screenshot 1 */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-blue/10 dark:bg-brand-blue/20 border border-brand-blue/20 dark:border-brand-blue/30 text-xs sm:text-sm font-semibold text-brand-blue dark:text-brand-cyan mb-4">
+            <span className="w-2 h-2 rounded-full bg-brand-blue dark:bg-brand-cyan animate-pulse" />
+            Live Class Sneak Peek
+          </div>
+
+          {/* Heading from Screenshot 1 */}
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-navy-900 dark:text-white tracking-tight mb-4">
+            See How We Teach in Real Life
+          </h2>
+
+          {/* Subtitle from Screenshot 1 */}
+          <p className="text-base sm:text-lg text-navy-800/70 dark:text-white/70 max-w-2xl mx-auto leading-relaxed mb-8">
+            Watch an authentic excerpt from our live cohort mentorship classes — hands-on coding, live problem-solving, and mentor-student interaction.
+          </p>
+
+          {/* Watch Live Class Video Button */}
+          <div className="flex items-center justify-center">
+            <button
+              type="button"
+              onClick={() => setVideoModalOpen(true)}
+              className="btn-gradient text-sm sm:text-base px-8 py-3.5 shadow-glow inline-flex items-center gap-2.5 cursor-pointer hover:scale-[1.02] transition-transform"
+            >
+              <Play className="w-4 h-4 fill-white" />
+              Watch Live Class Video
+            </button>
+          </div>
         </div>
       </section>
 
