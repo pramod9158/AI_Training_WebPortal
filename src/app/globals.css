@@ -14,27 +14,27 @@
   --navy-900:    #0a1128;
   --navy-800:    #0f1a3d;
   --navy-700:    #152452;
-  --brand-blue:  #3563df;
-  --brand-cyan:  #4faee6;
-  --brand-violet:#8b5cf6;
-  --brand-magenta:#df5ba9;
+  --brand-blue:  #1a3fb0;
+  --brand-cyan:  #29abe2;
+  --brand-violet:#7c3aed;
+  --brand-magenta:#d946a8;
   --white:       #ffffff;
-  --paper:       #f8f9fa;
-  --paper-2:     #f0f3f6;
+  --paper:       #f4f6f8;
+  --paper-2:     #eceff2;
   --ink-soft:    #555e70;
   --line:        #dce2e8;
-  --border:      rgba(10, 17, 40, 0.08);
+  --border:      rgba(10, 17, 40, 0.10);
   --text:        #0a1128;
-  --text-body:   rgba(15, 26, 61, 0.70);
+  --text-body:   rgba(15, 26, 61, 0.75);
   --text-muted:  rgba(15, 26, 61, 0.60);
 
   /* gradients */
-  --gradient-button: linear-gradient(100deg, #3b6cd8, #4faee6);
-  --gradient-brand:  linear-gradient(115deg, #3563df 0%, #4faee6 32%, #8b5cf6 68%, #df5ba9 100%);
+  --gradient-button: linear-gradient(100deg, #1a3fb0, #29abe2);
+  --gradient-brand:  linear-gradient(115deg, #1a3fb0 0%, #29abe2 32%, #7c3aed 68%, #d946a8 100%);
   --mesh-light:
-    radial-gradient(ellipse 80% 60% at 20% 0%,  rgba(79,174,230,0.10), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 100% 10%, rgba(139,92,246,0.08), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(223,91,169,0.05), transparent 60%);
+    radial-gradient(ellipse 80% 60% at 20% 0%,  rgba(41,171,226,0.14), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 100% 10%, rgba(124,58,237,0.12), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(217,70,168,0.08), transparent 60%);
 
   /* fonts */
   --font-heading: 'Space Grotesk',  system-ui, sans-serif;
@@ -121,14 +121,14 @@ h1, h2, h3, h4, h5, h6 {
     @apply mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-10;
   }
 
-  /* Primary button — §7.1 (softened 40% fainter) */
+  /* Primary button — §7.1 (matching waynautic.netlify.app) */
   .btn-gradient {
     @apply relative inline-flex items-center justify-center gap-2 rounded-md px-6 py-3 font-semibold transition-all duration-300;
     color: #ffffff;
-    background: linear-gradient(100deg, #6c8ee0, #88c8eb);
+    background: linear-gradient(100deg, #1a3fb0, #29abe2);
     background-size: 160% 100%;
     background-position: 0% 0%;
-    box-shadow: 0 4px 12px -3px rgba(108, 142, 224, 0.18);
+    box-shadow: 0 0 0 1px rgba(41, 171, 226, 0.15), 0 8px 32px -8px rgba(124, 58, 237, 0.25);
   }
   .btn-gradient:hover {
     background-position: 100% 0%;
@@ -138,55 +138,57 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateY(0);
   }
 
-  /* Secondary button — §7.1 */
+  /* Secondary button — §7.1 (matching waynautic.netlify.app) */
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2 rounded-md border bg-white px-6 py-3 font-semibold transition-all duration-300;
-    border-color: rgba(10, 17, 40, 0.08);
-    color: #1e293b;
+    border-color: rgba(10, 17, 40, 0.15);
+    color: #0a1128;
   }
   .btn-outline:hover {
-    border-color: rgba(108, 142, 224, 0.28);
-    background: rgba(108, 142, 224, 0.03);
-    transform: translateY(-2px);
+    border-color: rgba(26, 63, 176, 0.4);
+    background-color: rgba(26, 63, 176, 0.05);
+    transform: translateY(-0.125rem);
   }
 
-  /* Eyebrow badge — §7.2 */
+  /* Eyebrow badge — §7.2 (matching waynautic.netlify.app) */
   .eyebrow {
     @apply inline-flex items-center gap-2 rounded-md px-4 py-1.5 font-mono text-xs font-medium uppercase;
     letter-spacing: 0.14em;
-    border: 1px solid rgba(108, 142, 224, 0.15);
-    background: rgba(108, 142, 224, 0.04);
-    color: #557cd9;
+    border: 1px solid rgba(26, 63, 176, 0.20);
+    background-color: rgba(26, 63, 176, 0.05);
+    color: #1a3fb0;
   }
   /* Eyebrow on dark background */
   .eyebrow-dark {
     @apply inline-flex items-center gap-2 rounded-md px-4 py-1.5 font-mono text-xs font-medium uppercase;
     letter-spacing: 0.14em;
-    border: 1px solid rgba(255,255,255,0.14);
-    background: rgba(255,255,255,0.03);
-    color: #74bfeb;
+    border: 1px solid rgba(41, 171, 226, 0.35);
+    background-color: rgba(41, 171, 226, 0.12);
+    color: #29abe2;
   }
 
-  /* Card surface — §7.4 */
+  /* Card surface — §7.4 (matching waynautic.netlify.app) */
   .card-surface {
     @apply rounded-lg bg-white;
-    border: 1px solid rgba(10, 17, 40, 0.06);
-    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(10, 17, 40, 0.10);
+    box-shadow: 0 2px 8px rgba(10, 17, 40, 0.04), 0 16px 40px -12px rgba(10, 17, 40, 0.12);
   }
   .card-surface-hover {
     @apply card-surface transition-all duration-300;
   }
   .card-surface-hover:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-glow);
+    border-color: rgba(26, 63, 176, 0.30);
+    box-shadow: 0 0 0 1px rgba(41, 171, 226, 0.15), 0 8px 32px -8px rgba(124, 58, 237, 0.25);
   }
 
-  /* Dark CTA panel — §7.8 (softened 40%) */
+  /* Dark CTA panel — §7.8 (matching waynautic.netlify.app) */
   .cta-dark {
     @apply rounded-lg text-center;
-    background: #192445;
+    background: #0a1330;
+    border: 1px solid rgba(10, 17, 40, 0.10);
     padding: 56px 32px;
-    box-shadow: var(--shadow-glow);
+    box-shadow: 0 0 0 1px rgba(41, 171, 226, 0.15), 0 8px 32px -8px rgba(124, 58, 237, 0.25);
   }
 
   /* Scroll reveal base state (JS adds .revealed) — §8 */

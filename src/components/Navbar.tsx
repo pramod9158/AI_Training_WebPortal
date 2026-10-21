@@ -166,30 +166,30 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     <header className="sticky top-0 z-50 w-full bg-white/85 dark:bg-[#0B0F19]/85 backdrop-blur-lg border-b border-slate-900/10 dark:border-slate-800/60 transition-all duration-300">
       <div className="w-full px-4 sm:px-8 md:px-12 lg:px-[2in] h-20 flex items-center justify-between">
         
-        {/* Left Section: Waynautic Academy Logo */}
+        {/* Left Section: Waynautic Academy Logo — enlarged to match waynautic.netlify.app header visual weight */}
         <div className="flex items-center shrink-0">
           <Link href="/" className="flex items-center gap-2 group shrink-0" aria-label="Waynautic Academy Home">
             <Image
               src="/Waynautic_Academy_Logo_Transparent.png"
               alt="Waynautic Academy"
-              width={200}
-              height={50}
-              className="h-9 sm:h-10 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+              width={260}
+              height={65}
+              className="h-11 sm:h-12 md:h-13 w-auto object-contain transition-transform group-hover:scale-[1.02]"
               priority
             />
           </Link>
         </div>
 
-        {/* Center Section: Navigation Links — matching waynautic.netlify.app font size (text-sm) and font-semibold */}
+        {/* Center Section: Navigation Links — matching waynautic.netlify.app font size (text-base) and font-semibold */}
         <div className="hidden lg:flex flex-1 justify-center px-4">
           <nav className="flex items-center gap-1 xl:gap-2">
             {/* 1. Training Programs */}
             <Link
               href="/#pricing"
-              className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
+              className={`rounded-md px-3.5 py-2 text-base xl:px-4 font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                 pathname === '/#pricing'
-                  ? 'text-indigo-600 dark:text-cyan-400 bg-slate-100/60 dark:bg-slate-800/60'
-                  : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/70'
+                  ? 'text-[#1a3fb0] dark:text-[#29abe2] bg-[#1a3fb0]/5 dark:bg-[#1a3fb0]/15'
+                  : 'text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-navy-900/5 dark:hover:bg-slate-800/70'
               }`}
             >
               Training Programs
@@ -200,10 +200,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <button
                 type="button"
                 onClick={() => setCurriculumDropdownOpen((v) => !v)}
-                className={`flex items-center gap-1 rounded-md px-4 py-2 text-sm font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1 rounded-md px-3.5 py-2 text-base xl:px-4 font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                   pathname?.startsWith('/curriculum')
-                    ? 'text-indigo-600 dark:text-cyan-400 bg-slate-100/60 dark:bg-slate-800/60'
-                    : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/70'
+                    ? 'text-[#1a3fb0] dark:text-[#29abe2] bg-[#1a3fb0]/5 dark:bg-[#1a3fb0]/15'
+                    : 'text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-navy-900/5 dark:hover:bg-slate-800/70'
                 }`}
                 aria-expanded={curriculumDropdownOpen}
                 aria-label="Curriculum programs"
@@ -241,7 +241,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                           <Icon className="w-4 h-4" />
                         </div>
                         <div>
-                          <div className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-cyan-300 transition-colors leading-tight">{prog.label}</div>
+                          <div className="text-base font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-cyan-300 transition-colors leading-tight">{prog.label}</div>
                           <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{prog.desc}</div>
                         </div>
                       </Link>
@@ -254,10 +254,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             {/* 3. About Us */}
             <Link
               href="/about"
-              className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
+              className={`rounded-md px-3.5 py-2 text-base xl:px-4 font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                 pathname === '/about'
-                  ? 'text-indigo-600 dark:text-cyan-400 bg-slate-100/60 dark:bg-slate-800/60'
-                  : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/70'
+                  ? 'text-[#1a3fb0] dark:text-[#29abe2] bg-[#1a3fb0]/5 dark:bg-[#1a3fb0]/15'
+                  : 'text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-navy-900/5 dark:hover:bg-slate-800/70'
               }`}
             >
               About Us
@@ -270,10 +270,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
+                  className={`rounded-md px-3.5 py-2 text-base xl:px-4 font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
                     isActive
-                      ? 'text-indigo-600 dark:text-cyan-400 bg-slate-100/60 dark:bg-slate-800/60'
-                      : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/70'
+                      ? 'text-[#1a3fb0] dark:text-[#29abe2] bg-[#1a3fb0]/5 dark:bg-[#1a3fb0]/15'
+                      : 'text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-navy-900/5 dark:hover:bg-slate-800/70'
                   }`}
                 >
                   {link.label}
@@ -507,7 +507,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             <div className="hidden lg:flex items-center gap-3">
               <Link
                 href="/login"
-                className="rounded-md px-3.5 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/70 transition-colors whitespace-nowrap shrink-0"
+                className="rounded-md px-3.5 py-2 text-base font-semibold text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-navy-900/5 dark:hover:bg-slate-800/70 transition-colors whitespace-nowrap shrink-0"
               >
                 Log in
               </Link>
@@ -518,11 +518,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                     window.dispatchEvent(new CustomEvent('waynautic_open_contact_modal'));
                   }
                 }}
-                className="inline-flex items-center justify-center text-sm font-semibold px-5 py-2.5 rounded-md text-white shadow-sm transition-all duration-300 hover:opacity-95 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shrink-0"
-                style={{
-                  background: 'linear-gradient(100deg, #1a3fb0, #29abe2)',
-                  boxShadow: '0 0 0 1px rgba(41,171,226,.15), 0 8px 32px -8px rgba(124,58,237,.25)',
-                }}
+                className="btn-gradient text-base px-5 py-2.5 shrink-0 cursor-pointer"
               >
                 Talk to Us
               </button>
@@ -538,11 +534,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
                   window.dispatchEvent(new CustomEvent('waynautic_open_contact_modal'));
                 }
               }}
-              className="hidden xl:inline-flex items-center justify-center text-sm font-semibold px-4 py-2 rounded-md text-white shadow-sm transition-all duration-300 hover:opacity-95 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shrink-0"
-              style={{
-                background: 'linear-gradient(100deg, #1a3fb0, #29abe2)',
-                boxShadow: '0 0 0 1px rgba(41,171,226,.15), 0 8px 32px -8px rgba(124,58,237,.25)',
-              }}
+              className="hidden xl:inline-flex items-center justify-center btn-gradient text-base px-4 py-2 shrink-0 cursor-pointer"
             >
               Talk to Us
             </button>

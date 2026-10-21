@@ -578,7 +578,7 @@ export const RazorpayModal: React.FC<RazorpayModalProps> = ({
                 <button
                   type="submit"
                   disabled={loading || !agreedToTerms}
-                  className={`w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 hover:brightness-110 text-white font-extrabold text-sm sm:text-base text-center transition-all shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5 ${
+                  className={`w-full py-4 px-6 rounded-xl btn-gradient text-white font-bold text-sm sm:text-base text-center transition-all shadow-glow flex items-center justify-center gap-2 cursor-pointer ${
                     !agreedToTerms ? 'opacity-50 cursor-not-allowed hover:brightness-100 hover:translate-y-0 shadow-none' : ''
                   }`}
                 >
