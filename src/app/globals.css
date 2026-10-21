@@ -121,13 +121,14 @@ h1, h2, h3, h4, h5, h6 {
     @apply mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-10;
   }
 
-  /* Primary button — §7.1 */
+  /* Primary button — §7.1 (softened 40% fainter) */
   .btn-gradient {
-    @apply relative inline-flex items-center justify-center gap-2 rounded-md px-6 py-3 font-semibold text-white transition-all duration-300;
-    background: linear-gradient(100deg, #3b6cd8, #4faee6);
+    @apply relative inline-flex items-center justify-center gap-2 rounded-md px-6 py-3 font-semibold transition-all duration-300;
+    color: #ffffff;
+    background: linear-gradient(100deg, #6c8ee0, #88c8eb);
     background-size: 160% 100%;
     background-position: 0% 0%;
-    box-shadow: 0 4px 14px -3px rgba(59, 108, 216, 0.22);
+    box-shadow: 0 4px 12px -3px rgba(108, 142, 224, 0.18);
   }
   .btn-gradient:hover {
     background-position: 100% 0%;
@@ -140,12 +141,12 @@ h1, h2, h3, h4, h5, h6 {
   /* Secondary button — §7.1 */
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2 rounded-md border bg-white px-6 py-3 font-semibold transition-all duration-300;
-    border-color: rgba(10, 17, 40, 0.12);
-    color: #0a1128;
+    border-color: rgba(10, 17, 40, 0.08);
+    color: #1e293b;
   }
   .btn-outline:hover {
-    border-color: rgba(53, 99, 223, 0.35);
-    background: rgba(53, 99, 223, 0.04);
+    border-color: rgba(108, 142, 224, 0.28);
+    background: rgba(108, 142, 224, 0.03);
     transform: translateY(-2px);
   }
 
@@ -153,23 +154,23 @@ h1, h2, h3, h4, h5, h6 {
   .eyebrow {
     @apply inline-flex items-center gap-2 rounded-md px-4 py-1.5 font-mono text-xs font-medium uppercase;
     letter-spacing: 0.14em;
-    border: 1px solid rgba(53, 99, 223, 0.15);
-    background: rgba(53, 99, 223, 0.04);
-    color: #3563df;
+    border: 1px solid rgba(108, 142, 224, 0.15);
+    background: rgba(108, 142, 224, 0.04);
+    color: #557cd9;
   }
   /* Eyebrow on dark background */
   .eyebrow-dark {
     @apply inline-flex items-center gap-2 rounded-md px-4 py-1.5 font-mono text-xs font-medium uppercase;
     letter-spacing: 0.14em;
-    border: 1px solid rgba(255,255,255,0.20);
-    background: rgba(255,255,255,0.05);
-    color: #29abe2;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.03);
+    color: #74bfeb;
   }
 
   /* Card surface — §7.4 */
   .card-surface {
     @apply rounded-lg bg-white;
-    border: 1px solid rgba(10, 17, 40, 0.10);
+    border: 1px solid rgba(10, 17, 40, 0.06);
     box-shadow: var(--shadow-card);
   }
   .card-surface-hover {
@@ -180,10 +181,10 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: var(--shadow-glow);
   }
 
-  /* Dark CTA panel — §7.8 */
+  /* Dark CTA panel — §7.8 (softened 40%) */
   .cta-dark {
     @apply rounded-lg text-center;
-    background: #0a1330;
+    background: #192445;
     padding: 56px 32px;
     box-shadow: var(--shadow-glow);
   }

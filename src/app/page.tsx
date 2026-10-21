@@ -198,6 +198,20 @@ function HomePageContent() {
     }
   };
 
+  const scrollToProgramFees = (prog: 'functional' | 'performance' | 'ai', e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setSelectedProgram(prog);
+    setTimeout(() => {
+      const el = document.getElementById('fees-structure');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 70);
+  };
+
   const enrollParam = searchParams.get('enroll');
   const noticeParam = searchParams.get('notice');
 
@@ -403,12 +417,12 @@ function HomePageContent() {
           </div>
         </section>
 
-        {/* Floating WhatsApp button */}
+        {/* Floating WhatsApp button (softened) */}
         <a
           href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20have%20a%20question%20regarding%20my%20course"
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#28b574] hover:bg-[#22a166] text-white shadow-xl shadow-emerald-500/25 flex items-center justify-center hover:scale-110 transition-all"
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#48c48f] hover:bg-[#3db782] text-white shadow-lg shadow-emerald-500/20 flex items-center justify-center hover:scale-110 transition-all"
           title="Chat with mentor on WhatsApp"
           aria-label="Chat on WhatsApp"
         >
@@ -446,14 +460,14 @@ function HomePageContent() {
             <div>
               {/* Eyebrow badge §7.2 */}
               <div className="eyebrow dark:eyebrow-dark mb-6">
-                <span className="w-2 h-2 rounded-full bg-[#3563df] animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-[#557cd9] animate-pulse" />
                 Placement-Focused Tech Training Programs
               </div>
 
               {/* H1 §3.2 — Home hero 36→48→60px, weight 600, tracking tight */}
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-semibold text-navy-900 dark:text-white leading-[1.08] mb-6 tracking-[-0.025em]">
                 Launch Your Tech Career with{' '}
-                <span style={{ color: '#3563df' }}>Placement-Focused Courses</span>{' '}
+                <span style={{ color: '#557cd9' }}>Placement-Focused Courses</span>{' '}
                 &amp; 3-Month Industry Internship
               </h1>
 
@@ -465,11 +479,11 @@ function HomePageContent() {
               {/* Trust badges §7.4 card-surface style */}
               <div className="flex flex-wrap gap-3 mb-9">
                 {[
-                  { icon: <Award className="w-4 h-4" style={{ color: '#3563df' }} />, label: 'Award-Winning Curriculum' },
-                  { icon: <Users className="w-4 h-4" style={{ color: '#3563df' }} />, label: 'Expert Industry Mentors' },
-                  { icon: <Shield className="w-4 h-4" style={{ color: '#3563df' }} />, label: 'Dual Certification' },
+                  { icon: <Award className="w-4 h-4" style={{ color: '#557cd9' }} />, label: 'Award-Winning Curriculum' },
+                  { icon: <Users className="w-4 h-4" style={{ color: '#557cd9' }} />, label: 'Expert Industry Mentors' },
+                  { icon: <Shield className="w-4 h-4" style={{ color: '#557cd9' }} />, label: 'Dual Certification' },
                 ].map(({ icon, label }) => (
-                  <div key={label} className="flex items-center gap-2 px-4 py-2 rounded-md bg-white dark:bg-navy-900 shadow-card text-sm font-medium text-navy-900 dark:text-white/80" style={{ border: '1px solid rgba(10,17,40,0.08)' }}>
+                  <div key={label} className="flex items-center gap-2 px-4 py-2 rounded-md bg-white dark:bg-navy-900 shadow-card text-sm font-medium text-navy-900 dark:text-white/80" style={{ border: '1px solid rgba(10,17,40,0.06)' }}>
                     {icon}
                     {label}
                   </div>
@@ -500,9 +514,8 @@ function HomePageContent() {
 
               {/* Card 1: Courses — expanded flagship card */}
               <div
-                className="relative rounded-2xl p-7 overflow-hidden cursor-pointer hover:scale-[1.01] transition-transform"
-                style={{ background: 'linear-gradient(135deg, #1c3666 0%, #1a2c58 100%)' }}
-                onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })}
+                className="relative rounded-2xl p-7 overflow-hidden transition-transform"
+                style={{ background: 'linear-gradient(135deg, #243b6b 0%, #1e305c 100%)' }}
               >
                 <div className="absolute top-0 right-0 w-48 h-48 bg-blue-400/10 rounded-full -translate-y-12 translate-x-12 blur-3xl" />
                 <div className="relative">
@@ -512,15 +525,26 @@ function HomePageContent() {
                   <h3 className="text-xl font-black text-white mb-1">Industry-Ready Training</h3>
                   <p className="text-blue-100/70 text-sm mb-4">4-week live cohort + 3-month industry internship. Placement-focused, mentor-guided.</p>
 
-                  {/* 3 Programs listed */}
+                  {/* 3 Programs listed — each clicks directly to that program's fee structure */}
                   <div className="space-y-2 mb-5">
                     {[
-                      { label: 'Automation Testing', color: 'bg-indigo-500/15 border-indigo-400/20 text-indigo-100' },
-                      { label: 'Performance Testing', color: 'bg-blue-500/15 border-blue-400/20 text-blue-100' },
-                      { label: 'AI Engineering & LLMs', color: 'bg-violet-500/15 border-violet-400/20 text-violet-100' },
+                      { key: 'functional' as const, label: 'Automation Testing', color: 'bg-indigo-500/10 border-indigo-400/20 text-indigo-100 hover:border-indigo-300/40' },
+                      { key: 'performance' as const, label: 'Performance Testing', color: 'bg-blue-500/10 border-blue-400/20 text-blue-100 hover:border-blue-300/40' },
+                      { key: 'ai' as const, label: 'AI Engineering & LLMs', color: 'bg-violet-500/10 border-violet-400/20 text-violet-100 hover:border-violet-300/40' },
                     ].map(prog => (
-                      <div key={prog.label} className={`px-3 py-2 rounded-xl border ${prog.color}`}>
-                        <div className="font-bold text-sm leading-tight">{prog.label}</div>
+                      <div
+                        key={prog.label}
+                        onClick={(e) => scrollToProgramFees(prog.key, e)}
+                        className={`px-3.5 py-2.5 rounded-xl border ${prog.color} cursor-pointer hover:scale-[1.02] hover:bg-white/10 transition-all flex items-center justify-between group/item`}
+                        role="button"
+                        tabIndex={0}
+                        title={`View fees structure for ${prog.label}`}
+                      >
+                        <div className="font-bold text-sm leading-tight text-white group-hover/item:text-blue-100 transition-colors">{prog.label}</div>
+                        <span className="text-xs font-semibold text-blue-200/80 group-hover/item:text-white flex items-center gap-1 transition-colors">
+                          Fees &amp; Tiers
+                          <ArrowRight className="w-3.5 h-3.5 group-hover/item:translate-x-0.5 transition-transform" />
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -531,7 +555,7 @@ function HomePageContent() {
                       { val: '₹9,999', label: 'Starting Price' },
                       { val: '3 Months', label: 'Internship' },
                     ].map(s => (
-                      <div key={s.label} className="bg-white/10 rounded-xl px-2 py-2 text-center">
+                      <div key={s.label} className="bg-white/8 rounded-xl px-2 py-2 text-center">
                         <div className="text-white font-black text-sm">{s.val}</div>
                         <div className="text-blue-100/70 text-[10px] font-semibold mt-0.5">{s.label}</div>
                       </div>
@@ -540,14 +564,18 @@ function HomePageContent() {
 
                   <div className="flex flex-wrap gap-2 mb-5">
                     {['Live Projects', 'Expert Mentors', 'Certificate', 'Placement Help'].map(tag => (
-                      <span key={tag} className="px-2.5 py-1 rounded-lg bg-blue-400/15 border border-blue-400/25 text-blue-100 text-xs font-semibold">{tag}</span>
+                      <span key={tag} className="px-2.5 py-1 rounded-lg bg-blue-400/10 border border-blue-400/15 text-blue-100/90 text-xs font-semibold">{tag}</span>
                     ))}
                   </div>
                   <button
-                    onClick={() => document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/95 text-[#1c3666] font-bold text-sm hover:bg-white transition-colors"
+                    type="button"
+                    onClick={() => {
+                      const el = document.getElementById('fees-structure');
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/90 text-[#1e305c] font-bold text-sm hover:bg-white transition-colors cursor-pointer"
                   >
-                    View Programs ↗
+                    View Fees Structure ↗
                   </button>
                 </div>
               </div>
@@ -555,7 +583,7 @@ function HomePageContent() {
               {/* Card 2: Achievement Certificate (AccioJob right card with visual Certificate preview) */}
               <div
                 className="relative rounded-2xl p-5 sm:p-6 overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform group"
-                style={{ background: 'linear-gradient(135deg, #2f1d5e 0%, #3e1e6c 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #382866 0%, #442a70 100%)' }}
                 onClick={() => setCertModalOpen(true)}
               >
                 <div className="absolute bottom-0 right-0 w-44 h-44 bg-violet-500/15 rounded-full translate-y-10 translate-x-10 blur-2xl pointer-events-none" />
@@ -634,7 +662,7 @@ function HomePageContent() {
           </div>
 
           {/* Tab switcher */}
-          <div className="flex items-center justify-center gap-1 p-1 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 shadow-sm max-w-xl mx-auto mb-10">
+          <div className="flex items-center justify-center gap-1 p-1 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/60 shadow-xs max-w-xl mx-auto mb-10">
             {([
               { key: 'functional', label: 'Automation Testing' },
               { key: 'performance', label: 'Performance Testing' },
@@ -646,7 +674,7 @@ function HomePageContent() {
                 onClick={() => handleSelectProgram(key)}
                 className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   selectedProgram === key
-                    ? 'bg-[#4d7ef5] text-white shadow-sm shadow-blue-500/20'
+                    ? 'bg-[#6c8ee0] text-white shadow-sm shadow-blue-500/10'
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -659,7 +687,7 @@ function HomePageContent() {
           <div id="fees-structure" className="scroll-mt-24">
             {/* Notice Banner if redirected from protected portal */}
             {noticeParam === 'enroll_required' && (
-              <div className="max-w-3xl mx-auto mb-8 p-4 sm:p-5 rounded-2xl bg-amber-500/10 border-2 border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs sm:text-sm flex items-start sm:items-center gap-3 shadow-md">
+              <div className="max-w-3xl mx-auto mb-8 p-4 sm:p-5 rounded-2xl bg-amber-500/8 border-2 border-amber-500/25 text-amber-900 dark:text-amber-200 text-xs sm:text-sm flex items-start sm:items-center gap-3 shadow-xs">
                 <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5 sm:mt-0" />
                 <div>
                   <strong className="font-bold">Enrollment Required:</strong> The Academy portal is exclusively available to enrolled students. Please complete your enrollment below to access the curriculum.
@@ -674,59 +702,59 @@ function HomePageContent() {
                   {
                     tier: 'Free Consultation',
                     badge: 'Starter',
-                    badgeColor: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700',
+                    badgeColor: 'bg-slate-100/70 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 border-slate-200/60 dark:border-slate-700/60',
                     price: 'Free',
                     crossedPrice: '₹299',
                     priceTag: '100% Free',
-                    priceTagColor: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+                    priceTagColor: 'bg-emerald-500/8 text-emerald-600/90 dark:text-emerald-400/90',
                     desc: 'Get a personalized automation testing roadmap based on your background.',
                     features: ['Personalized QA automation roadmap', 'Career advisory for SDET & QA roles', '1-on-1 Selenium, Playwright & Jira guidance', 'CI/CD pipeline integration strategy'],
                     cta: 'Book Free Session',
-                    ctaStyle: 'border-2 border-slate-300/80 dark:border-slate-700 text-slate-700 dark:text-white hover:bg-slate-50/80 dark:hover:bg-slate-800/50',
+                    ctaStyle: 'border border-slate-200/80 dark:border-slate-700/80 text-slate-600 dark:text-slate-300 hover:bg-slate-50/60 dark:hover:bg-slate-800/40',
                     ctaHref: 'https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform',
                     featured: false,
                   },
                   {
                     tier: 'Live Webinar',
                     badge: 'Popular',
-                    badgeColor: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30',
+                    badgeColor: 'bg-amber-500/8 text-amber-600/80 dark:text-amber-400/80 border-amber-500/20',
                     price: '₹19',
                     crossedPrice: '₹499',
                     priceTag: 'Intro Offer',
-                    priceTagColor: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+                    priceTagColor: 'bg-emerald-500/8 text-emerald-600/90 dark:text-emerald-400/90',
                     desc: 'Live interactive webinar on Selenium & Playwright automation with CI/CD.',
                     features: ['All Consultation features included', 'Live Webinar: Selenium & Playwright', 'Azure DevOps & CI/CD pipeline basics', 'Resume & LinkedIn profile audit'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-slate-700/80 hover:bg-slate-700 text-white shadow-sm',
+                    ctaStyle: 'bg-slate-600/70 hover:bg-slate-600/80 text-white shadow-xs',
                     ctaHref: null,
                     featured: false,
                   },
                   {
                     tier: '4-Week Intensive Cohort',
                     badge: '⚡ Flagship Masterclass',
-                    badgeColor: 'bg-[#4d7ef5] text-white border-blue-400',
+                    badgeColor: 'bg-[#6c8ee0] text-white border-blue-300/40',
                     price: '₹9,999',
                     crossedPrice: '₹20,000',
                     priceTag: 'GST Included',
-                    priceTagColor: 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400',
+                    priceTagColor: 'bg-slate-100/70 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400',
                     desc: '4-week live training in automation testing + guaranteed 3-month industry internship.',
                     features: ['3-Month Industry Internship (main highlight)', 'Selenium & Playwright automation', 'Azure DevOps, Jira & CI/CD pipeline', '4-5 automation projects with code reviews', 'Dual Certification: Internship + Completion', 'Mock interviews & LinkedIn optimization'],
                     cta: 'Enroll in Automation (₹9,999)',
-                    ctaStyle: 'bg-[#4d7ef5] hover:bg-[#3f72e8] text-white shadow-md shadow-blue-500/15',
+                    ctaStyle: 'bg-[#6c8ee0] hover:bg-[#5b80d4] text-white shadow-sm shadow-blue-500/10',
                     ctaHref: null,
                     featured: true,
                   },
                 ].map(({ tier, badge, badgeColor, price, crossedPrice, priceTag, priceTagColor, desc, features, cta, ctaStyle, ctaHref, featured }) => (
                   <div
                     key={tier}
-                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-xl ${
+                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-lg ${
                       featured
-                        ? 'bg-white dark:bg-[#0e1730] border-2 border-[#5b8ef5]/70 shadow-lg shadow-blue-500/5'
-                        : 'bg-[#f8f9fc] dark:bg-[#0d1322] border border-slate-200/70 dark:border-slate-800 shadow-sm hover:border-slate-300 dark:hover:border-slate-700'
+                        ? 'bg-white dark:bg-[#0c1326] border-2 border-[#6c8ee0]/50 shadow-md shadow-blue-500/4'
+                        : 'bg-[#fbfcff] dark:bg-[#0c1222] border border-slate-200/50 dark:border-slate-800/60 shadow-xs hover:border-slate-300/60 dark:hover:border-slate-700/60'
                     }`}
                   >
                     {featured && (
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#4d7ef5] text-white text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#6c8ee0] text-white text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
                         ⚡ Most Popular
                       </div>
                     )}
@@ -796,59 +824,59 @@ function HomePageContent() {
                   {
                     tier: 'Free Consultation',
                     badge: 'Starter',
-                    badgeColor: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700',
+                    badgeColor: 'bg-slate-100/70 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 border-slate-200/60 dark:border-slate-700/60',
                     price: 'Free',
                     crossedPrice: '₹299',
                     priceTag: '100% Free',
-                    priceTagColor: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+                    priceTagColor: 'bg-emerald-500/8 text-emerald-600/90 dark:text-emerald-400/90',
                     desc: 'Personalized performance engineering roadmap based on your background.',
                     features: ['Personalized performance testing roadmap', 'Career advisory for Performance Engineer & SRE roles', '1-on-1 JMeter, K6, LoadRunner guidance', 'APM tools: Grafana, Datadog & AppDynamics'],
                     cta: 'Book Free Session',
-                    ctaStyle: 'border-2 border-slate-300/80 dark:border-slate-700 text-slate-700 dark:text-white hover:bg-slate-50/80 dark:hover:bg-slate-800/50',
+                    ctaStyle: 'border border-slate-200/80 dark:border-slate-700/80 text-slate-600 dark:text-slate-300 hover:bg-slate-50/60 dark:hover:bg-slate-800/40',
                     ctaHref: 'https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform',
                     featured: false,
                   },
                   {
                     tier: 'Live Perf Webinar',
                     badge: 'Popular',
-                    badgeColor: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30',
+                    badgeColor: 'bg-amber-500/8 text-amber-600/80 dark:text-amber-400/80 border-amber-500/20',
                     price: '₹19',
                     crossedPrice: '₹499',
                     priceTag: 'Intro Offer',
-                    priceTagColor: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+                    priceTagColor: 'bg-emerald-500/8 text-emerald-600/90 dark:text-emerald-400/90',
                     desc: 'Live interactive webinar covering JMeter, K6 & APM monitoring essentials.',
                     features: ['All Consultation features included', 'Live Webinar: JMeter & K6 load testing', 'Grafana & Datadog dashboards hands-on', 'Resume & LinkedIn audit for perf roles'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-slate-700/80 hover:bg-slate-700 text-white shadow-sm',
+                    ctaStyle: 'bg-slate-600/70 hover:bg-slate-600/80 text-white shadow-xs',
                     ctaHref: null,
                     featured: false,
                   },
                   {
                     tier: '4-Week Intensive Cohort',
                     badge: '⚡ Flagship Masterclass',
-                    badgeColor: 'bg-[#4d7ef5] text-white border-blue-400',
+                    badgeColor: 'bg-[#6c8ee0] text-white border-blue-300/40',
                     price: '₹9,999',
                     crossedPrice: '₹20,000',
                     priceTag: 'GST Included',
-                    priceTagColor: 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400',
+                    priceTagColor: 'bg-slate-100/70 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400',
                     desc: '4-week live performance testing training + guaranteed 3-month industry internship.',
                     features: ['3-Month Industry Internship (main highlight)', 'JMeter, LoadRunner & K6 load testing', 'AppDynamics, Grafana & Datadog APM', 'Azure DevOps, Jira & CI/CD integration', '4-5 real-world performance projects', 'Dual Certification + placement assistance'],
                     cta: 'Enroll in Performance (₹9,999)',
-                    ctaStyle: 'bg-[#4d7ef5] hover:bg-[#3f72e8] text-white shadow-md shadow-blue-500/15',
+                    ctaStyle: 'bg-[#6c8ee0] hover:bg-[#5b80d4] text-white shadow-sm shadow-blue-500/10',
                     ctaHref: null,
                     featured: true,
                   },
                 ].map(({ tier, badge, badgeColor, price, crossedPrice, priceTag, priceTagColor, desc, features, cta, ctaStyle, ctaHref, featured }) => (
                   <div
                     key={tier}
-                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-xl ${
+                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-lg ${
                       featured
-                        ? 'bg-white dark:bg-[#0e1730] border-2 border-[#5b8ef5]/70 shadow-lg shadow-blue-500/5'
-                        : 'bg-[#f8f9fc] dark:bg-[#0d1322] border border-slate-200/70 dark:border-slate-800 shadow-sm hover:border-slate-300 dark:hover:border-slate-700'
+                        ? 'bg-white dark:bg-[#0c1326] border-2 border-[#6c8ee0]/50 shadow-md shadow-blue-500/4'
+                        : 'bg-[#fbfcff] dark:bg-[#0c1222] border border-slate-200/50 dark:border-slate-800/60 shadow-xs hover:border-slate-300/60 dark:hover:border-slate-700/60'
                     }`}
                   >
                     {featured && (
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#4d7ef5] text-white text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#6c8ee0] text-white text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
                         ⚡ Most Popular
                       </div>
                     )}
@@ -902,59 +930,59 @@ function HomePageContent() {
                   {
                     tier: 'Free Consultation',
                     badge: 'Starter',
-                    badgeColor: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700',
+                    badgeColor: 'bg-slate-100/70 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 border-slate-200/60 dark:border-slate-700/60',
                     price: 'Free',
                     crossedPrice: '₹299',
                     priceTag: '100% Free',
-                    priceTagColor: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+                    priceTagColor: 'bg-emerald-500/8 text-emerald-600/90 dark:text-emerald-400/90',
                     desc: 'Get a personalized AI learning roadmap based on your current job & background.',
                     features: ['Personalized AI learning roadmap', 'Custom upskilling plan & curriculum', '1-on-1 strategy & doubt-clearing session', 'Career transition advisory for AI/LLM roles'],
                     cta: 'Book Free Session',
-                    ctaStyle: 'border-2 border-slate-300/80 dark:border-slate-700 text-slate-700 dark:text-white hover:bg-slate-50/80 dark:hover:bg-slate-800/50',
+                    ctaStyle: 'border border-slate-200/80 dark:border-slate-700/80 text-slate-600 dark:text-slate-300 hover:bg-slate-50/60 dark:hover:bg-slate-800/40',
                     ctaHref: 'https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform',
                     featured: false,
                   },
                   {
                     tier: 'Live AI Webinar',
                     badge: 'Popular',
-                    badgeColor: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30',
+                    badgeColor: 'bg-amber-500/8 text-amber-600/80 dark:text-amber-400/80 border-amber-500/20',
                     price: '₹19',
                     crossedPrice: '₹499',
                     priceTag: 'Intro Offer',
-                    priceTagColor: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+                    priceTagColor: 'bg-emerald-500/8 text-emerald-600/90 dark:text-emerald-400/90',
                     desc: 'Live interactive AI Webinar masterclass. Everything in Starter + live session.',
                     features: ['All Consultation features included', 'Live Interactive AI Webinar masterclass', 'Personalized resume & tech profile audit', 'Direct Q&A and hands-on project guidance'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-slate-700/80 hover:bg-slate-700 text-white shadow-sm',
+                    ctaStyle: 'bg-slate-600/70 hover:bg-slate-600/80 text-white shadow-xs',
                     ctaHref: null,
                     featured: false,
                   },
                   {
                     tier: '4-Week Intensive Cohort',
                     badge: '⚡ Flagship Masterclass',
-                    badgeColor: 'bg-[#4d7ef5] text-white border-blue-400',
+                    badgeColor: 'bg-[#6c8ee0] text-white border-blue-300/40',
                     price: '₹9,999',
                     crossedPrice: '₹20,000',
                     priceTag: 'GST Included',
-                    priceTagColor: 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400',
+                    priceTagColor: 'bg-slate-100/70 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400',
                     desc: '4-week live AI training + guaranteed 3-month industry internship in AI engineering.',
                     features: ['3-Month Industry Internship (main highlight)', 'All benefits from ₹19 & Free tiers', '4 weeks live personalized AI training', 'Full Academy Portal: In-depth video lectures', '4–5 agentic AI portfolio projects', 'Dual Certification + placement assistance'],
                     cta: 'Enroll in AI Engineering (₹9,999)',
-                    ctaStyle: 'bg-[#4d7ef5] hover:bg-[#3f72e8] text-white shadow-md shadow-blue-500/15',
+                    ctaStyle: 'bg-[#6c8ee0] hover:bg-[#5b80d4] text-white shadow-sm shadow-blue-500/10',
                     ctaHref: null,
                     featured: true,
                   },
                 ].map(({ tier, badge, badgeColor, price, crossedPrice, priceTag, priceTagColor, desc, features, cta, ctaStyle, ctaHref, featured }) => (
                   <div
                     key={tier}
-                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-xl ${
+                    className={`relative rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-lg ${
                       featured
-                        ? 'bg-white dark:bg-[#0e1730] border-2 border-[#5b8ef5]/70 shadow-lg shadow-blue-500/5'
-                        : 'bg-[#f8f9fc] dark:bg-[#0d1322] border border-slate-200/70 dark:border-slate-800 shadow-sm hover:border-slate-300 dark:hover:border-slate-700'
+                        ? 'bg-white dark:bg-[#0c1326] border-2 border-[#6c8ee0]/50 shadow-md shadow-blue-500/4'
+                        : 'bg-[#fbfcff] dark:bg-[#0c1222] border border-slate-200/50 dark:border-slate-800/60 shadow-xs hover:border-slate-300/60 dark:hover:border-slate-700/60'
                     }`}
                   >
                     {featured && (
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#4d7ef5] text-white text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-[#6c8ee0] text-white text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
                         ⚡ Most Popular
                       </div>
                     )}
@@ -1005,53 +1033,21 @@ function HomePageContent() {
       </section>
 
       {/* ===================================================================
-          LIVE SESSION PREVIEW — Video trigger section (AccioJob Style)
-      =================================================================== */}
-      {/* ===================================================================
           LIVE SESSION PREVIEW — Video trigger section
       =================================================================== */}
-      <section className="py-20 sm:py-28 bg-white dark:bg-[#080d1c]">
-        <div className="container-xl">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-blue-200/60 dark:border-blue-800/40 bg-blue-50/60 dark:bg-blue-950/30 text-blue-600 dark:text-blue-300 text-xs font-bold tracking-wider mb-3">
-              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-              Live Class Sneak Peek
-            </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-semibold text-navy-900 dark:text-white tracking-tight mb-3">
-              See How We Teach in Real Life
-            </h2>
-            <p className="text-lg text-navy-800/65 dark:text-white/65 max-w-xl mx-auto leading-relaxed mb-6">
-              Watch an authentic excerpt from our live cohort mentorship classes — hands-on coding, live problem-solving, and mentor-student interaction.
-            </p>
-
-            {/* ONLY "watch live class demo" button (card removed as per user instruction #4) */}
-            <div className="flex items-center justify-center">
-              <button
-                type="button"
-                onClick={() => setVideoModalOpen(true)}
-                className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-xl text-white font-bold text-sm transition-all duration-200 cursor-pointer shadow-md shadow-blue-500/15 hover:shadow-lg hover:-translate-y-0.5"
-                style={{
-                  background: 'linear-gradient(100deg, #4374d9, #54b2e8)',
-                }}
-              >
-                <Play className="w-4 h-4 fill-white" />
-                Watch Live Class Demo
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-8">
-            {[
-              { icon: <CheckCircle2 className="w-4 h-4 text-emerald-500/80" />, text: '100% Practical & Code-First' },
-              { icon: <CheckCircle2 className="w-4 h-4 text-blue-500/80" />, text: 'Live Doubt Clearing & Q&A' },
-              { icon: <CheckCircle2 className="w-4 h-4 text-violet-500/80" />, text: 'Real Industry Mentors' },
-            ].map(({ icon, text }) => (
-              <div key={text} className="p-3.5 rounded-2xl bg-[#f8f9fc] dark:bg-[#0f1525] border border-slate-200/60 dark:border-slate-800 flex items-center justify-center gap-2 shadow-sm text-center">
-                {icon}
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{text}</span>
-              </div>
-            ))}
-          </div>
+      <section className="py-12 sm:py-16 bg-white dark:bg-[#080d1c]">
+        <div className="container-xl flex items-center justify-center">
+          <button
+            type="button"
+            onClick={() => setVideoModalOpen(true)}
+            className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-xl text-white font-bold text-sm transition-all duration-200 cursor-pointer shadow-sm shadow-blue-500/10 hover:shadow-md hover:-translate-y-0.5"
+            style={{
+              background: 'linear-gradient(100deg, #6c8ee0, #82bfe8)',
+            }}
+          >
+            <Play className="w-4 h-4 fill-white" />
+            Watch Live Class Video
+          </button>
         </div>
       </section>
 
@@ -1066,7 +1062,7 @@ function HomePageContent() {
             <div className="eyebrow mb-5 dark:eyebrow-dark">Our Advantage</div>
             <h2 className="font-display text-3xl sm:text-4xl font-semibold text-navy-900 dark:text-white tracking-tight mb-4">
               Why Choose{' '}
-              <span style={{ color: '#3563df' }}>Waynautic Academy</span>
+              <span style={{ color: '#557cd9' }}>Waynautic Academy</span>
             </h2>
             <p className="text-lg text-navy-800/65 dark:text-white/65 leading-relaxed">
               We built what we wish existed — a no-fluff, depth-first engineering curriculum for serious developers.
@@ -1075,16 +1071,16 @@ function HomePageContent() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {[
-              { icon: <BookOpen className="w-5 h-5" />, title: 'Video Lectures + Live Sessions', desc: 'Every concept covered via recorded lectures and reinforced through live sessions with your mentor.', color: '#4d7ef5', bg: '#f1f5fd' },
-              { icon: <Clock className="w-5 h-5" />, title: '4-Week Structured Path', desc: 'A fast, focused journey from fundamentals to advanced production-grade skills and architectures.', color: '#8b5cf6', bg: '#f7f5ff' },
-              { icon: <Rocket className="w-5 h-5" />, title: '4–5 Agentic Portfolio Projects', desc: 'Build real, portfolio-worthy projects — not toy examples. Work you can demo in any job interview.', color: '#e05898', bg: '#fdf4f9' },
-              { icon: <Users className="w-5 h-5" />, title: 'Personalized 1-on-1 Mentor', desc: 'Every student gets a dedicated mentor for personalized training, doubt-solving, and career guidance.', color: '#e58f27', bg: '#fef9ee' },
-              { icon: <Award className="w-5 h-5" />, title: '3-Month Internship + Certificate', desc: 'Continue with an industry internship right after your training. Earn both an Internship & Completion Certificate.', color: '#16a374', bg: '#f0fdf7' },
-              { icon: <Target className="w-5 h-5" />, title: 'Full Placement Assistance', desc: 'End-to-end job market preparation: mock interviews, resume building, LinkedIn optimization, and 1-year portal access.', color: '#e04c4c', bg: '#fef3f3' },
+              { icon: <BookOpen className="w-5 h-5" />, title: 'Video Lectures + Live Sessions', desc: 'Every concept covered via recorded lectures and reinforced through live sessions with your mentor.', color: '#6b92ed', bg: '#f6f9fe' },
+              { icon: <Clock className="w-5 h-5" />, title: '4-Week Structured Path', desc: 'A fast, focused journey from fundamentals to advanced production-grade skills and architectures.', color: '#9e79f7', bg: '#faf8fe' },
+              { icon: <Rocket className="w-5 h-5" />, title: '4–5 Agentic Portfolio Projects', desc: 'Build real, portfolio-worthy projects — not toy examples. Work you can demo in any job interview.', color: '#e875ac', bg: '#fef7fb' },
+              { icon: <Users className="w-5 h-5" />, title: 'Personalized 1-on-1 Mentor', desc: 'Every student gets a dedicated mentor for personalized training, doubt-solving, and career guidance.', color: '#eca549', bg: '#fefbf3' },
+              { icon: <Award className="w-5 h-5" />, title: '3-Month Internship + Certificate', desc: 'Continue with an industry internship right after your training. Earn both an Internship & Completion Certificate.', color: '#2bb588', bg: '#f4fdf8' },
+              { icon: <Target className="w-5 h-5" />, title: 'Full Placement Assistance', desc: 'End-to-end job market preparation: mock interviews, resume building, LinkedIn optimization, and 1-year portal access.', color: '#e86d6d', bg: '#fef7f7' },
             ].map(({ icon, title, desc, color, bg }) => (
               <div
                 key={title}
-                className="group card-surface-hover p-7 transition-all duration-300 border border-slate-200/60 dark:border-slate-800/80"
+                className="group card-surface-hover p-7 transition-all duration-300 border border-slate-200/40 dark:border-slate-800/60"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <div
@@ -1111,7 +1107,7 @@ function HomePageContent() {
           <div className="text-center mb-12 sm:mb-14 max-w-2xl mx-auto">
             <div className="eyebrow mb-5 dark:eyebrow-dark">FAQs</div>
             <h2 className="font-display text-3xl sm:text-4xl font-semibold text-navy-900 dark:text-white tracking-tight mb-4">
-              <span style={{ color: '#3563df' }}>Frequently</span> Asked Questions
+              <span style={{ color: '#557cd9' }}>Frequently</span> Asked Questions
             </h2>
             <p className="text-lg text-navy-800/65 dark:text-white/65 leading-relaxed">
               Everything you need to know about our curriculum, live sessions, certification, and policies.
@@ -1133,7 +1129,7 @@ function HomePageContent() {
                         ? 'text-white dark:text-white'
                         : 'text-navy-800/70 dark:text-white/60 hover:text-navy-900 dark:hover:text-white hover:bg-paper dark:hover:bg-white/5'
                     }`}
-                    style={faqCategory === cat ? { background: 'linear-gradient(100deg,#3b6cd8,#4faee6)', boxShadow: '0 4px 14px -3px rgba(59, 108, 216, 0.22)' } : {}}
+                    style={faqCategory === cat ? { background: 'linear-gradient(100deg,#6c8ee0,#88c8eb)', boxShadow: '0 3px 10px -3px rgba(108, 142, 224, 0.18)' } : {}}
                   >
                     {cat}
                   </button>
@@ -1156,7 +1152,7 @@ function HomePageContent() {
       =================================================================== */}
       <section className="py-20 sm:py-28 bg-paper dark:bg-[#080d1c]">
         <div className="container-xl">
-        <div className="relative rounded-lg overflow-hidden" style={{ background: '#151d38', boxShadow: '0 4px 20px -4px rgba(10, 19, 48, 0.15)' }}>
+        <div className="relative rounded-lg overflow-hidden" style={{ background: '#192445', boxShadow: '0 4px 16px -4px rgba(10, 19, 48, 0.10)' }}>
           {/* Grid pattern */}
           <div className="absolute inset-0 opacity-20" style={{
             backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)`,
@@ -1173,7 +1169,7 @@ function HomePageContent() {
               </div>
               <h2 className="font-display text-3xl sm:text-4xl font-semibold text-white mb-4 leading-tight tracking-tight">
                 Ready to Accelerate Your Career in{' '}
-                <span style={{ color: '#4faee6' }}>Automation, Performance, or AI?</span>
+                <span style={{ color: '#7ec4ea' }}>Automation, Performance, or AI?</span>
               </h2>
               <p className="text-lg text-white/70 leading-relaxed mb-6">
                 Join our 4-week code-first masterclasses followed by a guaranteed <strong className="text-white">3-Month Industry Internship</strong>. Choose between <strong className="text-white">Automation Testing</strong>, <strong className="text-white">Performance Testing</strong>, or <strong className="text-white">AI Engineering</strong> — with personalized mentorship, dual certification, and full placement assistance.
@@ -1198,7 +1194,7 @@ function HomePageContent() {
                 href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20learn%20more%20about%20your%20programs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-[#28b574] hover:bg-[#22a166] text-white font-bold text-sm shadow-lg shadow-emerald-500/20 hover:-translate-y-0.5 transition-all"
+                className="flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-[#48c48f] hover:bg-[#3db782] text-white font-bold text-sm shadow-md shadow-emerald-500/15 hover:-translate-y-0.5 transition-all"
               >
                 <MessageCircle className="w-5 h-5 fill-white" />
                 Chat on WhatsApp
@@ -1291,12 +1287,12 @@ function HomePageContent() {
         </div>
       )}
 
-      {/* Floating WhatsApp button */}
+      {/* Floating WhatsApp button (softened) */}
       <a
         href="https://wa.me/919158998226?text=Hi%20Waynautic%20Academy%2C%20I%20want%20to%20learn%20more%20about%20your%20programs"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#28b574] hover:bg-[#22a166] text-white shadow-xl shadow-emerald-500/25 flex items-center justify-center hover:scale-110 transition-all"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#48c48f] hover:bg-[#3db782] text-white shadow-lg shadow-emerald-500/20 flex items-center justify-center hover:scale-110 transition-all"
         title="Chat with us on WhatsApp"
         aria-label="Chat on WhatsApp"
       >
