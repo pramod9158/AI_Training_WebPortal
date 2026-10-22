@@ -243,20 +243,28 @@ export default function AboutPage() {
         {/* CALL TO ACTION (Ready to Accelerate Your Career in AI?)               */}
         {/* ==================================================================== */}
         <section 
-          className="p-6 xs:p-8 sm:p-12 rounded-3xl bg-gradient-to-tr from-sky-600 via-blue-600 to-violet-700 text-white shadow-2xl relative overflow-hidden text-center space-y-6"
-          style={{ background: 'linear-gradient(135deg, #0284C7 0%, #2563EB 50%, #6D28D9 100%)' }}
+          className="p-6 xs:p-8 sm:p-12 rounded-3xl bg-white dark:bg-navy-900 border border-navy-900/10 dark:border-white/10 shadow-card hover:shadow-glow relative overflow-hidden text-center space-y-6 transition-all duration-300"
         >
+          {/* Top mockup window bar matching Screenshot 4 cards */}
+          <div className="flex items-center justify-between pb-3 mb-2 border-b border-navy-900/[0.07] dark:border-white/10 max-w-xl mx-auto">
+            <div className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+              <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+              <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+            </div>
+            <span className="px-2.5 py-0.5 rounded-full bg-paper dark:bg-white/5 border border-navy-900/[0.06] dark:border-white/10 text-[10px] font-mono text-navy-800/60 dark:text-white/60 font-medium">
+              career-accelerator
+            </span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-blue/10 dark:bg-brand-cyan/15 text-brand-blue dark:text-brand-cyan text-[11px] font-bold">
+              ⚡ Waynautic Academy
+            </span>
+          </div>
+
           <div className="max-w-2xl mx-auto space-y-3">
-            <h2 
-              className="text-2xl sm:text-4xl font-black tracking-tight text-white !text-white drop-shadow-sm"
-              style={{ color: '#FFFFFF' }}
-            >
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-navy-900 dark:text-white">
               Ready to Accelerate Your Career in AI?
             </h2>
-            <p 
-              className="text-xs sm:text-base text-sky-100 !text-sky-100 leading-relaxed font-medium"
-              style={{ color: '#E0E7FF' }}
-            >
+            <p className="text-xs sm:text-base text-navy-800/70 dark:text-white/70 leading-relaxed font-medium">
               Join thousands of engineers upskilling in Python, Generative AI, LangChain, MCP, and Autonomous Agents. Your journey starts today.
             </p>
           </div>
@@ -264,21 +272,19 @@ export default function AboutPage() {
           <div className="flex flex-col xs:flex-row items-stretch xs:items-center justify-center gap-3 sm:gap-4 pt-2">
             <Link
               href="/curriculum"
-              className="w-full xs:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-white text-slate-950 !text-slate-950 font-extrabold text-sm sm:text-base hover:bg-slate-100 shadow-2xl transition-all flex items-center justify-center space-x-2 transform hover:-translate-y-0.5 min-h-[46px]"
-              style={{ color: '#0F172A', backgroundColor: '#FFFFFF' }}
+              className="w-full xs:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-blue-50 hover:bg-blue-100/90 dark:bg-brand-blue/25 dark:hover:bg-brand-blue/35 text-brand-blue dark:text-brand-cyan border-2 border-brand-blue/35 dark:border-brand-cyan/40 font-extrabold text-sm sm:text-base shadow-xs transition-all flex items-center justify-center space-x-2 transform hover:-translate-y-0.5 min-h-[46px]"
             >
-              <Zap className="w-4 h-4 text-sky-600 fill-sky-600" />
-              <span style={{ color: '#0F172A' }}>Start Learning</span>
-              <ArrowRight className="w-4 h-4 text-slate-950" style={{ color: '#0F172A' }} />
+              <Zap className="w-4 h-4 text-brand-blue dark:text-brand-cyan fill-brand-blue/20" />
+              <span>Start Learning</span>
+              <ArrowRight className="w-4 h-4 text-brand-blue dark:text-brand-cyan" />
             </Link>
 
             <Link
               href="#contact"
-              className="w-full xs:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 text-white !text-white font-extrabold text-sm sm:text-base shadow-xl transition-all flex items-center justify-center space-x-2 transform hover:-translate-y-0.5 cursor-pointer min-h-[46px]"
-              style={{ color: '#FFFFFF' }}
+              className="w-full xs:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 border border-navy-900/15 dark:border-white/15 text-navy-900 dark:text-white font-bold text-sm sm:text-base shadow-xs transition-all flex items-center justify-center space-x-2 transform hover:-translate-y-0.5 cursor-pointer min-h-[46px]"
             >
-              <Mail className="w-4 h-4 text-white" style={{ color: '#FFFFFF' }} />
-              <span style={{ color: '#FFFFFF' }}>Contact Us</span>
+              <Mail className="w-4 h-4 text-navy-800 dark:text-slate-300" />
+              <span>Contact Us</span>
             </Link>
           </div>
         </section>
