@@ -561,94 +561,109 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
 
         {/* ── Career Launch & 3-Month Industry Internship ──────────────────── */}
         <div className="mb-14 sm:mb-20">
-          <div className="rounded-3xl p-6 sm:p-10 lg:p-12 bg-gradient-to-br from-indigo-900 via-slate-900 to-[#0A0E1A] text-white border-2 border-indigo-500/30 shadow-2xl relative overflow-hidden">
+          <div className="rounded-3xl p-6 sm:p-10 lg:p-12 bg-white dark:bg-navy-900 text-navy-900 dark:text-white border border-navy-900/10 dark:border-white/10 shadow-card hover:shadow-glow relative overflow-hidden transition-all duration-300">
             
-            {/* Top Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-mono font-bold uppercase tracking-wider mb-6">
-              <Award className="w-4 h-4 text-emerald-400" />
+            {/* Top mockup window bar matching landing page cards */}
+            <div className="flex items-center justify-between pb-3 mb-6 border-b border-navy-900/[0.07] dark:border-white/10">
+              <div className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+                <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+                <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full bg-paper dark:bg-white/5 border border-navy-900/[0.06] dark:border-white/10 text-[10px] font-mono text-navy-800/60 dark:text-white/60 font-medium">
+                career-acceleration
+              </span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-blue/10 dark:bg-brand-cyan/15 text-brand-blue dark:text-brand-cyan text-[11px] font-bold">
+                3-Month Internship
+              </span>
+            </div>
+
+            {/* Eyebrow Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-mono font-bold uppercase tracking-wider mb-4">
+              <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <span>Placement &amp; Industry Career Acceleration</span>
             </div>
 
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4 text-white">
+            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold tracking-tight mb-4 text-navy-900 dark:text-white">
               Continue with Internship — 3 Months After Training
             </h2>
-            <p className="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed mb-10">
-              The completion of the 4-week cohort is not the end of your journey — it is where your real industry career begins. All students who complete the 4-week program transition directly into an official <strong>3-Month Industry Internship</strong> at Waynautic Technologies, writing code for live client systems and production environments.
+            <p className="text-sm sm:text-base text-navy-800/70 dark:text-white/70 max-w-3xl leading-relaxed mb-10">
+              The completion of the 4-week cohort is not the end of your journey — it is where your real industry career begins. All students who complete the 4-week program transition directly into an official <strong className="text-navy-900 dark:text-white font-semibold">3-Month Industry Internship</strong> at Waynautic Technologies, writing code for live client systems and production environments.
             </p>
 
             {/* 4 Pillars Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-10">
               
               {/* Pillar 1: 3-Month Internship */}
-              <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-between">
+              <div className="p-5 rounded-2xl bg-paper/70 dark:bg-white/5 border border-navy-900/10 dark:border-white/10 shadow-xs hover:shadow-card hover:border-brand-blue/30 transition-all flex flex-col justify-between group">
                 <div>
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3 group-hover:scale-105 transition-transform">
                     <Briefcase className="w-5 h-5" />
                   </div>
-                  <h4 className="text-base font-extrabold text-white mb-1.5">
+                  <h4 className="text-base font-extrabold text-navy-900 dark:text-white mb-1.5 leading-snug">
                     3-Month Industry Internship
                   </h4>
-                  <p className="text-xs text-slate-300 leading-relaxed mb-3">
+                  <p className="text-xs text-navy-800/70 dark:text-white/70 leading-relaxed mb-3">
                     Work on production client projects, attend daily standups, and write production test suites or AI backends.
                   </p>
                 </div>
-                <div className="text-[11px] font-mono text-emerald-300 font-bold pt-2 border-t border-white/10">
+                <div className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold pt-2.5 border-t border-navy-900/10 dark:border-white/10">
                   ✓ Official Internship Certificate + LOR
                 </div>
               </div>
 
               {/* Pillar 2: 1-on-1 Mock Interviews */}
-              <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-between">
+              <div className="p-5 rounded-2xl bg-paper/70 dark:bg-white/5 border border-navy-900/10 dark:border-white/10 shadow-xs hover:shadow-card hover:border-brand-blue/30 transition-all flex flex-col justify-between group">
                 <div>
-                  <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-brand-blue dark:text-cyan-400 mb-3 group-hover:scale-105 transition-transform">
                     <Users className="w-5 h-5" />
                   </div>
-                  <h4 className="text-base font-extrabold text-white mb-1.5">
+                  <h4 className="text-base font-extrabold text-navy-900 dark:text-white mb-1.5 leading-snug">
                     1-on-1 Mock Interviews
                   </h4>
-                  <p className="text-xs text-slate-300 leading-relaxed mb-3">
+                  <p className="text-xs text-navy-800/70 dark:text-white/70 leading-relaxed mb-3">
                     Rigorous technical coding, architecture defense, and scenario troubleshooting with senior industry leads.
                   </p>
                 </div>
-                <div className="text-[11px] font-mono text-indigo-300 font-bold pt-2 border-t border-white/10">
+                <div className="text-[11px] font-mono text-brand-blue dark:text-cyan-400 font-bold pt-2.5 border-t border-navy-900/10 dark:border-white/10">
                   ✓ Rubric Scorecard &amp; Personalized Coaching
                 </div>
               </div>
 
               {/* Pillar 3: ATS Resume Building */}
-              <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-between">
+              <div className="p-5 rounded-2xl bg-paper/70 dark:bg-white/5 border border-navy-900/10 dark:border-white/10 shadow-xs hover:shadow-card hover:border-brand-blue/30 transition-all flex flex-col justify-between group">
                 <div>
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400 mb-3 group-hover:scale-105 transition-transform">
                     <FileText className="w-5 h-5" />
                   </div>
-                  <h4 className="text-base font-extrabold text-white mb-1.5">
+                  <h4 className="text-base font-extrabold text-navy-900 dark:text-white mb-1.5 leading-snug">
                     ATS Resume Building
                   </h4>
-                  <p className="text-xs text-slate-300 leading-relaxed mb-3">
+                  <p className="text-xs text-navy-800/70 dark:text-white/70 leading-relaxed mb-3">
                     Engineered single-page resumes packed with high-impact metrics and keywords that pass corporate ATS filters.
                   </p>
                 </div>
-                <div className="text-[11px] font-mono text-cyan-300 font-bold pt-2 border-t border-white/10">
+                <div className="text-[11px] font-mono text-cyan-600 dark:text-cyan-400 font-bold pt-2.5 border-t border-navy-900/10 dark:border-white/10">
                   ✓ Verified Project Bullet Points
                 </div>
               </div>
 
               {/* Pillar 4: LinkedIn Profile Optimization */}
-              <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex flex-col justify-between">
+              <div className="p-5 rounded-2xl bg-paper/70 dark:bg-white/5 border border-navy-900/10 dark:border-white/10 shadow-xs hover:shadow-card hover:border-brand-blue/30 transition-all flex flex-col justify-between group">
                 <div>
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-400 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3 group-hover:scale-105 transition-transform">
                     <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.69 1.69 0 0 0 1.69-1.69 1.69 1.69 0 0 0-1.69-1.69 1.69 1.69 0 0 0-1.69 1.69 1.69 1.69 0 0 0 1.69 1.69m1.4 9.74v-8.37H5.06v8.37z" />
                     </svg>
                   </div>
-                  <h4 className="text-base font-extrabold text-white mb-1.5">
+                  <h4 className="text-base font-extrabold text-navy-900 dark:text-white mb-1.5 leading-snug">
                     LinkedIn Profile Branding
                   </h4>
-                  <p className="text-xs text-slate-300 leading-relaxed mb-3">
+                  <p className="text-xs text-navy-800/70 dark:text-white/70 leading-relaxed mb-3">
                     Revamp your headline, featured repository showcases, and network reach to get tech recruiters in your DMs.
                   </p>
                 </div>
-                <div className="text-[11px] font-mono text-amber-300 font-bold pt-2 border-t border-white/10">
+                <div className="text-[11px] font-mono text-amber-600 dark:text-amber-400 font-bold pt-2.5 border-t border-navy-900/10 dark:border-white/10">
                   ✓ Inbound Recruiter Outreach Optimization
                 </div>
               </div>
@@ -656,17 +671,17 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
             </div>
 
             {/* Bottom Callout Banner */}
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="p-4 sm:p-5 rounded-2xl bg-paper/80 dark:bg-white/5 border border-navy-900/10 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-slate-200">
+                <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-navy-900 dark:text-white">
                   Dual Recognized Certification: Program Completion Certificate + 3-Month Industry Internship Certificate.
                 </span>
               </div>
               <button
                 type="button"
                 onClick={handleEnrollClick}
-                className="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs sm:text-sm shrink-0 transition-colors shadow-lg"
+                className="btn-gradient text-xs sm:text-sm px-6 py-2.5 font-bold shrink-0 cursor-pointer shadow-glow"
               >
                 Enroll in Cohort
               </button>
@@ -677,7 +692,7 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
 
         {/* ── Pricing & Enrollment Action Card ─────────────────────────────── */}
         <div className="mb-12">
-          <div className="p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 text-center max-w-3xl mx-auto shadow-xl">
+          <div className="p-8 sm:p-10 rounded-3xl bg-white dark:bg-navy-900 border border-navy-900/10 dark:border-white/10 text-center max-w-3xl mx-auto shadow-card">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 block mb-2">
               Ready to Advance Your Tech Career?
             </span>

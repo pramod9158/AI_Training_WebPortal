@@ -64,33 +64,44 @@ export const Footer: React.FC = () => {
     return `https://wa.me/919158998226?text=${encodeURIComponent(lines)}`;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.email || !formData.message) return;
     setIsSubmitting(true);
 
-    const whatsappUrl = getWhatsappUrl(formData);
+    const fullName = [formData.firstName, formData.lastName].filter(Boolean).join(' ') || 'Prospective Student';
 
-    // Save backup lead in localStorage
+    // 1. Send email directly to pramod.gogadare@waynautic.com via our API route
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
+    } catch (err) {
+      console.error('Failed to send contact email:', err);
+    }
+
+    // 2. Save backup lead in localStorage
     try {
       const existing = JSON.parse(localStorage.getItem('waynautic_contact_leads') || '[]');
       existing.unshift({
         ...formData,
-        fullName: [formData.firstName, formData.lastName].filter(Boolean).join(' ') || 'Prospective Student',
+        fullName,
         timestamp: new Date().toISOString(),
       });
       localStorage.setItem('waynautic_contact_leads', JSON.stringify(existing.slice(0, 50)));
     } catch (err) {}
 
-    // Open WhatsApp in new tab
-    if (typeof window !== 'undefined') {
-      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-    }
-
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-    }, 350);
+    setIsSubmitting(false);
+    setSubmitted(true);
   };
 
   const handleCloseModal = () => {
@@ -277,43 +288,44 @@ export const Footer: React.FC = () => {
 
             {/* Modal Header */}
             <div className="text-center mb-5 space-y-1 pr-6">
-              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[#25D366] text-xs font-mono font-bold uppercase tracking-wider mb-1">
-                <MessageCircle className="w-3.5 h-3.5 fill-[#25D366]" />
-                <span>Direct WhatsApp Admissions</span>
+              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[#1a3fb0] dark:text-[#29abe2] text-xs font-mono font-bold uppercase tracking-wider mb-1">
+                <Mail className="w-3.5 h-3.5" />
+                <span>Admissions & Support</span>
               </div>
               <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-                Talk to Us on WhatsApp
+                Talk to Us
               </h3>
               <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                Send your details to chat directly with mentor Pramod (+91 9158998226).
+                Send your inquiry directly to Pramod Gogadare (<a href="mailto:pramod.gogadare@waynautic.com" className="text-brand-blue dark:text-brand-cyan underline font-medium">pramod.gogadare@waynautic.com</a>).
               </p>
             </div>
 
             {submitted ? (
               <div className="py-8 text-center space-y-4 animate-in zoom-in-95 duration-200">
-                <div className="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-[#25D366] flex items-center justify-center shadow-lg shadow-emerald-500/10">
-                  <CheckCircle2 className="w-8 h-8 text-[#25D366]" />
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                  <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h4 className="text-xl font-bold text-slate-900 dark:text-white">Message Ready on WhatsApp!</h4>
+                <h4 className="text-xl font-bold text-slate-900 dark:text-white">Email Sent Successfully!</h4>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-sm mx-auto leading-relaxed">
-                  Your inquiry has been pre-formatted for direct chat with mentor Pramod (<strong className="text-slate-900 dark:text-white">+91 9158998226</strong>).
+                  Your message has been sent directly to <strong className="text-slate-900 dark:text-white">pramod.gogadare@waynautic.com</strong>. We will get back to you promptly at <strong className="text-slate-900 dark:text-white">{formData.email}</strong>.
                 </p>
                 <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
-                  <a
-                    href={getWhatsappUrl()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-md transition-all min-h-[44px]"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubmitted(false);
+                      setFormData({ firstName: '', lastName: '', email: '', phone: '', subject: '', message: '' });
+                    }}
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-bold text-brand-blue dark:text-brand-cyan hover:bg-brand-blue/10 transition-colors min-h-[44px]"
                   >
-                    <MessageCircle className="w-4 h-4 fill-white" />
-                    Open WhatsApp Chat
-                  </a>
+                    Send another message
+                  </button>
                   <button
                     type="button"
                     onClick={handleCloseModal}
                     className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors min-h-[44px]"
                   >
-                    Done
+                    Close
                   </button>
                 </div>
               </div>
@@ -331,7 +343,7 @@ export const Footer: React.FC = () => {
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                       placeholder="e.g. Rahul"
-                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs min-h-[40px] focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs min-h-[40px] focus:outline-none focus:ring-2 focus:ring-[#1a3fb0]"
                     />
                   </div>
                   <div>
@@ -343,7 +355,7 @@ export const Footer: React.FC = () => {
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                       placeholder="e.g. Sharma"
-                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs min-h-[40px] focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs min-h-[40px] focus:outline-none focus:ring-2 focus:ring-[#1a3fb0]"
                     />
                   </div>
                 </div>
@@ -360,7 +372,7 @@ export const Footer: React.FC = () => {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="your.email@example.com"
-                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs min-h-[40px] focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs min-h-[40px] focus:outline-none focus:ring-2 focus:ring-[#1a3fb0]"
                     />
                   </div>
                   <div>
@@ -372,7 +384,7 @@ export const Footer: React.FC = () => {
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+91 98765 43210"
-                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs min-h-[40px] focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                      className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs min-h-[40px] focus:outline-none focus:ring-2 focus:ring-[#1a3fb0]"
                     />
                   </div>
                 </div>
@@ -387,7 +399,7 @@ export const Footer: React.FC = () => {
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                     placeholder="e.g. Automation Testing / AI Cohort / Fees"
-                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs min-h-[40px] focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs min-h-[40px] focus:outline-none focus:ring-2 focus:ring-[#1a3fb0]"
                   />
                 </div>
 
@@ -402,7 +414,7 @@ export const Footer: React.FC = () => {
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Tell us what you'd like to ask or achieve..."
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-[#25D366] resize-none"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-[#1a3fb0] resize-none"
                   />
                 </div>
 
@@ -410,13 +422,29 @@ export const Footer: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full flex items-center justify-center space-x-2 py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] active:scale-[0.99] disabled:opacity-50 text-white !text-white font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer min-h-[44px] mt-2"
+                  className="btn-gradient w-full flex items-center justify-center space-x-2 py-3 px-4 rounded-xl text-white font-extrabold text-xs sm:text-sm shadow-md transition-all cursor-pointer min-h-[44px] mt-2 disabled:opacity-50"
                 >
-                  <MessageCircle className="w-4 h-4 fill-white" />
+                  <Send className="w-4 h-4 text-white" />
                   <span className="text-white !text-white font-extrabold">
-                    {isSubmitting ? 'Opening WhatsApp...' : 'Chat on WhatsApp (+91 9158998226)'}
+                    {isSubmitting ? 'Sending email to pramod.gogadare@waynautic.com...' : 'Send Email to Pramod Gogadare'}
                   </span>
                 </button>
+
+                {/* Direct mailto fallback link */}
+                <div className="text-center pt-1.5">
+                  <a
+                    href={`mailto:pramod.gogadare@waynautic.com?subject=${encodeURIComponent(
+                      formData.subject || 'Inquiry via Waynautic Portal'
+                    )}&body=${encodeURIComponent(
+                      `Name: ${[formData.firstName, formData.lastName].filter(Boolean).join(' ')}\nPhone: ${
+                        formData.phone || ''
+                      }\n\n${formData.message || ''}`
+                    )}`}
+                    className="text-[11px] text-slate-500 hover:text-brand-blue dark:hover:text-brand-cyan transition-colors"
+                  >
+                    Or open in your email client &rarr;
+                  </a>
+                </div>
 
               </form>
             )}
