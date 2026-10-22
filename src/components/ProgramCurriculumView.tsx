@@ -681,7 +681,7 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
               <button
                 type="button"
                 onClick={handleEnrollClick}
-                className="btn-gradient text-xs sm:text-sm px-6 py-2.5 font-bold shrink-0 cursor-pointer shadow-glow"
+                className="bg-blue-50 hover:bg-blue-100/90 dark:bg-brand-blue/20 dark:hover:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 text-xs sm:text-sm px-6 py-2.5 rounded-xl font-bold shrink-0 cursor-pointer shadow-xs transition-all hover:border-brand-blue/50"
               >
                 Enroll in Cohort
               </button>
@@ -693,7 +693,7 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
         {/* ── Pricing & Enrollment Action Card ─────────────────────────────── */}
         <div className="mb-12">
           <div className="p-8 sm:p-10 rounded-3xl bg-white dark:bg-navy-900 border border-navy-900/10 dark:border-white/10 text-center max-w-3xl mx-auto shadow-card">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 block mb-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-brand-blue dark:text-brand-cyan block mb-2">
               Ready to Advance Your Tech Career?
             </span>
             <h3 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-3">
@@ -705,7 +705,7 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
 
             <div className="flex items-baseline justify-center gap-3 mb-6">
               <span className="text-2xl font-bold text-slate-400 line-through font-mono">₹20,000</span>
-              <span className="text-4xl sm:text-5xl font-black text-indigo-600 dark:text-indigo-400 font-mono">₹9,999</span>
+              <span className="text-4xl sm:text-5xl font-black text-brand-blue dark:text-brand-cyan font-mono">₹9,999</span>
               <span className="text-xs text-slate-500 font-semibold">(including 18% GST)</span>
             </div>
 
@@ -713,7 +713,7 @@ export const ProgramCurriculumView: React.FC<ProgramCurriculumViewProps> = ({ cu
               <button
                 type="button"
                 onClick={handleEnrollClick}
-                className="px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-indigo-600/30 transition-all cursor-pointer hover:-translate-y-0.5"
+                className="px-8 py-4 rounded-2xl bg-blue-100/80 hover:bg-blue-200/80 dark:bg-brand-blue/30 dark:hover:bg-brand-blue/40 text-brand-blue dark:text-cyan-200 border-2 border-brand-blue/35 dark:border-brand-cyan/40 font-extrabold text-sm sm:text-base shadow-xs transition-all cursor-pointer hover:-translate-y-0.5"
               >
                 Enroll in 4-Week Cohort Now
               </button>

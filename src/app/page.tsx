@@ -572,7 +572,7 @@ function HomePageContent() {
                       const el = document.getElementById('fees-structure');
                       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
-                    className="btn-gradient w-full text-sm py-2.5 rounded-lg text-white font-bold shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                    className="bg-blue-50 hover:bg-blue-100/90 dark:bg-brand-blue/20 dark:hover:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 w-full text-sm py-2.5 rounded-lg font-bold shadow-xs cursor-pointer flex items-center justify-center gap-1.5 transition-all hover:border-brand-blue/50"
                   >
                     View Fees Structure ↗
                   </button>
@@ -626,7 +626,7 @@ function HomePageContent() {
                         e.stopPropagation();
                         setCertModalOpen(true);
                       }}
-                      className="btn-gradient text-xs px-3.5 py-1.5 rounded-md text-white font-bold shadow-xs shrink-0 cursor-pointer"
+                      className="bg-blue-50 hover:bg-blue-100/90 dark:bg-brand-blue/20 dark:hover:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 text-xs px-3.5 py-1.5 rounded-md font-bold shadow-xs shrink-0 cursor-pointer transition-all hover:border-brand-blue/50"
                     >
                       See Certificate ↗
                     </button>
@@ -671,7 +671,7 @@ function HomePageContent() {
                 onClick={() => handleSelectProgram(key)}
                 className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   selectedProgram === key
-                    ? 'btn-gradient text-white shadow-glow'
+                    ? 'bg-blue-50 dark:bg-brand-blue/25 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 shadow-xs'
                     : 'text-navy-800/70 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'
                 }`}
               >
@@ -722,14 +722,14 @@ function HomePageContent() {
                     desc: 'Live interactive webinar on Selenium & Playwright automation with CI/CD.',
                     features: ['All Consultation features included', 'Live Webinar: Selenium & Playwright', 'Azure DevOps & CI/CD pipeline basics', 'Resume & LinkedIn profile audit'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-brand-blue hover:bg-[#15328c] text-white font-semibold shadow-sm',
+                    ctaStyle: 'bg-blue-50 hover:bg-blue-100/90 dark:bg-brand-blue/20 dark:hover:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 font-bold shadow-xs hover:border-brand-blue/50',
                     ctaHref: null,
                     featured: false,
                   },
                   {
                     tier: '4-Week Intensive Cohort',
                     badge: '⚡ Flagship Masterclass',
-                    badgeColor: 'bg-brand-blue text-white border-brand-blue/40',
+                    badgeColor: 'bg-blue-50 dark:bg-brand-blue/25 text-brand-blue dark:text-brand-cyan border-brand-blue/30 dark:border-brand-cyan/40 font-bold',
                     price: '₹9,999',
                     crossedPrice: '₹20,000',
                     priceTag: 'GST Included',
@@ -737,7 +737,7 @@ function HomePageContent() {
                     desc: '4-week live training in automation testing + guaranteed 3-month industry internship.',
                     features: ['3-Month Industry Internship (main highlight)', 'Selenium & Playwright automation', 'Azure DevOps, Jira & CI/CD pipeline', '4-5 automation projects with code reviews', 'Dual Certification: Internship + Completion', 'Mock interviews & LinkedIn optimization'],
                     cta: 'Enroll in Automation (₹9,999)',
-                    ctaStyle: 'btn-gradient text-white shadow-glow',
+                    ctaStyle: 'bg-blue-100/80 hover:bg-blue-200/80 dark:bg-brand-blue/30 dark:hover:bg-brand-blue/40 text-brand-blue dark:text-cyan-200 border-2 border-brand-blue/35 dark:border-brand-cyan/40 font-extrabold shadow-xs hover:border-brand-blue/60',
                     ctaHref: null,
                     featured: true,
                   },
@@ -751,7 +751,7 @@ function HomePageContent() {
                     }`}
                   >
                     {featured && (
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-brand-blue text-white text-[11px] font-bold uppercase tracking-wider shadow-sm whitespace-nowrap">
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-blue-50 dark:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 text-[11px] font-extrabold uppercase tracking-wider shadow-xs whitespace-nowrap">
                         ⚡ Most Popular
                       </div>
                     )}
@@ -844,14 +844,14 @@ function HomePageContent() {
                     desc: 'Live interactive webinar covering JMeter, K6 & APM monitoring essentials.',
                     features: ['All Consultation features included', 'Live Webinar: JMeter & K6 load testing', 'Grafana & Datadog dashboards hands-on', 'Resume & LinkedIn audit for perf roles'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-brand-blue hover:bg-[#15328c] text-white font-semibold shadow-sm',
+                    ctaStyle: 'bg-blue-50 hover:bg-blue-100/90 dark:bg-brand-blue/20 dark:hover:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 font-bold shadow-xs hover:border-brand-blue/50',
                     ctaHref: null,
                     featured: false,
                   },
                   {
                     tier: '4-Week Intensive Cohort',
                     badge: '⚡ Flagship Masterclass',
-                    badgeColor: 'bg-brand-blue text-white border-brand-blue/40',
+                    badgeColor: 'bg-blue-50 dark:bg-brand-blue/25 text-brand-blue dark:text-brand-cyan border-brand-blue/30 dark:border-brand-cyan/40 font-bold',
                     price: '₹9,999',
                     crossedPrice: '₹20,000',
                     priceTag: 'GST Included',
@@ -859,7 +859,7 @@ function HomePageContent() {
                     desc: '4-week live performance testing training + guaranteed 3-month industry internship.',
                     features: ['3-Month Industry Internship (main highlight)', 'JMeter, LoadRunner & K6 load testing', 'AppDynamics, Grafana & Datadog APM', 'Azure DevOps, Jira & CI/CD integration', '4-5 real-world performance projects', 'Dual Certification + placement assistance'],
                     cta: 'Enroll in Performance (₹9,999)',
-                    ctaStyle: 'btn-gradient text-white shadow-glow',
+                    ctaStyle: 'bg-blue-100/80 hover:bg-blue-200/80 dark:bg-brand-blue/30 dark:hover:bg-brand-blue/40 text-brand-blue dark:text-cyan-200 border-2 border-brand-blue/35 dark:border-brand-cyan/40 font-extrabold shadow-xs hover:border-brand-blue/60',
                     ctaHref: null,
                     featured: true,
                   },
@@ -873,7 +873,7 @@ function HomePageContent() {
                     }`}
                   >
                     {featured && (
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-brand-blue text-white text-[11px] font-bold uppercase tracking-wider shadow-sm whitespace-nowrap">
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-blue-50 dark:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 text-[11px] font-extrabold uppercase tracking-wider shadow-xs whitespace-nowrap">
                         ⚡ Most Popular
                       </div>
                     )}
@@ -950,14 +950,14 @@ function HomePageContent() {
                     desc: 'Live interactive AI Webinar masterclass. Everything in Starter + live session.',
                     features: ['All Consultation features included', 'Live Interactive AI Webinar masterclass', 'Personalized resume & tech profile audit', 'Direct Q&A and hands-on project guidance'],
                     cta: 'Join Webinar for ₹19',
-                    ctaStyle: 'bg-brand-blue hover:bg-[#15328c] text-white font-semibold shadow-sm',
+                    ctaStyle: 'bg-blue-50 hover:bg-blue-100/90 dark:bg-brand-blue/20 dark:hover:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 font-bold shadow-xs hover:border-brand-blue/50',
                     ctaHref: null,
                     featured: false,
                   },
                   {
                     tier: '4-Week Intensive Cohort',
                     badge: '⚡ Flagship Masterclass',
-                    badgeColor: 'bg-brand-blue text-white border-brand-blue/40',
+                    badgeColor: 'bg-blue-50 dark:bg-brand-blue/25 text-brand-blue dark:text-brand-cyan border-brand-blue/30 dark:border-brand-cyan/40 font-bold',
                     price: '₹9,999',
                     crossedPrice: '₹20,000',
                     priceTag: 'GST Included',
@@ -965,7 +965,7 @@ function HomePageContent() {
                     desc: '4-week live AI training + guaranteed 3-month industry internship in AI engineering.',
                     features: ['3-Month Industry Internship (main highlight)', 'All benefits from ₹19 & Free tiers', '4 weeks live personalized AI training', 'Full Academy Portal: In-depth video lectures', '4–5 agentic AI portfolio projects', 'Dual Certification + placement assistance'],
                     cta: 'Enroll in AI Engineering (₹9,999)',
-                    ctaStyle: 'btn-gradient text-white shadow-glow',
+                    ctaStyle: 'bg-blue-100/80 hover:bg-blue-200/80 dark:bg-brand-blue/30 dark:hover:bg-brand-blue/40 text-brand-blue dark:text-cyan-200 border-2 border-brand-blue/35 dark:border-brand-cyan/40 font-extrabold shadow-xs hover:border-brand-blue/60',
                     ctaHref: null,
                     featured: true,
                   },
@@ -979,7 +979,7 @@ function HomePageContent() {
                     }`}
                   >
                     {featured && (
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-brand-blue text-white text-[11px] font-bold uppercase tracking-wider shadow-sm whitespace-nowrap">
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-blue-50 dark:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 text-[11px] font-extrabold uppercase tracking-wider shadow-xs whitespace-nowrap">
                         ⚡ Most Popular
                       </div>
                     )}
