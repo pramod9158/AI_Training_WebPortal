@@ -253,7 +253,7 @@ export default function ProfilePage() {
   }, [profile.userId, profile.email]);
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
-  const isPro = profile.plan === 'pro' || profile.plan === 'enterprise';
+  const isPro = profile.plan === 'pro' || profile.plan === 'enterprise' || profile.role === 'admin';
 
   // Determine active passes based on verified transactions
   const verifiedPayments = payments.filter((p) => p.status === 'verified');
@@ -261,7 +261,7 @@ export default function ProfilePage() {
     const info = resolveProgramInfo(p);
     return info.type === 'webinar';
   });
-  const hasCohortPass = isPro || verifiedPayments.some((p) => {
+  const hasCohortPass = isPro || profile.role === 'admin' || verifiedPayments.some((p) => {
     const info = resolveProgramInfo(p);
     return info.type === 'cohort';
   });
@@ -429,7 +429,12 @@ export default function ProfilePage() {
                     <h3 className="font-extrabold text-slate-900 dark:text-white text-lg sm:text-xl">
                       {name || 'Developer'}
                     </h3>
-                    {hasCohortPass ? (
+                    {profile.role === 'admin' ? (
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 flex items-center gap-1">
+                        <ShieldCheck className="w-3 h-3 text-indigo-500" />
+                        <span>ADMINISTRATOR</span>
+                      </span>
+                    ) : hasCohortPass ? (
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center gap-1">
                         <Crown className="w-3 h-3 text-amber-500" />
                         <span>PRO PASS</span>

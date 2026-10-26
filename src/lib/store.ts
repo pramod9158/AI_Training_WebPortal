@@ -123,6 +123,29 @@ export function loadProfile(): UserProfileState {
       console.error('Failed to parse profile', e);
     }
   }
+
+  // Hydrate admin profile if authenticated admin session exists
+  const adminSaved = localStorage.getItem('waynautic_admin_session');
+  if (adminSaved) {
+    try {
+      const parsedAdmin = JSON.parse(adminSaved);
+      if (parsedAdmin.authenticated && parsedAdmin.role === 'admin') {
+        return {
+          userId: '71192f4b-3df5-4eae-b304-26f426a846ec',
+          email: parsedAdmin.email || 'admin@waynautic.ai',
+          displayName: 'Waynautic Admin',
+          avatarUrl: '',
+          selectedPath: 'path-a',
+          role: 'admin',
+          plan: 'enterprise',
+          accountStatus: 'active',
+          hasCompletedOnboarding: true,
+          theme: activeTheme
+        };
+      }
+    } catch {}
+  }
+
   return {
     displayName: 'Guest',
     avatarUrl: '',
@@ -704,7 +727,7 @@ export async function fetchAndSyncCloudUser(user: { id: string; email?: string }
     }
 
     const effectivePlan: 'free' | 'pro' | 'enterprise' = 
-      (profileData?.plan === 'enterprise') 
+      (profileData?.role === 'admin' || profileData?.role === 'instructor' || profileData?.plan === 'enterprise') 
         ? 'enterprise' 
         : (profileData?.plan === 'pro' || hasApprovedPayment) 
         ? 'pro' 

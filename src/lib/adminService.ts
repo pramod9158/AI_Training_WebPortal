@@ -101,6 +101,29 @@ export function setAdminSession(email: string = MASTER_ADMIN_EMAIL): void {
     loginTime: new Date().toISOString()
   };
   localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(payload));
+
+  // Also ensure portal user profile reflects administrator privileges
+  try {
+    const existing = localStorage.getItem('waynautic_user_profile');
+    let profileData: any = {};
+    if (existing) {
+      profileData = JSON.parse(existing);
+    }
+    const updatedProfile = {
+      ...profileData,
+      userId: profileData.userId || '71192f4b-3df5-4eae-b304-26f426a846ec',
+      email: email || profileData.email || MASTER_ADMIN_EMAIL,
+      displayName: profileData.displayName && profileData.displayName !== 'Guest' ? profileData.displayName : 'Waynautic Admin',
+      role: 'admin',
+      plan: 'enterprise',
+      accountStatus: 'active',
+      hasCompletedOnboarding: true
+    };
+    localStorage.setItem('waynautic_user_profile', JSON.stringify(updatedProfile));
+    window.dispatchEvent(new Event('waynautic_storage_change'));
+  } catch (err) {
+    console.warn('Error synchronizing admin portal profile:', err);
+  }
 }
 
 export function clearAdminSession(): void {

@@ -24,7 +24,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { MODULES } from '@/data/seedModules';
-import { useWaynauticStore, fetchAndSyncCloudUser } from '@/lib/store';
+import { useWaynauticStore, fetchAndSyncCloudUser, loadProfile } from '@/lib/store';
 import { supabase, isSupabaseConfigured } from '@/lib/supabaseClient';
 import { getResumeLearningUrl, getResumeTopic, getAllTopics, fetchCurriculumUpdates } from '@/lib/curriculumService';
 import { StreakTracker } from '@/components/StreakTracker';
@@ -180,6 +180,15 @@ function DashboardContent() {
         if (!profile.userId || !profile.email) {
           await fetchAndSyncCloudUser(session.user);
         }
+        if (isMounted) {
+          setIsAuthenticating(false);
+        }
+        return;
+      }
+
+      // 5b. Check if active admin session or authenticated profile exists in store
+      const currentProfile = loadProfile();
+      if (currentProfile.role === 'admin' || Boolean(currentProfile.userId && currentProfile.email)) {
         if (isMounted) {
           setIsAuthenticating(false);
         }

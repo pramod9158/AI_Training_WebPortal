@@ -75,10 +75,41 @@ export default function AdminLoginPage() {
     }
 
     setLoading(true);
+    const cleanAdminEmail = email.trim().toLowerCase();
+    const cleanPassword = password.trim();
+
     try {
+      // 1. Direct Master Admin check (bypasses unconfirmed email barrier)
+      if (cleanAdminEmail === 'admin@waynautic.ai' || cleanAdminEmail === 'academy@waynautic.com') {
+        const adminRes = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: cleanAdminEmail, password: cleanPassword })
+        });
+
+        if (adminRes.ok) {
+          const admData = await adminRes.json();
+          if (admData.success) {
+            router.push('/admin');
+            return;
+          }
+        } else {
+          const errData = await adminRes.json().catch(() => null);
+          setErrorMessage(errData?.message || 'Invalid administrative password.');
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (!isSupabaseConfigured) {
+        setErrorMessage('Supabase is not configured yet. Please use Master Passkey login.');
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password
+        email: cleanAdminEmail,
+        password: cleanPassword
       });
 
       if (error) {

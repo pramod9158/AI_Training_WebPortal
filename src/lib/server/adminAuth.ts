@@ -107,3 +107,37 @@ export function verifyServerAdminPasskey(passkey: string): boolean {
   // Fallback to the master admin passkey
   return input === defaultPasskey;
 }
+
+/**
+ * Checks whether an email address is designated as a Master Administrator
+ */
+export function isMasterAdminEmail(email: string): boolean {
+  if (!email || typeof email !== 'string') return false;
+  const clean = email.trim().toLowerCase();
+  const envAdmin = process.env.ADMIN_EMAIL?.replace(/^["']|["']$/g, '').trim().toLowerCase();
+  return clean === 'admin@waynautic.ai' || clean === 'academy@waynautic.com' || (Boolean(envAdmin) && clean === envAdmin);
+}
+
+/**
+ * Validates master administrative credentials (email + password or passkey)
+ */
+export function verifyAdminCredentials(email: string, passOrKey: string): boolean {
+  if (!email || !passOrKey) return false;
+  if (!isMasterAdminEmail(email)) return false;
+
+  const input = passOrKey.trim();
+  const defaultPasskey = 'WN-SecOps#9824$AlphaAdmin';
+  const defaultPassword = 'Admin@Waynautic2026';
+  const envPasskey = process.env.ADMIN_PASSKEY?.replace(/^["']|["']$/g, '').trim();
+  const envPassword = process.env.ADMIN_PASSWORD?.replace(/^["']|["']$/g, '').trim();
+
+  const validSecrets = [
+    defaultPasskey,
+    defaultPassword,
+    'Admin@Waynautic2026!',
+    envPasskey,
+    envPassword
+  ].filter(Boolean) as string[];
+
+  return validSecrets.includes(input);
+}

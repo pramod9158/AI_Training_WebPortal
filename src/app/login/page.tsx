@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Mail, Lock, ShieldCheck, Eye, EyeOff, CheckCircle2, ArrowLeft, ArrowRight, RefreshCw, AlertCircle } from 'lucide-react';
 import { signInWithEmail, sendPasswordResetEmail, resendVerificationEmail, checkUserAccountExists } from '@/lib/supabaseAuth';
 import { fetchAndSyncCloudUser, useWaynauticStore, loadProfile } from '@/lib/store';
-import { clearAdminSession } from '@/lib/adminService';
+import { clearAdminSession, setAdminSession, verifySupabaseAdminSession } from '@/lib/adminService';
 
 function LoginForm() {
   const router = useRouter();
@@ -84,11 +84,62 @@ function LoginForm() {
     setLoading(true);
     setErrorMsg('');
 
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPassword = password.trim();
+
     try {
-      // Purge any stale admin console session when logging in as student
+      // 1. Direct Master Admin Authentication: grants full portal & admin console access immediately
+      if (cleanEmail === 'admin@waynautic.ai' || cleanEmail === 'academy@waynautic.com') {
+        try {
+          const adminRes = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: cleanEmail, password: cleanPassword })
+          });
+
+          if (adminRes.ok) {
+            const adminData = await adminRes.json();
+            if (adminData.success) {
+              setAdminSession(cleanEmail);
+
+              const adminProfile = {
+                userId: adminData.user?.id || '71192f4b-3df5-4eae-b304-26f426a846ec',
+                email: cleanEmail,
+                displayName: adminData.user?.displayName || 'Waynautic Admin',
+                avatarUrl: '',
+                avatarPreset: 'ai-architect',
+                selectedPath: 'path-a',
+                role: 'admin' as const,
+                plan: 'enterprise' as const,
+                accountStatus: 'active' as const,
+                hasCompletedOnboarding: true,
+                theme: loadProfile().theme
+              };
+              localStorage.setItem('waynautic_user_profile', JSON.stringify(adminProfile));
+              window.dispatchEvent(new Event('waynautic_storage_change'));
+
+              if (redirectTo) {
+                router.push(redirectTo);
+              } else {
+                router.push('/dashboard');
+              }
+              return;
+            }
+          } else {
+            const errJson = await adminRes.json().catch(() => null);
+            setErrorMsg(errJson?.message || 'Invalid administrative credentials. Access denied.');
+            setLoading(false);
+            return;
+          }
+        } catch (adminErr) {
+          console.warn('Admin check network error:', adminErr);
+        }
+      }
+
+      // 2. Standard Student / Candidate Supabase Login
       clearAdminSession();
 
-      const { data, error } = await signInWithEmail(email, password);
+      const { data, error } = await signInWithEmail(cleanEmail, cleanPassword);
 
       if (error) {
         if (error.message.toLowerCase().includes('email not confirmed')) {
@@ -108,15 +159,28 @@ function LoginForm() {
         await fetchAndSyncCloudUser(data.user);
       } else {
         updateProfile({
-          email,
-          displayName: email ? email.split('@')[0] : 'Developer'
+          email: cleanEmail,
+          displayName: cleanEmail ? cleanEmail.split('@')[0] : 'Developer'
         });
+      }
+
+      const latestProfile = loadProfile();
+      const isAdminUser = latestProfile.role === 'admin';
+
+      // If database user holds admin role, grant server session cookie and local admin privileges
+      const sessionToken = (data as any)?.session?.access_token;
+      if (isAdminUser && sessionToken) {
+        try {
+          await verifySupabaseAdminSession(sessionToken, (data as any)?.user?.email || cleanEmail);
+          setAdminSession((data as any)?.user?.email || cleanEmail);
+        } catch (admSyncErr) {
+          console.warn('Failed to link server admin session:', admSyncErr);
+        }
       }
 
       if (redirectTo) {
         router.push(redirectTo);
       } else {
-        const latestProfile = loadProfile();
         const isPaid = latestProfile.plan === 'pro' || latestProfile.plan === 'enterprise' || latestProfile.role === 'admin' || latestProfile.role === 'instructor';
         if (isPaid) {
           router.push('/dashboard');
@@ -293,9 +357,9 @@ function LoginForm() {
       )}
 
       <div className="text-center space-y-1.5">
-        <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Student Login</h2>
+        <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Portal Sign In</h2>
         <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-          Enter your email and password to access your courses & track progress
+          Enter your email and password to access your courses, curriculum, or administration
         </p>
       </div>
 
@@ -409,6 +473,14 @@ function LoginForm() {
         Don&apos;t have an account?{' '}
         <Link href={`/signup${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`} className="text-sky-600 dark:text-cyan-400 hover:underline font-extrabold">
           Create Free Student Account
+        </Link>
+      </div>
+
+      <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+        <span>Authorized Personnel</span>
+        <Link href="/admin/login" className="inline-flex items-center space-x-1 text-indigo-600 dark:text-indigo-400 hover:underline font-bold">
+          <ShieldCheck className="w-3.5 h-3.5" />
+          <span>Admin Console Gateway →</span>
         </Link>
       </div>
 
