@@ -271,7 +271,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#080C14] text-slate-900 dark:text-slate-100 font-sans">
+    <div className="min-h-screen flex flex-col bg-transparent text-slate-900 dark:text-slate-100 font-sans">
       
       {/* Toast Notice */}
       {actionNotice && (

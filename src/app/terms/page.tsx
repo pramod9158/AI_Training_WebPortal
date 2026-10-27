@@ -26,7 +26,7 @@ export default function TermsPage() {
   const effectiveDate = 'October 5, 2026';
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#070A12] text-slate-800 dark:text-slate-200 transition-colors">
+    <div className="min-h-screen bg-transparent text-slate-800 dark:text-slate-200 transition-colors">
       {/* Top Breadcrumb & Header */}
       <div className="border-b border-slate-200 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">

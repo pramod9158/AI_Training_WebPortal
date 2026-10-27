@@ -288,12 +288,20 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
   }
 
   return (
-    <>
+    <div className="relative min-h-screen flex flex-col bg-white dark:bg-[#080d1c] text-navy-900 dark:text-white transition-colors">
+      {/* Waynautic Light Mesh Background — same exact background color & gradient as landing page throughout portal */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[680px] overflow-hidden"
+        style={{
+          background: 'radial-gradient(ellipse 80% 60% at 20% 0%, rgba(41,171,226,0.14), transparent 60%), radial-gradient(ellipse 60% 50% at 100% 10%, rgba(124,58,237,0.12), transparent 60%), radial-gradient(ellipse 60% 50% at 50% 100%, rgba(217,70,168,0.08), transparent 60%)'
+        }}
+        aria-hidden="true"
+      />
       <Navbar />
-      <main className="flex-1 pt-20">
+      <main className="flex-1 pt-20 relative z-0">
         {children}
       </main>
       <Footer />
-    </>
+    </div>
   );
 };

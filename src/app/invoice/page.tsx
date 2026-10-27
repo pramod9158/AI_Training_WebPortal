@@ -22,7 +22,7 @@ export default function InvoicePage() {
   const discount = 1999;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#070A12] text-slate-800 dark:text-slate-200 transition-colors py-10 sm:py-14">
+    <div className="min-h-screen bg-transparent text-slate-800 dark:text-slate-200 transition-colors py-10 sm:py-14">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         
         {/* Navigation Breadcrumb */}

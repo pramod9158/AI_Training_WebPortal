@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen relative overflow-hidden bg-slate-50 dark:bg-[#07090E] transition-colors">
+    <div className="min-h-screen relative overflow-hidden bg-transparent transition-colors">
       {/* Background Decorative Ambient Glows */}
       <div 
         aria-hidden="true" 
@@ -30,7 +30,7 @@ export default function AboutPage() {
       {/* ================================================================ */}
       {/* HERO: Team Photo with Bottom Headline                           */}
       {/* ================================================================ */}
-      <section className="relative w-full overflow-hidden bg-slate-50 dark:bg-[#07090E] transition-colors">
+      <section className="relative w-full overflow-hidden bg-transparent transition-colors">
         {/* Top Header: Badge & Explore CTA */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-3 sm:pb-4 flex items-center justify-between">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border text-xs font-mono font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-sky-600 dark:text-cyan-400 shadow-sm">

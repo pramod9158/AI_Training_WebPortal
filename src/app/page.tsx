@@ -439,7 +439,7 @@ function HomePageContent() {
   // GUEST / VISITOR VIEW: Full Marketing & Value Landing Page
   // =========================================================================
   return (
-    <div className="relative overflow-x-hidden bg-white dark:bg-[#0a0f1e]">
+    <div className="relative overflow-x-hidden">
 
       {/* Onboarding Tour */}
       <OnboardingTour isOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
@@ -447,11 +447,7 @@ function HomePageContent() {
       {/* ===================================================================
           HERO SECTION — AccioJob style: left headline + right feature cards
       =================================================================== */}
-      <section className="relative bg-white dark:bg-[#080d1c] overflow-hidden">
-        {/* Mesh-light hero gradient §2.2 */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'radial-gradient(ellipse 80% 60% at 20% 0%, rgba(41,171,226,0.14), transparent 60%), radial-gradient(ellipse 60% 50% at 100% 10%, rgba(124,58,237,0.12), transparent 60%), radial-gradient(ellipse 60% 50% at 50% 100%, rgba(217,70,168,0.08), transparent 60%)'
-        }} />
+      <section className="relative bg-transparent overflow-hidden">
 
         <div className="relative container-xl pt-5 sm:pt-6 pb-16 sm:pb-20">
           {/* Watch Live Class Video CTA — Top of page just below header */}
