@@ -447,82 +447,125 @@ function HomePageContent() {
       {/* ===================================================================
           HERO SECTION — AccioJob style: left headline + right feature cards
       =================================================================== */}
-      <section className="relative bg-white dark:bg-[#080d1c] overflow-hidden min-h-[80vh] flex items-center">
+      <section className="relative bg-white dark:bg-[#080d1c] overflow-hidden">
         {/* Mesh-light hero gradient §2.2 */}
         <div className="absolute inset-0 pointer-events-none" style={{
           background: 'radial-gradient(ellipse 80% 60% at 20% 0%, rgba(41,171,226,0.14), transparent 60%), radial-gradient(ellipse 60% 50% at 100% 10%, rgba(124,58,237,0.12), transparent 60%), radial-gradient(ellipse 60% 50% at 50% 100%, rgba(217,70,168,0.08), transparent 60%)'
         }} />
 
-        <div className="relative container-xl py-20 sm:py-28">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="relative container-xl pt-5 sm:pt-6 pb-16 sm:pb-20">
+          {/* Watch Live Class Video CTA — Top of page just below header */}
+          <div className="flex justify-center mb-6 sm:mb-8">
+            <button
+              type="button"
+              onClick={() => setVideoModalOpen(true)}
+              className="btn-gradient text-sm sm:text-base px-6 sm:px-8 py-2.5 sm:py-3 shadow-glow inline-flex items-center gap-2.5 cursor-pointer hover:scale-[1.03] active:scale-[0.98] transition-all rounded-full group"
+            >
+              <Play className="w-4 h-4 fill-white" />
+              <span className="font-semibold tracking-wide">Watch Live Class Video</span>
+            </button>
+          </div>
 
-            {/* LEFT: Headline + subtitle + trust badges */}
-            <div>
-              {/* Eyebrow badge §7.2 */}
-              <div className="eyebrow dark:eyebrow-dark mb-6">
-                <span className="w-2 h-2 rounded-full bg-brand-blue animate-pulse" />
-                Placement-Focused Tech Training Programs
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 xl:gap-14 items-stretch">
+
+            {/* LEFT: Headline + subtitle + trust badges + Achievement Certificate */}
+            <div className="flex flex-col justify-between">
+              <div>
+                {/* Eyebrow badge §7.2 */}
+                <div className="eyebrow dark:eyebrow-dark mb-4 sm:mb-5">
+                  <span className="w-2 h-2 rounded-full bg-brand-blue animate-pulse" />
+                  Placement-Focused Tech Training Programs
+                </div>
+
+                {/* H1 §3.2 — Home hero matching waynautic.com visual scale */}
+                <h1 className="font-display text-2xl xs:text-3xl sm:text-4xl lg:text-[42px] xl:text-[48px] font-semibold text-navy-900 dark:text-white leading-[1.14] sm:leading-[1.12] mb-6 sm:mb-8 tracking-tight">
+                  Launch Your Tech Career with{' '}
+                  <span style={{ color: '#1a3fb0' }}>Placement-Focused Courses</span>{' '}
+                  &amp; 3-Month Industry Internship
+                </h1>
               </div>
 
-              {/* H1 §3.2 — Home hero 36→48→60px, weight 600, tracking tight */}
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-semibold text-navy-900 dark:text-white leading-[1.08] mb-6 tracking-[-0.025em]">
-                Launch Your Tech Career with{' '}
-                <span style={{ color: '#1a3fb0' }}>Placement-Focused Courses</span>{' '}
-                &amp; 3-Month Industry Internship
-              </h1>
-
-              {/* Lead paragraph §3.2 — 20px, relaxed */}
-              <p className="text-xl text-navy-800/70 dark:text-white/70 leading-relaxed mb-9 max-w-xl">
-                Get job-ready through live, online, or self-paced courses. Learn from expert mentors, build real projects, and access placement opportunities with top companies.
-              </p>
-
-              {/* Trust badges §7.4 card-surface style */}
-              <div className="flex flex-wrap gap-3 mb-9">
-                {[
-                  { icon: <Award className="w-4 h-4 text-brand-blue" />, label: 'Award-Winning Curriculum' },
-                  { icon: <Users className="w-4 h-4 text-brand-blue" />, label: 'Expert Industry Mentors' },
-                  { icon: <Shield className="w-4 h-4 text-brand-blue" />, label: 'Dual Certification' },
-                ].map(({ icon, label }) => (
-                  <div key={label} className="flex items-center gap-2 px-4 py-2 rounded-md bg-white dark:bg-navy-900 shadow-card text-sm font-medium text-navy-900 dark:text-white/80" style={{ border: '1px solid rgba(10,17,40,0.10)' }}>
-                    {icon}
-                    {label}
+              {/* Achievement Certificate — aligned with bottom of right card */}
+              <div
+                className="relative rounded-2xl p-4 sm:p-5 overflow-hidden transition-all duration-300 bg-white dark:bg-navy-900 border border-navy-900/10 dark:border-white/10 shadow-card hover:shadow-glow cursor-pointer group w-full"
+                onClick={() => setCertModalOpen(true)}
+              >
+                <div className="relative">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/25 text-amber-700 dark:text-amber-400 text-[10px] xs:text-[11px] font-bold uppercase tracking-wider">
+                      <Award className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                      Achievement Certificate
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-navy-800/60 dark:text-white/60 uppercase">GenAI &amp; ML 2025</span>
                   </div>
-                ))}
-              </div>
 
-              {/* CTAs §7.1 — primary gradient */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <a href="#courses" className="btn-gradient text-base">
-                  <BookOpen className="w-4 h-4" />
-                  Explore Programs
-                  <ArrowRight className="w-4 h-4" />
-                </a>
+                  <div className="flex items-center gap-3 sm:gap-4 mb-4">
+                    <div className="w-20 h-14 sm:w-28 sm:h-20 shrink-0 rounded-xl overflow-hidden border border-navy-900/10 dark:border-white/15 shadow-sm group-hover:border-amber-400 transition-all bg-slate-100 dark:bg-black/40 relative">
+                      <Image
+                        src="/Innovation-Certificate.jpg"
+                        alt="Achievement Certificate - GenAI & ML Awards 2025"
+                        width={120}
+                        height={80}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-1">
+                        <span className="text-[8px] font-black text-amber-300 uppercase tracking-tighter">Verified</span>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm sm:text-lg font-bold text-navy-900 dark:text-white leading-snug mb-1">
+                        National Excellence Award
+                      </h3>
+                      <p className="text-navy-800/70 dark:text-white/70 text-xs leading-relaxed line-clamp-2">
+                        Winner — Best AI/ML Testing Strategy. Recognized nationally for industry-leading curriculum.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-navy-900/[0.07] dark:border-white/10">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                      <span className="px-2 py-0.5 rounded-md bg-brand-blue/10 text-brand-blue dark:bg-brand-blue/20 dark:text-brand-cyan text-[10px] font-bold">Dual Certified</span>
+                      <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 text-[10px] font-bold">Industry Recognized</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCertModalOpen(true);
+                      }}
+                      className="bg-blue-50 hover:bg-blue-100/90 dark:bg-brand-blue/20 dark:hover:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 text-xs px-3 sm:px-3.5 py-1.5 rounded-md font-bold shadow-xs shrink-0 cursor-pointer transition-all hover:border-brand-blue/50"
+                    >
+                      See Certificate ↗
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* RIGHT: Two stacked dark feature cards (AccioJob style) */}
-            <div className="flex flex-col gap-4">
-
+            {/* RIGHT: Flagship programs feature card — stretches to match height of left column */}
+            <div className="flex flex-col h-full">
               {/* Card 1: Courses — styled like Screenshot 4 white card */}
-              <div className="relative rounded-2xl p-6 sm:p-7 overflow-hidden transition-all duration-300 bg-white dark:bg-navy-900 border border-navy-900/10 dark:border-white/10 shadow-card hover:shadow-glow">
+              <div className="relative rounded-2xl p-5 sm:p-7 overflow-hidden transition-all duration-300 bg-white dark:bg-navy-900 border border-navy-900/10 dark:border-white/10 shadow-card hover:shadow-glow h-full flex flex-col justify-between">
                 {/* Top mockup window bar matching Screenshot 4 */}
-                <div className="flex items-center justify-between pb-3 mb-4 border-b border-navy-900/[0.07] dark:border-white/10">
-                  <div className="flex items-center gap-1.5">
+                <div className="flex items-center justify-between gap-2 pb-3 mb-4 border-b border-navy-900/[0.07] dark:border-white/10 shrink-0">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
                     <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
                     <span className="h-2.5 w-2.5 rounded-full bg-navy-900/15 dark:bg-white/20" />
                   </div>
-                  <span className="px-2.5 py-0.5 rounded-full bg-paper dark:bg-white/5 border border-navy-900/[0.06] dark:border-white/10 text-[10px] font-mono text-navy-800/60 dark:text-white/60 font-medium">
+                  <span className="px-2.5 py-0.5 rounded-full bg-paper dark:bg-white/5 border border-navy-900/[0.06] dark:border-white/10 text-[10px] font-mono text-navy-800/60 dark:text-white/60 font-medium truncate">
                     flagship-programs
                   </span>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-blue/10 dark:bg-brand-cyan/15 text-brand-blue dark:text-brand-cyan text-[11px] font-bold">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-blue/10 dark:bg-brand-cyan/15 text-brand-blue dark:text-brand-cyan text-[11px] font-bold shrink-0">
                     3 Career Tracks
                   </span>
                 </div>
 
-                <div className="relative">
-                  <h3 className="text-xl font-bold text-navy-900 dark:text-white mb-1">Industry-Ready Training</h3>
-                  <p className="text-navy-800/70 dark:text-white/70 text-sm mb-4">4-week live cohort + 3-month industry internship. Placement-focused, mentor-guided.</p>
+                <div className="relative flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold text-navy-900 dark:text-white mb-1">Industry-Ready Training</h3>
+                    <p className="text-navy-800/70 dark:text-white/70 text-sm mb-4">4-week live cohort + 3-month industry internship. Placement-focused, mentor-guided.</p>
+                  </div>
 
                   {/* 3 Programs listed — each clicks directly to that program's fee structure */}
                   <div className="space-y-2 mb-4">
@@ -537,12 +580,11 @@ function HomePageContent() {
                         className="px-3.5 py-2.5 rounded-xl border border-navy-900/10 dark:border-white/10 bg-paper/70 dark:bg-white/5 hover:bg-brand-blue/5 dark:hover:bg-brand-blue/15 hover:border-brand-blue/30 cursor-pointer hover:scale-[1.01] transition-all flex items-center justify-between group/item"
                         role="button"
                         tabIndex={0}
-                        title={`View fees structure for ${prog.label}`}
+                        title={`View structure for ${prog.label}`}
                       >
                         <div className="font-bold text-sm leading-tight text-navy-900 dark:text-white group-hover/item:text-brand-blue dark:group-hover/item:text-brand-cyan transition-colors">{prog.label}</div>
-                        <span className="text-xs font-semibold text-brand-blue dark:text-brand-cyan flex items-center gap-1 transition-colors">
-                          Fees &amp; Tiers
-                          <ArrowRight className="w-3.5 h-3.5 group-hover/item:translate-x-0.5 transition-transform" />
+                        <span className="text-brand-blue dark:text-brand-cyan flex items-center transition-colors">
+                          <ArrowRight className="w-4 h-4 group-hover/item:translate-x-1 transition-transform" />
                         </span>
                       </div>
                     ))}
@@ -550,15 +592,20 @@ function HomePageContent() {
 
                   {/* Key stats */}
                   <div className="grid grid-cols-2 gap-2 mb-4">
-                    {[
-                      { val: '₹9,999', label: 'Starting Price' },
-                      { val: '3 Months', label: 'Internship' },
-                    ].map(s => (
-                      <div key={s.label} className="bg-paper dark:bg-white/5 border border-navy-900/[0.07] dark:border-white/10 rounded-xl px-2 py-2 text-center">
-                        <div className="text-navy-900 dark:text-white font-bold text-sm">{s.val}</div>
-                        <div className="text-navy-800/60 dark:text-white/60 text-[10px] font-semibold mt-0.5">{s.label}</div>
-                      </div>
-                    ))}
+                    <a
+                      href="https://docs.google.com/forms/d/e/1FAIpQLSfLLPUZ4xeLHXxckuZ7gUwyPTodr8aUxsis3Zn_KIPYLlWwfA/viewform"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-paper dark:bg-white/5 hover:bg-brand-blue/5 dark:hover:bg-brand-blue/15 border border-navy-900/[0.07] dark:border-white/10 hover:border-brand-blue/30 rounded-xl px-2 py-2 text-center transition-all group/stat cursor-pointer block"
+                      title="Book Free Consultation"
+                    >
+                      <div className="text-navy-900 dark:text-white group-hover/stat:text-brand-blue dark:group-hover/stat:text-brand-cyan font-bold text-sm leading-tight transition-colors">Free Consultation</div>
+                      <div className="text-navy-800/60 dark:text-white/60 text-[10px] font-semibold mt-0.5">1-on-1 Career Call</div>
+                    </a>
+                    <div className="bg-paper dark:bg-white/5 border border-navy-900/[0.07] dark:border-white/10 rounded-xl px-2 py-2 text-center">
+                      <div className="text-navy-900 dark:text-white font-bold text-sm">3 Months</div>
+                      <div className="text-navy-800/60 dark:text-white/60 text-[10px] font-semibold mt-0.5">Internship</div>
+                    </div>
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-5">
@@ -574,63 +621,8 @@ function HomePageContent() {
                     }}
                     className="bg-blue-50 hover:bg-blue-100/90 dark:bg-brand-blue/20 dark:hover:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 w-full text-sm py-2.5 rounded-lg font-bold shadow-xs cursor-pointer flex items-center justify-center gap-1.5 transition-all hover:border-brand-blue/50"
                   >
-                    View Fees Structure ↗
+                    View Structure ↗
                   </button>
-                </div>
-              </div>
-
-              {/* Card 2: Achievement Certificate — styled like Screenshot 4 white card */}
-              <div
-                className="relative rounded-2xl p-5 sm:p-6 overflow-hidden transition-all duration-300 bg-white dark:bg-navy-900 border border-navy-900/10 dark:border-white/10 shadow-card hover:shadow-glow cursor-pointer group"
-                onClick={() => setCertModalOpen(true)}
-              >
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/25 text-amber-700 dark:text-amber-400 text-[11px] font-bold uppercase tracking-wider">
-                      <Award className="w-3.5 h-3.5 text-amber-500" />
-                      Achievement Certificate
-                    </span>
-                    <span className="text-[10px] font-mono font-bold text-navy-800/60 dark:text-white/60 uppercase">GenAI &amp; ML 2025</span>
-                  </div>
-
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-24 h-16 sm:w-28 sm:h-20 shrink-0 rounded-xl overflow-hidden border border-navy-900/10 dark:border-white/15 shadow-sm group-hover:border-amber-400 transition-all bg-slate-100 dark:bg-black/40 relative">
-                      <Image
-                        src="/Innovation-Certificate.jpg"
-                        alt="Achievement Certificate - GenAI & ML Awards 2025"
-                        width={120}
-                        height={80}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-1">
-                        <span className="text-[8px] font-black text-amber-300 uppercase tracking-tighter">Verified</span>
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base sm:text-lg font-bold text-navy-900 dark:text-white leading-snug mb-1">
-                        National Excellence Award
-                      </h3>
-                      <p className="text-navy-800/70 dark:text-white/70 text-xs leading-relaxed line-clamp-2">
-                        Winner — Best AI/ML Testing Strategy. Recognized nationally for industry-leading curriculum.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-3 pt-3 border-t border-navy-900/[0.07] dark:border-white/10">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded-md bg-brand-blue/10 text-brand-blue dark:bg-brand-blue/20 dark:text-brand-cyan text-[10px] font-bold">Dual Certified</span>
-                      <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 text-[10px] font-bold">Industry Recognized</span>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setCertModalOpen(true);
-                      }}
-                      className="bg-blue-50 hover:bg-blue-100/90 dark:bg-brand-blue/20 dark:hover:bg-brand-blue/30 text-brand-blue dark:text-brand-cyan border border-brand-blue/30 dark:border-brand-cyan/40 text-xs px-3.5 py-1.5 rounded-md font-bold shadow-xs shrink-0 cursor-pointer transition-all hover:border-brand-blue/50"
-                    >
-                      See Certificate ↗
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>

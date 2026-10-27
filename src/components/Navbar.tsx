@@ -53,9 +53,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [curriculumDropdownOpen, setCurriculumDropdownOpen] = useState(false);
   const [mobileCurriculumOpen, setMobileCurriculumOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
-  const searchBtnRef = useRef<HTMLButtonElement>(null);
   const curriculumRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
 
   const isLoggedIn = Boolean(profile.userId || profile.email);
   const isProUser = profile.plan === 'pro' || profile.plan === 'enterprise';
@@ -97,6 +98,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
   }
   const lastTopic = resumeTopic;
 
+  // Track scroll for header background/border transition
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 12);
+    }
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -112,6 +123,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [userMenuOpen, curriculumDropdownOpen]);
+
+  // Close the desktop Curriculum panel on Escape
+  useEffect(() => {
+    if (!curriculumDropdownOpen) return undefined;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setCurriculumDropdownOpen(false);
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [curriculumDropdownOpen]);
 
   // Global Cmd+K shortcut to open/close search
   useEffect(() => {
@@ -157,7 +178,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     { href: '/curriculum/ai-training', label: 'AI Training Program', icon: Brain, color: 'text-cyan-600 dark:text-cyan-400', desc: 'LLMs, Prompt Eng, Vector DBs, RAG, Agents' },
   ];
 
-  const dashboardLink = isLoggedIn ? [{ href: '/dashboard', label: 'Dashboard', icon: Trophy }] : [];
 
   const mobileNavLinks = isLoggedIn
     ? [
@@ -166,204 +186,109 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
     : [];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/85 dark:bg-[#0B0F19]/85 backdrop-blur-lg border-b border-slate-900/10 dark:border-slate-800/60 transition-all duration-300">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[5rem] sm:min-h-[5.5rem] lg:min-h-[6.5rem] py-2 sm:py-3 flex items-center justify-between gap-4">
+    <header className="fixed inset-x-0 top-0 z-50">
+      {/* Header Backdrop: transparent at top matching page background, frosted glass when scrolled */}
+      <div
+        className={`absolute inset-x-0 top-0 h-20 transition-all duration-300 ${
+          scrolled || mobileMenuOpen
+            ? 'border-b border-navy-900/10 dark:border-white/10 bg-white/85 dark:bg-[#0a1128]/85 shadow-soft backdrop-blur-lg'
+            : 'border-b border-transparent bg-transparent shadow-none backdrop-blur-none'
+        }`}
+        aria-hidden="true"
+      />
+      <nav ref={navRef} className="intro-nav container-xl relative flex h-20 items-center justify-between" aria-label="Primary">
         
-        {/* Left Section: Waynautic Academy Logo — doubled size */}
-        <div className="flex items-center shrink-0">
-          <Link href="/" className="flex items-center gap-2 group shrink-0" aria-label="Waynautic Academy Home">
-            <Image
-              src="/Waynautic_Academy_Logo_Transparent.png"
-              alt="Waynautic Academy"
-              width={520}
-              height={130}
-              className="h-12 xs:h-14 sm:h-20 lg:h-24 w-auto max-w-[210px] xs:max-w-[260px] sm:max-w-none object-contain transition-transform group-hover:scale-[1.02]"
-              priority
-            />
+        {/* Left Section: Waynautic Academy Logo — matching waynautic.com size and ratio exactly */}
+        <Link href="/" className="flex items-center gap-2 shrink-0" aria-label="Waynautic Academy Home">
+          <Image
+            src="/Waynautic_Academy_Logo_Transparent.png"
+            alt="Waynautic Academy"
+            width={640}
+            height={99}
+            className="h-8 xs:h-9 w-auto sm:h-10 object-contain transition-all"
+            unoptimized
+            priority
+          />
+        </Link>
+
+        {/* Center Section: Navigation Links — matching waynautic.com exactly */}
+        <div className="hidden items-center gap-0.5 xl:gap-1 lg:flex">
+          {/* 1. Training Programs */}
+          <Link
+            href="/#pricing"
+            className={`rounded-md px-2.5 xl:px-4 py-2 text-sm xl:text-base font-semibold transition-colors hover:bg-navy-900/5 dark:hover:bg-slate-800/70 ${
+              pathname === '/#pricing'
+                ? 'text-[#1a3fb0] dark:text-[#29abe2]'
+                : 'text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white'
+            }`}
+          >
+            Training Programs
           </Link>
-        </div>
 
-        {/* Center Section: Navigation Links — matching waynautic.netlify.app font size (text-base) and font-semibold */}
-        <div className="hidden lg:flex flex-1 justify-center px-4">
-          <nav className="flex items-center gap-1 xl:gap-2">
-            {/* 1. Training Programs */}
-            <Link
-              href="/#pricing"
-              className={`rounded-md px-3.5 py-2 text-base xl:px-4 font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
-                pathname === '/#pricing'
-                  ? 'text-[#1a3fb0] dark:text-[#29abe2] bg-[#1a3fb0]/5 dark:bg-[#1a3fb0]/15'
-                  : 'text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-navy-900/5 dark:hover:bg-slate-800/70'
-              }`}
-            >
-              Training Programs
-            </Link>
-
-            {/* 2. Curriculum Dropdown */}
-            <div className="relative" ref={curriculumRef}>
-              <button
-                type="button"
-                onClick={() => setCurriculumDropdownOpen((v) => !v)}
-                className={`flex items-center gap-1 rounded-md px-3.5 py-2 text-base xl:px-4 font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
-                  pathname?.startsWith('/curriculum')
-                    ? 'text-[#1a3fb0] dark:text-[#29abe2] bg-[#1a3fb0]/5 dark:bg-[#1a3fb0]/15'
-                    : 'text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-navy-900/5 dark:hover:bg-slate-800/70'
-                }`}
-                aria-expanded={curriculumDropdownOpen}
-                aria-label="Curriculum programs"
-              >
-                <span>Curriculum</span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.6"
-                  className={`transition-transform duration-300 ${curriculumDropdownOpen ? 'rotate-180' : ''}`}
-                >
-                  <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-
-              {/* Curriculum Dropdown Panel */}
-              {curriculumDropdownOpen && (
-                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-3 w-80 rounded-2xl bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-800 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                  <div className="px-4 py-2 mb-1 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-xs font-mono uppercase tracking-widest text-slate-400">Our Programs</span>
-                  </div>
-                  {curriculumPrograms.map((prog) => {
-                    const Icon = prog.icon;
-                    return (
-                      <Link
-                        key={prog.href}
-                        href={prog.href}
-                        onClick={() => setCurriculumDropdownOpen(false)}
-                        className="flex items-start gap-3.5 px-4 py-3 mx-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group"
-                      >
-                        <div className={`w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 ${prog.color}`}>
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="text-base font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-cyan-300 transition-colors leading-tight">{prog.label}</div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{prog.desc}</div>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* 3. About Us */}
-            <Link
-              href="/about"
-              className={`rounded-md px-3.5 py-2 text-base xl:px-4 font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
-                pathname === '/about'
-                  ? 'text-[#1a3fb0] dark:text-[#29abe2] bg-[#1a3fb0]/5 dark:bg-[#1a3fb0]/15'
-                  : 'text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-navy-900/5 dark:hover:bg-slate-800/70'
-              }`}
-            >
-              About Us
-            </Link>
-
-            {/* Dashboard (logged in only) */}
-            {dashboardLink.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`rounded-md px-3.5 py-2 text-base xl:px-4 font-semibold transition-colors bg-transparent border-none outline-none cursor-pointer whitespace-nowrap ${
-                    isActive
-                      ? 'text-[#1a3fb0] dark:text-[#29abe2] bg-[#1a3fb0]/5 dark:bg-[#1a3fb0]/15'
-                      : 'text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-navy-900/5 dark:hover:bg-slate-800/70'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Center / Middle Section: Extended Search Bar — Shown ONLY when user is logged in */}
-        {isLoggedIn && (
-          <div className="relative flex-1 min-w-0 max-w-md lg:max-w-xl mx-2 sm:mx-6">
+          {/* 2. Curriculum Dropdown */}
+          <div className="relative" ref={curriculumRef}>
             <button
-              ref={searchBtnRef}
               type="button"
-              onClick={() => {
-                setSearchOpen((prev) => !prev);
-                if (onOpenSearch && !searchOpen) onOpenSearch();
-              }}
-              className={`group flex items-center justify-between h-9 sm:h-10 px-3 sm:px-3.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border rounded-lg transition-colors text-left w-full cursor-pointer ${
-                searchOpen
-                  ? 'border-blue-400 dark:border-cyan-500 ring-2 ring-blue-100 dark:ring-cyan-900/40'
-                  : 'border-slate-700/80 dark:border-slate-300/80 hover:border-slate-900 dark:hover:border-white'
+              onClick={() => setCurriculumDropdownOpen((v) => !v)}
+              aria-expanded={curriculumDropdownOpen}
+              aria-controls="curriculum-panel"
+              className={`flex items-center gap-1 rounded-md px-2.5 xl:px-4 py-2 text-sm xl:text-base font-semibold transition-colors hover:bg-navy-900/5 dark:hover:bg-slate-800/70 ${
+                pathname?.startsWith('/curriculum')
+                  ? 'text-[#1a3fb0] dark:text-[#29abe2]'
+                  : 'text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white'
               }`}
-              title="Search topics (Cmd+K)"
-              aria-label="What do you want to learn?"
-              aria-expanded={searchOpen}
             >
-              <div className="flex items-center space-x-2 truncate">
-                <Search className={`w-4 h-4 transition-colors shrink-0 ${
-                  searchOpen
-                    ? 'text-[#0056D2] dark:text-cyan-400'
-                    : 'text-slate-500 dark:text-slate-400 group-hover:text-[#0056D2] dark:group-hover:text-cyan-400'
-                }`} />
-                <span className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium truncate">
-                  <span className="hidden sm:inline">What do you want to learn?</span>
-                  <span className="sm:hidden">Search...</span>
-                </span>
-              </div>
-              <kbd className="hidden md:inline px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[10px] font-mono border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 ml-2 shrink-0">
-                ⌘K
-              </kbd>
+              Curriculum
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.6"
+                className={`transition-transform duration-300 ${curriculumDropdownOpen ? 'rotate-180' : ''}`}
+                aria-hidden="true"
+              >
+                <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
 
-            {/* Inline anchored dropdown */}
-            <SearchModal
-              isOpen={searchOpen}
-              onClose={() => setSearchOpen(false)}
-              anchorRef={searchBtnRef}
-            />
+            {/* Curriculum Dropdown Panel */}
+            <div
+              id="curriculum-panel"
+              className={`absolute left-0 top-full mt-2 w-56 rounded-lg border border-navy-900/10 dark:border-slate-800 bg-white dark:bg-[#0D121F] p-1.5 shadow-card transition-all duration-200 ${
+                curriculumDropdownOpen ? 'visible translate-y-0 opacity-100' : 'pointer-events-none invisible -translate-y-1 opacity-0'
+              }`}
+            >
+              {curriculumPrograms.map((prog) => (
+                <Link
+                  key={prog.href}
+                  href={prog.href}
+                  onClick={() => setCurriculumDropdownOpen(false)}
+                  className="block rounded-md px-3.5 py-2.5 text-base font-semibold text-navy-900 dark:text-white transition-colors hover:bg-navy-900/5 dark:hover:bg-slate-800/60 hover:text-brand-blue dark:hover:text-cyan-300"
+                >
+                  {prog.label}
+                </Link>
+              ))}
+            </div>
           </div>
-        )}
+
+          {/* 3. About Us */}
+          <Link
+            href="/about"
+            className={`rounded-md px-2.5 xl:px-4 py-2 text-sm xl:text-base font-semibold transition-colors hover:bg-navy-900/5 dark:hover:bg-slate-800/70 ${
+              pathname === '/about'
+                ? 'text-[#1a3fb0] dark:text-[#29abe2]'
+                : 'text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white'
+            }`}
+          >
+            About Us
+          </Link>
+
+        </div>
 
         {/* Right Section: Focused & Consolidated Utilities */}
         <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
-
-          {/* Laptop / Desktop Theme Toggle Button — hidden on landing page */}
-          {!isLandingPage && (
-            <button
-              onClick={() => {
-                const nextTheme = profile.theme === 'dark' ? 'light' : 'dark';
-                setStoredTheme(nextTheme);
-              }}
-              className="hidden md:flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
-              title={profile.theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              aria-label="Toggle theme appearance"
-            >
-              {profile.theme === 'dark' ? (
-                <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
-              ) : (
-                <Moon className="w-4 h-4 text-slate-600 hover:-rotate-12 transition-transform" />
-              )}
-            </button>
-          )}
-
-          {/* Quick Admin Console Switcher for Administrators */}
-          {isAdmin && (
-            <Link
-              href="/admin"
-              className="hidden lg:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-500/10 dark:hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30 text-xs font-bold transition-all shadow-sm"
-              title="Open Admin Operations Console"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-              <span>Admin Console</span>
-            </Link>
-          )}
-
           {/* Notification Bell (Logged-in only) */}
           {isLoggedIn && <NotificationDrawer />}
 
@@ -471,17 +396,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
                   {/* Profile Menu Links */}
                   <div className="px-1.5 py-1.5 space-y-0.5">
-                    {isAdmin && (
-                      <Link
-                        href="/admin"
-                        onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50/60 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-colors"
-                      >
-                        <ShieldCheck className="w-4 h-4 text-indigo-500" />
-                        <span>Admin Operations Console</span>
-                      </Link>
-                    )}
-
                     <Link
                       href="/profile"
                       onClick={() => setUserMenuOpen(false)}
@@ -537,57 +451,64 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               )}
             </div>
           ) : (
-            <div className="hidden lg:flex items-center gap-3">
-              <Link
-                href="/login"
-                className="rounded-md px-3.5 py-2 text-base font-semibold text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-navy-900/5 dark:hover:bg-slate-800/70 transition-colors whitespace-nowrap shrink-0"
-              >
-                Log in
-              </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  if (typeof window !== 'undefined') {
-                    window.dispatchEvent(new CustomEvent('waynautic_open_contact_modal'));
-                  }
-                }}
-                className="btn-gradient text-base px-5 py-2.5 shrink-0 cursor-pointer"
-              >
-                Talk to Us
-              </button>
-            </div>
-          )}
-
-          {/* Talk to Us Button (Desktop; when user is logged in) */}
-          {isLoggedIn && (
-            <button
-              type="button"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.dispatchEvent(new CustomEvent('waynautic_open_contact_modal'));
-                }
-              }}
-              className="hidden xl:inline-flex items-center justify-center btn-gradient text-base px-4 py-2 shrink-0 cursor-pointer"
+            <Link
+              href="/login"
+              className="hidden lg:inline-flex rounded-md px-2.5 xl:px-4 py-2 text-sm xl:text-base font-semibold text-navy-800/80 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white hover:bg-navy-900/5 dark:hover:bg-slate-800/70 transition-colors"
             >
-              Talk to Us
-            </button>
+              Log in
+            </Link>
           )}
 
-          {/* Mobile Drawer Hamburger Button */}
+          {/* Talk to Us Button (Desktop; matching landing page exactly on all pages) */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-1.5 text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center transition-colors"
-            aria-label="Toggle navigation menu"
+            type="button"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('waynautic_open_contact_modal'));
+              }
+            }}
+            className="hidden lg:inline-flex items-center justify-center btn-gradient text-sm xl:text-base px-4 xl:px-5 py-2 xl:py-2.5 shrink-0 cursor-pointer"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            Talk to Us
+          </button>
+
+          {/* Mobile Drawer Hamburger Button — matching waynautic.com */}
+          <button
+            className="relative z-50 flex h-10 w-10 items-center justify-center rounded-md border border-navy-900/10 dark:border-slate-700 lg:hidden"
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((v) => !v)}
+          >
+            <span className="sr-only">Toggle navigation</span>
+            <div className="relative h-4 w-5">
+              <span
+                className={`absolute left-0 h-0.5 w-5 bg-navy-900 dark:bg-white transition-all duration-300 ${
+                  mobileMenuOpen ? 'top-2 rotate-45' : 'top-0'
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-2 h-0.5 w-5 bg-navy-900 dark:bg-white transition-all duration-300 ${
+                  mobileMenuOpen ? 'opacity-0' : 'opacity-100'
+                }`}
+              />
+              <span
+                className={`absolute left-0 h-0.5 w-5 bg-navy-900 dark:bg-white transition-all duration-300 ${
+                  mobileMenuOpen ? 'top-2 -rotate-45' : 'top-4'
+                }`}
+              />
+            </div>
           </button>
 
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-white dark:bg-[#0D121F] border-b-2 border-slate-200 dark:border-slate-800 px-4 pt-3 pb-6 space-y-2.5 animate-in slide-in-from-top-4 duration-200 shadow-2xl max-h-[calc(100dvh-4rem)] overflow-y-auto">
+      {/* Mobile menu — fullscreen overlay, matching waynautic.com */}
+      <div
+        className={`fixed inset-0 top-20 z-40 origin-top overflow-y-auto bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-lg transition-all duration-300 lg:hidden ${
+          mobileMenuOpen ? 'pointer-events-auto visible opacity-100' : 'pointer-events-none invisible opacity-0'
+        }`}
+      >
+        <div className="container-xl flex flex-col gap-1 py-6">
           
           {/* User Profile Header in Mobile Drawer (or Login Button when logged out) */}
           {isLoggedIn ? (
@@ -740,17 +661,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
               <span>About Us</span>
             </Link>
 
-            {/* Admin Console shortcut on mobile drawer */}
-            {isAdmin && (
-              <Link
-                href="/admin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30 min-h-[44px] transition-colors"
-              >
-                <ShieldCheck className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                <span>Admin Operations Console</span>
-              </Link>
-            )}
 
             {/* Other nav links */}
             {mobileNavLinks.map((link) => {
@@ -848,33 +758,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
 
           </div>
 
-          {/* Mobile Theme Toggle — hidden on landing page */}
-          {!isLandingPage && (
-            <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
-              <button
-                onClick={() => {
-                  const nextTheme = profile.theme === 'dark' ? 'light' : 'dark';
-                  setStoredTheme(nextTheme);
-                }}
-                className="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-center space-x-2 min-h-[44px]"
-                title="Toggle theme appearance"
-                aria-label="Toggle theme appearance"
-              >
-                {profile.theme === 'dark' ? (
-                  <>
-                    <Sun className="w-4 h-4 text-amber-400" />
-                    <span>Light</span>
-                  </>
-                ) : (
-                  <>
-                    <Moon className="w-4 h-4 text-slate-600" />
-                    <span>Dark</span>
-                  </>
-                )}
-              </button>
-            </div>
-          )}
-
           {/* Mobile Talk to Us CTA */}
           <div className="pt-2">
             <button
@@ -894,7 +777,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
             </button>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* Global Search Modal (Cmd+K / mobile search trigger) */}
+      <SearchModal
+        isOpen={searchOpen}
+        onClose={() => setSearchOpen(false)}
+      />
 
     </header>
   );

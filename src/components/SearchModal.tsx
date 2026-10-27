@@ -109,12 +109,9 @@ export const SearchModal: React.FC<SearchDropdownProps> = ({ isOpen, onClose, an
     if (!isOpen) return;
     const handleMouseDown = (e: MouseEvent) => {
       const target = e.target as Node;
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(target) &&
-        anchorRef?.current &&
-        !anchorRef.current.contains(target)
-      ) {
+      const clickedOutsideDropdown = dropdownRef.current && !dropdownRef.current.contains(target);
+      const clickedOutsideAnchor = !anchorRef || (anchorRef.current && !anchorRef.current.contains(target));
+      if (clickedOutsideDropdown && clickedOutsideAnchor) {
         onClose();
       }
     };
@@ -133,16 +130,20 @@ export const SearchModal: React.FC<SearchDropdownProps> = ({ isOpen, onClose, an
 
   return (
     <>
-      {/* Mobile backdrop */}
+      {/* Modal backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998] sm:hidden"
+        className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] ${anchorRef ? 'sm:hidden' : ''}`}
         onClick={onClose}
         aria-hidden="true"
       />
 
       <div
         ref={dropdownRef}
-        className="fixed inset-x-3 top-[68px] sm:absolute sm:top-full sm:mt-2 sm:left-0 sm:right-0 sm:w-full sm:inset-x-auto z-[9999] bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden text-slate-800 dark:text-slate-200 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[82vh] flex flex-col"
+        className={
+          anchorRef
+            ? "fixed inset-x-3 top-[68px] sm:absolute sm:top-full sm:mt-2 sm:left-0 sm:right-0 sm:w-full sm:inset-x-auto z-[9999] bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden text-slate-800 dark:text-slate-200 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[82vh] flex flex-col"
+            : "fixed inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-16 sm:top-24 w-full sm:max-w-xl z-[9999] bg-white dark:bg-[#0D121F] border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden text-slate-800 dark:text-slate-200 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[82vh] flex flex-col"
+        }
       >
         {/* Search Input inside dropdown */}
         <div className="flex items-center px-4 py-3 gap-3 border-b border-slate-100 dark:border-slate-800 shrink-0">

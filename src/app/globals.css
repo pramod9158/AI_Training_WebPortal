@@ -203,6 +203,16 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* ── 7b. Intro animations (matching waynautic.com) ───────────────────────── */
+.intro-nav { animation: intro-nav 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes intro-nav {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-nav { animation: none !important; }
+}
+
 /* ── 8. Safe area insets (mobile notches) ────────────────────────────────── */
 .pb-safe { padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); }
 .pt-safe { padding-top:    max(0.5rem, env(safe-area-inset-top)); }

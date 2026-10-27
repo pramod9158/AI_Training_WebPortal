@@ -255,21 +255,10 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
 
         {/* ── Auth UI layer (sits above the blurred background) ────────────── */}
         <div className="relative z-10 flex flex-col min-h-screen">
-          <header className="w-full min-h-[5rem] sm:min-h-[5.5rem] py-3 px-4 flex items-center justify-center bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-sm transition-colors border-none shadow-none">
-            <Link href="/" className="inline-flex items-center group py-1 transition-transform hover:scale-[1.02]" aria-label="Waynautic Academy Home">
-              <Image
-                src="/Waynautic_Academy_Logo_Transparent.png"
-                alt="Waynautic Academy"
-                width={480}
-                height={120}
-                className="h-14 sm:h-20 md:h-22 lg:h-24 w-auto max-w-[260px] sm:max-w-none object-contain transition-transform group-hover:scale-[1.02]"
-                priority
-              />
-            </Link>
-          </header>
+          <Navbar />
 
           {/* Centered auth card */}
-          <main className="flex-1 flex items-center justify-center p-4 sm:p-8">
+          <main className="flex-1 flex items-center justify-center p-4 sm:p-8 pt-24 sm:pt-28">
             <div className="w-full max-w-md">
               {children}
             </div>
@@ -301,7 +290,7 @@ export const ClientAppWrapper: React.FC<{ children: React.ReactNode }> = ({ chil
   return (
     <>
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 pt-20">
         {children}
       </main>
       <Footer />
